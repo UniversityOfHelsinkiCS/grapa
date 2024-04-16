@@ -1,0 +1,34 @@
+version: '3.5'
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: dev.Dockerfile
+    image: grapa_dev
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+    volumes:
+      - ./:/opt/app-root/src
+    ports:
+      - 3000:3000
+      - 8000:8000
+    container_name: grapa_dev
+
+  db:
+    image: postgres:15.6
+    environment:
+      - PGDATA=/data
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - pg_data:/data
+    container_name: grapa_db
+
+  redis:
+    image: redis:7-alpine
+    container_name: grapa_redis
+
+volumes:
+  pg_data:
