@@ -1,18 +1,23 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "resolveJsonModule": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "moduleDetection": "force",
+    "allowJs": true,
     "esModuleInterop": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "lib": ["es2022", "dom"],
-    "module": "ES2022",
-    "moduleResolution": "node",
-    "outDir": "dist",
-    "strict": true,
-    "target": "es2022",
+    "experimentalDecorators": true,
+    "inlineSourceMap": true,
+    "isolatedModules": true,
     "jsx": "react-jsx",
+    "lib": ["es2022", "DOM", "DOM.Iterable", "esnext"],
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "strict": true,
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "strictNullChecks": false,
     "baseUrl": ".",
     "paths": {
       "@backend/*": ["src/server/*"],
@@ -20,9 +25,15 @@
     }
   },
   "include": ["src/**/*", "types/@unfuck-utf8-headers-middleware.d..ts"],
+  "references": [{ "path": "./tsconfig.node.json" }],
   "ts-node": {
+    "esm": true,
+    "transpileOnly": true,
+    "files": true,
+    "experimentalResolver": true,
     "compilerOptions": {
-      "module": "CommonJS"
+      "module": "esnext",
+      "resolveJsonModule": false
     }
   }
 }
