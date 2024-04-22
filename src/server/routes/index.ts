@@ -8,6 +8,7 @@ import initializeSentry from '../util/sentry'
 import errorHandler from '../middleware/error'
 import accessLogger from '../middleware/access'
 import thesisRouter from './thesis'
+import loginRouter from './login'
 
 const router = express()
 
@@ -29,6 +30,7 @@ router.get('/error', () => {
 })
 
 router.use('/theses', thesisRouter)
+router.use('/login', loginRouter)
 
 router.use(SentryHandlers.errorHandler())
 router.use(errorHandler)
