@@ -9,6 +9,7 @@ import errorHandler from '../middleware/error'
 import accessLogger from '../middleware/access'
 import thesisRouter from './thesis'
 import loginRouter from './login'
+import userRouter from './user'
 
 const router = express()
 
@@ -28,7 +29,7 @@ router.get('/ping', (_, res) => res.send('pong'))
 router.get('/error', () => {
   throw new Error('Test error')
 })
-
+router.use('/user', userRouter)
 router.use('/theses', thesisRouter)
 router.use('/login', loginRouter)
 

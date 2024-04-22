@@ -1,3 +1,5 @@
+import { Request } from 'express'
+
 export interface UserInfo {
   uid: string
   hyPersonSisuId: string
@@ -18,4 +20,8 @@ export interface User {
   isAdmin: boolean
   iamGroups: string[]
   newUser?: boolean
+}
+
+export interface RequestWithUser extends Request {
+  user: User
 }
