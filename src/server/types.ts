@@ -25,3 +25,18 @@ export interface User {
 export interface RequestWithUser extends Request {
   user: User
 }
+
+export type ThesisStatus =
+  | 'PLANNING'
+  | 'STARTED'
+  | 'IN_PROGRESS'
+  | 'COMPLETED'
+  | 'CANCELLED'
+
+export interface ThesisData {
+  programId: string
+  topic: string
+  status: ThesisStatus
+  startDate: string
+  targetDate?: string
+}
