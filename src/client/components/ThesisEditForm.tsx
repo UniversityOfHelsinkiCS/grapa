@@ -39,12 +39,8 @@ const ThesisEditForm: React.FC<{
         component: 'form',
         onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
           event.preventDefault()
-          const formData = new FormData(event.currentTarget)
-          const formJson = Object.fromEntries(
-            (formData as any).entries()
-          ) as ThesisData
 
-          await onSubmit(formJson)
+          await onSubmit(editedTesis)
         },
       }}
     >
@@ -73,6 +69,7 @@ const ThesisEditForm: React.FC<{
               {t('programHeader')}
             </InputLabel>
             <Select
+              required
               value={editedTesis.programId}
               label="Program"
               name="programId"
@@ -95,6 +92,7 @@ const ThesisEditForm: React.FC<{
               {t('statusHeader')}
             </InputLabel>
             <Select
+              required
               value={editedTesis.status}
               label={t('statusHeader')}
               name="status"
@@ -112,11 +110,12 @@ const ThesisEditForm: React.FC<{
               <MenuItem value="CANCELLED">Cancelled</MenuItem>
             </Select>
           </FormControl>
-          <LocalizationProvider adapterLocale="fi" dateAdapter={AdapterDayjs}>
+          <LocalizationProvider adapterLocale="fiFI" dateAdapter={AdapterDayjs}>
             <DatePicker
               label={t('startDateHeader')}
               name="startDate"
               value={dayjs(editedTesis.startDate)}
+              format="DD.MM.YYYY"
               onChange={(date) => {
                 setEditedThesis((oldThesis) => ({
                   ...oldThesis,
@@ -128,6 +127,7 @@ const ThesisEditForm: React.FC<{
               label={t('targetDateHeader')}
               name="targetDate"
               value={dayjs(editedTesis.targetDate)}
+              format="DD.MM.YYYY"
               onChange={(date) => {
                 setEditedThesis((oldThesis) => ({
                   ...oldThesis,

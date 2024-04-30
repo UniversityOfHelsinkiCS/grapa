@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { Box } from '@mui/material'
-import { ThemeProvider } from '@mui/material/styles'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { fiFI } from '@mui/x-date-pickers/locales'
 import { SnackbarProvider } from 'notistack'
 
 import { FULL_URL } from '../config'
@@ -11,6 +12,7 @@ import NavBar from './components/NavBar/NavBar'
 
 const App = () => {
   const theme = useTheme()
+  const themeWithLocale = createTheme(theme, fiFI)
 
   const { user, isLoading } = useLoggedInUser()
 
@@ -21,7 +23,7 @@ const App = () => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themeWithLocale}>
       <SnackbarProvider preventDuplicate>
         <Box
           sx={{
