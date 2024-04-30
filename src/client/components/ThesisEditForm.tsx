@@ -112,7 +112,7 @@ const ThesisEditForm: React.FC<{
               <MenuItem value="CANCELLED">Cancelled</MenuItem>
             </Select>
           </FormControl>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <LocalizationProvider adapterLocale="fi" dateAdapter={AdapterDayjs}>
             <DatePicker
               label={t('startDateHeader')}
               name="startDate"
