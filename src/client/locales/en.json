@@ -1,5 +1,15 @@
 {
   "common": {
-    "appName": "Master theses progress tracking"
+    "appName": "Master theses progress tracking",
+    "profileButton": "Profile",
+    "programHeader": "Program",
+    "topicHeader": "Topic",
+    "statusHeader": "Status",
+    "startDateHeader": "Start date",
+    "targetDateHeader": "Target date",
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+    "cancelButton": "Cancel",
+    "editThesisDialog": "Edit thesis"
   }
 }

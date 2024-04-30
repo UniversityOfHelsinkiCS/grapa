@@ -60,7 +60,7 @@ const NavBar = () => {
                 to="/user"
                 style={{ textDecoration: 'none', color: 'inherit' }}
               >
-                Omat tiedot
+                {t('profileButton')}
               </Link>
             </Button>
             <Button

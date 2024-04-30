@@ -1,7 +1,7 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import App from './App'
-import WelcomePage from './components/WelcomePage'
+import ThesesPage from './components/ThesesPage'
 import RootBoundary from './components/Errors/RootBoundary'
 import NotFound from './components/Errors/NotFound'
 
@@ -16,7 +16,7 @@ const router = createBrowserRouter(
       children: [
         {
           index: true,
-          element: <WelcomePage />,
+          element: <ThesesPage />,
           errorElement: <RootBoundary />,
         },
         {

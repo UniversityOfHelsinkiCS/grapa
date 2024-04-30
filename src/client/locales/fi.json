@@ -1,5 +1,15 @@
 {
   "common": {
-    "appName": "GRAdut Pikaisesti Alkuun"
+    "appName": "GRAdut Pikaisesti Alkuun",
+    "profileButton": "Oma tiedot",
+    "programHeader": "Ohjelma",
+    "topicHeader": "Aihe",
+    "statusHeader": "Vaihe",
+    "startDateHeader": "Aloituspäivä",
+    "targetDateHeader": "Tavoitepäivä",
+    "editButton": "Muokkaa",
+    "deleteButton": "Poista",
+    "cancelButton": "Peruuta",
+    "editThesisDialog": "Muokkaa opinnäytetyötä"
   }
 }
