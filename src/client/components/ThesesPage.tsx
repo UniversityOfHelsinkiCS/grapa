@@ -12,10 +12,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Stack,
 } from '@mui/material'
 import programs from './mockPorgrams'
 import useTheses from '../hooks/useTheses'
 import {
+  useCreateThesisMutation,
   useDeleteThesisMutation,
   useEditThesisMutation,
 } from '../hooks/useThesesMutation'
@@ -26,10 +28,12 @@ const ThesesPage = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [editedTesis, setEditedThesis] = useState<Thesis | null>(null)
   const [deletedThesis, setDeletedThesis] = useState<Thesis | null>(null)
+  const [newThesis, setNewThesis] = useState<Thesis | null>(null)
 
   const { theses } = useTheses()
   const { mutateAsync: editThesis } = useEditThesisMutation()
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
+  const { mutateAsync: createThesis } = useCreateThesisMutation()
 
   const columns: GridColDef<Thesis>[] = [
     { field: 'id', headerName: 'ID', width: 90 },
@@ -103,7 +107,23 @@ const ThesesPage = () => {
   if (!theses) return null
 
   return (
-    <>
+    <Stack spacing={3}>
+      <Button
+        variant="contained"
+        size="large"
+        sx={{ width: 200 }}
+        onClick={() => {
+          setNewThesis({
+            programId: programs[0].key,
+            topic: '',
+            status: 'PLANNING',
+            startDate: dayjs().format('YYYY-MM-DD'),
+            targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
+          })
+        }}
+      >
+        {t('newThesisButton')}
+      </Button>
       <Box sx={{ width: '80%' }}>
         <DataGrid
           rows={theses}
@@ -122,11 +142,21 @@ const ThesesPage = () => {
       {editedTesis && (
         <ThesisEditForm
           initialThesis={editedTesis}
-          onSubmit={async (variables) => {
-            await editThesis(variables)
+          onSubmit={async (updatedThesis) => {
+            await editThesis({ thesisId: editedTesis.id, data: updatedThesis })
             setEditedThesis(null)
           }}
           onClose={() => setEditedThesis(null)}
+        />
+      )}
+      {newThesis && (
+        <ThesisEditForm
+          initialThesis={newThesis}
+          onSubmit={async (variables) => {
+            await createThesis(variables)
+            setNewThesis(null)
+          }}
+          onClose={() => setNewThesis(null)}
         />
       )}
       {deletedThesis && (
@@ -159,7 +189,7 @@ const ThesesPage = () => {
           </DialogActions>
         </Dialog>
       )}
-    </>
+    </Stack>
   )
 }
 

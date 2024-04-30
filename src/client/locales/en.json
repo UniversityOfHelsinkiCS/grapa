@@ -10,6 +10,8 @@
     "editButton": "Edit",
     "deleteButton": "Delete",
     "cancelButton": "Cancel",
-    "editThesisDialog": "Edit thesis"
+    "submitButton": "Submit",
+    "editThesisDialog": "Edit thesis",
+    "newThesisButton": "New thesis"
   }
 }

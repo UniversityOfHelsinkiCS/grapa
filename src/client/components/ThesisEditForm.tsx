@@ -22,13 +22,7 @@ import programs from './mockPorgrams'
 const ThesisEditForm: React.FC<{
   initialThesis: ThesisData
   onClose: () => void
-  onSubmit: ({
-    thesisId,
-    data,
-  }: {
-    thesisId: string
-    data: ThesisData
-  }) => Promise<void>
+  onSubmit: (data: ThesisData) => Promise<void>
 }> = ({ initialThesis, onSubmit, onClose }) => {
   const { t } = useTranslation()
   const [editedTesis, setEditedThesis] = useState<ThesisData | null>(
@@ -50,7 +44,7 @@ const ThesisEditForm: React.FC<{
             (formData as any).entries()
           ) as ThesisData
 
-          await onSubmit({ thesisId: editedTesis.id, data: formJson })
+          await onSubmit(formJson)
         },
       }}
     >
@@ -146,7 +140,7 @@ const ThesisEditForm: React.FC<{
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>{t('cancelButton')}</Button>
-        <Button type="submit">{t('editButton')}</Button>
+        <Button type="submit">{t('submitButton')}</Button>
       </DialogActions>
     </Dialog>
   )
