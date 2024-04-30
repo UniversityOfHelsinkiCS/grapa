@@ -172,7 +172,6 @@ const ThesesPage = () => {
                 margin="dense"
                 id="topic"
                 name="topic"
-                // TODO: use react-i18next for all strings
                 label={t('topicHeader')}
                 type="email"
                 value={editedTesis.topic}
