@@ -61,7 +61,7 @@ const ThesesPage = () => {
       field: 'startDate',
       headerName: t('startDateHeader'),
       sortable: false,
-      width: 360,
+      width: 160,
       valueGetter: (value, row) => dayjs(row.startDate).format('YYYY-MM-DD'),
       // valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
     },
@@ -70,7 +70,7 @@ const ThesesPage = () => {
       headerName: t('targetDateHeader'),
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
-      width: 360,
+      width: 160,
       valueGetter: (value, row) => dayjs(row.targetDate).format('YYYY-MM-DD'),
       // valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
     },
@@ -124,7 +124,7 @@ const ThesesPage = () => {
       >
         {t('newThesisButton')}
       </Button>
-      <Box sx={{ width: '80%' }}>
+      <Box sx={{ width: '100%' }}>
         <DataGrid
           rows={theses}
           columns={columns}
