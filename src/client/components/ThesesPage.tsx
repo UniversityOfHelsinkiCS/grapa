@@ -2,12 +2,9 @@ import dayjs from 'dayjs'
 import Box from '@mui/material/Box'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { DataGrid, GridActionsCellItem, GridColDef } from '@mui/x-data-grid'
 import { useState } from 'react'
-import { ThesisData as Thesis, ThesisData } from '@backend/types'
+import { ThesisData as Thesis } from '@backend/types'
 import { useTranslation } from 'react-i18next'
 import {
   Button,
@@ -15,12 +12,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
 } from '@mui/material'
 import programs from './mockPorgrams'
 import useTheses from '../hooks/useTheses'
@@ -28,10 +19,10 @@ import {
   useDeleteThesisMutation,
   useEditThesisMutation,
 } from '../hooks/useThesesMutation'
+import ThesisEditForm from './ThesisEditForm'
 
 const ThesesPage = () => {
   const { t } = useTranslation()
-  const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [editedTesis, setEditedThesis] = useState<Thesis | null>(null)
   const [deletedThesis, setDeletedThesis] = useState<Thesis | null>(null)
@@ -86,7 +77,6 @@ const ThesesPage = () => {
       getActions: (params) => [
         <GridActionsCellItem
           onClick={() => {
-            setEditDialogOpen(true)
             setEditedThesis(params.row as Thesis)
           }}
           label={t('editButton')}
@@ -130,132 +120,14 @@ const ThesesPage = () => {
         />
       </Box>
       {editedTesis && (
-        <Dialog
-          fullWidth
-          maxWidth="lg"
-          open={editDialogOpen}
-          onClose={() => {
-            setEditDialogOpen(false)
+        <ThesisEditForm
+          initialThesis={editedTesis}
+          onSubmit={async (variables) => {
+            await editThesis(variables)
             setEditedThesis(null)
           }}
-          PaperProps={{
-            component: 'form',
-            onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
-              event.preventDefault()
-              const formData = new FormData(event.currentTarget)
-              const formJson = Object.fromEntries(
-                (formData as any).entries()
-              ) as ThesisData
-
-              await editThesis({ thesisId: editedTesis.id, data: formJson })
-
-              setEditDialogOpen(false)
-              setEditedThesis(null)
-            },
-          }}
-        >
-          <DialogTitle>{t('editThesisDialog')}</DialogTitle>
-          <DialogContent>
-            <Stack spacing={6}>
-              <TextField
-                autoFocus
-                required
-                margin="dense"
-                id="topic"
-                name="topic"
-                label={t('topicHeader')}
-                value={editedTesis.topic}
-                onChange={(event) => {
-                  setEditedThesis((oldThesis) => ({
-                    ...oldThesis,
-                    topic: event.target.value,
-                  }))
-                }}
-                fullWidth
-                variant="standard"
-              />
-              <FormControl fullWidth>
-                <InputLabel id="program-select-label">
-                  {t('programHeader')}
-                </InputLabel>
-                <Select
-                  value={editedTesis.programId}
-                  label="Program"
-                  name="programId"
-                  onChange={(event) => {
-                    setEditedThesis((oldThesis) => ({
-                      ...oldThesis,
-                      programId: event.target.value as Thesis['programId'],
-                    }))
-                  }}
-                >
-                  {programs.map((program) => (
-                    <MenuItem key={program.key} value={program.key}>
-                      {program.name.en}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl fullWidth>
-                <InputLabel id="status-select-label">
-                  {t('statusHeader')}
-                </InputLabel>
-                <Select
-                  value={editedTesis.status}
-                  label={t('statusHeader')}
-                  name="status"
-                  onChange={(event) => {
-                    setEditedThesis((oldThesis) => ({
-                      ...oldThesis,
-                      status: event.target.value as Thesis['status'],
-                    }))
-                  }}
-                >
-                  <MenuItem value="PLANNING">Planning</MenuItem>
-                  <MenuItem value="STARTED">Started</MenuItem>
-                  <MenuItem value="IN_PROGRESS">In progress</MenuItem>
-                  <MenuItem value="COMPLETED">Completed</MenuItem>
-                  <MenuItem value="CANCELLED">Cancelled</MenuItem>
-                </Select>
-              </FormControl>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label={t('startDateHeader')}
-                  name="startDate"
-                  value={dayjs(editedTesis.startDate)}
-                  onChange={(date) => {
-                    setEditedThesis((oldThesis) => ({
-                      ...oldThesis,
-                      startDate: date.format('YYYY-MM-DD'),
-                    }))
-                  }}
-                />
-                <DatePicker
-                  label={t('targetDateHeader')}
-                  name="targetDate"
-                  value={dayjs(editedTesis.targetDate)}
-                  onChange={(date) => {
-                    setEditedThesis((oldThesis) => ({
-                      ...oldThesis,
-                      targetDate: date.format('YYYY-MM-DD'),
-                    }))
-                  }}
-                />
-              </LocalizationProvider>
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                setEditDialogOpen(false)
-                setEditedThesis(null)
-              }}
-            >
-              {t('cancelButton')}
-            </Button>
-            <Button type="submit">{t('editButton')}</Button>
-          </DialogActions>
-        </Dialog>
+          onClose={() => setEditedThesis(null)}
+        />
       )}
       {deletedThesis && (
         <Dialog
