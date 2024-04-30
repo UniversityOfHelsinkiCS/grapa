@@ -34,6 +34,7 @@ export type ThesisStatus =
   | 'CANCELLED'
 
 export interface ThesisData {
+  id?: string
   programId: string
   topic: string
   status: ThesisStatus
