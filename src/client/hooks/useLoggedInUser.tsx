@@ -1,19 +1,19 @@
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 
 import { User } from '@backend/types'
 
 import apiClient from '../util/apiClient'
 
 const useLoggedInUser = () => {
-  const queryKey = 'user'
+  const queryKey = ['user']
 
-  const query = async (): Promise<User> => {
+  const queryFn = async (): Promise<User> => {
     const { data } = await apiClient.get('/user/')
 
     return data
   }
 
-  const { data: user, ...rest } = useQuery(queryKey, query)
+  const { data: user, ...rest } = useQuery({ queryKey, queryFn })
 
   return { user, ...rest }
 }

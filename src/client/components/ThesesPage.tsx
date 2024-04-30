@@ -6,8 +6,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { DataGrid, GridActionsCellItem, GridColDef } from '@mui/x-data-grid'
-import { useEffect, useState } from 'react'
-import { ThesisData as Thesis } from '@backend/types'
+import { useState } from 'react'
+import { ThesisData as Thesis, ThesisData } from '@backend/types'
 import { useTranslation } from 'react-i18next'
 import {
   Button,
@@ -23,24 +23,22 @@ import {
   TextField,
 } from '@mui/material'
 import programs from './mockPorgrams'
+import useTheses from '../hooks/useTheses'
+import {
+  useDeleteThesisMutation,
+  useEditThesisMutation,
+} from '../hooks/useThesesMutation'
 
 const ThesesPage = () => {
   const { t } = useTranslation()
-  const [theses, setTheses] = useState<Thesis[]>([])
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [editedTesis, setEditedThesis] = useState<Thesis | null>(null)
   const [deletedThesis, setDeletedThesis] = useState<Thesis | null>(null)
 
-  // TODO: use react-query for data fetching
-  useEffect(() => {
-    fetch('/api/theses')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
-        setTheses(data)
-      })
-  }, [])
+  const { theses } = useTheses()
+  const { mutateAsync: editThesis } = useEditThesisMutation()
+  const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
 
   const columns: GridColDef<Thesis>[] = [
     { field: 'id', headerName: 'ID', width: 90 },
@@ -112,6 +110,8 @@ const ThesesPage = () => {
     },
   ]
 
+  if (!theses) return null
+
   return (
     <>
       <Box sx={{ width: '80%' }}>
@@ -140,23 +140,14 @@ const ThesesPage = () => {
           }}
           PaperProps={{
             component: 'form',
-            onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+            onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
               event.preventDefault()
               const formData = new FormData(event.currentTarget)
-              const formJson = Object.fromEntries((formData as any).entries())
+              const formJson = Object.fromEntries(
+                (formData as any).entries()
+              ) as ThesisData
 
-              // TODO: use react-query for data fetching
-              fetch(`/api/theses/${editedTesis.id}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formJson),
-              })
-                .then((res) => res.json())
-                .then((data) => {
-                  console.log(data)
-                })
+              await editThesis({ thesisId: editedTesis.id, data: formJson })
 
               setEditDialogOpen(false)
               setEditedThesis(null)
@@ -173,7 +164,6 @@ const ThesesPage = () => {
                 id="topic"
                 name="topic"
                 label={t('topicHeader')}
-                type="email"
                 value={editedTesis.topic}
                 onChange={(event) => {
                   setEditedThesis((oldThesis) => ({
@@ -286,14 +276,10 @@ const ThesesPage = () => {
             </Button>
             <Button
               variant="contained"
-              onClick={() => {
-                fetch(`/api/theses/${deletedThesis.id}`, {
-                  method: 'DELETE',
-                }).then((data) => {
-                  console.log(data)
-                  setDeleteDialogOpen(false)
-                  setDeletedThesis(null)
-                })
+              onClick={async () => {
+                await deleteThesis(deletedThesis.id)
+                setDeleteDialogOpen(false)
+                setDeletedThesis(null)
               }}
             >
               {t('deleteButton')}
