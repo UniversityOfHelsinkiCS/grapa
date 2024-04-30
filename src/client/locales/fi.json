@@ -11,7 +11,7 @@
     "deleteButton": "Poista",
     "cancelButton": "Peruuta",
     "submitButton": "Tallenna",
-    "editThesisDialog": "Muokkaa opinnäytetyötä",
-    "newThesisButton": "Uusi opinnäytetyö"
+    "editThesisDialog": "Muokkaa gradu",
+    "newThesisButton": "Uusi gradu"
   }
 }
