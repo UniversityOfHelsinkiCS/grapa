@@ -1,5 +1,4 @@
 import { Request } from 'express'
-import { Supervision } from './db/models'
 
 export interface UserInfo {
   uid: string
@@ -34,6 +33,11 @@ export type ThesisStatus =
   | 'COMPLETED'
   | 'CANCELLED'
 
+export interface SupervisionData {
+  userId: string
+  percentage: number
+}
+
 export interface ThesisData {
   id?: string
   programId: string
@@ -41,5 +45,5 @@ export interface ThesisData {
   status: ThesisStatus
   startDate: string
   targetDate?: string
-  supervisions: Supervision[]
+  supervisions: SupervisionData[]
 }

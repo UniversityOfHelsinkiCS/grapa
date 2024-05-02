@@ -1,4 +1,5 @@
-import { ThesisData } from '@backend/types'
+import { ThesisData, User } from '@backend/types'
+import { SupervisorSelection } from '@frontend/types'
 import {
   Button,
   Dialog,
@@ -17,17 +18,22 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import programs from './mockPorgrams'
+import programs from '../mockPorgrams'
+import SupervisorSelect from './SupervisorSelect'
 
 const ThesisEditForm: React.FC<{
   initialThesis: ThesisData
+  supervisors: User[]
   onClose: () => void
   onSubmit: (data: ThesisData) => Promise<void>
-}> = ({ initialThesis, onSubmit, onClose }) => {
+}> = ({ initialThesis, supervisors, onSubmit, onClose }) => {
   const { t } = useTranslation()
   const [editedTesis, setEditedThesis] = useState<ThesisData | null>(
     initialThesis
   )
+  const [supervisorSelections, setSupervisorSelections] = useState<
+    SupervisorSelection[]
+  >(initialThesis.supervisions ?? [])
 
   return (
     <Dialog
@@ -40,7 +46,7 @@ const ThesisEditForm: React.FC<{
         onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
           event.preventDefault()
 
-          await onSubmit(editedTesis)
+          await onSubmit({ ...editedTesis, supervisions: supervisorSelections })
         },
       }}
     >
@@ -87,6 +93,13 @@ const ThesisEditForm: React.FC<{
               ))}
             </Select>
           </FormControl>
+
+          <SupervisorSelect
+            supervisorSelections={supervisorSelections}
+            setSupervisorSelections={setSupervisorSelections}
+            supervisors={supervisors}
+          />
+
           <FormControl fullWidth>
             <InputLabel id="status-select-label">
               {t('statusHeader')}

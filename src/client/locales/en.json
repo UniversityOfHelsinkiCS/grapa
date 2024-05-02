@@ -13,5 +13,8 @@
     "submitButton": "Submit",
     "editThesisDialog": "Edit thesis",
     "newThesisButton": "New thesis"
+  },
+  "thesisForm": {
+    "supervisionPercentageError": "Make sure the total percentages of supervisors add up to 100"
   }
 }

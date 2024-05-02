@@ -1,7 +1,7 @@
 import express from 'express'
 import { ThesisData } from '@backend/types'
-import { Thesis, Supervision } from '@backend/db/models'
-import { sequelize } from '@backend/db/connection'
+import { Thesis, Supervision } from '../db/models'
+import { sequelize } from '../db/connection'
 
 const validateThesisData = (thesisData: ThesisData) => {
   if (!thesisData.topic) {

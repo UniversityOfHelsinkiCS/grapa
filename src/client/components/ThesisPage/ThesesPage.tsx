@@ -14,13 +14,14 @@ import {
   DialogTitle,
   Stack,
 } from '@mui/material'
-import programs from './mockPorgrams'
-import useTheses from '../hooks/useTheses'
+import programs from '../mockPorgrams'
+import useTheses from '../../hooks/useTheses'
+import useUsers from '../../hooks/useUsers'
 import {
   useCreateThesisMutation,
   useDeleteThesisMutation,
   useEditThesisMutation,
-} from '../hooks/useThesesMutation'
+} from '../../hooks/useThesesMutation'
 import ThesisEditForm from './ThesisEditForm'
 
 const ThesesPage = () => {
@@ -31,6 +32,7 @@ const ThesesPage = () => {
   const [newThesis, setNewThesis] = useState<Thesis | null>(null)
 
   const { theses } = useTheses()
+  const { users } = useUsers()
   const { mutateAsync: editThesis } = useEditThesisMutation()
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
   const { mutateAsync: createThesis } = useCreateThesisMutation()
@@ -115,6 +117,7 @@ const ThesesPage = () => {
         onClick={() => {
           setNewThesis({
             programId: programs[0].key,
+            supervisions: [],
             topic: '',
             status: 'PLANNING',
             startDate: dayjs().format('YYYY-MM-DD'),
@@ -142,6 +145,7 @@ const ThesesPage = () => {
       {editedTesis && (
         <ThesisEditForm
           initialThesis={editedTesis}
+          supervisors={users}
           onSubmit={async (updatedThesis) => {
             await editThesis({ thesisId: editedTesis.id, data: updatedThesis })
             setEditedThesis(null)
@@ -152,6 +156,7 @@ const ThesesPage = () => {
       {newThesis && (
         <ThesisEditForm
           initialThesis={newThesis}
+          supervisors={users}
           onSubmit={async (variables) => {
             await createThesis(variables)
             setNewThesis(null)

@@ -10,6 +10,7 @@ import accessLogger from '../middleware/access'
 import thesisRouter from './thesis'
 import loginRouter from './login'
 import userRouter from './user'
+import usersRouter from './users'
 
 const router = express()
 
@@ -30,6 +31,7 @@ router.get('/error', () => {
   throw new Error('Test error')
 })
 router.use('/user', userRouter)
+router.use('/users', usersRouter)
 router.use('/theses', thesisRouter)
 router.use('/login', loginRouter)
 

@@ -1,7 +1,7 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import App from './App'
-import ThesesPage from './components/ThesesPage'
+import ThesesPage from './components/ThesisPage/ThesesPage'
 import RootBoundary from './components/Errors/RootBoundary'
 import NotFound from './components/Errors/NotFound'
 

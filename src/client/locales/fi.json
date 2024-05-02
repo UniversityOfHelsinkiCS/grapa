@@ -13,5 +13,8 @@
     "submitButton": "Tallenna",
     "editThesisDialog": "Muokkaa gradu",
     "newThesisButton": "Uusi gradu"
+  },
+  "thesisForm": {
+    "supervisionPercentageError": " Varmista, että ohjaajien yhteisprosentti on 100"
   }
 }
