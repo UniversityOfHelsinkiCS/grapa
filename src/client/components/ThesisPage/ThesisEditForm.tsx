@@ -1,6 +1,7 @@
-import { ThesisData, User } from '@backend/types'
+import { ThesisData } from '@backend/types'
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -19,16 +20,44 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import programs from '../mockPorgrams'
 import SupervisorSelect from './SupervisorSelect'
+import useUsers from '../../hooks/useUsers'
 
 const ThesisEditForm: React.FC<{
   initialThesis: ThesisData
-  supervisors: User[]
   onClose: () => void
   onSubmit: (data: ThesisData) => Promise<void>
-}> = ({ initialThesis, supervisors, onSubmit, onClose }) => {
+}> = ({ initialThesis, onSubmit, onClose }) => {
   const { t } = useTranslation()
   const [editedThesis, setEditedThesis] = useState<ThesisData | null>(
     initialThesis
+  )
+  const { users } = useUsers()
+
+  const authorIds = editedThesis.authors.map((author) => author.userId)
+  const supervisorIds = editedThesis.supervisions.map(
+    (supervision) => supervision.userId
+  )
+
+  if (!users) {
+    return (
+      <Dialog fullWidth maxWidth="lg" open onClose={onClose}>
+        <DialogTitle>{t('editThesisDialog')}</DialogTitle>
+        <DialogContent>
+          <Stack spacing={6} alignItems="center" height={300}>
+            <CircularProgress />
+          </Stack>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
+  // authors cannot be supervisors
+  const potentialAuthors = users.filter(
+    (user) => !supervisorIds.includes(user.id)
+  )
+  // supervisors cannot be authors
+  const potentialSupervisors = users.filter(
+    (user) => !authorIds.includes(user.id)
   )
 
   return (
@@ -89,6 +118,33 @@ const ThesisEditForm: React.FC<{
               ))}
             </Select>
           </FormControl>
+          <FormControl fullWidth>
+            <InputLabel id="author-select-label">
+              {t('thesisForm:author')}
+            </InputLabel>
+            <Select
+              required
+              value={
+                editedThesis.authors.length > 0
+                  ? editedThesis.authors[0].userId
+                  : ''
+              }
+              label="Author"
+              name="author"
+              onChange={(event) => {
+                setEditedThesis((oldThesis) => ({
+                  ...oldThesis,
+                  authors: [{ userId: event.target.value }],
+                }))
+              }}
+            >
+              {potentialAuthors.map((user) => (
+                <MenuItem key={user.id} value={user.id}>
+                  {user.username}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <SupervisorSelect
             supervisorSelections={editedThesis.supervisions}
@@ -98,7 +154,7 @@ const ThesisEditForm: React.FC<{
                 supervisions: newSupervisions,
               }))
             }
-            supervisors={supervisors}
+            supervisors={potentialSupervisors}
           />
 
           <FormControl fullWidth>

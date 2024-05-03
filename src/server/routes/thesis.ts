@@ -1,13 +1,24 @@
 import express from 'express'
 import { ThesisData } from '@backend/types'
-import { Thesis, Supervision } from '../db/models'
+import { Thesis, Supervision, Author } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
 
 const thesisRouter = express.Router()
 
 const fetchThesisById = async (id: string) => {
-  const thesis = await Thesis.findByPk(id)
+  const thesis = await Thesis.findByPk(id, {
+    include: [
+      {
+        model: Supervision,
+        as: 'supervisions',
+      },
+      {
+        model: Author,
+        as: 'authors',
+      },
+    ],
+  })
   return thesis
 }
 
@@ -19,7 +30,14 @@ const createThesisAndSupervisions = async (thesisData: ThesisData) => {
         ...supervision,
         thesisId: createdThesis.id,
       })),
-      { transaction: t }
+      { transaction: t, validate: true, individualHooks: true }
+    )
+    await Author.bulkCreate(
+      thesisData.authors.map((author) => ({
+        ...author,
+        thesisId: createdThesis.id,
+      })),
+      { transaction: t, validate: true, individualHooks: true }
     )
     return createdThesis
   })
@@ -37,7 +55,15 @@ const updateThesis = async (id: string, thesisData: ThesisData) => {
         ...supervision,
         thesisId: id,
       })),
-      { transaction: t }
+      { transaction: t, validate: true, individualHooks: true }
+    )
+    await Author.destroy({ where: { thesisId: id }, transaction: t })
+    await Author.bulkCreate(
+      thesisData.authors.map((author) => ({
+        ...author,
+        thesisId: id,
+      })),
+      { transaction: t, validate: true, individualHooks: true }
     )
   })
 }
@@ -48,10 +74,16 @@ const deleteThesis = async (id: string) => {
 
 thesisRouter.get('/', async (_, res) => {
   const theses = await Thesis.findAll({
-    include: {
-      model: Supervision,
-      as: 'supervisions',
-    },
+    include: [
+      {
+        model: Supervision,
+        as: 'supervisions',
+      },
+      {
+        model: Author,
+        as: 'authors',
+      },
+    ],
   })
   res.send(theses)
 })

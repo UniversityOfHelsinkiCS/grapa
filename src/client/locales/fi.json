@@ -15,6 +15,7 @@
     "newThesisButton": "Uusi gradu"
   },
   "thesisForm": {
-    "supervisionPercentageError": " Varmista, että ohjaajien yhteisprosentti on 100"
+    "supervisionPercentageError": " Varmista, että ohjaajien yhteisprosentti on 100",
+    "author": "Tekijä"
   }
 }

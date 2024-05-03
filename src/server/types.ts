@@ -38,6 +38,10 @@ export interface SupervisionData {
   percentage: number
 }
 
+export interface AuthorData {
+  userId: string
+}
+
 export interface ThesisData {
   id?: string
   programId: string
@@ -46,4 +50,5 @@ export interface ThesisData {
   startDate: string
   targetDate?: string
   supervisions: SupervisionData[]
+  authors: AuthorData[]
 }

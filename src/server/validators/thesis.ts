@@ -10,8 +10,8 @@ export const validateThesisData = (thesisData: ThesisData) => {
     throw new Error('At least one supervision is required')
   }
 
-  if (!thesisData.supervisions || thesisData.supervisions.length === 0) {
-    throw new Error('At least one supervision is required')
+  if (!thesisData.authors || thesisData.authors.length === 0) {
+    throw new Error('At least one author is required')
   }
 
   // sum of supervision percentages must add up to 100

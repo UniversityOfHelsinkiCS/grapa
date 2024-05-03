@@ -15,6 +15,7 @@
     "newThesisButton": "New thesis"
   },
   "thesisForm": {
-    "supervisionPercentageError": "Make sure the total percentages of supervisors add up to 100"
+    "supervisionPercentageError": "Make sure the total percentages of supervisors add up to 100",
+    "author": "Author"
   }
 }
