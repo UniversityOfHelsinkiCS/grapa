@@ -1,5 +1,4 @@
 import { ThesisData, User } from '@backend/types'
-import { SupervisorSelection } from '@frontend/types'
 import {
   Button,
   Dialog,
@@ -31,9 +30,6 @@ const ThesisEditForm: React.FC<{
   const [editedTesis, setEditedThesis] = useState<ThesisData | null>(
     initialThesis
   )
-  const [supervisorSelections, setSupervisorSelections] = useState<
-    SupervisorSelection[]
-  >(initialThesis.supervisions ?? [])
 
   return (
     <Dialog
@@ -46,7 +42,7 @@ const ThesisEditForm: React.FC<{
         onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
           event.preventDefault()
 
-          await onSubmit({ ...editedTesis, supervisions: supervisorSelections })
+          await onSubmit(editedTesis)
         },
       }}
     >
@@ -95,8 +91,13 @@ const ThesisEditForm: React.FC<{
           </FormControl>
 
           <SupervisorSelect
-            supervisorSelections={supervisorSelections}
-            setSupervisorSelections={setSupervisorSelections}
+            supervisorSelections={editedTesis.supervisions}
+            setSupervisorSelections={(newSupervisions) =>
+              setEditedThesis((oldThesis) => ({
+                ...oldThesis,
+                supervisions: newSupervisions,
+              }))
+            }
             supervisors={supervisors}
           />
 

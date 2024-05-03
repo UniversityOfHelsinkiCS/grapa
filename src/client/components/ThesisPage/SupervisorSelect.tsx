@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React from 'react'
 import ErrorIcon from '@mui/icons-material/Error'
 import {
   Alert,
@@ -11,45 +11,39 @@ import {
   TextField,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { User } from '@backend/types'
+import { SupervisionData, User } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 
 const SupervisorSelect: React.FC<{
   supervisors: User[]
   supervisorSelections: SupervisorSelection[]
-  setSupervisorSelections: Dispatch<SetStateAction<SupervisorSelection[]>>
+  setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
 }> = ({ supervisors, supervisorSelections, setSupervisorSelections }) => {
   const { t } = useTranslation()
 
   const handleSupervisorChange = (index: number, supervisorId: string) => {
-    setSupervisorSelections((prevSelections) => {
-      const updatedSelections = [...prevSelections]
-      updatedSelections[index].userId = supervisorId
-      return updatedSelections
-    })
+    const updatedSelections = [...supervisorSelections]
+    updatedSelections[index].userId = supervisorId
+    setSupervisorSelections(updatedSelections)
   }
 
   const handlePercentageChange = (index: number, percentage: number) => {
-    setSupervisorSelections((prevSelections) => {
-      const updatedSelections = [...prevSelections]
-      updatedSelections[index].percentage = percentage
-      return updatedSelections
-    })
+    const updatedSelections = [...supervisorSelections]
+    updatedSelections[index].percentage = percentage
+    setSupervisorSelections(updatedSelections)
   }
 
   const handleAddSupervisor = () => {
-    setSupervisorSelections((prevSelections) => [
-      ...prevSelections,
+    setSupervisorSelections([
+      ...supervisorSelections,
       { userId: '', percentage: 0 },
     ])
   }
 
   const handleRemoveSupervisor = (index: number) => {
-    setSupervisorSelections((prevSelections) => {
-      const updatedSelections = [...prevSelections]
-      updatedSelections.splice(index, 1)
-      return updatedSelections
-    })
+    const updatedSelections = [...supervisorSelections]
+    updatedSelections.splice(index, 1)
+    setSupervisorSelections(updatedSelections)
   }
 
   const getTotalPercentage = () =>
