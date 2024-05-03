@@ -52,52 +52,71 @@ const SupervisorSelect: React.FC<{
       0
     )
   const totalPercentage = getTotalPercentage()
+  const selectedSupervisorIds = supervisorSelections.map(
+    (selection) => selection.userId
+  )
 
   return (
     <Stack spacing={3}>
-      {supervisorSelections.map((selection, index) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <Stack key={index} spacing={1} direction="row">
-          <FormControl fullWidth>
-            <InputLabel id={`supervisor-select-label-${index}`}>
-              Select supervisor
-            </InputLabel>
-            <Select
+      {supervisorSelections.map((selection, index) => {
+        // filter out supervisors that are already selected
+        const supervisorOptions = supervisors.filter(
+          (supervisor) =>
+            supervisor.id === selection.userId ||
+            !selectedSupervisorIds.includes(supervisor.id)
+        )
+
+        return (
+          // eslint-disable-next-line react/no-array-index-key
+          <Stack key={index} spacing={1} direction="row">
+            <FormControl fullWidth>
+              <InputLabel id={`supervisor-select-label-${index}`}>
+                Select supervisor
+              </InputLabel>
+              <Select
+                required
+                value={selection.userId}
+                label="Select supervisor"
+                name={`supervisorId-${index}`}
+                onChange={(event) =>
+                  handleSupervisorChange(index, event.target.value as string)
+                }
+              >
+                {supervisorOptions.map((supervisor) => (
+                  <MenuItem key={supervisor.id} value={supervisor.id}>
+                    {supervisor.firstName} {supervisor.lastName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
               required
-              value={selection.userId}
-              label="Select supervisor"
-              name={`supervisorId-${index}`}
+              type="number"
+              sx={{ width: 125 }}
+              inputProps={{ min: 1, max: 100 }}
+              label="Percentage"
+              value={selection.percentage}
               onChange={(event) =>
-                handleSupervisorChange(index, event.target.value as string)
+                handlePercentageChange(index, parseInt(event.target.value, 10))
               }
-            >
-              {supervisors.map((supervisor) => (
-                <MenuItem key={supervisor.id} value={supervisor.id}>
-                  {supervisor.firstName} {supervisor.lastName}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            required
-            type="number"
-            sx={{ width: 125 }}
-            inputProps={{ min: 1, max: 100 }}
-            label="Percentage"
-            value={selection.percentage}
-            onChange={(event) =>
-              handlePercentageChange(index, parseInt(event.target.value, 10))
-            }
-          />
-          <Button onClick={() => handleRemoveSupervisor(index)}>Remove</Button>
-        </Stack>
-      ))}
+            />
+            <Button onClick={() => handleRemoveSupervisor(index)}>
+              Remove
+            </Button>
+          </Stack>
+        )
+      })}
       {totalPercentage !== 100 && (
         <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
           {t('thesisForm:supervisionPercentageError')}
         </Alert>
       )}
-      <Button onClick={handleAddSupervisor}>Add Supervisor</Button>
+      <Button
+        disabled={supervisorSelections.length === supervisors.length}
+        onClick={handleAddSupervisor}
+      >
+        Add Supervisor
+      </Button>
     </Stack>
   )
 }

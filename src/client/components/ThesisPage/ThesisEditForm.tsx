@@ -27,7 +27,7 @@ const ThesisEditForm: React.FC<{
   onSubmit: (data: ThesisData) => Promise<void>
 }> = ({ initialThesis, supervisors, onSubmit, onClose }) => {
   const { t } = useTranslation()
-  const [editedTesis, setEditedThesis] = useState<ThesisData | null>(
+  const [editedThesis, setEditedThesis] = useState<ThesisData | null>(
     initialThesis
   )
 
@@ -42,7 +42,7 @@ const ThesisEditForm: React.FC<{
         onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
           event.preventDefault()
 
-          await onSubmit(editedTesis)
+          await onSubmit(editedThesis)
         },
       }}
     >
@@ -56,7 +56,7 @@ const ThesisEditForm: React.FC<{
             id="topic"
             name="topic"
             label={t('topicHeader')}
-            value={editedTesis.topic}
+            value={editedThesis.topic}
             onChange={(event) => {
               setEditedThesis((oldThesis) => ({
                 ...oldThesis,
@@ -72,7 +72,7 @@ const ThesisEditForm: React.FC<{
             </InputLabel>
             <Select
               required
-              value={editedTesis.programId}
+              value={editedThesis.programId}
               label="Program"
               name="programId"
               onChange={(event) => {
@@ -91,7 +91,7 @@ const ThesisEditForm: React.FC<{
           </FormControl>
 
           <SupervisorSelect
-            supervisorSelections={editedTesis.supervisions}
+            supervisorSelections={editedThesis.supervisions}
             setSupervisorSelections={(newSupervisions) =>
               setEditedThesis((oldThesis) => ({
                 ...oldThesis,
@@ -107,7 +107,7 @@ const ThesisEditForm: React.FC<{
             </InputLabel>
             <Select
               required
-              value={editedTesis.status}
+              value={editedThesis.status}
               label={t('statusHeader')}
               name="status"
               onChange={(event) => {
@@ -128,7 +128,7 @@ const ThesisEditForm: React.FC<{
             <DatePicker
               label={t('startDateHeader')}
               name="startDate"
-              value={dayjs(editedTesis.startDate)}
+              value={dayjs(editedThesis.startDate)}
               format="DD.MM.YYYY"
               onChange={(date) => {
                 setEditedThesis((oldThesis) => ({
@@ -140,7 +140,7 @@ const ThesisEditForm: React.FC<{
             <DatePicker
               label={t('targetDateHeader')}
               name="targetDate"
-              value={dayjs(editedTesis.targetDate)}
+              value={dayjs(editedThesis.targetDate)}
               format="DD.MM.YYYY"
               onChange={(date) => {
                 setEditedThesis((oldThesis) => ({
