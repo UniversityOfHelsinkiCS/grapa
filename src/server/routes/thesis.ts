@@ -1,6 +1,10 @@
-import express from 'express'
-import { ThesisData } from '@backend/types'
-import { Thesis, Supervision, Author } from '../db/models'
+import express, { Response } from 'express'
+import type { Transaction } from 'sequelize'
+
+import { RequestWithThesisData, ThesisData } from '../types'
+import parseFormDataJson from '../middleware/parseFormDataJson'
+import attachment from '../middleware/attachment'
+import { Thesis, Supervision, Author, Attachment } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
 
@@ -22,27 +26,61 @@ const fetchThesisById = async (id: string) => {
   return thesis
 }
 
-const createThesisAndSupervisions = async (thesisData: ThesisData) => {
-  const newThesis = sequelize.transaction(async (t) => {
-    const createdThesis = await Thesis.create(thesisData, { transaction: t })
-    await Supervision.bulkCreate(
-      thesisData.supervisions.map((supervision) => ({
-        ...supervision,
-        thesisId: createdThesis.id,
-      })),
-      { transaction: t, validate: true, individualHooks: true }
-    )
-    await Author.bulkCreate(
-      thesisData.authors.map((author) => ({
-        ...author,
-        thesisId: createdThesis.id,
-      })),
-      { transaction: t, validate: true, individualHooks: true }
-    )
-    return createdThesis
-  })
+const createThesisAndSupervisions = async (
+  thesisData: ThesisData,
+  t: Transaction
+) => {
+  const createdThesis = await Thesis.create(thesisData, { transaction: t })
+  await Supervision.bulkCreate(
+    thesisData.supervisions.map((supervision) => ({
+      ...supervision,
+      thesisId: createdThesis.id,
+    })),
+    { transaction: t, validate: true, individualHooks: true }
+  )
+  await Author.bulkCreate(
+    thesisData.authors.map((author) => ({
+      ...author,
+      thesisId: createdThesis.id,
+    })),
+    { transaction: t, validate: true, individualHooks: true }
+  )
+  return createdThesis
+}
 
-  return newThesis
+interface CreateThesisAndSupervisionsProps {
+  researchPlanFile: Express.Multer.File
+  waysOfWorkingFile: Express.Multer.File
+  thesisId: string
+  t: Transaction
+}
+const createThesisAttachments = async ({
+  thesisId,
+  researchPlanFile,
+  waysOfWorkingFile,
+  t,
+}: CreateThesisAndSupervisionsProps) => {
+  // save research plan and ways of working attachments
+  await Attachment.create(
+    {
+      thesisId,
+      fileName: researchPlanFile.filename,
+      originalName: researchPlanFile.originalname,
+      mimeType: researchPlanFile.mimetype,
+      label: 'researchPlan',
+    },
+    { transaction: t }
+  )
+  await Attachment.create(
+    {
+      thesisId,
+      fileName: waysOfWorkingFile.filename,
+      originalName: waysOfWorkingFile.originalname,
+      mimeType: waysOfWorkingFile.mimetype,
+      label: 'waysOfWorking',
+    },
+    { transaction: t }
+  )
 }
 
 const updateThesis = async (id: string, thesisData: ThesisData) => {
@@ -83,6 +121,16 @@ thesisRouter.get('/', async (_, res) => {
         model: Author,
         as: 'authors',
       },
+      {
+        model: Attachment,
+        as: 'researchPlan',
+        attributes: ['fileName', ['original_name', 'name'], 'mimeType'],
+      },
+      {
+        model: Attachment,
+        as: 'waysOfWorking',
+        attributes: ['fileName', ['original_name', 'name'], 'mimeType'],
+      },
     ],
   })
   res.send(theses)
@@ -94,25 +142,49 @@ thesisRouter.get('/:id', async (req, res) => {
   res.send(thesis)
 })
 
-thesisRouter.post('/', async (req, res) => {
-  const thesisData = req.body
+thesisRouter.post(
+  '/',
+  attachment,
+  parseFormDataJson,
+  // @ts-expect-error the middleware updates the req object with the parsed JSON
+  validateThesisData,
+  async (req: RequestWithThesisData, res: Response) => {
+    const thesisData = req.body
 
-  validateThesisData(thesisData)
+    const createdThesis = await sequelize.transaction(async (t) => {
+      const newThesis = await createThesisAndSupervisions(thesisData, t)
 
-  const newThesis = await createThesisAndSupervisions(thesisData)
-  res.send(newThesis)
-})
+      const researchPlanFile = req.files.researchPlan[0]
+      const waysOfWorkingFile = req.files.waysOfWorking[0]
 
-thesisRouter.put('/:id', async (req, res) => {
-  const { id } = req.params
-  const thesisData = req.body
+      await createThesisAttachments({
+        researchPlanFile,
+        waysOfWorkingFile,
+        thesisId: newThesis.id,
+        t,
+      })
 
-  validateThesisData(thesisData)
+      return { ...newThesis.toJSON(), researchPlanFile, waysOfWorkingFile }
+    })
 
-  await updateThesis(id, thesisData)
-  const updatedThesis = await fetchThesisById(id)
-  res.send(updatedThesis)
-})
+    res.send(createdThesis)
+  }
+)
+
+thesisRouter.put(
+  '/:id',
+  attachment,
+  // @ts-expect-error the middleware updates the req object with the parsed JSON
+  validateThesisData,
+  async (req, res) => {
+    const { id } = req.params
+    const thesisData = req.body
+
+    await updateThesis(id, thesisData)
+    const updatedThesis = await fetchThesisById(id)
+    res.send(updatedThesis)
+  }
+)
 
 thesisRouter.delete('/:id', async (req, res) => {
   const { id } = req.params

@@ -1,7 +1,14 @@
-import { ThesisData } from '@backend/types'
+import { RequestWithThesisData } from '@backend/types'
+import { NextFunction } from 'express'
 
 // eslint-disable-next-line import/prefer-default-export
-export const validateThesisData = (thesisData: ThesisData) => {
+export const validateThesisData = (
+  req: RequestWithThesisData,
+  _: Express.Response,
+  next: NextFunction
+) => {
+  const thesisData = req.body
+
   if (!thesisData.topic) {
     throw new Error('Thesis title is required')
   }
@@ -22,4 +29,16 @@ export const validateThesisData = (thesisData: ThesisData) => {
   if (totalPercentage !== 100) {
     throw new Error('Supervision percentages must add up to 100')
   }
+
+  const researchPlanFile = req.files.researchPlan[0]
+  if (!researchPlanFile) {
+    throw new Error('Research plan is required')
+  }
+
+  const waysOfWorkingFile = req.files.waysOfWorking[0]
+  if (!waysOfWorkingFile) {
+    throw new Error('Ways of working is required')
+  }
+
+  next()
 }

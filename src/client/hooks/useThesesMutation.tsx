@@ -5,6 +5,17 @@ import queryClient from '../util/queryClient'
 
 export const useCreateThesisMutation = () => {
   const mutationFn = async (data: ThesisData) => {
+    if (data.researchPlan) {
+      const formData = new FormData()
+
+      formData.append('json', JSON.stringify(data))
+      formData.append('researchPlan', data.researchPlan)
+      formData.append('waysOfWorking', data.waysOfWorking)
+
+      await apiClient.post(`/theses`, formData)
+      return
+    }
+
     await apiClient.post(`/theses`, data)
   }
 

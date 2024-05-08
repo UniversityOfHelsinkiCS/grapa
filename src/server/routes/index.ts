@@ -21,6 +21,7 @@ router.use(SentryHandlers.tracingHandler())
 
 router.use(cors())
 router.use(express.json())
+router.use(express.urlencoded({ extended: true }))
 
 if (inDevelopment || inE2EMode) router.use(userMiddleware)
 

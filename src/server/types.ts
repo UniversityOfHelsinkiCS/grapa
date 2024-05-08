@@ -51,4 +51,14 @@ export interface ThesisData {
   targetDate?: string
   supervisions: SupervisionData[]
   authors: AuthorData[]
+  researchPlan?: File
+  waysOfWorking?: File
+}
+
+export interface RequestWithThesisData extends Request {
+  body: ThesisData
+  files: {
+    researchPlan: Express.Multer.File[]
+    waysOfWorking: Express.Multer.File[]
+  }
 }

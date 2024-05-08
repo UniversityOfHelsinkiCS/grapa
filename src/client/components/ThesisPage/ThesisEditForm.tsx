@@ -1,6 +1,10 @@
 import { ThesisData } from '@backend/types'
+import { styled } from '@mui/material/styles'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import UploadFileIcon from '@mui/icons-material/UploadFile'
 import {
   Button,
+  Chip,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -21,6 +25,18 @@ import { useTranslation } from 'react-i18next'
 import programs from '../mockPorgrams'
 import SupervisorSelect from './SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+})
 
 const ThesisEditForm: React.FC<{
   initialThesis: ThesisData
@@ -180,6 +196,70 @@ const ThesisEditForm: React.FC<{
               <MenuItem value="CANCELLED">Cancelled</MenuItem>
             </Select>
           </FormControl>
+          <Button
+            component="label"
+            variant="contained"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
+          >
+            Upload research plan
+            <VisuallyHiddenInput
+              required
+              onChange={(ev) =>
+                setEditedThesis((oldThesis) => ({
+                  ...oldThesis,
+                  researchPlan: ev.target.files[0],
+                }))
+              }
+              type="file"
+            />
+          </Button>
+          {editedThesis.researchPlan && (
+            <Chip
+              label={editedThesis.researchPlan.name}
+              icon={<UploadFileIcon />}
+              variant="outlined"
+              sx={{ maxWidth: 200 }}
+              onDelete={() =>
+                setEditedThesis((oldThesis) => ({
+                  ...oldThesis,
+                  researchPlan: undefined,
+                }))
+              }
+            />
+          )}
+          <Button
+            component="label"
+            variant="contained"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
+          >
+            Upload ways of working
+            <VisuallyHiddenInput
+              required
+              onChange={(ev) =>
+                setEditedThesis((oldThesis) => ({
+                  ...oldThesis,
+                  waysOfWorking: ev.target.files[0],
+                }))
+              }
+              type="file"
+            />
+          </Button>
+          {editedThesis.waysOfWorking && (
+            <Chip
+              label={editedThesis.waysOfWorking.name}
+              icon={<UploadFileIcon />}
+              variant="outlined"
+              sx={{ maxWidth: 200 }}
+              onDelete={() =>
+                setEditedThesis((oldThesis) => ({
+                  ...oldThesis,
+                  waysOfWorking: undefined,
+                }))
+              }
+            />
+          )}
           <LocalizationProvider adapterLocale="fiFI" dateAdapter={AdapterDayjs}>
             <DatePicker
               label={t('startDateHeader')}
