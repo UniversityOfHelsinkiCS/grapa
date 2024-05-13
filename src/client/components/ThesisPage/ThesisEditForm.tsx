@@ -12,6 +12,7 @@ import {
   DialogTitle,
   FormControl,
   InputLabel,
+  Link,
   MenuItem,
   Select,
   Stack,
@@ -204,7 +205,7 @@ const ThesisEditForm: React.FC<{
           >
             Upload research plan
             <VisuallyHiddenInput
-              required
+              value=""
               onChange={(ev) =>
                 setEditedThesis((oldThesis) => ({
                   ...oldThesis,
@@ -212,11 +213,22 @@ const ThesisEditForm: React.FC<{
                 }))
               }
               type="file"
+              accept=".pdf"
             />
           </Button>
           {editedThesis.researchPlan && (
             <Chip
-              label={editedThesis.researchPlan.name}
+              label={
+                'filename' in editedThesis.researchPlan ? (
+                  <Link
+                    href={`/api/attachments/${editedThesis.researchPlan.filename}`}
+                  >
+                    {editedThesis.researchPlan.name}
+                  </Link>
+                ) : (
+                  editedThesis.researchPlan.name
+                )
+              }
               icon={<UploadFileIcon />}
               variant="outlined"
               sx={{ maxWidth: 200 }}
@@ -236,7 +248,7 @@ const ThesisEditForm: React.FC<{
           >
             Upload ways of working
             <VisuallyHiddenInput
-              required
+              value=""
               onChange={(ev) =>
                 setEditedThesis((oldThesis) => ({
                   ...oldThesis,
@@ -244,11 +256,22 @@ const ThesisEditForm: React.FC<{
                 }))
               }
               type="file"
+              accept=".pdf"
             />
           </Button>
           {editedThesis.waysOfWorking && (
             <Chip
-              label={editedThesis.waysOfWorking.name}
+              label={
+                'filename' in editedThesis.waysOfWorking ? (
+                  <Link
+                    href={`/api/attachments/${editedThesis.waysOfWorking.filename}`}
+                  >
+                    {editedThesis.waysOfWorking.name}
+                  </Link>
+                ) : (
+                  editedThesis.waysOfWorking.name
+                )
+              }
               icon={<UploadFileIcon />}
               variant="outlined"
               sx={{ maxWidth: 200 }}

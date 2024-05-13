@@ -16,11 +16,11 @@ class Attachment extends Model<
 
   declare thesisId: string
 
-  declare fileName: string
+  declare filename: string
 
-  declare originalName: string
+  declare originalname: string
 
-  declare mimeType: string
+  declare mimetype: string
 
   declare label: string
 }
@@ -42,17 +42,20 @@ Attachment.init(
       },
       onDelete: 'CASCADE',
     },
-    fileName: {
+    filename: {
       type: DataTypes.STRING,
       allowNull: true,
+      field: 'file_name',
     },
-    originalName: {
+    originalname: {
       type: DataTypes.STRING,
       allowNull: true,
+      field: 'original_name',
     },
-    mimeType: {
+    mimetype: {
       type: DataTypes.STRING,
       allowNull: true,
+      field: 'mime_type',
     },
     label: {
       type: DataTypes.STRING,

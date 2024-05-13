@@ -1,14 +1,16 @@
 import express, { Response } from 'express'
 import type { Transaction } from 'sequelize'
+import fs from 'fs'
 
-import { RequestWithThesisData, ThesisData } from '../types'
+import { ServerPostRequest, ServerPutRequest, ThesisData } from '../types'
 import parseFormDataJson from '../middleware/parseFormDataJson'
-import attachment from '../middleware/attachment'
+import parseMutlipartFormData from '../middleware/attachment'
 import { Thesis, Supervision, Author, Attachment } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
 
 const thesisRouter = express.Router()
+const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
 
 const fetchThesisById = async (id: string) => {
   const thesis = await Thesis.findByPk(id, {
@@ -48,66 +50,102 @@ const createThesisAndSupervisions = async (
   return createdThesis
 }
 
-interface CreateThesisAndSupervisionsProps {
-  researchPlanFile: Express.Multer.File
-  waysOfWorkingFile: Express.Multer.File
-  thesisId: string
-  t: Transaction
-}
-const createThesisAttachments = async ({
-  thesisId,
-  researchPlanFile,
-  waysOfWorkingFile,
-  t,
-}: CreateThesisAndSupervisionsProps) => {
-  // save research plan and ways of working attachments
-  await Attachment.create(
-    {
-      thesisId,
-      fileName: researchPlanFile.filename,
-      originalName: researchPlanFile.originalname,
-      mimeType: researchPlanFile.mimetype,
-      label: 'researchPlan',
-    },
-    { transaction: t }
-  )
-  await Attachment.create(
-    {
-      thesisId,
-      fileName: waysOfWorkingFile.filename,
-      originalName: waysOfWorkingFile.originalname,
-      mimeType: waysOfWorkingFile.mimetype,
-      label: 'waysOfWorking',
-    },
-    { transaction: t }
-  )
+const handleAttachmentByLabel = async (
+  req: ServerPostRequest | ServerPutRequest,
+  thesisId: string,
+  label: 'researchPlan' | 'waysOfWorking',
+  transaction: Transaction
+) => {
+  const newFile = req.files[label] ? req.files[label][0] : null
+  const fileMetadataFromClient = req.body[label]
+
+  const existingAttachment = await Attachment.findOne({
+    where: { thesisId, label },
+    transaction,
+  })
+
+  if (!newFile && !fileMetadataFromClient) {
+    // delete reserachPlan from DB and the disk
+    await Attachment.destroy({
+      where: { thesisId, label },
+      transaction,
+    })
+
+    fs.unlinkSync(`${PATH_TO_FOLDER}${existingAttachment.filename}`)
+  } else if (newFile && existingAttachment) {
+    // update existing attachment
+    await Attachment.update(
+      {
+        filename: newFile.filename,
+        originalname: newFile.originalname,
+        mimetype: newFile.mimetype,
+      },
+      {
+        where: { thesisId, label },
+        transaction,
+      }
+    )
+    // delete existing files from disk
+    fs.unlinkSync(`${PATH_TO_FOLDER}${existingAttachment.filename}`)
+  } else if (newFile && !existingAttachment) {
+    // create new attachment
+    await Attachment.create(
+      {
+        thesisId,
+        filename: newFile.filename,
+        originalname: newFile.originalname,
+        mimetype: newFile.mimetype,
+        label,
+      },
+      { transaction }
+    )
+  }
+
+  // NOTE: Do nothing if no new file and but fileMetadataFromClient is present.
+  // This means that the file was not changed
 }
 
-const updateThesis = async (id: string, thesisData: ThesisData) => {
-  // update Thesis and its supervisions in a transaction
-  await sequelize.transaction(async (t) => {
-    await Thesis.update(thesisData, { where: { id }, transaction: t })
-    await Supervision.destroy({ where: { thesisId: id }, transaction: t })
-    await Supervision.bulkCreate(
-      thesisData.supervisions.map((supervision) => ({
-        ...supervision,
-        thesisId: id,
-      })),
-      { transaction: t, validate: true, individualHooks: true }
-    )
-    await Author.destroy({ where: { thesisId: id }, transaction: t })
-    await Author.bulkCreate(
-      thesisData.authors.map((author) => ({
-        ...author,
-        thesisId: id,
-      })),
-      { transaction: t, validate: true, individualHooks: true }
-    )
+const deleteThesisAttachments = async (thesisId: string, t: Transaction) => {
+  const existingAttachments = await Attachment.findAll({
+    where: { thesisId },
+  })
+
+  await Attachment.destroy({
+    where: { thesisId },
+    transaction: t,
+  })
+
+  existingAttachments.forEach((attachment) => {
+    fs.unlinkSync(`${PATH_TO_FOLDER}${attachment.filename}`)
   })
 }
 
-const deleteThesis = async (id: string) => {
-  await Thesis.destroy({ where: { id } })
+const updateThesis = async (
+  id: string,
+  thesisData: ThesisData,
+  transaction: Transaction
+) => {
+  await Thesis.update(thesisData, { where: { id }, transaction })
+  await Supervision.destroy({ where: { thesisId: id }, transaction })
+  await Supervision.bulkCreate(
+    thesisData.supervisions.map((supervision) => ({
+      ...supervision,
+      thesisId: id,
+    })),
+    { transaction, validate: true, individualHooks: true }
+  )
+  await Author.destroy({ where: { thesisId: id }, transaction })
+  await Author.bulkCreate(
+    thesisData.authors.map((author) => ({
+      ...author,
+      thesisId: id,
+    })),
+    { transaction, validate: true, individualHooks: true }
+  )
+}
+
+const deleteThesis = async (id: string, transaction: Transaction) => {
+  await Thesis.destroy({ where: { id }, transaction })
 }
 
 thesisRouter.get('/', async (_, res) => {
@@ -124,12 +162,12 @@ thesisRouter.get('/', async (_, res) => {
       {
         model: Attachment,
         as: 'researchPlan',
-        attributes: ['fileName', ['original_name', 'name'], 'mimeType'],
+        attributes: ['filename', ['original_name', 'name'], 'mimetype'],
       },
       {
         model: Attachment,
         as: 'waysOfWorking',
-        attributes: ['fileName', ['original_name', 'name'], 'mimeType'],
+        attributes: ['filename', ['original_name', 'name'], 'mimetype'],
       },
     ],
   })
@@ -144,27 +182,20 @@ thesisRouter.get('/:id', async (req, res) => {
 
 thesisRouter.post(
   '/',
-  attachment,
+  parseMutlipartFormData,
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisData,
-  async (req: RequestWithThesisData, res: Response) => {
+  async (req: ServerPostRequest, res: Response) => {
     const thesisData = req.body
 
     const createdThesis = await sequelize.transaction(async (t) => {
       const newThesis = await createThesisAndSupervisions(thesisData, t)
 
-      const researchPlanFile = req.files.researchPlan[0]
-      const waysOfWorkingFile = req.files.waysOfWorking[0]
+      await handleAttachmentByLabel(req, newThesis.id, 'researchPlan', t)
+      await handleAttachmentByLabel(req, newThesis.id, 'waysOfWorking', t)
 
-      await createThesisAttachments({
-        researchPlanFile,
-        waysOfWorkingFile,
-        thesisId: newThesis.id,
-        t,
-      })
-
-      return { ...newThesis.toJSON(), researchPlanFile, waysOfWorkingFile }
+      return newThesis.toJSON()
     })
 
     res.send(createdThesis)
@@ -173,14 +204,21 @@ thesisRouter.post(
 
 thesisRouter.put(
   '/:id',
-  attachment,
+  parseMutlipartFormData,
+  parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisData,
-  async (req, res) => {
+  async (req: ServerPutRequest, res) => {
     const { id } = req.params
     const thesisData = req.body
 
-    await updateThesis(id, thesisData)
+    await sequelize.transaction(async (t) => {
+      await updateThesis(id, thesisData, t)
+
+      await handleAttachmentByLabel(req, id, 'researchPlan', t)
+      await handleAttachmentByLabel(req, id, 'waysOfWorking', t)
+    })
+
     const updatedThesis = await fetchThesisById(id)
     res.send(updatedThesis)
   }
@@ -188,7 +226,12 @@ thesisRouter.put(
 
 thesisRouter.delete('/:id', async (req, res) => {
   const { id } = req.params
-  await deleteThesis(id)
+
+  await sequelize.transaction(async (t) => {
+    await deleteThesisAttachments(id, t)
+    await deleteThesis(id, t)
+  })
+
   res.send(`Deleted thesis with id ${id}`)
 })
 

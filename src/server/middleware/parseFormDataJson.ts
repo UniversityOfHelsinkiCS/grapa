@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express'
+import { NextFunction, Response } from 'express'
 
-const parseFormDataJson = (req: Request, _: Response, next: NextFunction) => {
+const parseFormDataJson = (req: any, _: Response, next: NextFunction) => {
   req.body = JSON.parse(req.body.json)
   next()
 }

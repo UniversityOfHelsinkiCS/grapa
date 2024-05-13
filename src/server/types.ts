@@ -42,6 +42,12 @@ export interface AuthorData {
   userId: string
 }
 
+export interface FileData {
+  filename: string
+  name: string
+  mimetype: string
+}
+
 export interface ThesisData {
   id?: string
   programId: string
@@ -51,14 +57,28 @@ export interface ThesisData {
   targetDate?: string
   supervisions: SupervisionData[]
   authors: AuthorData[]
-  researchPlan?: File
-  waysOfWorking?: File
+  researchPlan?: FileData | File
+  waysOfWorking?: FileData | File
 }
 
-export interface RequestWithThesisData extends Request {
-  body: ThesisData
+export interface ServerPostRequest extends Request {
+  body: ThesisData & {
+    researchPlan: Record<string, never>
+    waysOfWorking: Record<string, never>
+  }
   files: {
     researchPlan: Express.Multer.File[]
     waysOfWorking: Express.Multer.File[]
+  }
+}
+
+export interface ServerPutRequest extends Request {
+  body: ThesisData & {
+    researchPlan: FileData | Record<string, never>
+    waysOfWorking: FileData | Record<string, never>
+  }
+  files: {
+    researchPlan?: Express.Multer.File[]
+    waysOfWorking?: Express.Multer.File[]
   }
 }

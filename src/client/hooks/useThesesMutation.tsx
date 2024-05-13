@@ -5,18 +5,18 @@ import queryClient from '../util/queryClient'
 
 export const useCreateThesisMutation = () => {
   const mutationFn = async (data: ThesisData) => {
-    if (data.researchPlan) {
-      const formData = new FormData()
+    const formData = new FormData()
 
-      formData.append('json', JSON.stringify(data))
+    formData.append('json', JSON.stringify(data))
+
+    if (data.researchPlan instanceof Blob) {
       formData.append('researchPlan', data.researchPlan)
+    }
+    if (data.waysOfWorking instanceof Blob) {
       formData.append('waysOfWorking', data.waysOfWorking)
-
-      await apiClient.post(`/theses`, formData)
-      return
     }
 
-    await apiClient.post(`/theses`, data)
+    await apiClient.post(`/theses`, formData)
   }
 
   const mutation = useMutation({
@@ -38,7 +38,18 @@ export const useEditThesisMutation = () => {
     thesisId: string
     data: ThesisData
   }) => {
-    await apiClient.put(`/theses/${thesisId}`, data)
+    const formData = new FormData()
+
+    formData.append('json', JSON.stringify(data))
+
+    if (data.researchPlan instanceof Blob) {
+      formData.append('researchPlan', data.researchPlan)
+    }
+    if (data.waysOfWorking instanceof Blob) {
+      formData.append('waysOfWorking', data.waysOfWorking)
+    }
+
+    await apiClient.put(`/theses/${thesisId}`, formData)
   }
 
   const mutation = useMutation({
