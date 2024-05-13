@@ -2,7 +2,9 @@ import { ThesisData } from '@backend/types'
 import { styled } from '@mui/material/styles'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
+import ErrorIcon from '@mui/icons-material/Error'
 import {
+  Alert,
   Button,
   Chip,
   CircularProgress,
@@ -75,6 +77,25 @@ const ThesisEditForm: React.FC<{
   // supervisors cannot be authors
   const potentialSupervisors = users.filter(
     (user) => !authorIds.includes(user.id)
+  )
+
+  const getTotalPercentage = () =>
+    editedThesis.supervisions.reduce(
+      (total, selection) => total + selection.percentage,
+      0
+    )
+  const totalPercentage = getTotalPercentage()
+  const canSubmit = Boolean(
+    editedThesis?.topic &&
+      editedThesis?.programId &&
+      editedThesis?.authors.length &&
+      editedThesis?.supervisions.length &&
+      totalPercentage === 100 &&
+      editedThesis?.status &&
+      editedThesis?.startDate &&
+      editedThesis?.targetDate &&
+      editedThesis?.researchPlan &&
+      editedThesis?.waysOfWorking
   )
 
   return (
@@ -162,17 +183,6 @@ const ThesisEditForm: React.FC<{
               ))}
             </Select>
           </FormControl>
-
-          <SupervisorSelect
-            supervisorSelections={editedThesis.supervisions}
-            setSupervisorSelections={(newSupervisions) =>
-              setEditedThesis((oldThesis) => ({
-                ...oldThesis,
-                supervisions: newSupervisions,
-              }))
-            }
-            supervisors={potentialSupervisors}
-          />
 
           <FormControl fullWidth>
             <InputLabel id="status-select-label">
@@ -309,11 +319,41 @@ const ThesisEditForm: React.FC<{
               }}
             />
           </LocalizationProvider>
+
+          <SupervisorSelect
+            supervisorSelections={editedThesis.supervisions}
+            setSupervisorSelections={(newSupervisions) =>
+              setEditedThesis((oldThesis) => ({
+                ...oldThesis,
+                supervisions: newSupervisions,
+              }))
+            }
+            supervisors={potentialSupervisors}
+          />
+        </Stack>
+        <Stack spacing={1}>
+          {totalPercentage !== 100 && (
+            <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
+              {t('thesisForm:supervisionPercentageError')}
+            </Alert>
+          )}
+          {!editedThesis.researchPlan && (
+            <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
+              Make sure you upload a research plan PDF
+            </Alert>
+          )}
+          {!editedThesis.waysOfWorking && (
+            <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
+              Make sure you upload a ways of working PDF
+            </Alert>
+          )}
         </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>{t('cancelButton')}</Button>
-        <Button type="submit">{t('submitButton')}</Button>
+        <Button disabled={!canSubmit} type="submit">
+          {t('submitButton')}
+        </Button>
       </DialogActions>
     </Dialog>
   )

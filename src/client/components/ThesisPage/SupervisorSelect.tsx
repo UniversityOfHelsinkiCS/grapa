@@ -1,7 +1,5 @@
 import React from 'react'
-import ErrorIcon from '@mui/icons-material/Error'
 import {
-  Alert,
   Button,
   FormControl,
   InputLabel,
@@ -10,7 +8,6 @@ import {
   Stack,
   TextField,
 } from '@mui/material'
-import { useTranslation } from 'react-i18next'
 import { SupervisionData, User } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 
@@ -19,8 +16,6 @@ const SupervisorSelect: React.FC<{
   supervisorSelections: SupervisorSelection[]
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
 }> = ({ supervisors, supervisorSelections, setSupervisorSelections }) => {
-  const { t } = useTranslation()
-
   const handleSupervisorChange = (index: number, supervisorId: string) => {
     const updatedSelections = [...supervisorSelections]
     updatedSelections[index].userId = supervisorId
@@ -46,12 +41,6 @@ const SupervisorSelect: React.FC<{
     setSupervisorSelections(updatedSelections)
   }
 
-  const getTotalPercentage = () =>
-    supervisorSelections.reduce(
-      (total, selection) => total + selection.percentage,
-      0
-    )
-  const totalPercentage = getTotalPercentage()
   const selectedSupervisorIds = supervisorSelections.map(
     (selection) => selection.userId
   )
@@ -106,11 +95,6 @@ const SupervisorSelect: React.FC<{
           </Stack>
         )
       })}
-      {totalPercentage !== 100 && (
-        <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
-          {t('thesisForm:supervisionPercentageError')}
-        </Alert>
-      )}
       <Button
         disabled={supervisorSelections.length === supervisors.length}
         onClick={handleAddSupervisor}
