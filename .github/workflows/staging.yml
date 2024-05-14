@@ -18,7 +18,7 @@ jobs:
           node-version: '20.x'
           cache: 'npm'
       
-      - run: npm install
+      # - run: npm install
 
       - name: Build image
         id: build-image
@@ -33,6 +33,7 @@ jobs:
             GIT_SHA=${{ github.sha }}
             STAGING=true
             E2E=false
+          extra-args: --ulimit nofile=4096:4096
 
       - run: npm test
       - run: npm test:front
