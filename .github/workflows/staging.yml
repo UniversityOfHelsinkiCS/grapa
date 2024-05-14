@@ -32,9 +32,11 @@ jobs:
             BASE_PATH=/grapa
             GIT_SHA=${{ github.sha }}
             STAGING=true
-            E2E=true
+            E2E=false
 
       - run: npm test
+      - run: npm test:front
+      - run: npm test:integration
 
       - name: Push to quay.io
         uses: redhat-actions/push-to-registry@v2
