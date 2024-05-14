@@ -28,7 +28,8 @@
   "include": [
     "src/**/*",
     "types/@unfuck-utf8-headers-middleware.d..ts",
-    "setupIntegrationTests.ts"
+    "setupIntegrationTests.ts",
+    "setupTests.ts"
   ],
   "references": [{ "path": "./tsconfig.node.json" }],
   "ts-node": {
