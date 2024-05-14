@@ -32,6 +32,7 @@ jobs:
             BASE_PATH=/grapa
             GIT_SHA=${{ github.sha }}
             STAGING=true
+            E2E=true
 
       - run: npm test
 
