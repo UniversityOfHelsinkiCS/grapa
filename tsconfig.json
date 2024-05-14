@@ -25,7 +25,11 @@
       "@frontend/*": ["src/client/*"]
     }
   },
-  "include": ["src/**/*", "types/@unfuck-utf8-headers-middleware.d..ts"],
+  "include": [
+    "src/**/*",
+    "types/@unfuck-utf8-headers-middleware.d..ts",
+    "setupIntegrationTests.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }],
   "ts-node": {
     "esm": true,

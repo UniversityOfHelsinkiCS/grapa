@@ -53,3 +53,5 @@ app.listen(PORT, async () => {
 
   logger.info(`Server running on port ${PORT}`)
 })
+
+export default app

@@ -10,8 +10,8 @@
     "start:dev": "NODE_ENV=development concurrently \"nodemon --exec node --no-warnings --experimental-specifier-resolution=node --loader ts-node/esm src/server/index.ts\" \"vite\"",
     "start:dev:front": "vite",
     "start:dev:server": "NODE_ENV=development ts-node-dev src/server/index.ts",
-    "test:integration": "concurrently \"docker run -e PGDATA=/test-data -e POSTGRES_PASSWORD=postgres -p 5433:5432 postgres:15.6\" \"NODE_ENV=test DATABASE_URL=postgres://postgres:postgres@db:5433/postgres jest\" --hide 0 --prefix none",
-    "test:integration:watch": "concurrently \"docker run -e PGDATA=/test-data -e POSTGRES_PASSWORD=postgres -p 5433:5432 postgres:15.6\" \"NODE_ENV=test DATABASE_URL=postgres://postgres:postgres@db:5433/postgres jest --watch\" --hide 0 --prefix none",
+    "test:integration": "concurrently \"docker run -e PGDATA=/test-data -e POSTGRES_PASSWORD=postgres -p 5433:5432 postgres:15.6\" \"NODE_ENV=test PORT=8001 DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres node --experimental-vm-modules node_modules/jest/bin/jest.js --setupFilesAfterEnv ./setupIntegrationTests.ts\" --hide 0 --prefix none",
+    "test:integration:watch": "concurrently \"docker run -e PGDATA=/test-data -e POSTGRES_PASSWORD=postgres -p 5433:5432 postgres:15.6\" \"NODE_ENV=test PORT=8001 DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres node --experimental-vm-modules node_modules/jest/bin/jest.js --watch --setupFilesAfterEnv ./setupIntegrationTests.ts\" --hide 0 --prefix none",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "format": "prettier --write '*.{ts,tsx,json,css,md}'",
     "build": "DISABLE_ESLINT_PLUGIN=true vite build",
@@ -20,6 +20,9 @@
   "jest": {
     "testMatch": [
       "**/*.integration-test.ts"
+    ],
+    "extensionsToTreatAsEsm": [
+      ".ts"
     ]
   },
   "dependencies": {
@@ -78,6 +81,7 @@
     "@types/prettier": "^3.0.0",
     "@types/react-dom": "^18.2.25",
     "@types/react-router-dom": "^5.3.3",
+    "@types/supertest": "^6.0.2",
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^7.7.0",
     "@typescript-eslint/parser": "^7.7.0",
@@ -95,6 +99,7 @@
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
     "sequelize-cli": "^6.6.2",
+    "supertest": "^7.0.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5",
@@ -102,7 +107,12 @@
   },
   "babel": {
     "presets": [
-      "@babel/preset-typescript",
+      [
+        "@babel/preset-typescript",
+        {
+          "allowDeclareFields": true
+        }
+      ],
       "@babel/preset-react"
     ]
   },
@@ -136,7 +146,17 @@
       "import/no-cycle": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "react/react-in-jsx-scope": "off",
-      "react/prop-types": "off"
+      "react/prop-types": "off",
+      "import/no-extraneous-dependencies": [
+        "error",
+        {
+          "devDependencies": [
+            "**/*.integration-test.ts",
+            "**/*.test.ts",
+            "**/*.test.tsx"
+          ]
+        }
+      ]
     },
     "overrides": [
       {

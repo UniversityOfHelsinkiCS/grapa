@@ -10,6 +10,7 @@ const DB_CONNECTION_RETRY_LIMIT = 10
 const require = Module.createRequire(import.meta.url)
 
 export const sequelize = new Sequelize(DATABASE_URL, { logging: false })
+console.log(DATABASE_URL)
 
 const umzug = new Umzug({
   migrations: {
@@ -32,12 +33,16 @@ const umzug = new Umzug({
 
 export type Migration = typeof umzug._types.migration
 
-const runMigrations = async () => {
+export const runMigrations = async () => {
   const migrations = await umzug.up()
 
   logger.info('Migrations up to date', {
     migrations,
   })
+}
+
+export const resetDatabase = async () => {
+  await sequelize.drop({})
 }
 
 const testConnection = async () => {
