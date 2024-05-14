@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-import { PUBLIC_URL } from '../../config'
+import { BASE_PATH } from '../../config'
 
-const baseURL = `${PUBLIC_URL}/api`
+const baseURL = `${BASE_PATH}/api`
 
 const apiClient = axios.create({ baseURL })
 

@@ -1,7 +1,7 @@
 import express from 'express'
 import passport from 'passport'
 
-import { PUBLIC_URL } from '../../config'
+import { BASE_PATH } from '../../config'
 
 const loginRouter = express.Router()
 
@@ -9,9 +9,9 @@ loginRouter.get('/', passport.authenticate('oidc'))
 
 loginRouter.get(
   '/callback',
-  passport.authenticate('oidc', { failureRedirect: PUBLIC_URL || '/' }),
+  passport.authenticate('oidc', { failureRedirect: BASE_PATH || '/' }),
   (_, res) => {
-    res.redirect(PUBLIC_URL || '/')
+    res.redirect(BASE_PATH || '/')
   }
 )
 

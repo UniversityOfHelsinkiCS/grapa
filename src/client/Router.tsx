@@ -5,7 +5,7 @@ import ThesesPage from './components/ThesisPage/ThesesPage'
 import RootBoundary from './components/Errors/RootBoundary'
 import NotFound from './components/Errors/NotFound'
 
-import { PUBLIC_URL } from '../config'
+import { BASE_PATH } from '../config'
 
 const router = createBrowserRouter(
   [
@@ -27,7 +27,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: PUBLIC_URL,
+    basename: BASE_PATH,
   }
 )
 

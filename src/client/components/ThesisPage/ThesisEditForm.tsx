@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next'
 import programs from '../mockPorgrams'
 import SupervisorSelect from './SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
+import { BASE_PATH } from '../../../config'
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -231,7 +232,7 @@ const ThesisEditForm: React.FC<{
               label={
                 'filename' in editedThesis.researchPlan ? (
                   <Link
-                    href={`/api/attachments/${editedThesis.researchPlan.filename}`}
+                    href={`${BASE_PATH}/api/attachments/${editedThesis.researchPlan.filename}`}
                   >
                     {editedThesis.researchPlan.name}
                   </Link>
@@ -274,7 +275,7 @@ const ThesisEditForm: React.FC<{
               label={
                 'filename' in editedThesis.waysOfWorking ? (
                   <Link
-                    href={`/api/attachments/${editedThesis.waysOfWorking.filename}`}
+                    href={`${BASE_PATH}/api/attachments/${editedThesis.waysOfWorking.filename}`}
                   >
                     {editedThesis.waysOfWorking.name}
                   </Link>
