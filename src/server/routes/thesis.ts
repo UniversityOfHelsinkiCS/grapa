@@ -163,11 +163,13 @@ thesisRouter.get('/', async (_, res) => {
         model: Attachment,
         as: 'researchPlan',
         attributes: ['filename', ['original_name', 'name'], 'mimetype'],
+        where: { label: 'researchPlan' },
       },
       {
         model: Attachment,
         as: 'waysOfWorking',
         attributes: ['filename', ['original_name', 'name'], 'mimetype'],
+        where: { label: 'waysOfWorking' },
       },
     ],
   })
