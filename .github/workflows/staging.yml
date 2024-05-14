@@ -33,11 +33,13 @@ jobs:
             GIT_SHA=${{ github.sha }}
             STAGING=true
             E2E=false
+          # ulimit 4096 is required for the buildah to work
+          # otherwise throws error "Too many open files"
           extra-args: --ulimit nofile=4096:4096
 
       - run: npm test
-      - run: npm test:front
-      - run: npm test:integration
+      - run: npm run test:front
+      - run: npm run test:integration
 
       - name: Push to quay.io
         uses: redhat-actions/push-to-registry@v2
