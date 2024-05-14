@@ -5,8 +5,8 @@ global.jest = jest
 
 global.beforeEach(async () => {
   // retry to connect to the DB in case the test runner starts before the DB is ready
-  await db.connectToDatabase(2)
-}, 10000)
+  await db.connectToDatabase(3)
+}, 20000)
 
 global.afterEach(async () => {
   await db.resetDatabase()
