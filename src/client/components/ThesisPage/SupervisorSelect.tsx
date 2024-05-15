@@ -31,7 +31,7 @@ const SupervisorSelect: React.FC<{
   const handleAddSupervisor = () => {
     setSupervisorSelections([
       ...supervisorSelections,
-      { userId: '', percentage: 0 },
+      { userId: '', percentage: 100 },
     ])
   }
 
