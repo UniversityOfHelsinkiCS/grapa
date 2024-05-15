@@ -200,7 +200,7 @@ thesisRouter.post(
       return newThesis.toJSON()
     })
 
-    res.send(createdThesis)
+    res.status(201).send(createdThesis)
   }
 )
 
@@ -234,7 +234,7 @@ thesisRouter.delete('/:id', async (req, res) => {
     await deleteThesis(id, t)
   })
 
-  res.send(`Deleted thesis with id ${id}`)
+  res.status(204).send(`Deleted thesis with id ${id}`)
 })
 
 export default thesisRouter

@@ -3,6 +3,7 @@ import {
   InferAttributes,
   InferCreationAttributes,
   DataTypes,
+  UUIDV4,
 } from 'sequelize'
 
 import { sequelize } from '../connection'
@@ -28,6 +29,7 @@ User.init(
     id: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: UUIDV4,
       primaryKey: true,
     },
     username: {
