@@ -164,64 +164,174 @@ describe('thesis router', () => {
           )
           .field('json', JSON.stringify(newThesis))
         expect(response.status).toEqual(201)
-        
+
         delete newThesis.supervisions
         delete newThesis.authors
         expect(response.body).toMatchObject(newThesis)
-        
+
         const thesis = await Thesis.findByPk(response.body.id)
         expect(thesis).not.toBeNull()
       })
     })
 
     describe('PUT /api/theses/:id', () => {
-      it('should return 200 and update the thesis', async () => {
-        const updatedThesis = {
-          programId: 'Updated program',
-          topic: 'Updated topic',
-          status: 'PLANNING',
-          startDate: '1970-01-01T00:00:00.000Z',
-          targetDate: '2070-01-01T00:00:00.000Z',
-          supervisions: [
-            {
-              userId: user1.id,
-              percentage: 100,
-            },
-          ],
-          authors: [
-            {
-              userId: user2.id,
-            },
-          ],
-        }
-        const response = await request
-          .put(`/api/theses/${thesis1.id}`)
-          .attach(
-            'waysOfWorking',
-            path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
+      describe('when both attachments are updated', () => {
+        it('should return 200 and update the thesis', async () => {
+          const updatedThesis = {
+            programId: 'Updated program',
+            topic: 'Updated topic',
+            status: 'PLANNING',
+            startDate: '1970-01-01T00:00:00.000Z',
+            targetDate: '2070-01-01T00:00:00.000Z',
+            supervisions: [
+              {
+                userId: user1.id,
+                percentage: 100,
+              },
+            ],
+            authors: [
+              {
+                userId: user2.id,
+              },
+            ],
+          }
+          const response = await request
+            .put(`/api/theses/${thesis1.id}`)
+            .attach(
+              'waysOfWorking',
+              path.resolve(
+                dirname(fileURLToPath(import.meta.url)),
+                './index.ts'
+              )
+            )
+            .attach(
+              'researchPlan',
+              path.resolve(
+                dirname(fileURLToPath(import.meta.url)),
+                './index.ts'
+              )
+            )
+            .field('json', JSON.stringify(updatedThesis))
+
+          expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
+          expect(fs.unlinkSync).toHaveBeenCalledWith(
+            '/opt/app-root/src/uploads/testfile.pdf1'
           )
-          .attach(
-            'researchPlan',
-            path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
+          expect(fs.unlinkSync).toHaveBeenCalledWith(
+            '/opt/app-root/src/uploads/testfile.pdf2'
           )
-          .field('json', JSON.stringify(updatedThesis))
 
-        expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
-        expect(fs.unlinkSync).toHaveBeenCalledWith(
-          '/opt/app-root/src/uploads/testfile.pdf1'
-        )
-        expect(fs.unlinkSync).toHaveBeenCalledWith(
-          '/opt/app-root/src/uploads/testfile.pdf2'
-        )
+          expect(response.status).toEqual(200)
+          delete updatedThesis.supervisions
+          delete updatedThesis.authors
+          expect(response.body).toMatchObject(updatedThesis)
 
-        expect(response.status).toEqual(200)
-        delete updatedThesis.supervisions
-        delete updatedThesis.authors
-        expect(response.body).toMatchObject(updatedThesis)
+          const thesis = await Thesis.findByPk(thesis1.id)
+          expect(thesis.programId).toEqual('Updated program')
+          expect(thesis.topic).toEqual('Updated topic')
+        })
+      })
 
-        const thesis = await Thesis.findByPk(thesis1.id)
-        expect(thesis.programId).toEqual('Updated program')
-        expect(thesis.topic).toEqual('Updated topic')
+      describe('when one attachment is updated and another stays the same', () => {
+        it('should return 200 and update the thesis', async () => {
+          const updatedThesis = {
+            programId: 'Updated program',
+            topic: 'Updated topic',
+            status: 'PLANNING',
+            startDate: '1970-01-01T00:00:00.000Z',
+            targetDate: '2070-01-01T00:00:00.000Z',
+            supervisions: [
+              {
+                userId: user1.id,
+                percentage: 100,
+              },
+            ],
+            authors: [
+              {
+                userId: user2.id,
+              },
+            ],
+            waysOfWorking: {
+              filename: 'testfile.pdf2',
+              name: 'testfile.pdf2',
+              mimetype: 'application/pdf2',
+            },
+          }
+          const response = await request
+            .put(`/api/theses/${thesis1.id}`)
+            .attach(
+              'researchPlan',
+              path.resolve(
+                dirname(fileURLToPath(import.meta.url)),
+                './index.ts'
+              )
+            )
+            .field('json', JSON.stringify(updatedThesis))
+
+          expect(fs.unlinkSync).toHaveBeenCalledTimes(1)
+          expect(fs.unlinkSync).toHaveBeenCalledWith(
+            '/opt/app-root/src/uploads/testfile.pdf1'
+          )
+
+          expect(response.status).toEqual(200)
+          delete updatedThesis.supervisions
+          delete updatedThesis.authors
+          delete updatedThesis.waysOfWorking
+          expect(response.body).toMatchObject(updatedThesis)
+
+          const thesis = await Thesis.findByPk(thesis1.id)
+          expect(thesis.programId).toEqual('Updated program')
+          expect(thesis.topic).toEqual('Updated topic')
+        })
+      });
+
+      describe('when neither of the attachments are updated', () => {
+        it('should return 200 and update the thesis', async () => {
+          const updatedThesis = {
+            programId: 'Updated program',
+            topic: 'Updated topic',
+            status: 'PLANNING',
+            startDate: '1970-01-01T00:00:00.000Z',
+            targetDate: '2070-01-01T00:00:00.000Z',
+            supervisions: [
+              {
+                userId: user1.id,
+                percentage: 100,
+              },
+            ],
+            authors: [
+              {
+                userId: user2.id,
+              },
+            ],
+            waysOfWorking: {
+              filename: 'testfile.pdf2',
+              name: 'testfile.pdf2',
+              mimetype: 'application/pdf2',
+            },
+            researchPlan: {
+              filename: 'testfile.pdf1',
+              name: 'testfile.pdf1',
+              mimetype: 'application/pdf1',
+            },
+          }
+          const response = await request
+            .put(`/api/theses/${thesis1.id}`)
+            .field('json', JSON.stringify(updatedThesis))
+
+          expect(fs.unlinkSync).toHaveBeenCalledTimes(0)
+
+          expect(response.status).toEqual(200)
+          delete updatedThesis.supervisions
+          delete updatedThesis.authors
+          delete updatedThesis.waysOfWorking
+          delete updatedThesis.researchPlan
+          expect(response.body).toMatchObject(updatedThesis)
+
+          const thesis = await Thesis.findByPk(thesis1.id)
+          expect(thesis.programId).toEqual('Updated program')
+          expect(thesis.topic).toEqual('Updated topic')
+        })
       })
     })
   })
