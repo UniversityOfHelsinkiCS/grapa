@@ -44,5 +44,13 @@ export const validateThesisData = (
     throw new Error('Ways of working is required')
   }
 
+  if (!thesisData.startDate) {
+    throw new Error('Start date is required')
+  }
+
+  if (!thesisData.targetDate) {
+    throw new Error('Target date is required')
+  }
+
   next()
 }
