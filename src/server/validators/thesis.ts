@@ -52,5 +52,13 @@ export const validateThesisData = (
     throw new Error('Target date is required')
   }
 
+  if (thesisData.startDate > thesisData.targetDate) {
+    throw new Error('Start date must be before target date')
+  }
+
+  if (!thesisData.programId) {
+    throw new Error('Program is required')
+  }
+
   next()
 }

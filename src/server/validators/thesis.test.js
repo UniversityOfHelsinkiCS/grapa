@@ -9,6 +9,7 @@ describe('validateThesisData', () => {
     req = {
       body: {
         topic: 'Test thesis',
+        programId: 'test-program',
         supervisions: [{ percentage: 100 }],
         authors: [{}],
         researchPlan: {},
@@ -162,6 +163,31 @@ describe('validateThesisData', () => {
 
     expect(() => validateThesisData(req, res, next)).toThrow(
       'Target date is required'
+    )
+    expect(next).toHaveBeenCalledTimes(0)
+  })
+
+  it('should return an error if targetDate is before startDate', () => {
+    req.body = {
+      ...req.body,
+      startDate: '2021-12-31',
+      targetDate: '2021-01-01',
+    }
+
+    expect(() => validateThesisData(req, res, next)).toThrow(
+      'Start date must be before target date'
+    )
+    expect(next).toHaveBeenCalledTimes(0)
+  })
+
+  it('should return an error if programId is missing', () => {
+    req.body = {
+      ...req.body,
+      programId: undefined
+    }
+
+    expect(() => validateThesisData(req, res, next)).toThrow(
+      'Program is required'
     )
     expect(next).toHaveBeenCalledTimes(0)
   })
