@@ -10,12 +10,15 @@ import {
 } from '@mui/material'
 import { SupervisionData, User } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
+import { useTranslation } from 'react-i18next'
 
 const SupervisorSelect: React.FC<{
   supervisors: User[]
   supervisorSelections: SupervisorSelection[]
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
 }> = ({ supervisors, supervisorSelections, setSupervisorSelections }) => {
+  const { t } = useTranslation()
+
   const handleSupervisorChange = (index: number, supervisorId: string) => {
     const updatedSelections = [...supervisorSelections]
     updatedSelections[index].userId = supervisorId
@@ -59,14 +62,14 @@ const SupervisorSelect: React.FC<{
           // eslint-disable-next-line react/no-array-index-key
           <Stack key={index} spacing={1} direction="row">
             <FormControl fullWidth>
-              <InputLabel id={`supervisor-select-label-${index}`}>
-                Select supervisor
+              <InputLabel id={`supervisor-${index}-select-label`}>
+                {t('thesisForm:selectSupervisor')}
               </InputLabel>
               <Select
                 required
                 value={selection.userId}
                 label="Select supervisor"
-                name={`supervisorId-${index}`}
+                name={`supervisor-${index}`}
                 onChange={(event) =>
                   handleSupervisorChange(index, event.target.value as string)
                 }
@@ -83,14 +86,14 @@ const SupervisorSelect: React.FC<{
               type="number"
               sx={{ width: 125 }}
               inputProps={{ min: 1, max: 100 }}
-              label="Percentage"
+              label={t('thesisForm:selectSupervisorPercentage')}
               value={selection.percentage}
               onChange={(event) =>
                 handlePercentageChange(index, parseInt(event.target.value, 10))
               }
             />
             <Button onClick={() => handleRemoveSupervisor(index)}>
-              Remove
+              {t('removeButton')}
             </Button>
           </Stack>
         )
@@ -99,7 +102,7 @@ const SupervisorSelect: React.FC<{
         disabled={supervisorSelections.length === supervisors.length}
         onClick={handleAddSupervisor}
       >
-        Add Supervisor
+        {t('thesisForm:addSupervisor')}
       </Button>
     </Stack>
   )

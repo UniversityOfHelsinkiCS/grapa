@@ -5,6 +5,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 
 import SupervisorSelect from './SupervisorSelect'
+import initializeI18n from '../../util/il18n'
 
 describe('SupervisorSelect', () => {
   const supervisors = [
@@ -16,6 +17,8 @@ describe('SupervisorSelect', () => {
 
   beforeEach(() => {
     setSupervisorSelections = jest.fn()
+
+    initializeI18n()
   })
 
   it('renders the SupervisorSelect component', () => {
@@ -27,7 +30,7 @@ describe('SupervisorSelect', () => {
       />
     )
 
-    expect(screen.getByText('Add Supervisor')).toBeInTheDocument()
+    expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
   })
 
   it('renders the SupervisorSelect component with a supervisor', () => {
@@ -40,8 +43,11 @@ describe('SupervisorSelect', () => {
         setSupervisorSelections={setSupervisorSelections}
       />
     )
+
+    expect(screen.getByText('Valitse ohjaaja')).toBeInTheDocument()
+    expect(screen.getByText('Osuus')).toBeInTheDocument()
     expect(screen.getByText('John Doe')).toBeInTheDocument()
-    expect(screen.getByText('Add Supervisor')).toBeInTheDocument()
+    expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
   })
 
   it('renders the SupervisorSelect component with multiple supervisors', () => {
@@ -57,7 +63,7 @@ describe('SupervisorSelect', () => {
     )
     expect(screen.getByText('John Doe')).toBeInTheDocument()
     expect(screen.getByText('Jane Smith')).toBeInTheDocument()
-    expect(screen.getByText('Add Supervisor')).toBeInTheDocument()
+    expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
   })
 
   describe('interactions', () => {
@@ -70,7 +76,7 @@ describe('SupervisorSelect', () => {
         />
       )
 
-      const select = screen.getByText('Add Supervisor')
+      const select = screen.getByText('Lisää ohjaaja')
       select.click()
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
@@ -90,7 +96,7 @@ describe('SupervisorSelect', () => {
         />
       )
 
-      const removeButton = screen.getByText('Remove')
+      const removeButton = screen.getByText('Poista')
       removeButton.click()
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)

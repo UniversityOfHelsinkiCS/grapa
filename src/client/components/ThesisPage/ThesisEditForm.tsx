@@ -24,6 +24,7 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 import { useState } from 'react'
+import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import programs from '../mockPorgrams'
 import SupervisorSelect from './SupervisorSelect'
@@ -61,7 +62,7 @@ const ThesisEditForm: React.FC<{
   if (!users) {
     return (
       <Dialog fullWidth maxWidth="lg" open onClose={onClose}>
-        <DialogTitle>{t('editThesisDialog')}</DialogTitle>
+        <DialogTitle>{t('thesisForm:editThesisDialog')}</DialogTitle>
         <DialogContent>
           <Stack spacing={6} alignItems="center" height={300}>
             <CircularProgress />
@@ -86,6 +87,7 @@ const ThesisEditForm: React.FC<{
       0
     )
   const totalPercentage = getTotalPercentage()
+
   const canSubmit = Boolean(
     editedThesis?.topic &&
       editedThesis?.programId &&
@@ -114,7 +116,7 @@ const ThesisEditForm: React.FC<{
         },
       }}
     >
-      <DialogTitle>{t('editThesisDialog')}</DialogTitle>
+      <DialogTitle>{t('thesisForm:editThesisDialog')}</DialogTitle>
       <DialogContent>
         <Stack spacing={6}>
           <TextField
@@ -158,9 +160,7 @@ const ThesisEditForm: React.FC<{
             </Select>
           </FormControl>
           <FormControl fullWidth>
-            <InputLabel id="author-select-label">
-              {t('thesisForm:author')}
-            </InputLabel>
+            <InputLabel id="author-select-label">{t('author')}</InputLabel>
             <Select
               required
               value={
@@ -214,7 +214,7 @@ const ThesisEditForm: React.FC<{
             tabIndex={-1}
             startIcon={<CloudUploadIcon />}
           >
-            Upload research plan
+            {t('thesisForm:uploadResearchPlanButton')}
             <VisuallyHiddenInput
               value=""
               onChange={(ev) =>
@@ -257,7 +257,7 @@ const ThesisEditForm: React.FC<{
             tabIndex={-1}
             startIcon={<CloudUploadIcon />}
           >
-            Upload ways of working
+            {t('thesisForm:uploadWaysOfWorkingButton')}
             <VisuallyHiddenInput
               value=""
               onChange={(ev) =>
@@ -340,12 +340,12 @@ const ThesisEditForm: React.FC<{
           )}
           {!editedThesis.researchPlan && (
             <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
-              Make sure you upload a research plan PDF
+              {t('thesisForm:researchPlanMissingError')}
             </Alert>
           )}
           {!editedThesis.waysOfWorking && (
             <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
-              Make sure you upload a ways of working PDF
+              {t('thesisForm:waysOfWorkingMissingError')}
             </Alert>
           )}
         </Stack>

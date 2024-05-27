@@ -1,6 +1,7 @@
 {
   "common": {
     "appName": "Master theses progress tracking",
+    "author": "Author",
     "profileButton": "Profile",
     "programHeader": "Program",
     "topicHeader": "Topic",
@@ -11,11 +12,18 @@
     "deleteButton": "Delete",
     "cancelButton": "Cancel",
     "submitButton": "Submit",
-    "editThesisDialog": "Edit thesis",
-    "newThesisButton": "New thesis"
+    "newThesisButton": "New thesis",
+    "removeButton": "Remove"
   },
   "thesisForm": {
     "supervisionPercentageError": "Make sure the total percentages of supervisors add up to 100",
-    "author": "Author"
+    "researchPlanMissingError": "Make sure you upload a research plan PDF",
+    "waysOfWorkingMissingError": "Make sure you upload a ways of working PDF",
+    "addSupervisor": "Add supervisor",
+    "editThesisDialog": "Edit thesis",
+    "uploadWaysOfWorkingButton": "Upload ways of working",
+    "uploadResearchPlanButton": "Upload research plan",
+    "selectSupervisor": "Select supervisor",
+    "selectSupervisorPercentage": "Percentage"
   }
 }

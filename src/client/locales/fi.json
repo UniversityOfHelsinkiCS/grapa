@@ -1,6 +1,7 @@
 {
   "common": {
     "appName": "GRAdut Pikaisesti Alkuun",
+    "author": "Tekijä",
     "profileButton": "Oma tiedot",
     "programHeader": "Ohjelma",
     "topicHeader": "Aihe",
@@ -11,11 +12,18 @@
     "deleteButton": "Poista",
     "cancelButton": "Peruuta",
     "submitButton": "Tallenna",
-    "editThesisDialog": "Muokkaa gradu",
-    "newThesisButton": "Uusi gradu"
+    "newThesisButton": "Uusi gradu",
+    "removeButton": "Poista"
   },
   "thesisForm": {
     "supervisionPercentageError": " Varmista, että ohjaajien yhteisprosentti on 100",
-    "author": "Tekijä"
+    "researchPlanMissingError": "Tutkimussuunnitelma puuttuu",
+    "waysOfWorkingMissingError": "Työskentelysopimus puuttuu",
+    "addSupervisor": "Lisää ohjaaja",
+    "editThesisDialog": "Muokkaa gradu",
+    "uploadWaysOfWorkingButton": "Lataa työskentelysopimus",
+    "uploadResearchPlanButton": "Lataa tutkimussuunnitelma",
+    "selectSupervisor": "Valitse ohjaaja",
+    "selectSupervisorPercentage": "Osuus"
   }
 }
