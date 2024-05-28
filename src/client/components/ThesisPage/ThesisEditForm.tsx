@@ -89,10 +89,7 @@ const ThesisEditForm: React.FC<{
   const totalPercentage = getTotalPercentage()
 
   const canSubmit = Boolean(
-    editedThesis?.topic &&
-      editedThesis?.programId &&
-      editedThesis?.authors.length &&
-      editedThesis?.supervisions.length &&
+    editedThesis?.supervisions.length &&
       totalPercentage === 100 &&
       editedThesis?.status &&
       editedThesis?.startDate &&
@@ -338,11 +335,6 @@ const ThesisEditForm: React.FC<{
           {totalPercentage !== 100 && (
             <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
               {t('thesisForm:supervisionPercentageError')}
-            </Alert>
-          )}
-          {!editedThesis?.authors.length && (
-            <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
-              {t('thesisForm:authorMissingError')}
             </Alert>
           )}
           {!editedThesis.researchPlan && (
