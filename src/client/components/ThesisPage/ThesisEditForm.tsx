@@ -97,6 +97,7 @@ const ThesisEditForm: React.FC<{
       editedThesis?.status &&
       editedThesis?.startDate &&
       editedThesis?.targetDate &&
+      editedThesis?.startDate < editedThesis?.targetDate &&
       editedThesis?.researchPlan &&
       editedThesis?.waysOfWorking
   )
@@ -312,6 +313,7 @@ const ThesisEditForm: React.FC<{
               name="targetDate"
               value={dayjs(editedThesis.targetDate)}
               format="DD.MM.YYYY"
+              minDate={dayjs(editedThesis.startDate)}
               onChange={(date) => {
                 setEditedThesis((oldThesis) => ({
                   ...oldThesis,
@@ -336,6 +338,11 @@ const ThesisEditForm: React.FC<{
           {totalPercentage !== 100 && (
             <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
               {t('thesisForm:supervisionPercentageError')}
+            </Alert>
+          )}
+          {!editedThesis?.authors.length && (
+            <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
+              {t('thesisForm:authorMissingError')}
             </Alert>
           )}
           {!editedThesis.researchPlan && (

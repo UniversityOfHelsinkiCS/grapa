@@ -16,6 +16,7 @@
     "removeButton": "Poista"
   },
   "thesisForm": {
+    "authorMissingError": "Tekijä puuttuu",
     "supervisionPercentageError": " Varmista, että ohjaajien yhteisprosentti on 100",
     "researchPlanMissingError": "Tutkimussuunnitelma puuttuu",
     "waysOfWorkingMissingError": "Työskentelysopimus puuttuu",

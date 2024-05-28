@@ -16,6 +16,7 @@
     "removeButton": "Remove"
   },
   "thesisForm": {
+    "authorMissingError": "An author is required",
     "supervisionPercentageError": "Make sure the total percentages of supervisors add up to 100",
     "researchPlanMissingError": "Make sure you upload a research plan PDF",
     "waysOfWorkingMissingError": "Make sure you upload a ways of working PDF",
