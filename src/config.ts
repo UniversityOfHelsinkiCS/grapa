@@ -10,6 +10,8 @@ export const GIT_SHA = process.env.REACT_APP_GIT_SHA || ''
 
 export const BASE_PATH = process.env.BASE_PATH || ''
 
+export const UPDATER_CRON_ENABLED = process.env.UPDATER_CRON_ENABLED === 'true'
+
 // eslint-disable-next-line no-nested-ternary
 export const FULL_URL = inProduction
   ? 'https://grapa.ext.ocp-prod-0.k8s.it.helsinki.fi'

@@ -8,7 +8,7 @@ import express from 'express'
 import session from 'express-session'
 import passport from 'passport'
 
-import { inE2EMode } from '../config'
+import { inE2EMode, inProduction, inStaging } from '../config'
 import { PORT, SESSION_SECRET } from './util/config'
 import { redisStore } from './util/redis'
 import logger from './util/logger'
@@ -16,6 +16,7 @@ import router from './routes'
 import setupAuthentication from './util/oidc'
 import { connectToDatabase } from './db/connection'
 import seed from './db/seeders'
+import setupCron from './util/cron'
 
 const app = express()
 
@@ -54,6 +55,10 @@ app.listen(PORT, async () => {
   }
 
   await setupAuthentication()
+
+  if (inProduction || inStaging) {
+    await setupCron()
+  }
 
   logger.info(`Server running on port ${PORT}`)
 })
