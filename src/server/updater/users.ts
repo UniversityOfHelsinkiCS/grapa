@@ -15,7 +15,7 @@ interface SisuUser {
   id: string
   preferredLanguageUrn: string
   eduPersonPrincipalName: string
-  firstName: string
+  firstNames: string
   lastName: string
   primaryEmail: string
 }
@@ -27,7 +27,7 @@ const usersHandler = async (users: SisuUser[]) => {
     username: user.eduPersonPrincipalName
       ? user.eduPersonPrincipalName.split('@')[0]
       : user.id,
-    firstName: user.firstName,
+    firstName: user.firstNames,
     lastName: user.lastName,
     email: user.primaryEmail,
   }))
