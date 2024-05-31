@@ -9,6 +9,14 @@ import { Attachment, Author, Supervision, Thesis, User } from '../db/models'
 
 const request = supertest(app)
 
+const userAttributesToFetch = [
+  'email',
+  'firstName',
+  'id',
+  'lastName',
+  'username',
+]
+
 describe('thesis router', () => {
   let mockUnlinkSync
   beforeEach(() => {
@@ -32,20 +40,33 @@ describe('thesis router', () => {
     let thesis1
 
     beforeEach(async () => {
-      user1 = await User.create({
+      await User.create({
         username: 'test1',
         firstName: 'test1',
         lastName: 'test1',
         email: 'test@test.test1',
         language: 'fi',
       })
-      user2 = await User.create({
+      await User.create({
         username: 'test2',
         firstName: 'test2',
         lastName: 'test2',
         email: 'test@test.test2',
         language: 'fi',
       })
+      user1 = (
+        await User.findOne({
+          where: { username: 'test1' },
+          attributes: userAttributesToFetch,
+        })
+      ).toJSON()
+      user2 = (
+        await User.findOne({
+          where: { username: 'test1' },
+          attributes: userAttributesToFetch,
+        })
+      ).toJSON()
+
       thesis1 = await Thesis.create({
         programId: 'Testing program',
         topic: 'test topic',
@@ -91,15 +112,11 @@ describe('thesis router', () => {
             targetDate: '2070-01-01T00:00:00.000Z',
             supervisions: [
               {
-                userId: user1.id,
+                user: user1,
                 percentage: 100,
               },
             ],
-            authors: [
-              {
-                userId: user2.id,
-              },
-            ],
+            authors: [user2],
             researchPlan: {
               filename: 'testfile.pdf1',
               name: 'testfile.pdf1',
@@ -142,15 +159,11 @@ describe('thesis router', () => {
           targetDate: '2070-01-01T00:00:00.000Z',
           supervisions: [
             {
-              userId: user1.id,
+              user: user1,
               percentage: 100,
             },
           ],
-          authors: [
-            {
-              userId: user2.id,
-            },
-          ],
+          authors: [user2],
         }
         const response = await request
           .post('/api/theses')
@@ -185,15 +198,11 @@ describe('thesis router', () => {
             targetDate: '2070-01-01T00:00:00.000Z',
             supervisions: [
               {
-                userId: user1.id,
+                user: user1,
                 percentage: 100,
               },
             ],
-            authors: [
-              {
-                userId: user2.id,
-              },
-            ],
+            authors: [user2],
           }
           const response = await request
             .put(`/api/theses/${thesis1.id}`)
@@ -242,15 +251,11 @@ describe('thesis router', () => {
             targetDate: '2070-01-01T00:00:00.000Z',
             supervisions: [
               {
-                userId: user1.id,
+                user: user1,
                 percentage: 100,
               },
             ],
-            authors: [
-              {
-                userId: user2.id,
-              },
-            ],
+            authors: [user2],
             waysOfWorking: {
               filename: 'testfile.pdf2',
               name: 'testfile.pdf2',
@@ -283,7 +288,7 @@ describe('thesis router', () => {
           expect(thesis.programId).toEqual('Updated program')
           expect(thesis.topic).toEqual('Updated topic')
         })
-      });
+      })
 
       describe('when neither of the attachments are updated', () => {
         it('should return 200 and update the thesis', async () => {
@@ -295,15 +300,11 @@ describe('thesis router', () => {
             targetDate: '2070-01-01T00:00:00.000Z',
             supervisions: [
               {
-                userId: user1.id,
+                user: user1,
                 percentage: 100,
               },
             ],
-            authors: [
-              {
-                userId: user2.id,
-              },
-            ],
+            authors: [user2],
             waysOfWorking: {
               filename: 'testfile.pdf2',
               name: 'testfile.pdf2',

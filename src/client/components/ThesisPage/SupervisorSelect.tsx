@@ -4,12 +4,14 @@ import { AuthorData, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { useTranslation } from 'react-i18next'
 import SingleSupervisorSelect from './SingleSupervisorSelect'
+// import useUsers from '../../hooks/useUsers'
 
 const SupervisorSelect: React.FC<{
   supervisorSelections: SupervisorSelection[]
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
 }> = ({ supervisorSelections, setSupervisorSelections }) => {
   const { t } = useTranslation()
+  // const { users } = useUsers()
 
   const handleSupervisorChange = (index: number, supervisor: AuthorData) => {
     const updatedSelections = [...supervisorSelections]

@@ -38,10 +38,15 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
             `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.username ? `(${user.username})` : ''}`
           }
           renderInput={(params) => (
-            <TextField {...params} label={t('author')} required />
+            <TextField
+              {...params}
+              label={t('thesisForm:selectSupervisor')}
+              required
+            />
           )}
           filterOptions={(x) => x}
           inputValue={userSearch}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
           value={selection.user}
           onChange={(_, value) => handleSupervisorChange(value)}
           onInputChange={(_, value) => {
