@@ -21,8 +21,12 @@ Thesis.hasMany(Supervision, { as: 'supervisions' })
 Supervision.belongsTo(Thesis, { as: 'thesis' })
 
 Author.belongsTo(User, { as: 'user' })
+Thesis.belongsToMany(User, {
+  through: Author,
+  as: 'authors',
+})
 
-Thesis.hasMany(Author, { as: 'authors' })
+// Thesis.hasMany(Author, { as: 'authors' })
 
 Attachment.belongsTo(Thesis, { as: 'thesis' })
 Thesis.hasOne(Attachment, { as: 'researchPlan', foreignKey: 'thesisId' })

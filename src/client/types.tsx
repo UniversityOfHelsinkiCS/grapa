@@ -1,4 +1,6 @@
+import { AuthorData } from '@backend/types'
+
 export interface SupervisorSelection {
-  userId: string
+  user: AuthorData | null
   percentage: number
 }

@@ -5,7 +5,7 @@ import fs from 'fs'
 import { ServerPostRequest, ServerPutRequest, ThesisData } from '../types'
 import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMutlipartFormData from '../middleware/attachment'
-import { Thesis, Supervision, Author, Attachment } from '../db/models'
+import { Thesis, Supervision, Author, Attachment, User } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
 
@@ -18,10 +18,29 @@ const fetchThesisById = async (id: string) => {
       {
         model: Supervision,
         as: 'supervisions',
+        attributes: ['percentage'],
+        include: {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+        },
       },
       {
-        model: Author,
+        model: User,
         as: 'authors',
+        attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+      },
+      {
+        model: Attachment,
+        as: 'researchPlan',
+        attributes: ['filename', ['original_name', 'name'], 'mimetype'],
+        where: { label: 'researchPlan' },
+      },
+      {
+        model: Attachment,
+        as: 'waysOfWorking',
+        attributes: ['filename', ['original_name', 'name'], 'mimetype'],
+        where: { label: 'waysOfWorking' },
       },
     ],
   })
@@ -35,14 +54,15 @@ const createThesisAndSupervisions = async (
   const createdThesis = await Thesis.create(thesisData, { transaction: t })
   await Supervision.bulkCreate(
     thesisData.supervisions.map((supervision) => ({
-      ...supervision,
+      userId: supervision.user.id,
       thesisId: createdThesis.id,
+      percentage: supervision.percentage,
     })),
     { transaction: t, validate: true, individualHooks: true }
   )
   await Author.bulkCreate(
     thesisData.authors.map((author) => ({
-      ...author,
+      userId: author.id,
       thesisId: createdThesis.id,
     })),
     { transaction: t, validate: true, individualHooks: true }
@@ -129,15 +149,16 @@ const updateThesis = async (
   await Supervision.destroy({ where: { thesisId: id }, transaction })
   await Supervision.bulkCreate(
     thesisData.supervisions.map((supervision) => ({
-      ...supervision,
+      userId: supervision.user.id,
       thesisId: id,
+      percentage: supervision.percentage,
     })),
     { transaction, validate: true, individualHooks: true }
   )
   await Author.destroy({ where: { thesisId: id }, transaction })
   await Author.bulkCreate(
     thesisData.authors.map((author) => ({
-      ...author,
+      userId: author.id,
       thesisId: id,
     })),
     { transaction, validate: true, individualHooks: true }
@@ -154,10 +175,17 @@ thesisRouter.get('/', async (_, res) => {
       {
         model: Supervision,
         as: 'supervisions',
+        attributes: ['percentage'],
+        include: {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+        },
       },
       {
-        model: Author,
+        model: User,
         as: 'authors',
+        attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
       },
       {
         model: Attachment,

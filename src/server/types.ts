@@ -34,12 +34,16 @@ export type ThesisStatus =
   | 'CANCELLED'
 
 export interface SupervisionData {
-  userId: string
+  user: AuthorData
   percentage: number
 }
 
 export interface AuthorData {
-  userId: string
+  id: string
+  username: string
+  firstName: string
+  lastName: string
+  email: string | null
 }
 
 export interface FileData {

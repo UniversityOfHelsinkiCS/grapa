@@ -1,13 +1,13 @@
-import { ThesisData } from '@backend/types'
+import { AuthorData, ThesisData } from '@backend/types'
 import { styled } from '@mui/material/styles'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 import ErrorIcon from '@mui/icons-material/Error'
 import {
   Alert,
+  Autocomplete,
   Button,
   Chip,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -30,6 +30,7 @@ import programs from '../mockPorgrams'
 import SupervisorSelect from './SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
 import { BASE_PATH } from '../../../config'
+import { useDebounce } from '../../hooks/useDebounce'
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -52,34 +53,10 @@ const ThesisEditForm: React.FC<{
   const [editedThesis, setEditedThesis] = useState<ThesisData | null>(
     initialThesis
   )
-  const { users } = useUsers()
+  const [userSearch, setUserSearch] = useState('')
 
-  const authorIds = editedThesis.authors.map((author) => author.userId)
-  const supervisorIds = editedThesis.supervisions.map(
-    (supervision) => supervision.userId
-  )
-
-  if (!users) {
-    return (
-      <Dialog fullWidth maxWidth="lg" open onClose={onClose}>
-        <DialogTitle>{t('thesisForm:editThesisDialog')}</DialogTitle>
-        <DialogContent>
-          <Stack spacing={6} alignItems="center" height={300}>
-            <CircularProgress />
-          </Stack>
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
-  // authors cannot be supervisors
-  const potentialAuthors = users.filter(
-    (user) => !supervisorIds.includes(user.id)
-  )
-  // supervisors cannot be authors
-  const potentialSupervisors = users.filter(
-    (user) => !authorIds.includes(user.id)
-  )
+  const debouncedSearch = useDebounce(userSearch, 700)
+  const { users } = useUsers(debouncedSearch)
 
   const getTotalPercentage = () =>
     editedThesis.supervisions.reduce(
@@ -158,29 +135,32 @@ const ThesisEditForm: React.FC<{
             </Select>
           </FormControl>
           <FormControl fullWidth>
-            <InputLabel id="author-select-label">{t('author')}</InputLabel>
-            <Select
-              required
-              value={
-                editedThesis.authors.length > 0
-                  ? editedThesis.authors[0].userId
-                  : ''
+            <Autocomplete<AuthorData>
+              disablePortal
+              options={users ?? []}
+              getOptionLabel={(user) =>
+                `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''}`
               }
-              label="Author"
-              name="author"
-              onChange={(event) => {
+              renderInput={(params) => (
+                <TextField {...params} label={t('author')} required />
+              )}
+              inputValue={userSearch}
+              value={
+                editedThesis.authors.length > 0 ? editedThesis.authors[0] : null
+              }
+              onChange={(_, value) => {
                 setEditedThesis((oldThesis) => ({
                   ...oldThesis,
-                  authors: [{ userId: event.target.value }],
+                  authors: [value],
                 }))
               }}
-            >
-              {potentialAuthors.map((user) => (
-                <MenuItem key={user.id} value={user.id}>
-                  {user.username}
-                </MenuItem>
-              ))}
-            </Select>
+              onInputChange={(event, value) => {
+                // Fetch potential authors based on the input value
+                // You can use debounce or throttle to limit the number of requests
+                // Example: fetchPotentialAuthors(value)
+                setUserSearch(value)
+              }}
+            />
           </FormControl>
 
           <FormControl fullWidth>
@@ -328,7 +308,6 @@ const ThesisEditForm: React.FC<{
                 supervisions: newSupervisions,
               }))
             }
-            supervisors={potentialSupervisors}
           />
         </Stack>
         <Stack spacing={1}>
