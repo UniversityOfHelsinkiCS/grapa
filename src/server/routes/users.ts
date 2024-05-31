@@ -5,7 +5,7 @@ import { User } from '../db/models'
 const usersRouter = express.Router()
 
 usersRouter.get('/', async (req, res) => {
-  const { search } = req.query
+  const { search } = req.query as { search: string }
 
   if (!search) {
     res.send(403, 'Search string must be provided as a query parameter')
@@ -16,34 +16,55 @@ usersRouter.get('/', async (req, res) => {
 
   const trimmedSearch = search.trim()
 
-  const users = await User.findAll({
-    where: {
-      [Op.or]: [
-        {
-          username: {
-            [Op.like]: `%${trimmedSearch}%`,
+  if (trimmedSearch.split(' ').length === 2) {
+    const [firstName, lastName] = trimmedSearch.split(' ')
+    const users = await User.findAll({
+      where: {
+        [Op.and]: [
+          {
+            firstName: {
+              [Op.iLike]: `${firstName}%`,
+            },
           },
-        },
-        {
-          firstName: {
-            [Op.like]: `%${trimmedSearch}%`,
+          {
+            lastName: {
+              [Op.iLike]: `${lastName}%`,
+            },
           },
-        },
-        {
-          lastName: {
-            [Op.like]: `%${trimmedSearch}%`,
+        ],
+      },
+      logging: console.log,
+    })
+    res.send(users)
+  } else {
+    const users = await User.findAll({
+      where: {
+        [Op.or]: [
+          {
+            username: {
+              [Op.iLike]: `${trimmedSearch}%`,
+            },
           },
-        },
-        {
-          email: {
-            [Op.like]: `%${trimmedSearch}%`,
+          {
+            firstName: {
+              [Op.iLike]: `${trimmedSearch}%`,
+            },
           },
-        },
-      ],
-    },
-  })
-
-  res.send(users)
+          {
+            lastName: {
+              [Op.iLike]: `${trimmedSearch}%`,
+            },
+          },
+          {
+            email: {
+              [Op.iLike]: `${trimmedSearch}%`,
+            },
+          },
+        ],
+      },
+    })
+    res.send(users)
+  }
 })
 
 export default usersRouter

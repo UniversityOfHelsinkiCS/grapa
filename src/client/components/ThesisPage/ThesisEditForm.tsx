@@ -139,12 +139,13 @@ const ThesisEditForm: React.FC<{
               disablePortal
               options={users ?? []}
               getOptionLabel={(user) =>
-                `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''}`
+                `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.username ? `(${user.username})` : ''}`
               }
               renderInput={(params) => (
                 <TextField {...params} label={t('author')} required />
               )}
               inputValue={userSearch}
+              filterOptions={(x) => x}
               value={
                 editedThesis.authors.length > 0 ? editedThesis.authors[0] : null
               }

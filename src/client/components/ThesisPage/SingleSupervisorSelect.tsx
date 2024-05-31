@@ -35,11 +35,12 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
           disablePortal
           options={users ?? []}
           getOptionLabel={(user) =>
-            `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''}`
+            `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.username ? `(${user.username})` : ''}`
           }
           renderInput={(params) => (
             <TextField {...params} label={t('author')} required />
           )}
+          filterOptions={(x) => x}
           inputValue={userSearch}
           value={selection.user}
           onChange={(_, value) => handleSupervisorChange(value)}
