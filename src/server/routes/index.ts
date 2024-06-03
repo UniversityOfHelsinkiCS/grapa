@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/node'
 
 import { inDevelopment, inE2EMode } from '../../config'
 import userMiddleware from '../middleware/user'
+import initializeSentry from '../util/sentry'
 import errorHandler from '../middleware/error'
 import accessLogger from '../middleware/access'
 import thesisRouter from './thesis'
@@ -13,6 +14,8 @@ import usersRouter from './users'
 import attachmentRouter from './attachment'
 
 const router = express()
+
+initializeSentry()
 
 router.use(cors())
 router.use(express.json())
