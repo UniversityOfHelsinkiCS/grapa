@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { ValidationError, UniqueConstraintError } from 'sequelize'
 
-import Sentry from '@sentry/node'
+import * as Sentry from '@sentry/node'
 
 import logger from '../util/logger'
 import { inProduction } from '../../config'

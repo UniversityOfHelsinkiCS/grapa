@@ -1,4 +1,4 @@
-import Sentry from '@sentry/node'
+import * as Sentry from '@sentry/node'
 import logger from '../util/logger'
 import { fetchUsers } from './users'
 import { clearOffsets } from './util'
