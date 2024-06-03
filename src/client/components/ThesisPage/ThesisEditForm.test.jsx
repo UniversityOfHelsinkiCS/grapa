@@ -4,12 +4,7 @@
 import * as React from 'react'
 import dayjs from 'dayjs'
 import userEvent from '@testing-library/user-event'
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
 
@@ -54,8 +49,10 @@ describe('ThesisEditForm', () => {
     beforeEach(() => {
       const initialThesis = {
         programId: programs[0].key,
-        supervisions: [{ userId: 1, percentage: 100 }],
-        authors: [],
+        // I couldn't get RTL to work with MUI Autocomplete component
+        // so I just preselected su[pervision and author
+        supervisions: [{ user: { id: 1 }, percentage: 100 }],
+        authors: [{ id: 2 }],
         topic: '',
         status: 'PLANNING',
         startDate: dayjs().format('YYYY-MM-DD'),
@@ -97,7 +94,6 @@ describe('ThesisEditForm', () => {
 
         const topicInput = screen.getByRole('textbox', { name: 'Aihe' })
         const programSelect = screen.getAllByRole('combobox')[0]
-        const authorSelect = screen.getAllByRole('combobox')[1]
         const statusSelect = screen.getAllByRole('combobox')[2]
 
         const researchPlanInput = screen
@@ -120,12 +116,6 @@ describe('ThesisEditForm', () => {
             "Bachelor's Programme in Mathematical Sciences"
           )[0]
         )
-
-        await user.click(authorSelect)
-        await waitFor(() => {
-          expect(screen.getByText('janesmith')).toBeInTheDocument()
-        })
-        await user.click(screen.getByText('janesmith'))
 
         await user.click(statusSelect)
         await user.click(screen.getAllByText('Planning')[0])

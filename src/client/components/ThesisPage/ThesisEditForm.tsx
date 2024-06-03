@@ -146,6 +146,7 @@ const ThesisEditForm: React.FC<{
               )}
               inputValue={userSearch}
               filterOptions={(x) => x}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
               value={
                 editedThesis.authors.length > 0 ? editedThesis.authors[0] : null
               }
