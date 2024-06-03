@@ -8,7 +8,10 @@ const initializeSentry = () => {
   Sentry.init({
     dsn: 'https://4760b7af8d5702d8e858b22d4c182289@toska.cs.helsinki.fi/22',
     release: GIT_SHA,
-    integrations: [Sentry.httpIntegration(), Sentry.expressIntegration()],
+    integrations: [
+      Sentry.httpIntegration({ breadcrumbs: true }),
+      Sentry.expressIntegration(),
+    ],
     tracesSampleRate: 1.0,
   })
 }
