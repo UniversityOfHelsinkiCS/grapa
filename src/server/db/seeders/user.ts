@@ -8,6 +8,7 @@ const user = {
   email: 'grp-toska@helsinki.fi',
   language: 'fi',
   isAdmin: true,
+  iamGroups: ['grp-toska', 'hy-employees'],
 }
 
 const seedUsers = async () => {

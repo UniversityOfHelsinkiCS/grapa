@@ -6,11 +6,12 @@ const useUsers = (search: string) => {
   const queryKey = ['users', search]
 
   const queryFn = async (): Promise<User[]> => {
-    if (!search || search.length < 5) {
+    const trimmedSearch = search.trim()
+    if (!trimmedSearch || trimmedSearch.length < 5) {
       return []
     }
 
-    const { data } = await apiClient.get(`/users?search=${search}`)
+    const { data } = await apiClient.get(`/users?search=${trimmedSearch}`)
 
     return data
   }

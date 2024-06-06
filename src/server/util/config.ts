@@ -32,3 +32,5 @@ export const IMPORTER_URL =
   inProduction || inDevelopment
     ? 'https://api-toska.apps.ocp-prod-0.k8s.it.helsinki.fi/importer'
     : 'https://api-toska.apps.ocp-test-0.k8s.it.helsinki.fi/importer'
+
+export const adminIams = ['grp-toska', 'hy-ypa-opa-ote']

@@ -8,7 +8,7 @@ import express from 'express'
 import session from 'express-session'
 import passport from 'passport'
 
-import { inE2EMode, inProduction, inStaging } from '../config'
+import { inDevelopment, inE2EMode, inProduction, inStaging } from '../config'
 import { PORT, SESSION_SECRET } from './util/config'
 import { redisStore } from './util/redis'
 import logger from './util/logger'
@@ -56,7 +56,7 @@ app.listen(PORT, async () => {
 
   await setupAuthentication()
 
-  if (inProduction || inStaging) {
+  if (inDevelopment || inProduction || inStaging) {
     await setupCron()
   }
 

@@ -22,6 +22,8 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare language: string
 
   declare isAdmin: boolean
+
+  declare iamGroups: string[]
 }
 
 User.init(
@@ -52,6 +54,10 @@ User.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+    },
+    iamGroups: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      defaultValue: [],
     },
   },
   {
