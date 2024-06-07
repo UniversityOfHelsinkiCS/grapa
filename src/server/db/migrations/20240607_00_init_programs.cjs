@@ -21,10 +21,23 @@ module.exports = {
         type: DataTypes.BOOLEAN,
         allowNull: false,
       },
-      companionFaculties: {
+      companion_faculties: {
         type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
         defaultValue: [],
+      },
+      enabled: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
       },
     })
   },

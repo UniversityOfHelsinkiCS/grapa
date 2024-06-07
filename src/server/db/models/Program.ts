@@ -21,6 +21,8 @@ class Program extends Model<
   declare international: boolean
 
   declare companionFaculties: string[]
+
+  declare enabled: boolean
 }
 
 Program.init(
@@ -47,6 +49,11 @@ Program.init(
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
       defaultValue: [],
+    },
+    enabled: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {

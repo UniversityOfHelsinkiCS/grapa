@@ -11,6 +11,7 @@ import loginRouter from './login'
 import userRouter from './user'
 import usersRouter from './users'
 import attachmentRouter from './attachment'
+import programRouter from './program'
 
 const router = express()
 
@@ -33,6 +34,7 @@ router.use('/users', usersRouter)
 router.use('/theses', thesisRouter)
 router.use('/login', loginRouter)
 router.use('/attachments', attachmentRouter)
+router.use('/programs', programRouter)
 
 Sentry.setupExpressErrorHandler(router)
 

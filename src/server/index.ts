@@ -8,7 +8,7 @@ import express from 'express'
 import session from 'express-session'
 import passport from 'passport'
 
-import { inDevelopment, inE2EMode, inProduction, inStaging } from '../config'
+import { inE2EMode, inProduction, inStaging } from '../config'
 import { PORT, SESSION_SECRET } from './util/config'
 import { redisStore } from './util/redis'
 import logger from './util/logger'
@@ -46,21 +46,23 @@ if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
   app.get('*', (_, res) => res.sendFile(INDEX_PATH))
 }
 
-app.listen(PORT, async () => {
-  await connectToDatabase()
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, async () => {
+    await connectToDatabase()
 
-  // only seed when in dev environment
-  if (process.env.NODE_ENV === 'development') {
-    await seed()
-  }
+    // only seed when in dev environment
+    if (process.env.NODE_ENV === 'development') {
+      await seed()
+    }
 
-  await setupAuthentication()
+    await setupAuthentication()
 
-  if (inDevelopment || inProduction || inStaging) {
-    await setupCron()
-  }
+    if (inProduction || inStaging) {
+      await setupCron()
+    }
 
-  logger.info(`Server running on port ${PORT}`)
-})
+    logger.info(`Server running on port ${PORT}`)
+  })
+}
 
 export default app

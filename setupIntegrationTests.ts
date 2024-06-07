@@ -5,6 +5,7 @@ import app from './src/server/index'
 import {
   Attachment,
   Author,
+  Program,
   Supervision,
   Thesis,
   User,
@@ -45,6 +46,7 @@ global.afterEach(async () => {
   await Author.destroy({ where: {} })
   await Thesis.destroy({ where: {} })
   await User.destroy({ where: {} })
+  await Program.destroy({ where: {} })
 })
 
 global.afterAll(async () => {

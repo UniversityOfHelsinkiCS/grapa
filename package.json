@@ -12,17 +12,14 @@
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch '**/server/**/*.test.*' --setupFilesAfterEnv ./setupTests.ts --watchAll",
     "test:front": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch '**/client/**/*.test.*' --setupFilesAfterEnv ./setupTests.ts",
     "test:front:watch": "DEBUG_PRINT_LIMIT=100000 node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch '**/client/**/*.test.*' --setupFilesAfterEnv ./setupTests.ts --watchAll",
-    "test:integration": "concurrently \"docker run -e PGDATA=/test-data -e POSTGRES_PASSWORD=postgres -p 5433:5432 postgres:15.6\" \"sleep 3 && NODE_ENV=test PORT=8001 DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres node --experimental-vm-modules node_modules/jest/bin/jest.js --setupFilesAfterEnv ./setupIntegrationTests.ts --forceExit\" --kill-others --success command-1 --hide 0 --prefix none",
-    "test:integration:watch": "concurrently \"docker run -e PGDATA=/test-data -e POSTGRES_PASSWORD=postgres -p 5433:5432 postgres:15.6\" \"NODE_ENV=test PORT=8001 DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll --setupFilesAfterEnv ./setupIntegrationTests.ts\" --hide 0 --prefix none",
+    "test:integration": "concurrently \"docker run -e PGDATA=/test-data -e POSTGRES_PASSWORD=postgres -p 5433:5432 postgres:15.6\" \"sleep 3 && NODE_ENV=test PORT=8001 DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --testMatch '**/*.integration-test.*' --setupFilesAfterEnv ./setupIntegrationTests.ts --forceExit\" --kill-others --success command-1 --hide 0 --prefix none",
+    "test:integration:watch": "concurrently \"docker run -e PGDATA=/test-data -e POSTGRES_PASSWORD=postgres -p 5433:5432 postgres:15.6\" \"NODE_ENV=test PORT=8001 DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --testMatch '**/*.integration-test.*' --watchAll --setupFilesAfterEnv ./setupIntegrationTests.ts\" --hide 0 --prefix none",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "format": "prettier --write '*.{ts,tsx,json,css,md}'",
     "build": "DISABLE_ESLINT_PLUGIN=true vite build",
     "prepare": "husky install"
   },
   "jest": {
-    "testMatch": [
-      "**/*.integration-test.*"
-    ],
     "extensionsToTreatAsEsm": [
       ".ts",
       ".tsx",

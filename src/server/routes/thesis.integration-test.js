@@ -26,7 +26,7 @@ describe('thesis router', () => {
 
   describe('when the user is not a teacher', () => {
     describe('GET /api/theses', () => {
-      it('should return 200 and an empty array', async () => {
+      it('should return 403', async () => {
         const response = await request.get('/api/theses')
         expect(response.status).toEqual(403)
       })
