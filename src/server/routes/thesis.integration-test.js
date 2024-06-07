@@ -24,6 +24,43 @@ describe('thesis router', () => {
     fs.unlinkSync = mockUnlinkSync
   })
 
+  describe('when the user is not a teacher', () => {
+    describe('GET /api/theses', () => {
+      it('should return 200 and an empty array', async () => {
+        const response = await request.get('/api/theses')
+        expect(response.status).toEqual(403)
+      })
+    })
+
+    describe('DELETE /api/theses/:id', () => {
+      it('should return 403', async () => {
+        const response = await request.delete('/api/theses/1')
+        expect(response.status).toEqual(403)
+      })
+    })
+
+    describe('POST /api/theses', () => {
+      it('should return 403', async () => {
+        const response = await request.post('/api/theses')
+        expect(response.status).toEqual(403)
+      })
+    })
+
+    describe('PUT /api/theses/:id', () => {
+      it('should return 403', async () => {
+        const response = await request.put('/api/theses/1')
+        expect(response.status).toEqual(403)
+      })
+    })
+
+    describe('GET /api/theses/:id', () => {
+      it('should return 403', async () => {
+        const response = await request.get('/api/theses/1')
+        expect(response.status).toEqual(403)
+      })
+    })
+  })
+
   describe('when there are no theses', () => {
     describe('GET /api/theses', () => {
       it('should return 200 and an empty array', async () => {
