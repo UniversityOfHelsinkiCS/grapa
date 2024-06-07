@@ -16,7 +16,8 @@ Thesis.belongsToMany(User, {
 
 Supervision.belongsTo(User, { as: 'user' })
 
-Thesis.hasMany(Supervision, { as: 'supervisions' })
+Thesis.hasMany(Supervision, { foreignKey: 'thesisId' })
+Thesis.hasMany(Supervision, { foreignKey: 'thesisId', as: 'supervisions' })
 
 Supervision.belongsTo(Thesis, { as: 'thesis' })
 

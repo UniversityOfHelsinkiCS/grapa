@@ -1,4 +1,4 @@
-import { inDevelopment } from '../../config'
+import { inDevelopment, inE2EMode } from '../../config'
 import { adminIams } from '../util/config'
 
 const parseIamGroups = (iamGroups: string) =>
@@ -21,7 +21,7 @@ const mockHeaders = {
 const userMiddleware = (req: any, _: any, next: any) => {
   if (req.path.includes('/login')) return next()
 
-  const headers = inDevelopment ? mockHeaders : req.headers
+  const headers = inDevelopment || inE2EMode ? mockHeaders : req.headers
 
   const {
     uid: username,
@@ -44,6 +44,11 @@ const userMiddleware = (req: any, _: any, next: any) => {
     language,
     iamGroups,
     isAdmin: checkAdmin(iamGroups),
+  }
+
+  // if user is not an admin or hy-employees, return 403
+  if (!acualUser.isAdmin && !acualUser.iamGroups.includes('hy-employees')) {
+    return next({ status: 403, message: 'Forbidden' })
   }
 
   req.user = acualUser

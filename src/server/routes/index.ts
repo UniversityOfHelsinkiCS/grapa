@@ -2,7 +2,6 @@ import express from 'express'
 import cors from 'cors'
 import * as Sentry from '@sentry/node'
 
-import { inDevelopment, inE2EMode } from '../../config'
 import userMiddleware from '../middleware/user'
 import initializeSentry from '../util/sentry'
 import errorHandler from '../middleware/error'
@@ -21,7 +20,7 @@ router.use(cors())
 router.use(express.json())
 router.use(express.urlencoded({ extended: true }))
 
-if (inDevelopment || inE2EMode) router.use(userMiddleware)
+router.use(userMiddleware)
 
 router.use(accessLogger)
 

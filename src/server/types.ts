@@ -19,7 +19,6 @@ export interface User {
   language: string
   isAdmin: boolean
   iamGroups: string[]
-  newUser?: boolean
 }
 
 export interface RequestWithUser extends Request {
@@ -63,6 +62,10 @@ export interface ThesisData {
   authors: AuthorData[]
   researchPlan?: FileData | File
   waysOfWorking?: FileData | File
+}
+
+export interface ServerGetRequest extends Request {
+  user: User
 }
 
 export interface ServerPostRequest extends Request {

@@ -1,8 +1,13 @@
 import express, { Response } from 'express'
-import type { Transaction } from 'sequelize'
+import { Includeable, type Transaction } from 'sequelize'
 import fs from 'fs'
 
-import { ServerPostRequest, ServerPutRequest, ThesisData } from '../types'
+import {
+  ServerGetRequest,
+  ServerPostRequest,
+  ServerPutRequest,
+  ThesisData,
+} from '../types'
 import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMutlipartFormData from '../middleware/attachment'
 import { Thesis, Supervision, Author, Attachment, User } from '../db/models'
@@ -169,37 +174,52 @@ const deleteThesis = async (id: string, transaction: Transaction) => {
   await Thesis.destroy({ where: { id }, transaction })
 }
 
-thesisRouter.get('/', async (_, res) => {
-  const theses = await Thesis.findAll({
-    include: [
-      {
-        model: Supervision,
-        as: 'supervisions',
-        attributes: ['percentage'],
-        include: {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
-        },
-      },
-      {
+// @ts-expect-error the user middleware updates the req object with user field
+thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
+  // if a user is only a teacher, they should only see theses they supervise
+  const teacherClause: Includeable = {
+    model: Supervision,
+    attributes: [] as const,
+    where: {
+      userId: req.user.id,
+    },
+  }
+  let includes: Includeable[] = [
+    {
+      model: Supervision,
+      as: 'supervisions',
+      attributes: ['percentage'],
+      include: {
         model: User,
-        as: 'authors',
+        as: 'user',
         attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
       },
-      {
-        model: Attachment,
-        as: 'researchPlan',
-        attributes: ['filename', ['original_name', 'name'], 'mimetype'],
-        where: { label: 'researchPlan' },
-      },
-      {
-        model: Attachment,
-        as: 'waysOfWorking',
-        attributes: ['filename', ['original_name', 'name'], 'mimetype'],
-        where: { label: 'waysOfWorking' },
-      },
-    ],
+    },
+    {
+      model: User,
+      as: 'authors',
+      attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+    },
+    {
+      model: Attachment,
+      as: 'researchPlan',
+      attributes: ['filename', ['original_name', 'name'], 'mimetype'],
+      where: { label: 'researchPlan' },
+    },
+    {
+      model: Attachment,
+      as: 'waysOfWorking',
+      attributes: ['filename', ['original_name', 'name'], 'mimetype'],
+      where: { label: 'waysOfWorking' },
+    },
+  ]
+
+  if (!req.user.isAdmin) {
+    includes = [...includes, teacherClause]
+  }
+
+  const theses = await Thesis.findAll({
+    include: includes,
   })
   res.send(theses)
 })
