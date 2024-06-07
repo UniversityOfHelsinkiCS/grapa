@@ -28,7 +28,6 @@ describe('thesis router', () => {
     describe('GET /api/theses', () => {
       it('should return 403', async () => {
         const response = await request.get('/api/theses')
-        console.log(response.body)
         expect(response.status).toEqual(403)
       })
     })

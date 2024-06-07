@@ -25,7 +25,8 @@ app.use(
     store: redisStore,
     resave: false,
     saveUninitialized: false,
-    secret: inE2EMode ? 'testing' : SESSION_SECRET,
+    secret:
+      inE2EMode || process.env.NODE_ENV === 'test' ? 'testing' : SESSION_SECRET,
   })
 )
 
