@@ -34,7 +34,7 @@ const userMiddleware = (req: any, _: any, next: any) => {
   } = headers
 
   const iamGroups = parseIamGroups(hygroupcn)
-  console.log(hygroupcn, iamGroups)
+  console.log(headers, iamGroups)
 
   const acualUser = {
     id: id || username,
