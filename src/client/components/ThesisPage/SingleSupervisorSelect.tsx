@@ -16,12 +16,14 @@ interface SingleSupervisorSelectProps {
   selection: { user: AuthorData | null; percentage: number }
   handleRemoveSupervisor: () => void
   handlePercentageChange: (percentage: number) => void
+  disabled: boolean
 }
 const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
   handleSupervisorChange,
   selection,
   handleRemoveSupervisor,
   handlePercentageChange,
+  disabled = false,
 }) => {
   const { t } = useTranslation()
   const [userSearch, setUserSearch] = React.useState('')
@@ -65,7 +67,13 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
           handlePercentageChange(parseInt(event.target.value, 10))
         }
       />
-      <Button onClick={handleRemoveSupervisor}>{t('removeButton')}</Button>
+      <Button
+        type="button"
+        onClick={handleRemoveSupervisor}
+        disabled={disabled}
+      >
+        {t('removeButton')}
+      </Button>
     </Stack>
   )
 }

@@ -15,10 +15,7 @@ const SupervisorSelect: React.FC<{
 
   useEffect(() => {
     if (user) {
-      setSupervisorSelections([
-        { user, percentage: 100 },
-        ...supervisorSelections,
-      ])
+      setSupervisorSelections([{ user, percentage: 100 }])
     }
   }, [isLoading])
 
@@ -52,6 +49,8 @@ const SupervisorSelect: React.FC<{
   const handleRemoveSupervisor = (index: number) => {
     const updatedSelections = [...supervisorSelections]
     updatedSelections.splice(index, 1)
+    if (updatedSelections.length === 0) return // Do not allow removing all supervisors
+
     setSupervisorSelections(updatedSelections)
   }
 
@@ -70,6 +69,7 @@ const SupervisorSelect: React.FC<{
           handlePercentageChange={(percentage) =>
             handlePercentageChange(index, percentage)
           }
+          disabled={supervisorSelections.length === 1}
         />
       ))}
       {supervisorSelections.length < 5 && (
