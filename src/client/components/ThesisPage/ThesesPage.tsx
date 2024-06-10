@@ -107,7 +107,7 @@ const ThesesPage = () => {
   if (!theses) return null
 
   return (
-    <Stack spacing={3} sx={{ p: '2rem', width: '100vw', maxWidth: '1920px' }}>
+    <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
       <Button
         variant="contained"
         size="large"
