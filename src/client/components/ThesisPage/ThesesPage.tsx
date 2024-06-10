@@ -16,6 +16,7 @@ import {
 } from '@mui/material'
 import programs from '../mockPorgrams'
 import useTheses from '../../hooks/useTheses'
+import useLoggedInUser from '../../hooks/useLoggedInUser'
 import {
   useCreateThesisMutation,
   useDeleteThesisMutation,
@@ -25,6 +26,8 @@ import ThesisEditForm from './ThesisEditForm'
 
 const ThesesPage = () => {
   const { t } = useTranslation()
+  const { user, isLoading: loggedInUserLoading } = useLoggedInUser()
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [editedTesis, setEditedThesis] = useState<Thesis | null>(null)
   const [deletedThesis, setDeletedThesis] = useState<Thesis | null>(null)
@@ -104,7 +107,7 @@ const ThesesPage = () => {
     },
   ]
 
-  if (!theses) return null
+  if (!theses || loggedInUserLoading) return null
 
   return (
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
@@ -115,7 +118,7 @@ const ThesesPage = () => {
         onClick={() => {
           setNewThesis({
             programId: programs[0].key,
-            supervisions: [],
+            supervisions: [{ user, percentage: 100 }],
             authors: [],
             topic: '',
             status: 'PLANNING',

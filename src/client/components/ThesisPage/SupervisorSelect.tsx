@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Button, Stack } from '@mui/material'
 import { AuthorData, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { useTranslation } from 'react-i18next'
-import useLoggedInUser from '../../hooks/useLoggedInUser'
 import SingleSupervisorSelect from './SingleSupervisorSelect'
 
 const SupervisorSelect: React.FC<{
@@ -11,13 +10,6 @@ const SupervisorSelect: React.FC<{
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
 }> = ({ supervisorSelections, setSupervisorSelections }) => {
   const { t } = useTranslation()
-  const { user, isLoading } = useLoggedInUser()
-
-  useEffect(() => {
-    if (user) {
-      setSupervisorSelections([{ user, percentage: 100 }])
-    }
-  }, [isLoading])
 
   const handleSupervisorChange = (index: number, supervisor: AuthorData) => {
     const updatedSelections = [...supervisorSelections]
@@ -53,8 +45,6 @@ const SupervisorSelect: React.FC<{
 
     setSupervisorSelections(updatedSelections)
   }
-
-  if (isLoading) return null
 
   return (
     <Stack spacing={3}>
