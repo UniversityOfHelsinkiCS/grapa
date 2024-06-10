@@ -103,7 +103,7 @@ describe('SupervisorSelect', () => {
       const select = screen.getByText('Lisää ohjaaja')
       select.click()
 
-      expect(setSupervisorSelections).toHaveBeenCalledTimes(2)
+      expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
       expect(setSupervisorSelections).toHaveBeenCalledWith([
         { user: null, percentage: 100 },
       ])
@@ -113,27 +113,36 @@ describe('SupervisorSelect', () => {
       render(
         <SupervisorSelect
           supervisorSelections={[
-            { userId: 1, percentage: 100, firstName: 'John', lastName: 'Doe' },
+            { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50 },
+            { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 50 },
           ]}
           setSupervisorSelections={setSupervisorSelections}
         />
       )
 
-      const removeButton = screen.getByText('Poista')
+      const removeButton = screen.getAllByText('Poista')[0]
       removeButton.click()
+
+      // console.log(screen.debug())
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
       expect(setSupervisorSelections).toHaveBeenCalledWith([
-        { 
-          user: {
-            id: 4, 
-            firstName: 'Henri', 
-            lastName: 'Tunkkaaja', 
-            username: 'tunkkaus'
-          }, 
-          percentage: 100 
-        },
+        { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 50 }
       ])
+    })
+
+    it('should not allow to delete supervisor when there is only a single supervisor', () => {
+      render(
+        <SupervisorSelect
+          supervisorSelections={[{ user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50 },]}
+          setSupervisorSelections={setSupervisorSelections}
+        />
+      )
+
+      const removeButton = screen.getByText('Poista')
+      expect(removeButton).toBeDisabled()
+
+      expect(setSupervisorSelections).toHaveBeenCalledTimes(0)
     })
   })
 })
