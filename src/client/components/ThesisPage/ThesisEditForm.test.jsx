@@ -4,7 +4,7 @@
 import * as React from 'react'
 import dayjs from 'dayjs'
 import userEvent from '@testing-library/user-event'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
 
@@ -19,9 +19,23 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
         lastName: 'Luukkainen',
         username: 'bobluukkainen',
       },
+      {
+        id: 4, 
+        firstName: 'Henri', 
+        lastName: 'Tunkkaaja', 
+        username: 'tunkkaus'
+      }
     ],
   }),
 }))
+
+jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
+  default: jest.fn().mockReturnValue({
+    user: {id: 4, firstName: 'Henri', lastName: 'Tunkkaaja', username: 'tunkkaus'},
+    isLoading: false,
+  },),
+}))
+
 jest.unstable_mockModule('@mui/icons-material/CloudUpload', () => ({
   default: jest.fn().mockReturnValue('CloudUploadIcon'),
 }))

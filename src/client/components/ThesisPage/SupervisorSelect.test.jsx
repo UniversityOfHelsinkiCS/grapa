@@ -18,8 +18,22 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
         lastName: 'Luukkainen',
         username: 'bobluukkainen',
       },
+      {
+        id: 4, 
+        firstName: 'Henri', 
+        lastName: 'Tunkkaaja', 
+        username: 'tunkkaus'
+      }
     ],
   }),
+}))
+
+
+jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
+  default: jest.fn().mockReturnValue({
+    user: {id: 4, firstName: 'Henri', lastName: 'Tunkkaaja', username: 'tunkkaus'},
+    isLoading: false,
+  },),
 }))
 
 const SupervisorSelect = (await import('./SupervisorSelect')).default
@@ -89,7 +103,7 @@ describe('SupervisorSelect', () => {
       const select = screen.getByText('Lisää ohjaaja')
       select.click()
 
-      expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
+      expect(setSupervisorSelections).toHaveBeenCalledTimes(2)
       expect(setSupervisorSelections).toHaveBeenCalledWith([
         { user: null, percentage: 100 },
       ])
@@ -109,7 +123,17 @@ describe('SupervisorSelect', () => {
       removeButton.click()
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
-      expect(setSupervisorSelections).toHaveBeenCalledWith([])
+      expect(setSupervisorSelections).toHaveBeenCalledWith([
+        { 
+          user: {
+            id: 4, 
+            firstName: 'Henri', 
+            lastName: 'Tunkkaaja', 
+            username: 'tunkkaus'
+          }, 
+          percentage: 100 
+        },
+      ])
     })
   })
 })
