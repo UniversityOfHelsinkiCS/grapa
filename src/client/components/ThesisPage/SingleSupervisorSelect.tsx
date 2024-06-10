@@ -71,6 +71,10 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
         type="button"
         onClick={handleRemoveSupervisor}
         disabled={disabled}
+        color="error"
+        variant="outlined"
+        sx={{ borderRadius: '1rem' }}
+        size="small"
       >
         {t('removeButton')}
       </Button>
