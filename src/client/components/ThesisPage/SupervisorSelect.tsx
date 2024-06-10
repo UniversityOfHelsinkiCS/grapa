@@ -35,9 +35,17 @@ const SupervisorSelect: React.FC<{
   }
 
   const handleAddSupervisor = () => {
+    const numberOfSupervisors = supervisorSelections.length + 1
+    const defaultPercentage = (1 / numberOfSupervisors) * 100
+
+    const updatedSelections = supervisorSelections.map((selection) => ({
+      ...selection,
+      percentage: Math.floor(defaultPercentage),
+    }))
+
     setSupervisorSelections([
-      ...supervisorSelections,
-      { user: null, percentage: 100 },
+      ...updatedSelections,
+      { user: null, percentage: Math.floor(defaultPercentage) },
     ])
   }
 
