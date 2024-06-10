@@ -72,9 +72,11 @@ const SupervisorSelect: React.FC<{
           }
         />
       ))}
-      <Button onClick={handleAddSupervisor}>
-        {t('thesisForm:addSupervisor')}
-      </Button>
+      {supervisorSelections.length < 5 && (
+        <Button type="button" onClick={handleAddSupervisor}>
+          {t('thesisForm:addSupervisor')}
+        </Button>
+      )}
     </Stack>
   )
 }
