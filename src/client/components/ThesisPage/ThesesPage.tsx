@@ -107,7 +107,7 @@ const ThesesPage = () => {
   if (!theses) return null
 
   return (
-    <Stack spacing={3}>
+    <Stack spacing={3} sx={{ p: '2rem', width: '100vw', maxWidth: '1920px' }}>
       <Button
         variant="contained"
         size="large"
@@ -126,7 +126,7 @@ const ThesesPage = () => {
       >
         {t('newThesisButton')}
       </Button>
-      <Box sx={{ width: '100%' }}>
+      <Box>
         <DataGrid
           rows={theses}
           columns={columns}
