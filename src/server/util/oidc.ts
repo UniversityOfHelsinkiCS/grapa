@@ -77,6 +77,12 @@ const verifyLogin = async (
     isAdmin: checkAdmin(iamGroups),
   }
 
+  // if user is not an admin or hy-employees, return 403
+  if (!user.isAdmin && !user.iamGroups.includes('hy-employees')) {
+    done(new Error('Unauthorized'))
+    return
+  }
+
   await User.upsert(user)
 
   done(null, user)

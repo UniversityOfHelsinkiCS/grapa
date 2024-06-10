@@ -1,11 +1,12 @@
 import multer from 'multer'
+import { inTest } from '../../config'
 
 const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
 
 const storage = () => {
   console.log('Storage starting')
   try {
-    if (process.env.NODE_ENV === 'test') {
+    if (inTest) {
       return multer.memoryStorage()
     }
     return multer.diskStorage({

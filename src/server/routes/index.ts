@@ -21,7 +21,7 @@ router.use(cors())
 router.use(express.json())
 router.use(express.urlencoded({ extended: true }))
 
-router.use(userMiddleware)
+if (inDevelopment || inE2EMode) router.use(userMiddleware)
 
 router.use(accessLogger)
 

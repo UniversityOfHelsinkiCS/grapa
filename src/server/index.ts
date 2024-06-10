@@ -8,7 +8,7 @@ import express from 'express'
 import session from 'express-session'
 import passport from 'passport'
 
-import { inE2EMode, inProduction, inStaging } from '../config'
+import { inE2EMode, inProduction, inStaging, inTest } from '../config'
 import { PORT, SESSION_SECRET } from './util/config'
 import { redisStore } from './util/redis'
 import logger from './util/logger'
@@ -25,8 +25,7 @@ app.use(
     store: redisStore,
     resave: false,
     saveUninitialized: false,
-    secret:
-      inE2EMode || process.env.NODE_ENV === 'test' ? 'testing' : SESSION_SECRET,
+    secret: inE2EMode || inTest ? 'testing' : SESSION_SECRET,
   })
 )
 
@@ -36,7 +35,7 @@ app.use(passport.session())
 app.use(['/api', '/api'], (req, res, next) => router(req, res, next))
 app.use(['/api', '/api'], (_, res) => res.sendStatus(404))
 
-if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
+if (inProduction || inTest) {
   const DIST_PATH = path.resolve(
     dirname(fileURLToPath(import.meta.url)),
     '../../dist'
