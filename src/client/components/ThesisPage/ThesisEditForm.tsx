@@ -312,7 +312,7 @@ const ThesisEditForm: React.FC<{
             }
           />
         </Stack>
-        <Stack spacing={1}>
+        <Stack spacing={1} sx={{ mt: '2rem' }}>
           {totalPercentage !== 100 && (
             <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
               {t('thesisForm:supervisionPercentageError')}
