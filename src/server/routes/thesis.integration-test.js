@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import app from '../index'
 import { Attachment, Author, Supervision, Thesis, User } from '../db/models'
 
-const request = supertest(app)
+const request = supertest.agent(app)
 
 const userAttributesToFetch = [
   'email',

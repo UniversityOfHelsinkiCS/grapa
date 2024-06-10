@@ -51,11 +51,7 @@ const getClient = async () => {
   return client
 }
 
-const verifyLogin = async (
-  _tokenSet: TokenSet,
-  userinfo: UserinfoResponse<UnknownObject, UnknownObject>,
-  done: (err: any, user?: unknown) => void
-) => {
+export const getUser = (userinfo: UserInfo): UserType => {
   const {
     uid: username,
     hyPersonSisuId: id,
@@ -66,7 +62,7 @@ const verifyLogin = async (
     family_name: lastName,
   } = userinfo as unknown as UserInfo
 
-  const user: UserType = {
+  return {
     username,
     id: id || username,
     email,
@@ -76,12 +72,25 @@ const verifyLogin = async (
     lastName,
     isAdmin: checkAdmin(iamGroups),
   }
+}
 
+export const isAuthorized = (userinfo: UserInfo) => {
+  const user = getUser(userinfo)
+  return user.isAdmin || user.iamGroups.includes('hy-employees')
+}
+
+const verifyLogin = async (
+  _tokenSet: TokenSet,
+  userinfo: UserinfoResponse<UnknownObject, UnknownObject>,
+  done: (err: any, user?: unknown) => void
+) => {
   // if user is not an admin or hy-employees, return 403
-  if (!user.isAdmin && !user.iamGroups.includes('hy-employees')) {
+  if (!isAuthorized(userinfo as unknown as UserInfo)) {
     done(new Error('Unauthorized'))
     return
   }
+
+  const user = getUser(userinfo as unknown as UserInfo)
 
   await User.upsert(user)
 

@@ -2,7 +2,7 @@ import supertest from 'supertest'
 import app from '../index'
 import { Program } from '../db/models'
 
-const request = supertest(app)
+const request = supertest.agent(app)
 
 describe('program router', () => {
   beforeEach(async () => {

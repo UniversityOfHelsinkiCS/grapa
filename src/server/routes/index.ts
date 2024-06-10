@@ -12,6 +12,7 @@ import userRouter from './user'
 import usersRouter from './users'
 import attachmentRouter from './attachment'
 import programRouter from './program'
+import { inDevelopment, inE2EMode, inTest } from '../../config'
 
 const router = express()
 
@@ -20,8 +21,7 @@ initializeSentry()
 router.use(cors())
 router.use(express.json())
 router.use(express.urlencoded({ extended: true }))
-
-if (inDevelopment || inE2EMode) router.use(userMiddleware)
+if (inDevelopment || inE2EMode || inTest) router.use(userMiddleware)
 
 router.use(accessLogger)
 
