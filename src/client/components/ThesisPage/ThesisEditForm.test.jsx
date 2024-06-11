@@ -42,6 +42,9 @@ jest.unstable_mockModule('@mui/icons-material/CloudUpload', () => ({
 jest.unstable_mockModule('@mui/icons-material/UploadFile', () => ({
   default: jest.fn().mockReturnValue('UploadFileIcon'),
 }))
+jest.unstable_mockModule('@mui/icons-material/Delete', () => ({
+  default: jest.fn().mockReturnValue('DeleteIcon'),
+}))
 jest.unstable_mockModule('@mui/icons-material/Error', () => ({
   default: jest.fn().mockReturnValue('ErrorIcon'),
 }))

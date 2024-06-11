@@ -73,6 +73,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
         }
       />
       <IconButton
+        data-testid="remove-supervisor-button"
         type="button"
         onClick={handleRemoveSupervisor}
         disabled={disabled}

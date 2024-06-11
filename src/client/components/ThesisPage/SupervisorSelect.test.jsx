@@ -36,6 +36,10 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
   },),
 }))
 
+jest.unstable_mockModule('@mui/icons-material/Delete', () => ({
+  default: jest.fn().mockReturnValue('DeleteIcon'),
+}))
+
 const SupervisorSelect = (await import('./SupervisorSelect')).default
 
 describe('SupervisorSelect', () => {
@@ -142,7 +146,7 @@ describe('SupervisorSelect', () => {
         />
       )
 
-      const removeButton = screen.getAllByText('Poista')[0]
+      const removeButton = screen.getAllByTestId('remove-supervisor-button')[0]
       removeButton.click()
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
@@ -159,7 +163,7 @@ describe('SupervisorSelect', () => {
         />
       )
 
-      const removeButton = screen.getByText('Poista')
+      const removeButton = screen.getByTestId('remove-supervisor-button')
       expect(removeButton).toBeDisabled()
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(0)
