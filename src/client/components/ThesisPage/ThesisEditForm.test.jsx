@@ -70,6 +70,10 @@ describe('ThesisEditForm', () => {
         // so I just preselected su[pervision and author
         supervisions: [{ user: { id: 1 }, percentage: 100 }],
         authors: [{ id: 2 }],
+        graders: [
+          { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' },
+          { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
+        ],
         topic: '',
         status: 'PLANNING',
         startDate: dayjs().format('YYYY-MM-DD'),
@@ -179,6 +183,10 @@ describe('ThesisEditForm', () => {
         programId: programs[0].key,
         supervisions: [{ userId: 1, percentage: 100 }],
         authors: [{ userId: 2 }],
+        graders: [
+          { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' },
+          { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
+        ],
         topic: 'Test',
         status: 'PLANNING',
         startDate: dayjs().format('YYYY-MM-DD'),
