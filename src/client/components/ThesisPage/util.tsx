@@ -5,11 +5,27 @@ export const getEqualSupervisorSelectionWorkloads = (
   supervisorSelections: SupervisorSelection[]
 ) => {
   const defaultPercentage = (1 / numberOfSupervisors) * 100
+  const roundedDefaultPercentage = Math.floor(defaultPercentage)
 
-  const updatedSelections = supervisorSelections.map((selection) => ({
-    ...selection,
-    percentage: Math.floor(defaultPercentage),
-  }))
+  const totalPercentage = roundedDefaultPercentage * numberOfSupervisors
+
+  const updatedSelections = supervisorSelections.map((selection, index) => {
+    // Check if the total percentage is less than 100%
+    if (index === 0 && totalPercentage < 100) {
+      // Adjust the first selection's percentage to make the total 100%
+      const difference = 100 - totalPercentage
+
+      return {
+        ...selection,
+        percentage: roundedDefaultPercentage + difference,
+      }
+    }
+
+    return {
+      ...selection,
+      percentage: roundedDefaultPercentage,
+    }
+  })
 
   return updatedSelections
 }
