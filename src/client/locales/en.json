@@ -23,6 +23,12 @@
     "waysOfWorkingMissingError": "Make sure you upload a ways of working PDF",
     "basicInfo": "Basic information",
     "graders": "Graders",
+    "graderInstructions": {
+      "title": "Instructions for filling the graders",
+      "content": "Grader 1 must be a professor from the University of Helsinki and grader 2 must have PhD.",
+      "professor": "Professor",
+      "phd": "PhD (Valinnainen)"
+    },
     "supervisors": "Supervisors",
     "appendices": "Appendices",
     "addSupervisor": "Add supervisor",

@@ -1,5 +1,10 @@
 import React from 'react'
-import { Autocomplete, FormControl, TextField } from '@mui/material'
+import {
+  Autocomplete,
+  FormControl,
+  TextField,
+  TextFieldProps,
+} from '@mui/material'
 import { AuthorData } from '@backend/types'
 import { useTranslation } from 'react-i18next'
 import { useDebounce } from '../../../hooks/useDebounce'
@@ -7,16 +12,16 @@ import useUsers from '../../../hooks/useUsers'
 
 interface SingleGraderSelectProps {
   index: number
-  required: boolean
   handleGraderChange: (value: AuthorData | null) => void
   selection: AuthorData
+  inputProps: TextFieldProps
 }
 
 const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
   handleGraderChange,
   selection,
   index,
-  required = true,
+  inputProps,
 }) => {
   const { t } = useTranslation()
   const [userSearch, setUserSearch] = React.useState('')
@@ -36,7 +41,7 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
           <TextField
             {...params}
             label={t('grader', { index })}
-            required={required}
+            {...inputProps}
           />
         )}
         inputValue={userSearch}

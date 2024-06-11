@@ -23,6 +23,12 @@
     "waysOfWorkingMissingError": "Työskentelysopimus puuttuu",
     "basicInfo": "Perustiedot",
     "graders": "Arvioijat",
+    "graderInstructions": {
+      "title": "Ohjeita täyttämiseen",
+      "content": "Arvioijan 1 tulee olla Helsingin Yliopiston professori ja arvioijan 2 tulee olla tohtori.",
+      "professor": "Professori",
+      "phd": "Tohtori (Valinnainen)"
+    },
     "supervisors": "Ohjaajat",
     "appendices": "Liitteet",
     "addSupervisor": "Lisää ohjaaja",

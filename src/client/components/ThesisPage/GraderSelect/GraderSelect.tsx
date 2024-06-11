@@ -1,5 +1,5 @@
 import React from 'react'
-import { Stack, Typography } from '@mui/material'
+import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
 import { AuthorData } from '@backend/types'
 import { useTranslation } from 'react-i18next'
 import SingleGraderSelect from './SingleGraderSelect'
@@ -31,15 +31,28 @@ const GraderSelect: React.FC<{
         {t('thesisForm:graders')}
       </Typography>
 
-      {graderSelections.map((selection, index) => (
-        <SingleGraderSelect
-          key={selection?.id ?? `index-${index}`}
-          index={index + 1}
-          required={index === 0}
-          selection={selection}
-          handleGraderChange={(grader) => handleChange(index, grader)}
-        />
-      ))}
+      <Alert severity="info" variant="outlined">
+        <AlertTitle>{t('thesisForm:graderInstructions:title')}</AlertTitle>
+        {t('thesisForm:graderInstructions:content')}
+      </Alert>
+
+      {graderSelections.map((selection, index) => {
+        const requiredField = index === 0
+        const helperText =
+          index === 0
+            ? t('thesisForm:graderInstructions:professor')
+            : t('thesisForm:graderInstructions:phd')
+
+        return (
+          <SingleGraderSelect
+            key={selection?.id ?? `index-${index}`}
+            index={index + 1}
+            selection={selection}
+            handleGraderChange={(grader) => handleChange(index, grader)}
+            inputProps={{ required: requiredField, helperText }}
+          />
+        )
+      })}
     </Stack>
   )
 }
