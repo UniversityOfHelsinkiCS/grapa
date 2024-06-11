@@ -60,6 +60,7 @@ export interface ThesisData {
   targetDate?: string
   supervisions: SupervisionData[]
   authors: AuthorData[]
+  graders: AuthorData[]
   researchPlan?: FileData | File
   waysOfWorking?: FileData | File
 }

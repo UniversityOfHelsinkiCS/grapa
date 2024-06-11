@@ -114,12 +114,13 @@ const ThesesPage = () => {
       <Button
         variant="contained"
         size="large"
-        sx={{ width: 200 }}
+        sx={{ width: 200, borderRadius: '0.5rem' }}
         onClick={() => {
           setNewThesis({
             programId: programs[0].key,
             supervisions: [{ user, percentage: 100 }],
             authors: [],
+            graders: [null, null],
             topic: '',
             status: 'PLANNING',
             startDate: dayjs().format('YYYY-MM-DD'),

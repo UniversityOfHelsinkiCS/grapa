@@ -32,6 +32,7 @@ import useUsers from '../../hooks/useUsers'
 import { BASE_PATH } from '../../../config'
 import { useDebounce } from '../../hooks/useDebounce'
 import { getTotalPercentage } from './util'
+import GraderSelect from './GraderSelect'
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -309,6 +310,16 @@ const ThesisEditForm: React.FC<{
               setEditedThesis((oldThesis) => ({
                 ...oldThesis,
                 supervisions: newSupervisions,
+              }))
+            }
+          />
+
+          <GraderSelect
+            graderSelections={editedThesis.graders}
+            setGraderSelections={(newGraders) =>
+              setEditedThesis((oldThesis) => ({
+                ...oldThesis,
+                graders: newGraders,
               }))
             }
           />

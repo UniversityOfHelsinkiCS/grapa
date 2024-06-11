@@ -2,6 +2,7 @@
   "common": {
     "appName": "GRAdut Pikaisesti Alkuun",
     "author": "Tekijä",
+    "grader": "Arvioija {{index}}",
     "profileButton": "Oma tiedot",
     "programHeader": "Ohjelma",
     "topicHeader": "Aihe",
@@ -20,6 +21,7 @@
     "supervisionPercentageError": " Varmista, että ohjaajien yhteisprosentti on 100",
     "researchPlanMissingError": "Tutkimussuunnitelma puuttuu",
     "waysOfWorkingMissingError": "Työskentelysopimus puuttuu",
+    "graders": "Arvioijat",
     "supervisors": "Ohjaajat",
     "addSupervisor": "Lisää ohjaaja",
     "editThesisDialog": "Muokkaa gradu",
