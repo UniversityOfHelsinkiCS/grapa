@@ -109,6 +109,28 @@ describe('SupervisorSelect', () => {
       ])
     })
 
+    it('should adjust the supervisor workload percentages accordingly', () => {
+      render(
+        <SupervisorSelect
+          supervisorSelections={[
+            { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50 },
+            { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 50 },
+          ]}
+          setSupervisorSelections={setSupervisorSelections}
+        />
+      )
+
+      const select = screen.getByText('Lisää ohjaaja')
+      select.click()
+
+      expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
+      expect(setSupervisorSelections).toHaveBeenCalledWith([
+        { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 34 },
+        { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 33 },
+        { user: null, percentage: 33 },
+      ])
+    })
+
     it('should call setSupervisorSelections when a supervisor is removed', () => {
       render(
         <SupervisorSelect
@@ -122,8 +144,6 @@ describe('SupervisorSelect', () => {
 
       const removeButton = screen.getAllByText('Poista')[0]
       removeButton.click()
-
-      // console.log(screen.debug())
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
       expect(setSupervisorSelections).toHaveBeenCalledWith([
