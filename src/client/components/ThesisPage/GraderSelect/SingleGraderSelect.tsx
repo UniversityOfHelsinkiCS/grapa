@@ -26,6 +26,7 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
   return (
     <FormControl fullWidth>
       <Autocomplete<AuthorData>
+        data-testid={`grader-select-input-${index}`}
         disablePortal
         options={users ?? []}
         getOptionLabel={(user) =>

@@ -10,7 +10,7 @@ const GraderSelect: React.FC<{
 }> = ({ graderSelections, setGraderSelections }) => {
   const { t } = useTranslation()
 
-  const handleSupervisorChange = (index: number, grader: AuthorData) => {
+  const handleChange = (index: number, grader: AuthorData) => {
     const updatedSelections = [...graderSelections]
     updatedSelections[index] = grader
     setGraderSelections(updatedSelections)
@@ -18,6 +18,7 @@ const GraderSelect: React.FC<{
 
   return (
     <Stack
+      data-testid="grader-select"
       spacing={3}
       sx={{
         borderStyle: 'none',
@@ -32,11 +33,11 @@ const GraderSelect: React.FC<{
 
       {graderSelections.map((selection, index) => (
         <SingleGraderSelect
-          key={selection?.id ?? index}
+          key={selection?.id ?? `index-${index}`}
           index={index + 1}
           required={index === 0}
           selection={selection}
-          handleGraderChange={(grader) => handleSupervisorChange(index, grader)}
+          handleGraderChange={(grader) => handleChange(index, grader)}
         />
       ))}
     </Stack>
