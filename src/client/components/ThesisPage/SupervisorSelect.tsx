@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Stack } from '@mui/material'
+import { Button, Stack, Typography } from '@mui/material'
 import { AuthorData, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { useTranslation } from 'react-i18next'
@@ -53,7 +53,19 @@ const SupervisorSelect: React.FC<{
   }
 
   return (
-    <Stack spacing={3}>
+    <Stack
+      spacing={3}
+      sx={{
+        borderStyle: 'none',
+        borderWidth: '1px',
+        borderTop: '1px solid',
+        borderLeft: '1px solid',
+      }}
+      component="fieldset"
+    >
+      <Typography component="legend" sx={{ px: '1rem' }}>
+        {t('thesisForm:supervisors')}
+      </Typography>
       {supervisorSelections.map((selection, index) => (
         <SingleSupervisorSelect
           key={selection.user?.id ?? index}

@@ -20,6 +20,7 @@
     "supervisionPercentageError": " Varmista, että ohjaajien yhteisprosentti on 100",
     "researchPlanMissingError": "Tutkimussuunnitelma puuttuu",
     "waysOfWorkingMissingError": "Työskentelysopimus puuttuu",
+    "supervisors": "Ohjaajat",
     "addSupervisor": "Lisää ohjaaja",
     "editThesisDialog": "Muokkaa gradu",
     "uploadWaysOfWorkingButton": "Lataa työskentelysopimus",
