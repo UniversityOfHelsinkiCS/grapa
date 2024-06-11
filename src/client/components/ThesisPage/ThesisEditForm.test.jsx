@@ -84,7 +84,7 @@ describe('ThesisEditForm', () => {
       )
     })
 
-    it('renders ThesisEditForm correctly, renders all validation error, and submit button is disabled', () => {
+    it('renders ThesisEditForm correctly and renders all validation errors', () => {
       expect(screen.getByText('Muokkaa gradu')).toBeInTheDocument()
       expect(screen.getByText('Aihe')).toBeInTheDocument()
       expect(screen.getByText('Ohjelma')).toBeInTheDocument()
@@ -99,7 +99,7 @@ describe('ThesisEditForm', () => {
       ).toBeInTheDocument()
       expect(screen.getByText('Työskentelysopimus puuttuu')).toBeInTheDocument()
 
-      expect(screen.getByRole('button', { name: 'Tallenna' })).toBeDisabled()
+      expect(screen.getByRole('button', { name: 'Tallenna' })).toBeEnabled()
     })
 
     describe('when all required fields are filled', () => {

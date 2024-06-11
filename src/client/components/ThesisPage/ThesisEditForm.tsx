@@ -76,6 +76,13 @@ const ThesisEditForm: React.FC<{
       editedThesis?.waysOfWorking
   )
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!canSubmit) return
+
+    await onSubmit(editedThesis)
+  }
+
   return (
     <Dialog
       open
@@ -84,14 +91,12 @@ const ThesisEditForm: React.FC<{
       onClose={onClose}
       PaperProps={{
         component: 'form',
-        onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
-          event.preventDefault()
-
-          await onSubmit(editedThesis)
-        },
+        onSubmit: handleSubmit,
       }}
     >
-      <DialogTitle>{t('thesisForm:editThesisDialog')}</DialogTitle>
+      <DialogTitle component="h1">
+        {t('thesisForm:editThesisDialog')}
+      </DialogTitle>
       <DialogContent>
         <Stack spacing={6}>
           <TextField
@@ -331,10 +336,16 @@ const ThesisEditForm: React.FC<{
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>{t('cancelButton')}</Button>
-        <Button disabled={!canSubmit} type="submit">
-          {t('submitButton')}
+        <Button
+          type="button"
+          variant="contained"
+          color="error"
+          sx={{ borderRadius: '0.5rem' }}
+          onClick={onClose}
+        >
+          {t('cancelButton')}
         </Button>
+        <Button type="submit">{t('submitButton')}</Button>
       </DialogActions>
     </Dialog>
   )
