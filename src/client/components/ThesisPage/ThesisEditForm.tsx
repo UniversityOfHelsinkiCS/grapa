@@ -65,6 +65,8 @@ const ThesisEditForm: React.FC<{
   const canSubmit = Boolean(
     editedThesis?.supervisions.length &&
       totalPercentage === 100 &&
+      editedThesis?.graders[0] &&
+      editedThesis?.topic &&
       editedThesis?.status &&
       editedThesis?.startDate &&
       editedThesis?.targetDate &&
