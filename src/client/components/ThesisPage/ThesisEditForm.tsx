@@ -29,7 +29,7 @@ import { useState } from 'react'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import programs from '../mockPorgrams'
-import SupervisorSelect from './SupervisorSelect'
+import SupervisorSelect from './SupervisorSelect/SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
 import { BASE_PATH } from '../../../config'
 import { useDebounce } from '../../hooks/useDebounce'
@@ -127,7 +127,7 @@ const ThesisEditForm: React.FC<{
                 }))
               }}
               fullWidth
-              variant="standard"
+              variant="outlined"
             />
             <FormControl fullWidth>
               <InputLabel id="program-select-label">

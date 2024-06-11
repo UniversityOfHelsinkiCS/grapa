@@ -10,8 +10,8 @@ import {
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import DeleteIcon from '@mui/icons-material/Delete'
-import useUsers from '../../hooks/useUsers'
-import { useDebounce } from '../../hooks/useDebounce'
+import useUsers from '../../../hooks/useUsers'
+import { useDebounce } from '../../../hooks/useDebounce'
 
 interface SingleSupervisorSelectProps {
   handleSupervisorChange: (value: AuthorData | null) => void

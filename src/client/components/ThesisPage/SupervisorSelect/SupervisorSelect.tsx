@@ -4,7 +4,7 @@ import { AuthorData, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { useTranslation } from 'react-i18next'
 import SingleSupervisorSelect from './SingleSupervisorSelect'
-import { getEqualSupervisorSelectionWorkloads } from './util'
+import { getEqualSupervisorSelectionWorkloads } from '../util'
 
 const SupervisorSelect: React.FC<{
   supervisorSelections: SupervisorSelection[]

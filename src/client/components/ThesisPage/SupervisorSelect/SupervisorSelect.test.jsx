@@ -5,7 +5,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 
 // import SupervisorSelect from './SupervisorSelect'
-import initializeI18n from '../../util/il18n'
+import initializeI18n from '../../../util/il18n'
 
 jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   default: jest.fn().mockReturnValue({
