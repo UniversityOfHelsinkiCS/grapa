@@ -2,8 +2,10 @@ import * as Sentry from '@sentry/node'
 import logger from '../util/logger'
 import { fetchUsers } from './users'
 import { clearOffsets } from './util'
+import { fetchPrograms } from './programs'
 
 const runUpdater = async () => {
+  await fetchPrograms()
   await fetchUsers()
 }
 
