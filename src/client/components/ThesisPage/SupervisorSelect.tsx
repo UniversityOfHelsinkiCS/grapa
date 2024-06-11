@@ -59,7 +59,6 @@ const SupervisorSelect: React.FC<{
         borderStyle: 'none',
         borderWidth: '1px',
         borderTop: '1px solid',
-        borderLeft: '1px solid',
       }}
       component="fieldset"
     >
