@@ -34,7 +34,7 @@ import useUsers from '../../hooks/useUsers'
 import { BASE_PATH } from '../../../config'
 import { useDebounce } from '../../hooks/useDebounce'
 import { getTotalPercentage } from './util'
-import GraderSelect from './GraderSelect'
+import GraderSelect from './GraderSelect/GraderSelect'
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
