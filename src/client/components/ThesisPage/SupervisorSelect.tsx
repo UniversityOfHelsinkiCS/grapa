@@ -34,7 +34,7 @@ const SupervisorSelect: React.FC<{
 
     setSupervisorSelections([
       ...updatedSelections,
-      { user: null, percentage: Math.floor(updatedSelections[0].percentage) },
+      { user: null, percentage: Math.floor((1 / numberOfSupervisors) * 100) },
     ])
   }
 
