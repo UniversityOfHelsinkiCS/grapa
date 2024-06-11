@@ -4,6 +4,7 @@ import { AuthorData, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { useTranslation } from 'react-i18next'
 import SingleSupervisorSelect from './SingleSupervisorSelect'
+import { getEqualSupervisorSelectionWorkloads } from './util'
 
 const SupervisorSelect: React.FC<{
   supervisorSelections: SupervisorSelection[]
@@ -25,23 +26,28 @@ const SupervisorSelect: React.FC<{
 
   const handleAddSupervisor = () => {
     const numberOfSupervisors = supervisorSelections.length + 1
-    const defaultPercentage = (1 / numberOfSupervisors) * 100
 
-    const updatedSelections = supervisorSelections.map((selection) => ({
-      ...selection,
-      percentage: Math.floor(defaultPercentage),
-    }))
+    const updatedSelections = getEqualSupervisorSelectionWorkloads(
+      numberOfSupervisors,
+      supervisorSelections
+    )
 
     setSupervisorSelections([
       ...updatedSelections,
-      { user: null, percentage: Math.floor(defaultPercentage) },
+      { user: null, percentage: Math.floor(updatedSelections[0].percentage) },
     ])
   }
 
   const handleRemoveSupervisor = (index: number) => {
-    const updatedSelections = [...supervisorSelections]
-    updatedSelections.splice(index, 1)
-    if (updatedSelections.length === 0) return // Do not allow removing all supervisors
+    const initialSelections = [...supervisorSelections]
+    initialSelections.splice(index, 1)
+    if (initialSelections.length === 0) return // Do not allow removing all supervisors
+
+    const numberOfSupervisors = initialSelections.length
+    const updatedSelections = getEqualSupervisorSelectionWorkloads(
+      numberOfSupervisors,
+      initialSelections
+    )
 
     setSupervisorSelections(updatedSelections)
   }
