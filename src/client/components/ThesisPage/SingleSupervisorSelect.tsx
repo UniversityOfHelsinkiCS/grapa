@@ -3,11 +3,13 @@ import {
   Autocomplete,
   Stack,
   TextField,
-  Button,
   FormControl,
+  IconButton,
+  InputAdornment,
 } from '@mui/material'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import DeleteIcon from '@mui/icons-material/Delete'
 import useUsers from '../../hooks/useUsers'
 import { useDebounce } from '../../hooks/useDebounce'
 
@@ -59,25 +61,27 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
       <TextField
         required
         type="number"
-        sx={{ width: 125 }}
-        inputProps={{ min: 1, max: 100 }}
+        sx={{ width: '12ch' }}
+        InputProps={{
+          inputProps: { min: 1, max: 100 },
+          endAdornment: <InputAdornment position="end">%</InputAdornment>,
+        }}
         label={t('thesisForm:selectSupervisorPercentage')}
         value={selection.percentage}
         onChange={(event) =>
           handlePercentageChange(parseInt(event.target.value, 10))
         }
       />
-      <Button
+      <IconButton
         type="button"
         onClick={handleRemoveSupervisor}
         disabled={disabled}
         color="error"
-        variant="outlined"
-        sx={{ borderRadius: '1rem' }}
         size="small"
+        aria-label={`${t('removeButton')} ${selection.user?.firstName} ${selection.user?.lastName}`}
       >
-        {t('removeButton')}
-      </Button>
+        <DeleteIcon />
+      </IconButton>
     </Stack>
   )
 }
