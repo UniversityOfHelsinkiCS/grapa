@@ -13,12 +13,14 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
+  Grid,
   InputLabel,
   Link,
   MenuItem,
   Select,
   Stack,
   TextField,
+  Typography,
 } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -98,213 +100,163 @@ const ThesisEditForm: React.FC<{
       </DialogTitle>
       <DialogContent>
         <Stack spacing={6}>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="topic"
-            name="topic"
-            label={t('topicHeader')}
-            value={editedThesis.topic}
-            onChange={(event) => {
-              setEditedThesis((oldThesis) => ({
-                ...oldThesis,
-                topic: event.target.value,
-              }))
+          <Stack
+            spacing={3}
+            sx={{
+              borderStyle: 'none',
+              borderWidth: '1px',
+              borderTop: '1px solid',
             }}
-            fullWidth
-            variant="standard"
-          />
-          <FormControl fullWidth>
-            <InputLabel id="program-select-label">
-              {t('programHeader')}
-            </InputLabel>
-            <Select
+            component="fieldset"
+          >
+            <Typography component="legend" sx={{ px: '1rem' }}>
+              {t('thesisForm:basicInfo')}
+            </Typography>
+            <TextField
+              autoFocus
               required
-              value={editedThesis.programId}
-              label="Program"
-              name="programId"
+              margin="dense"
+              id="topic"
+              name="topic"
+              label={t('topicHeader')}
+              value={editedThesis.topic}
               onChange={(event) => {
                 setEditedThesis((oldThesis) => ({
                   ...oldThesis,
-                  programId: event.target.value as ThesisData['programId'],
+                  topic: event.target.value,
                 }))
               }}
-            >
-              {programs.map((program) => (
-                <MenuItem key={program.key} value={program.key}>
-                  {program.name.en}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl fullWidth>
-            <Autocomplete<AuthorData>
-              disablePortal
-              options={users ?? []}
-              getOptionLabel={(user) =>
-                `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.username ? `(${user.username})` : ''}`
-              }
-              renderInput={(params) => (
-                <TextField {...params} label={t('author')} required />
-              )}
-              inputValue={userSearch}
-              filterOptions={(x) => x}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              value={
-                editedThesis.authors.length > 0 ? editedThesis.authors[0] : null
-              }
-              onChange={(_, value) => {
-                setEditedThesis((oldThesis) => ({
-                  ...oldThesis,
-                  authors: [value],
-                }))
-              }}
-              onInputChange={(event, value) => {
-                // Fetch potential authors based on the input value
-                // You can use debounce or throttle to limit the number of requests
-                // Example: fetchPotentialAuthors(value)
-                setUserSearch(value)
-              }}
+              fullWidth
+              variant="standard"
             />
-          </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="program-select-label">
+                {t('programHeader')}
+              </InputLabel>
+              <Select
+                required
+                value={editedThesis.programId}
+                label="Program"
+                name="programId"
+                onChange={(event) => {
+                  setEditedThesis((oldThesis) => ({
+                    ...oldThesis,
+                    programId: event.target.value as ThesisData['programId'],
+                  }))
+                }}
+              >
+                {programs.map((program) => (
+                  <MenuItem key={program.key} value={program.key}>
+                    {program.name.en}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <Autocomplete<AuthorData>
+                disablePortal
+                options={users ?? []}
+                getOptionLabel={(user) =>
+                  `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.username ? `(${user.username})` : ''}`
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label={t('author')} required />
+                )}
+                inputValue={userSearch}
+                filterOptions={(x) => x}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={
+                  editedThesis.authors.length > 0
+                    ? editedThesis.authors[0]
+                    : null
+                }
+                onChange={(_, value) => {
+                  setEditedThesis((oldThesis) => ({
+                    ...oldThesis,
+                    authors: [value],
+                  }))
+                }}
+                onInputChange={(event, value) => {
+                  // Fetch potential authors based on the input value
+                  // You can use debounce or throttle to limit the number of requests
+                  // Example: fetchPotentialAuthors(value)
+                  setUserSearch(value)
+                }}
+              />
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="status-select-label">
+                {t('statusHeader')}
+              </InputLabel>
+              <Select
+                required
+                value={editedThesis.status}
+                label={t('statusHeader')}
+                name="status"
+                onChange={(event) => {
+                  setEditedThesis((oldThesis) => ({
+                    ...oldThesis,
+                    status: event.target.value as ThesisData['status'],
+                  }))
+                }}
+              >
+                <MenuItem value="PLANNING">Planning</MenuItem>
+                <MenuItem value="STARTED">Started</MenuItem>
+                <MenuItem value="IN_PROGRESS">In progress</MenuItem>
+                <MenuItem value="COMPLETED">Completed</MenuItem>
+                <MenuItem value="CANCELLED">Cancelled</MenuItem>
+              </Select>
+            </FormControl>
 
-          <FormControl fullWidth>
-            <InputLabel id="status-select-label">
-              {t('statusHeader')}
-            </InputLabel>
-            <Select
-              required
-              value={editedThesis.status}
-              label={t('statusHeader')}
-              name="status"
-              onChange={(event) => {
-                setEditedThesis((oldThesis) => ({
-                  ...oldThesis,
-                  status: event.target.value as ThesisData['status'],
-                }))
-              }}
+            <LocalizationProvider
+              adapterLocale="fiFI"
+              dateAdapter={AdapterDayjs}
             >
-              <MenuItem value="PLANNING">Planning</MenuItem>
-              <MenuItem value="STARTED">Started</MenuItem>
-              <MenuItem value="IN_PROGRESS">In progress</MenuItem>
-              <MenuItem value="COMPLETED">Completed</MenuItem>
-              <MenuItem value="CANCELLED">Cancelled</MenuItem>
-            </Select>
-          </FormControl>
-          <Button
-            component="label"
-            variant="contained"
-            tabIndex={-1}
-            startIcon={<CloudUploadIcon />}
-          >
-            {t('thesisForm:uploadResearchPlanButton')}
-            <VisuallyHiddenInput
-              value=""
-              onChange={(ev) =>
-                setEditedThesis((oldThesis) => ({
-                  ...oldThesis,
-                  researchPlan: ev.target.files[0],
-                }))
-              }
-              type="file"
-              accept=".pdf"
-            />
-          </Button>
-          {editedThesis.researchPlan && (
-            <Chip
-              label={
-                'filename' in editedThesis.researchPlan ? (
-                  <Link
-                    href={`${BASE_PATH}/api/attachments/${editedThesis.researchPlan.filename}`}
-                  >
-                    {editedThesis.researchPlan.name}
-                  </Link>
-                ) : (
-                  editedThesis.researchPlan.name
-                )
-              }
-              icon={<UploadFileIcon />}
-              variant="outlined"
-              sx={{ maxWidth: 200 }}
-              onDelete={() =>
-                setEditedThesis((oldThesis) => ({
-                  ...oldThesis,
-                  researchPlan: undefined,
-                }))
-              }
-            />
-          )}
-          <Button
-            component="label"
-            variant="contained"
-            tabIndex={-1}
-            startIcon={<CloudUploadIcon />}
-          >
-            {t('thesisForm:uploadWaysOfWorkingButton')}
-            <VisuallyHiddenInput
-              value=""
-              onChange={(ev) =>
-                setEditedThesis((oldThesis) => ({
-                  ...oldThesis,
-                  waysOfWorking: ev.target.files[0],
-                }))
-              }
-              type="file"
-              accept=".pdf"
-            />
-          </Button>
-          {editedThesis.waysOfWorking && (
-            <Chip
-              label={
-                'filename' in editedThesis.waysOfWorking ? (
-                  <Link
-                    href={`${BASE_PATH}/api/attachments/${editedThesis.waysOfWorking.filename}`}
-                  >
-                    {editedThesis.waysOfWorking.name}
-                  </Link>
-                ) : (
-                  editedThesis.waysOfWorking.name
-                )
-              }
-              icon={<UploadFileIcon />}
-              variant="outlined"
-              sx={{ maxWidth: 200 }}
-              onDelete={() =>
-                setEditedThesis((oldThesis) => ({
-                  ...oldThesis,
-                  waysOfWorking: undefined,
-                }))
-              }
-            />
-          )}
-          <LocalizationProvider adapterLocale="fiFI" dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label={t('startDateHeader')}
-              name="startDate"
-              value={dayjs(editedThesis.startDate)}
-              format="DD.MM.YYYY"
-              onChange={(date) => {
-                setEditedThesis((oldThesis) => ({
-                  ...oldThesis,
-                  startDate: date.format('YYYY-MM-DD'),
-                }))
-              }}
-            />
-            <DatePicker
-              label={t('targetDateHeader')}
-              name="targetDate"
-              value={dayjs(editedThesis.targetDate)}
-              format="DD.MM.YYYY"
-              minDate={dayjs(editedThesis.startDate)}
-              onChange={(date) => {
-                setEditedThesis((oldThesis) => ({
-                  ...oldThesis,
-                  targetDate: date.format('YYYY-MM-DD'),
-                }))
-              }}
-            />
-          </LocalizationProvider>
+              <Grid container>
+                <Grid item xs={6} sx={{ pr: '1rem' }}>
+                  <DatePicker
+                    label={t('startDateHeader')}
+                    slotProps={{
+                      textField: {
+                        helperText: 'MM.DD.YYYY',
+                        fullWidth: true,
+                      },
+                    }}
+                    name="startDate"
+                    value={dayjs(editedThesis.startDate)}
+                    format="DD.MM.YYYY"
+                    onChange={(date) => {
+                      setEditedThesis((oldThesis) => ({
+                        ...oldThesis,
+                        startDate: date.format('YYYY-MM-DD'),
+                      }))
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={6} sx={{ pl: '1rem' }}>
+                  <DatePicker
+                    label={t('targetDateHeader')}
+                    slotProps={{
+                      textField: {
+                        helperText: 'MM.DD.YYYY',
+                        fullWidth: true,
+                      },
+                    }}
+                    name="targetDate"
+                    value={dayjs(editedThesis.targetDate)}
+                    format="DD.MM.YYYY"
+                    minDate={dayjs(editedThesis.startDate)}
+                    onChange={(date) => {
+                      setEditedThesis((oldThesis) => ({
+                        ...oldThesis,
+                        targetDate: date.format('YYYY-MM-DD'),
+                      }))
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </LocalizationProvider>
+          </Stack>
 
           <SupervisorSelect
             supervisorSelections={editedThesis.supervisions}
@@ -325,6 +277,106 @@ const ThesisEditForm: React.FC<{
               }))
             }
           />
+
+          <Stack
+            spacing={3}
+            sx={{
+              borderStyle: 'none',
+              borderWidth: '1px',
+              borderTop: '1px solid',
+            }}
+            component="fieldset"
+          >
+            <Typography component="legend" sx={{ px: '1rem' }}>
+              {t('thesisForm:appendices')}
+            </Typography>
+            <Button
+              component="label"
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+            >
+              {t('thesisForm:uploadResearchPlanButton')}
+              <VisuallyHiddenInput
+                value=""
+                onChange={(ev) =>
+                  setEditedThesis((oldThesis) => ({
+                    ...oldThesis,
+                    researchPlan: ev.target.files[0],
+                  }))
+                }
+                type="file"
+                accept=".pdf"
+              />
+            </Button>
+            {editedThesis.researchPlan && (
+              <Chip
+                label={
+                  'filename' in editedThesis.researchPlan ? (
+                    <Link
+                      href={`${BASE_PATH}/api/attachments/${editedThesis.researchPlan.filename}`}
+                    >
+                      {editedThesis.researchPlan.name}
+                    </Link>
+                  ) : (
+                    editedThesis.researchPlan.name
+                  )
+                }
+                icon={<UploadFileIcon />}
+                variant="outlined"
+                sx={{ maxWidth: 200 }}
+                onDelete={() =>
+                  setEditedThesis((oldThesis) => ({
+                    ...oldThesis,
+                    researchPlan: undefined,
+                  }))
+                }
+              />
+            )}
+            <Button
+              component="label"
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+            >
+              {t('thesisForm:uploadWaysOfWorkingButton')}
+              <VisuallyHiddenInput
+                value=""
+                onChange={(ev) =>
+                  setEditedThesis((oldThesis) => ({
+                    ...oldThesis,
+                    waysOfWorking: ev.target.files[0],
+                  }))
+                }
+                type="file"
+                accept=".pdf"
+              />
+            </Button>
+            {editedThesis.waysOfWorking && (
+              <Chip
+                label={
+                  'filename' in editedThesis.waysOfWorking ? (
+                    <Link
+                      href={`${BASE_PATH}/api/attachments/${editedThesis.waysOfWorking.filename}`}
+                    >
+                      {editedThesis.waysOfWorking.name}
+                    </Link>
+                  ) : (
+                    editedThesis.waysOfWorking.name
+                  )
+                }
+                icon={<UploadFileIcon />}
+                variant="outlined"
+                sx={{ maxWidth: 200 }}
+                onDelete={() =>
+                  setEditedThesis((oldThesis) => ({
+                    ...oldThesis,
+                    waysOfWorking: undefined,
+                  }))
+                }
+              />
+            )}
+          </Stack>
         </Stack>
         <Stack spacing={1} sx={{ mt: '2rem' }}>
           {totalPercentage !== 100 && (
