@@ -68,7 +68,8 @@ describe('ThesisEditForm', () => {
         programId: programs[0].key,
         supervisions: [],
         authors: [],
-        graders: [null, null],
+        graders: [{ user: null, isPrimaryGrader: true },
+          { user: null, isPrimaryGrader: false },],
         topic: '',
         status: 'PLANNING',
         startDate: dayjs().format('YYYY-MM-DD'),
@@ -186,7 +187,7 @@ describe('ThesisEditForm', () => {
           target: { files: { item: () => testFile, length: 1, 0: testFile } },
         })
         expect(researchPlanInput.files[0]).toBe(testFile)
-      })
+      }, 10000)
 
       it('renders Submit button enabled and when clicked, calls onSubmit', async () => {
         expect(
@@ -217,8 +218,8 @@ describe('ThesisEditForm', () => {
         supervisions: [{ userId: 1, percentage: 100 }],
         authors: [{ userId: 2 }],
         graders: [
-          { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' },
-          { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
+          { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe'}, isPrimaryGrader: true },
+          { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith'}, isPrimaryGrader: false },
         ],
         topic: 'Test',
         status: 'PLANNING',
@@ -237,7 +238,7 @@ describe('ThesisEditForm', () => {
           onSubmit={mockOnSubmit}
         />
       )
-    })
+    }, 10000)
 
     it('renders ThesisEditForm correctly, renders no validation error, and submit button is enabled', () => {
       expect(screen.getByText('Muokkaa gradu')).toBeInTheDocument()

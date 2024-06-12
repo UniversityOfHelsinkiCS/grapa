@@ -36,6 +36,8 @@
     "uploadWaysOfWorkingButton": "Lataa työskentelysopimus",
     "uploadResearchPlanButton": "Lataa tutkimussuunnitelma",
     "selectSupervisor": "Valitse ohjaaja",
-    "selectSupervisorPercentage": "Osuus"
+    "selectSupervisorPercentage": "Osuus",
+    "removeSupervisorConfirmationTitle": "Poista ohjaaja",
+    "removeSupervisorConfirmationContent": "Haluatko varmasti poistaa ohjaajan {{name}}?"
   }
 }

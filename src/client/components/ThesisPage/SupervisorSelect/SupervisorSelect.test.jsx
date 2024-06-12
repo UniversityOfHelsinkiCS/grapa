@@ -49,6 +49,7 @@ describe('SupervisorSelect', () => {
   beforeEach(() => {
     setSupervisorSelections = jest.fn()
 
+
     initializeI18n()
   })
 

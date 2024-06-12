@@ -31,7 +31,10 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
 const GraderSelect = (await import('./GraderSelect')).default
 
 describe('GraderSelect', () => {
-  const graderSelections = [null, null]
+  const graderSelections = [
+    { user: null, isPrimaryGrader: true },
+    { user: null, isPrimaryGrader: false },
+  ]
   let setGraderSelections
 
   beforeEach(() => {
@@ -57,7 +60,8 @@ describe('GraderSelect', () => {
     render(
       <GraderSelect
         graderSelections={[
-          { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, null
+          {user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe'}, isPrimaryGrader: true }, 
+          { user: null, isPrimaryGrader: false },
         ]}
         setGraderSelections={setGraderSelections}
       />
@@ -74,8 +78,8 @@ describe('GraderSelect', () => {
     render(
       <GraderSelect
         graderSelections={[
-          { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' },
-          { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
+          { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe'}, isPrimaryGrader: true },
+          { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith'}, isPrimaryGrader: false },
         ]}
         setGraderSelections={setGraderSelections}
       />
@@ -105,7 +109,8 @@ describe('GraderSelect', () => {
 
       expect(setGraderSelections).toHaveBeenCalledTimes(1)
       expect(setGraderSelections).toHaveBeenCalledWith([
-        { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, null
+        { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe'}, isPrimaryGrader: true }, 
+        { user: null, isPrimaryGrader: false },
       ])
     })
   })

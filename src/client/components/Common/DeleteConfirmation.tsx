@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -32,7 +33,9 @@ const DeleteConfirmation = ({
         {t('cancelButton')}
       </Button>
       <Button
+        data-testid="delete-confirm-button"
         type="button"
+        color="error"
         variant="contained"
         onClick={onDelete}
         sx={{ borderRadius: '0.5rem' }}
