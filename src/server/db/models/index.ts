@@ -5,6 +5,7 @@ import Author from './Author'
 import Attachment from './Attachment'
 import Program from './Program'
 import StudyTrack from './StudyTrack'
+import Grader from './Grader'
 
 User.belongsToMany(Thesis, {
   through: Supervision,
@@ -23,6 +24,13 @@ Thesis.hasMany(Supervision, { foreignKey: 'thesisId', as: 'supervisions' })
 
 Supervision.belongsTo(Thesis, { as: 'thesis' })
 
+Grader.belongsTo(User, { as: 'user' })
+
+Thesis.hasMany(Grader, { foreignKey: 'thesisId' })
+Thesis.hasMany(Grader, { foreignKey: 'thesisId', as: 'graders' })
+
+Grader.belongsTo(Thesis, { as: 'thesis' })
+
 Author.belongsTo(User, { as: 'user' })
 Thesis.belongsToMany(User, {
   through: Author,
@@ -38,4 +46,13 @@ Thesis.hasOne(Attachment, { as: 'waysOfWorking', foreignKey: 'thesisId' })
 Program.hasMany(StudyTrack, { as: 'studyTracks' })
 StudyTrack.belongsTo(Program, { as: 'program' })
 
-export { User, Thesis, Supervision, Author, Attachment, Program, StudyTrack }
+export {
+  User,
+  Thesis,
+  Supervision,
+  Author,
+  Attachment,
+  Program,
+  StudyTrack,
+  Grader,
+}
