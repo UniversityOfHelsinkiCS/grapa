@@ -54,7 +54,9 @@ const ThesisEditForm: React.FC<{
   onClose: () => void
   onSubmit: (data: ThesisData) => Promise<void>
 }> = ({ initialThesis, onSubmit, onClose }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { language } = i18n
+
   const [editedThesis, setEditedThesis] = useState<ThesisData | null>(
     initialThesis
   )
@@ -209,7 +211,10 @@ const ThesisEditForm: React.FC<{
               </Select>
             </FormControl>
 
-            <LocalizationProvider adapterLocale="fi" dateAdapter={AdapterDayjs}>
+            <LocalizationProvider
+              adapterLocale={language}
+              dateAdapter={AdapterDayjs}
+            >
               <Grid container>
                 <Grid item xs={6} sx={{ pr: '1rem' }}>
                   <DatePicker
