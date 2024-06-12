@@ -6,14 +6,7 @@ import { DataGrid, GridActionsCellItem, GridColDef } from '@mui/x-data-grid'
 import { useState } from 'react'
 import { ThesisData as Thesis } from '@backend/types'
 import { useTranslation } from 'react-i18next'
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Stack,
-} from '@mui/material'
+import { Button, Stack } from '@mui/material'
 import programs from '../mockPorgrams'
 import useTheses from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
@@ -23,6 +16,7 @@ import {
   useEditThesisMutation,
 } from '../../hooks/useThesesMutation'
 import ThesisEditForm from './ThesisEditForm'
+import DeleteConfirmation from '../Common/DeleteConfirmation'
 
 const ThesesPage = () => {
   const { t } = useTranslation()
@@ -170,34 +164,25 @@ const ThesesPage = () => {
         />
       )}
       {deletedThesis && (
-        <Dialog
+        <DeleteConfirmation
           open={deleteDialogOpen}
+          setOpen={setDeleteDialogOpen}
           onClose={() => {
             setDeleteDialogOpen(false)
             setDeletedThesis(null)
           }}
+          onDelete={async () => {
+            await deleteThesis(deletedThesis.id)
+            setDeleteDialogOpen(false)
+            setDeletedThesis(null)
+          }}
+          title={t('deleteThesisTitle')}
         >
-          <DialogTitle>Delete thesis</DialogTitle>
-          <DialogContent>
+          <Box>
             Are you sure you want to delete the thesis with ID{' '}
             {deletedThesis.id}?
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setDeleteDialogOpen(false)}>
-              {t('cancelButton')}
-            </Button>
-            <Button
-              variant="contained"
-              onClick={async () => {
-                await deleteThesis(deletedThesis.id)
-                setDeleteDialogOpen(false)
-                setDeletedThesis(null)
-              }}
-            >
-              {t('deleteButton')}
-            </Button>
-          </DialogActions>
-        </Dialog>
+          </Box>
+        </DeleteConfirmation>
       )}
     </Stack>
   )
