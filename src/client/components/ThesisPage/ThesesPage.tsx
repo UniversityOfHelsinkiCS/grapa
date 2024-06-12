@@ -84,6 +84,7 @@ const ThesesPage = () => {
       getActions: (params) => [
         <GridActionsCellItem
           onClick={() => {
+            console.log(params.row)
             setEditedThesis(params.row as Thesis)
           }}
           label={t('editButton')}
@@ -120,7 +121,10 @@ const ThesesPage = () => {
             programId: programs[0].key,
             supervisions: [{ user, percentage: 100 }],
             authors: [],
-            graders: [null, null],
+            graders: [
+              { user, isPrimaryGrader: true },
+              { user: null, isPrimaryGrader: false },
+            ],
             topic: '',
             status: 'PLANNING',
             startDate: dayjs().format('YYYY-MM-DD'),

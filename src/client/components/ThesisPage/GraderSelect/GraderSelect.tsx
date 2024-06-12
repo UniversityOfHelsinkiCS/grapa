@@ -1,18 +1,19 @@
 import React from 'react'
 import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
-import { AuthorData } from '@backend/types'
+import { AuthorData, GraderData } from '@backend/types'
 import { useTranslation } from 'react-i18next'
 import SingleGraderSelect from './SingleGraderSelect'
 
 const GraderSelect: React.FC<{
-  graderSelections: AuthorData[]
-  setGraderSelections: (newAuthors: AuthorData[]) => void
+  graderSelections: GraderData[]
+  setGraderSelections: (newAuthors: GraderData[]) => void
 }> = ({ graderSelections, setGraderSelections }) => {
   const { t } = useTranslation()
 
   const handleChange = (index: number, grader: AuthorData) => {
     const updatedSelections = [...graderSelections]
-    updatedSelections[index] = grader
+    const updatedGrader = { user: grader, isPrimaryGrader: index === 0 }
+    updatedSelections[index] = updatedGrader
     setGraderSelections(updatedSelections)
   }
 
@@ -36,7 +37,7 @@ const GraderSelect: React.FC<{
         {t('thesisForm:graderInstructions:content')}
       </Alert>
 
-      {graderSelections.map((selection, index) => {
+      {graderSelections?.map((selection, index) => {
         const requiredField = index === 0
         const helperText =
           index === 0
@@ -45,7 +46,7 @@ const GraderSelect: React.FC<{
 
         return (
           <SingleGraderSelect
-            key={selection?.id ?? `grader-${index}`}
+            key={selection?.user?.id ?? `grader-${index}`}
             index={index + 1}
             selection={selection}
             handleGraderChange={(grader) => handleChange(index, grader)}

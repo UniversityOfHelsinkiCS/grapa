@@ -10,7 +10,14 @@ import {
 } from '../types'
 import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMutlipartFormData from '../middleware/attachment'
-import { Thesis, Supervision, Author, Attachment, User } from '../db/models'
+import {
+  Grader,
+  Thesis,
+  Supervision,
+  Author,
+  Attachment,
+  User,
+} from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
 
@@ -36,6 +43,16 @@ const fetchThesisById = async (id: string) => {
         attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
       },
       {
+        model: Grader,
+        as: 'graders',
+        attributes: ['isPrimaryGrader'],
+        include: {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+        },
+      },
+      {
         model: Attachment,
         as: 'researchPlan',
         attributes: ['filename', ['original_name', 'name'], 'mimetype'],
@@ -57,6 +74,7 @@ const createThesisAndSupervisions = async (
   t: Transaction
 ) => {
   const createdThesis = await Thesis.create(thesisData, { transaction: t })
+
   await Supervision.bulkCreate(
     thesisData.supervisions.map((supervision) => ({
       userId: supervision.user.id,
@@ -65,11 +83,23 @@ const createThesisAndSupervisions = async (
     })),
     { transaction: t, validate: true, individualHooks: true }
   )
+
   await Author.bulkCreate(
     thesisData.authors.map((author) => ({
       userId: author.id,
       thesisId: createdThesis.id,
     })),
+    { transaction: t, validate: true, individualHooks: true }
+  )
+
+  await Grader.bulkCreate(
+    thesisData.graders
+      .filter((x) => Boolean(x?.user))
+      .map((grader) => ({
+        userId: grader?.user.id,
+        thesisId: createdThesis.id,
+        isPrimaryGrader: grader?.isPrimaryGrader,
+      })),
     { transaction: t, validate: true, individualHooks: true }
   )
   return createdThesis
@@ -160,6 +190,17 @@ const updateThesis = async (
     })),
     { transaction, validate: true, individualHooks: true }
   )
+  await Grader.destroy({ where: { thesisId: id }, transaction })
+  await Grader.bulkCreate(
+    thesisData.graders
+      .filter((x) => Boolean(x?.user))
+      .map((grader) => ({
+        userId: grader?.user.id,
+        thesisId: id,
+        isPrimaryGrader: grader?.isPrimaryGrader,
+      })),
+    { transaction, validate: true, individualHooks: true }
+  )
   await Author.destroy({ where: { thesisId: id }, transaction })
   await Author.bulkCreate(
     thesisData.authors.map((author) => ({
@@ -189,6 +230,16 @@ thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
       model: Supervision,
       as: 'supervisions',
       attributes: ['percentage'],
+      include: {
+        model: User,
+        as: 'user',
+        attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+      },
+    },
+    {
+      model: Grader,
+      as: 'graders',
+      attributes: ['isPrimaryGrader'],
       include: {
         model: User,
         as: 'user',

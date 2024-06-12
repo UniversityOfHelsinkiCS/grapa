@@ -5,7 +5,7 @@ import {
   TextField,
   TextFieldProps,
 } from '@mui/material'
-import { AuthorData } from '@backend/types'
+import { AuthorData, GraderData } from '@backend/types'
 import { useTranslation } from 'react-i18next'
 import { useDebounce } from '../../../hooks/useDebounce'
 import useUsers from '../../../hooks/useUsers'
@@ -13,7 +13,7 @@ import useUsers from '../../../hooks/useUsers'
 interface SingleGraderSelectProps {
   index: number
   handleGraderChange: (value: AuthorData | null) => void
-  selection: AuthorData
+  selection: GraderData
   inputProps: TextFieldProps
 }
 
@@ -47,7 +47,7 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
         inputValue={userSearch}
         filterOptions={(x) => x}
         isOptionEqualToValue={(option, value) => option.id === value.id}
-        value={selection ?? null}
+        value={selection.user ?? null}
         onChange={(_, value) => handleGraderChange(value)}
         onInputChange={(event, value) => {
           // Fetch potential authors based on the input value

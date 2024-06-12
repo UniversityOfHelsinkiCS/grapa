@@ -45,6 +45,11 @@ export interface AuthorData {
   email: string | null
 }
 
+export interface GraderData {
+  user: AuthorData
+  isPrimaryGrader: boolean
+}
+
 export interface FileData {
   filename: string
   name: string
@@ -60,7 +65,7 @@ export interface ThesisData {
   targetDate?: string
   supervisions: SupervisionData[]
   authors: AuthorData[]
-  graders: AuthorData[]
+  graders: GraderData[]
   researchPlan?: FileData | File
   waysOfWorking?: FileData | File
 }
