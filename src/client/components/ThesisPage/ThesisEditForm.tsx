@@ -25,6 +25,7 @@ import {
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
+import 'dayjs/locale/fi'
 import { useState } from 'react'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -208,10 +209,7 @@ const ThesisEditForm: React.FC<{
               </Select>
             </FormControl>
 
-            <LocalizationProvider
-              adapterLocale="fiFI"
-              dateAdapter={AdapterDayjs}
-            >
+            <LocalizationProvider adapterLocale="fi" dateAdapter={AdapterDayjs}>
               <Grid container>
                 <Grid item xs={6} sx={{ pr: '1rem' }}>
                   <DatePicker
