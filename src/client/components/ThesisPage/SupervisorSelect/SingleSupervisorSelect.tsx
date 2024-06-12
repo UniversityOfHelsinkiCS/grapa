@@ -6,6 +6,7 @@ import {
   FormControl,
   IconButton,
   InputAdornment,
+  ButtonProps,
 } from '@mui/material'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -14,18 +15,20 @@ import useUsers from '../../../hooks/useUsers'
 import { useDebounce } from '../../../hooks/useDebounce'
 
 interface SingleSupervisorSelectProps {
+  index: number
   handleSupervisorChange: (value: AuthorData | null) => void
   selection: { user: AuthorData | null; percentage: number }
   handleRemoveSupervisor: () => void
   handlePercentageChange: (percentage: number) => void
-  disabled: boolean
+  iconButtonProps: ButtonProps
 }
 const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
+  index,
   handleSupervisorChange,
   selection,
   handleRemoveSupervisor,
   handlePercentageChange,
-  disabled = false,
+  iconButtonProps,
 }) => {
   const { t } = useTranslation()
   const [userSearch, setUserSearch] = React.useState('')
@@ -36,6 +39,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
     <Stack spacing={1} direction="row">
       <FormControl fullWidth>
         <Autocomplete<AuthorData>
+          data-testid={`supervisor-select-input-${index}`}
           disablePortal
           options={users ?? []}
           getOptionLabel={(user) =>
@@ -76,10 +80,10 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
         data-testid="remove-supervisor-button"
         type="button"
         onClick={handleRemoveSupervisor}
-        disabled={disabled}
         color="error"
         size="small"
         aria-label={`${t('removeButton')} ${selection.user?.firstName} ${selection.user?.lastName}`}
+        {...iconButtonProps}
       >
         <DeleteIcon />
       </IconButton>

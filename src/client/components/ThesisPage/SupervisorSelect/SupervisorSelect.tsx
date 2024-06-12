@@ -68,6 +68,7 @@ const SupervisorSelect: React.FC<{
       {supervisorSelections.map((selection, index) => (
         <SingleSupervisorSelect
           key={selection.user?.id ?? index}
+          index={index + 1}
           selection={selection}
           handleSupervisorChange={(supervisor) =>
             handleSupervisorChange(index, supervisor)
@@ -76,7 +77,9 @@ const SupervisorSelect: React.FC<{
           handlePercentageChange={(percentage) =>
             handlePercentageChange(index, percentage)
           }
-          disabled={supervisorSelections.length === 1}
+          iconButtonProps={{
+            disabled: supervisorSelections.length === 1,
+          }}
         />
       ))}
       {supervisorSelections.length < 5 && (
