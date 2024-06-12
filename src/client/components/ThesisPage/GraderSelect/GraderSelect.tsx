@@ -45,7 +45,7 @@ const GraderSelect: React.FC<{
 
         return (
           <SingleGraderSelect
-            key={selection?.id ?? `index-${index}`}
+            key={selection?.id ?? `grader-${index}`}
             index={index + 1}
             selection={selection}
             handleGraderChange={(grader) => handleChange(index, grader)}

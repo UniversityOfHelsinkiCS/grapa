@@ -67,7 +67,7 @@ const SupervisorSelect: React.FC<{
       </Typography>
       {supervisorSelections.map((selection, index) => (
         <SingleSupervisorSelect
-          key={selection.user?.id ?? index}
+          key={selection.user?.id ?? `supervisor-${index}`}
           index={index + 1}
           selection={selection}
           handleSupervisorChange={(supervisor) =>
@@ -83,7 +83,11 @@ const SupervisorSelect: React.FC<{
         />
       ))}
       {supervisorSelections.length < 5 && (
-        <Button type="button" onClick={handleAddSupervisor}>
+        <Button
+          data-testid="add-supervisor-button"
+          type="button"
+          onClick={handleAddSupervisor}
+        >
           {t('thesisForm:addSupervisor')}
         </Button>
       )}

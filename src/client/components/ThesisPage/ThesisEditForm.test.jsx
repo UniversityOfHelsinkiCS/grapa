@@ -66,14 +66,9 @@ describe('ThesisEditForm', () => {
     beforeEach(() => {
       const initialThesis = {
         programId: programs[0].key,
-        // I couldn't get RTL to work with MUI Autocomplete component
-        // so I just preselected su[pervision and author
-        supervisions: [{ user: { id: 1 }, percentage: 100 }],
-        authors: [{ id: 2 }],
-        graders: [
-          { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' },
-          { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
-        ],
+        supervisions: [],
+        authors: [],
+        graders: [null, null],
         topic: '',
         status: 'PLANNING',
         startDate: dayjs().format('YYYY-MM-DD'),
@@ -117,23 +112,18 @@ describe('ThesisEditForm', () => {
         const programSelect = screen.getAllByRole('combobox')[0]
         const statusSelect = screen.getAllByRole('combobox')[2]
 
-        const graderSelect = screen.getByTestId('author-select-input')
-        const graderInput = within(graderSelect).getByRole('combobox')
+        const authorSelect = screen.getByTestId('author-select-input')
+        const authorInput = within(authorSelect).getByRole('combobox')
 
-        graderSelect.focus()
-
-        fireEvent.change(graderInput, { target: { value: 'John Doe' } })
-        fireEvent.keyDown(graderSelect, { key: 'ArrowDown' })
-        fireEvent.keyDown(graderSelect, { key: 'Enter' })
+        const addSupervisorBtn = screen.getByTestId('add-supervisor-button')
+        await user.click(addSupervisorBtn)
 
         const superVisorSelect1 = screen.getByTestId('supervisor-select-input-1')
         const superVisorInput1 = within(superVisorSelect1).getByRole('combobox')
 
-        superVisorSelect1.focus()
+        const graderSelect1 = screen.getByTestId('grader-select-input-1')
+        const graderInput1 = within(graderSelect1).getByRole('combobox')
 
-        fireEvent.change(superVisorInput1, { target: { value: 'John Doe' } })
-        fireEvent.keyDown(superVisorSelect1, { key: 'ArrowDown' })
-        fireEvent.keyDown(superVisorSelect1, { key: 'Enter' })
 
         const researchPlanInput = screen
           .getByRole('button', {
@@ -147,8 +137,10 @@ describe('ThesisEditForm', () => {
           })
           .querySelector('input')
 
-        // Fill all required fields
+        // Add a topic
         await user.type(topicInput, 'Test')
+
+        // Select a program
         await user.click(programSelect)
         await user.click(
           screen.getAllByText(
@@ -156,9 +148,32 @@ describe('ThesisEditForm', () => {
           )[0]
         )
 
+        // Add an author
+        authorSelect.focus()
+
+        fireEvent.change(authorInput, { target: { value: 'John Doe' } })
+        fireEvent.keyDown(authorInput, { key: 'ArrowDown' })
+        fireEvent.keyDown(authorInput, { key: 'Enter' })
+
+        // Select a status
         await user.click(statusSelect)
         await user.click(screen.getAllByText('Planning')[0])
 
+        // Add a supervisor
+        superVisorSelect1.focus()
+
+        fireEvent.change(superVisorInput1, { target: { value: 'Jane Smith' } })
+        fireEvent.keyDown(superVisorSelect1, { key: 'ArrowDown' })
+        fireEvent.keyDown(superVisorSelect1, { key: 'Enter' })
+
+        // Add a grader
+        graderSelect1.focus()
+
+        fireEvent.change(graderInput1, { target: { value: 'Bob Luukkainen' } })
+        fireEvent.keyDown(graderSelect1, { key: 'ArrowDown' })
+        fireEvent.keyDown(graderSelect1, { key: 'Enter' })
+
+        // Add research plan and ways of working
         const testFile = new File(['test'], 'researchPlan.pdf', {
           type: 'application/pdf',
         })
