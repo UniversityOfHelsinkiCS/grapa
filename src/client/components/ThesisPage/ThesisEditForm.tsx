@@ -401,16 +401,16 @@ const ThesisEditForm: React.FC<{
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button
-          type="button"
-          variant="contained"
-          color="error"
-          sx={{ borderRadius: '0.5rem' }}
-          onClick={onClose}
-        >
+        <Button type="button" onClick={onClose}>
           {t('cancelButton')}
         </Button>
-        <Button type="submit">{t('submitButton')}</Button>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ borderRadius: '0.5rem' }}
+        >
+          {t('submitButton')}
+        </Button>
       </DialogActions>
     </Dialog>
   )
