@@ -4,7 +4,7 @@
 import * as React from 'react'
 import dayjs from 'dayjs'
 import userEvent from '@testing-library/user-event'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
 
@@ -116,6 +116,24 @@ describe('ThesisEditForm', () => {
         const topicInput = screen.getByRole('textbox', { name: 'Aihe' })
         const programSelect = screen.getAllByRole('combobox')[0]
         const statusSelect = screen.getAllByRole('combobox')[2]
+
+        const graderSelect = screen.getByTestId('author-select-input')
+        const graderInput = within(graderSelect).getByRole('combobox')
+
+        graderSelect.focus()
+
+        fireEvent.change(graderInput, { target: { value: 'John Doe' } })
+        fireEvent.keyDown(graderSelect, { key: 'ArrowDown' })
+        fireEvent.keyDown(graderSelect, { key: 'Enter' })
+
+        const superVisorSelect1 = screen.getByTestId('supervisor-select-input-1')
+        const superVisorInput1 = within(superVisorSelect1).getByRole('combobox')
+
+        superVisorSelect1.focus()
+
+        fireEvent.change(superVisorInput1, { target: { value: 'John Doe' } })
+        fireEvent.keyDown(superVisorSelect1, { key: 'ArrowDown' })
+        fireEvent.keyDown(superVisorSelect1, { key: 'Enter' })
 
         const researchPlanInput = screen
           .getByRole('button', {

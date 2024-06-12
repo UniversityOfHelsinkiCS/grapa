@@ -157,6 +157,7 @@ const ThesisEditForm: React.FC<{
             </FormControl>
             <FormControl fullWidth>
               <Autocomplete<AuthorData>
+                data-testid="author-select-input"
                 disablePortal
                 options={users ?? []}
                 getOptionLabel={(user) =>
