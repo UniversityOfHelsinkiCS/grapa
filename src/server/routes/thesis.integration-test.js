@@ -5,7 +5,7 @@ import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import app from '../index'
-import { Attachment, Author, Supervision, Thesis, User } from '../db/models'
+import { Attachment, Author, Grader, Supervision, Thesis, User } from '../db/models'
 
 const request = supertest.agent(app)
 
@@ -75,6 +75,8 @@ describe('thesis router', () => {
     let user1
     let user2
     let user3
+    let user4
+    let user5
     let thesis1
 
     beforeEach(async () => {
@@ -99,6 +101,20 @@ describe('thesis router', () => {
         email: 'test@test.test3',
         language: 'fi',
       })
+      await User.create({
+        username: 'test4',
+        firstName: 'test4',
+        lastName: 'test4',
+        email: 'test@test.test4',
+        language: 'fi',
+      })
+      await User.create({
+        username: 'test5',
+        firstName: 'test5',
+        lastName: 'test5',
+        email: 'test@test.test5',
+        language: 'fi',
+      })
       user1 = (
         await User.findOne({
           where: { username: 'test1' },
@@ -114,6 +130,18 @@ describe('thesis router', () => {
       user3 = (
         await User.findOne({
           where: { username: 'test3' },
+          attributes: userAttributesToFetch,
+        })
+      ).toJSON()
+      user4 = (
+        await User.findOne({
+          where: { username: 'test4' },
+          attributes: userAttributesToFetch,
+        })
+      ).toJSON()
+      user5 = (
+        await User.findOne({
+          where: { username: 'test5' },
           attributes: userAttributesToFetch,
         })
       ).toJSON()
@@ -138,6 +166,16 @@ describe('thesis router', () => {
       await Author.create({
         userId: user2.id,
         thesisId: thesis1.id,
+      })
+      await Grader.create({
+        userId: user4.id,
+        thesisId: thesis1.id,
+        isPrimaryGrader: true,
+      })
+      await Grader.create({
+        userId: user5.id,
+        thesisId: thesis1.id,
+        isPrimaryGrader: false,
       })
       await Attachment.create({
         thesisId: thesis1.id,
@@ -276,6 +314,12 @@ describe('thesis router', () => {
               percentage: 100,
             },
           ],
+          graders: [
+            {
+              user: user4,
+              isPrimaryGrader: true,
+            },
+          ],
           authors: [user2],
         }
         const response = await request
@@ -294,6 +338,8 @@ describe('thesis router', () => {
 
         delete newThesis.supervisions
         delete newThesis.authors
+        delete newThesis.graders
+        
         expect(response.body).toMatchObject(newThesis)
 
         const thesis = await Thesis.findByPk(response.body.id)
@@ -315,6 +361,16 @@ describe('thesis router', () => {
                 user: user1,
                 percentage: 100,
               },
+            ],
+            graders: [
+              {
+                user: user4,
+                isPrimaryGrader: true,
+              },
+              {
+                user: user5,
+                isPrimaryGrader: false,
+              }
             ],
             authors: [user2],
           }
@@ -371,6 +427,12 @@ describe('thesis router', () => {
               },
             ],
             authors: [user2],
+            graders: [
+              {
+                user: user4,
+                isPrimaryGrader: true,
+              },
+            ],
             waysOfWorking: {
               filename: 'testfile.pdf2',
               name: 'testfile.pdf2',
@@ -421,6 +483,12 @@ describe('thesis router', () => {
               },
             ],
             authors: [user2],
+            graders: [
+              {
+                user: user4,
+                isPrimaryGrader: true,
+              },
+            ],
             waysOfWorking: {
               filename: 'testfile.pdf2',
               name: 'testfile.pdf2',
