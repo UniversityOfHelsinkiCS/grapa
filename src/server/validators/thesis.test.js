@@ -12,6 +12,7 @@ describe('validateThesisData', () => {
         programId: 'test-program',
         supervisions: [{ percentage: 100 }],
         authors: [{}],
+        graders: [{user: {}, isPrimaryGrader: true}],
         researchPlan: {},
         waysOfWorking: {},
         startDate: '2021-01-01',
@@ -87,6 +88,30 @@ describe('validateThesisData', () => {
 
     expect(() => validateThesisData(req, res, next)).toThrow(
       'At least one author is required'
+    )
+    expect(next).toHaveBeenCalledTimes(0)
+  })
+
+  it('should return an error if graders is missing', () => {
+    req.body = {
+      ...req.body,
+      graders: undefined
+    }
+
+    expect(() => validateThesisData(req, res, next)).toThrow(
+      'At least one grader is required'
+    )
+    expect(next).toHaveBeenCalledTimes(0)
+  })
+
+  it('should return an error if primary grader is missing', () => {
+    req.body = {
+      ...req.body,
+      graders: [{user: {}}]
+    }
+
+    expect(() => validateThesisData(req, res, next)).toThrow(
+      'Primary grader must be set'
     )
     expect(next).toHaveBeenCalledTimes(0)
   })
