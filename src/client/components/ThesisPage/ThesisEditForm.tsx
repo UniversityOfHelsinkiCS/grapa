@@ -50,10 +50,11 @@ const VisuallyHiddenInput = styled('input')({
 })
 
 const ThesisEditForm: React.FC<{
+  formTitle: string
   initialThesis: ThesisData
   onClose: () => void
   onSubmit: (data: ThesisData) => Promise<void>
-}> = ({ initialThesis, onSubmit, onClose }) => {
+}> = ({ formTitle, initialThesis, onSubmit, onClose }) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n
 
@@ -98,9 +99,7 @@ const ThesisEditForm: React.FC<{
         onSubmit: handleSubmit,
       }}
     >
-      <DialogTitle component="h1">
-        {t('thesisForm:editThesisDialog')}
-      </DialogTitle>
+      <DialogTitle component="h1">{formTitle}</DialogTitle>
       <DialogContent>
         <Stack spacing={6}>
           <Stack

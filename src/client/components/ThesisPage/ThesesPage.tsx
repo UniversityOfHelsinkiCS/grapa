@@ -144,6 +144,7 @@ const ThesesPage = () => {
       </Box>
       {editedTesis && (
         <ThesisEditForm
+          formTitle={t('thesisForm:editThesisFormTitle')}
           initialThesis={editedTesis}
           onSubmit={async (updatedThesis) => {
             await editThesis({ thesisId: editedTesis.id, data: updatedThesis })
@@ -154,6 +155,7 @@ const ThesesPage = () => {
       )}
       {newThesis && (
         <ThesisEditForm
+          formTitle={t('thesisForm:newThesisFormTitle')}
           initialThesis={newThesis}
           onSubmit={async (variables) => {
             await createThesis(variables)

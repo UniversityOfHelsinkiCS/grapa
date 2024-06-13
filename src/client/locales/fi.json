@@ -17,6 +17,8 @@
     "removeButton": "Poista"
   },
   "thesisForm": {
+    "newThesisFormTitle": "Uuden tutkielman luonti",
+    "editThesisFormTitle": "Tutkielman muokkaus",
     "authorMissingError": "Tekijä puuttuu",
     "supervisionPercentageError": " Varmista, että ohjaajien yhteisprosentti on 100",
     "researchPlanMissingError": "Tutkimussuunnitelma puuttuu",
