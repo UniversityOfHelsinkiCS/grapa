@@ -1,4 +1,5 @@
 import React from 'react'
+// import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined'
 import { Button, Divider, Stack, Typography } from '@mui/material'
 import { AuthorData, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
@@ -24,6 +25,8 @@ const SupervisorSelect: React.FC<{
   }
 
   const handlePercentageChange = (index: number, percentage: number) => {
+    if (Number.isNaN(percentage) || percentage < 0 || percentage > 100) return
+
     const updatedSelections = [...supervisorSelections]
     updatedSelections[index].percentage = percentage
     setSupervisorSelections(updatedSelections)

@@ -72,11 +72,9 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
         }}
         label={t('thesisForm:selectSupervisorPercentage')}
         value={selection.percentage}
-        onChange={(event) => {
-          const newValue = parseInt(event.target.value || '1', 10)
-
-          return handlePercentageChange(parseInt(newValue, 10))
-        }}
+        onChange={(event) =>
+          handlePercentageChange(parseInt(event.target.value, 10))
+        }
       />
       <IconButton
         data-testid="remove-supervisor-button"
