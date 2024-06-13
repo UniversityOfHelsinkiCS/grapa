@@ -19,7 +19,7 @@ const graderSchema = z.object({
 })
 
 const fileSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, 'Please upload a file'),
 })
 
 // Because of Zod's design choices the superrefine is not called when there are other
@@ -46,11 +46,11 @@ export const ThesisDateSchema = z
 
 export const ThesisSchema = z.object({
   programId: z.string(),
-  topic: z.string().min(1),
-  status: z.string().min(1),
+  topic: z.string().min(1, 'Please enter the thesis topic'),
+  status: z.string().min(1, 'Please select a status for the thesis'),
   supervisions: z
     .array(supervisionSchema)
-    .min(1, 'At least one supervisor must be selected.')
+    .min(1, 'Please select at least one supervisor')
     .refine(
       (supervisions) => {
         const totalPercentage = supervisions.reduce(
@@ -64,10 +64,8 @@ export const ThesisSchema = z.object({
         path: ['percentage'],
       }
     ),
-  authors: z.array(userSchema).min(1, 'At least one author must be selected.'),
-  graders: z
-    .array(graderSchema)
-    .min(1, 'At least one grader must be selected.'),
+  authors: z.array(userSchema).min(1, 'Please select the author of the thesis'),
+  graders: z.array(graderSchema).min(1, 'Please specify at least one grader'),
   researchPlan: fileSchema,
   waysOfWorking: fileSchema,
 })
