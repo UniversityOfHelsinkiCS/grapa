@@ -38,6 +38,7 @@
     "uploadWaysOfWorkingButton": "Upload ways of working",
     "uploadResearchPlanButton": "Upload research plan",
     "selectSupervisor": "Select supervisor",
-    "selectSupervisorPercentage": "Percentage"
+    "selectSupervisorPercentage": "Percentage",
+    "totalSupervisionPercentage": "Total supervision percentage: {{totalPercentage}} %"
   }
 }

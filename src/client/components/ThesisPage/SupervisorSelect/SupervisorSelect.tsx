@@ -1,16 +1,21 @@
 import React from 'react'
-import { Button, Stack, Typography } from '@mui/material'
+import { Button, Divider, Stack, Typography } from '@mui/material'
 import { AuthorData, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { useTranslation } from 'react-i18next'
 import SingleSupervisorSelect from './SingleSupervisorSelect'
-import { getEqualSupervisorSelectionWorkloads } from '../util'
+import {
+  getEqualSupervisorSelectionWorkloads,
+  getTotalPercentage,
+} from '../util'
 
 const SupervisorSelect: React.FC<{
   supervisorSelections: SupervisorSelection[]
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
 }> = ({ supervisorSelections, setSupervisorSelections }) => {
   const { t } = useTranslation()
+
+  const totalPercentage = getTotalPercentage(supervisorSelections)
 
   const handleSupervisorChange = (index: number, supervisor: AuthorData) => {
     const updatedSelections = [...supervisorSelections]
@@ -82,6 +87,13 @@ const SupervisorSelect: React.FC<{
           }}
         />
       ))}
+
+      <Divider component="div" role="presentation" textAlign="right">
+        <Typography color={totalPercentage !== 100 ? 'error' : ''}>
+          {t('thesisForm:totalSupervisionPercentage', { totalPercentage })}
+        </Typography>
+      </Divider>
+
       {supervisorSelections.length < 5 && (
         <Button
           data-testid="add-supervisor-button"
