@@ -48,6 +48,9 @@ jest.unstable_mockModule('@mui/icons-material/Delete', () => ({
 jest.unstable_mockModule('@mui/icons-material/Error', () => ({
   default: jest.fn().mockReturnValue('ErrorIcon'),
 }))
+jest.unstable_mockModule('@mui/icons-material/ReportOutlined', () => ({
+  default: jest.fn().mockReturnValue('ReportOutlinedIcon'),
+}))
 
 const ThesisEditForm = (await import('./ThesisEditForm')).default
 
