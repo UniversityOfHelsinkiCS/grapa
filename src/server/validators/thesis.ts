@@ -21,6 +21,15 @@ export const validateThesisData = (
     throw new Error('At least one author is required')
   }
 
+  if (!thesisData.graders || thesisData.graders.length === 0) {
+    throw new Error('At least one grader is required')
+  }
+
+  // primary grader must be set
+  if (!thesisData.graders.some((grader) => grader.isPrimaryGrader)) {
+    throw new Error('Primary grader must be set')
+  }
+
   // sum of supervision percentages must add up to 100
   const totalPercentage = thesisData.supervisions.reduce(
     (total, supervision) => total + supervision.percentage,
