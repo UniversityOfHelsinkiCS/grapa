@@ -1,6 +1,6 @@
 import React from 'react'
-// import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined'
-import { Button, Divider, Stack, Typography } from '@mui/material'
+import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined'
+import { Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material'
 import { AuthorData, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { useTranslation } from 'react-i18next'
@@ -92,9 +92,23 @@ const SupervisorSelect: React.FC<{
       ))}
 
       <Divider component="div" role="presentation" textAlign="right">
-        <Typography color={totalPercentage !== 100 ? 'error' : ''}>
-          {t('thesisForm:totalSupervisionPercentage', { totalPercentage })}
-        </Typography>
+        <Tooltip
+          title="Työjakauman tulee olla yhteensä 100%"
+          placement="bottom"
+          arrow
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {totalPercentage !== 100 && (
+              <ReportOutlinedIcon color="error" sx={{ mr: '0.5rem' }} />
+            )}
+            <Typography
+              variant="overline"
+              color={totalPercentage !== 100 ? 'error' : ''}
+            >
+              {t('thesisForm:totalSupervisionPercentage', { totalPercentage })}
+            </Typography>
+          </Box>
+        </Tooltip>
       </Divider>
 
       {supervisorSelections.length < 5 && (
