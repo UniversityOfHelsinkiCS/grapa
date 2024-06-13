@@ -78,7 +78,6 @@ const ThesesPage = () => {
       getActions: (params) => [
         <GridActionsCellItem
           onClick={() => {
-            console.log(params.row)
             setEditedThesis(params.row as Thesis)
           }}
           label={t('editButton')}
