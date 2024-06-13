@@ -31,7 +31,8 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
   return (
     <FormControl fullWidth>
       <Autocomplete<AuthorData>
-        data-testid={`grader-select-input-${index}`}
+        id={`graders-${index}-user`}
+        data-testid={`grader-select-input-${index + 1}`}
         disablePortal
         options={users ?? []}
         getOptionLabel={(user) =>
@@ -40,7 +41,7 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            label={t('grader', { index })}
+            label={t('grader', { index: index + 1 })}
             {...inputProps}
           />
         )}

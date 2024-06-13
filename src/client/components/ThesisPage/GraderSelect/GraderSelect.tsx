@@ -44,7 +44,7 @@ const GraderSelect: React.FC<{
 
       <SingleGraderSelect
         key={primaryGrader?.user?.id ?? 'grader-0'}
-        index={1}
+        index={0}
         selection={primaryGrader}
         handleGraderChange={(grader) => handleChange(0, grader)}
         inputProps={{
@@ -55,7 +55,7 @@ const GraderSelect: React.FC<{
 
       <SingleGraderSelect
         key={secondaryGrader?.user?.id ?? 'grader-1'}
-        index={2}
+        index={1}
         selection={secondaryGrader}
         handleGraderChange={(grader) => handleChange(1, grader)}
         inputProps={{

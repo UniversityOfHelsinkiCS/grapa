@@ -76,7 +76,7 @@ const SupervisorSelect: React.FC<{
       {supervisorSelections.map((selection, index) => (
         <SingleSupervisorSelect
           key={selection.user?.id ?? `supervisor-${index}`}
-          index={index + 1}
+          index={index}
           selection={selection}
           handleSupervisorChange={(supervisor) =>
             handleSupervisorChange(index, supervisor)
