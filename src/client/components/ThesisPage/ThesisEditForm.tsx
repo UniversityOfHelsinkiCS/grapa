@@ -99,7 +99,9 @@ const ThesisEditForm: React.FC<{
         onSubmit: handleSubmit,
       }}
     >
-      <DialogTitle component="h1">{formTitle}</DialogTitle>
+      <DialogTitle data-testid="thesis-form-title" component="h1">
+        {formTitle}
+      </DialogTitle>
       <DialogContent>
         <Stack spacing={6}>
           <Stack

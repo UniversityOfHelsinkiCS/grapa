@@ -91,7 +91,7 @@ describe('ThesisEditForm', () => {
     })
 
     it('renders ThesisEditForm correctly and renders all validation errors', () => {
-      expect(screen.getByText('Muokkaa gradu')).toBeInTheDocument()
+      expect(screen.getByTestId('thesis-form-title')).toBeInTheDocument()
       expect(screen.getByText('Aihe')).toBeInTheDocument()
       expect(screen.getByText('Ohjelma')).toBeInTheDocument()
       expect(screen.getByText('Tekijä')).toBeInTheDocument()
@@ -244,7 +244,7 @@ describe('ThesisEditForm', () => {
     }, 10000)
 
     it('renders ThesisEditForm correctly, renders no validation error, and submit button is enabled', () => {
-      expect(screen.getByText('Muokkaa gradu')).toBeInTheDocument()
+      expect(screen.getByTestId('thesis-form-title')).toBeInTheDocument()
       expect(screen.getByText('Aihe')).toBeInTheDocument()
       expect(screen.getByText('Ohjelma')).toBeInTheDocument()
       expect(screen.getByText('Tekijä')).toBeInTheDocument()
