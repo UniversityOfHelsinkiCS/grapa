@@ -66,7 +66,7 @@ const ThesisEditForm: React.FC<{
   const debouncedSearch = useDebounce(userSearch, 700)
   const { users } = useUsers(debouncedSearch)
 
-  const totalPercentage = getTotalPercentage(editedThesis)
+  const totalPercentage = getTotalPercentage(editedThesis.supervisions)
 
   const canSubmit = Boolean(
     editedThesis?.supervisions.length &&

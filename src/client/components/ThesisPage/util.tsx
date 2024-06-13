@@ -1,11 +1,8 @@
-import { ThesisData } from '@backend/types'
+import { SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 
-export const getTotalPercentage = (thesis: ThesisData) =>
-  thesis.supervisions.reduce(
-    (total, selection) => total + selection.percentage,
-    0
-  )
+export const getTotalPercentage = (supervisions: SupervisionData[]) =>
+  supervisions.reduce((total, selection) => total + selection.percentage, 0)
 
 export const getEqualSupervisorSelectionWorkloads = (
   numberOfSupervisors: number,
