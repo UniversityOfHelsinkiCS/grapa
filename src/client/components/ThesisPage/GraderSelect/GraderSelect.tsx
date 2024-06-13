@@ -10,6 +10,11 @@ const GraderSelect: React.FC<{
 }> = ({ graderSelections, setGraderSelections }) => {
   const { t } = useTranslation()
 
+  const [
+    primaryGrader = { user: null, isPrimaryGrader: true },
+    secondaryGrader = { user: null, isPrimaryGrader: false },
+  ] = graderSelections
+
   const handleChange = (index: number, grader: AuthorData) => {
     const updatedSelections = [...graderSelections]
     const updatedGrader = { user: grader, isPrimaryGrader: index === 0 }
@@ -37,23 +42,27 @@ const GraderSelect: React.FC<{
         {t('thesisForm:graderInstructions:content')}
       </Alert>
 
-      {graderSelections?.map((selection, index) => {
-        const requiredField = index === 0
-        const helperText =
-          index === 0
-            ? t('thesisForm:graderInstructions:professor')
-            : t('thesisForm:graderInstructions:phd')
+      <SingleGraderSelect
+        key={primaryGrader?.user?.id ?? 'grader-0'}
+        index={1}
+        selection={primaryGrader}
+        handleGraderChange={(grader) => handleChange(0, grader)}
+        inputProps={{
+          required: true,
+          helperText: t('thesisForm:graderInstructions:professor'),
+        }}
+      />
 
-        return (
-          <SingleGraderSelect
-            key={selection?.user?.id ?? `grader-${index}`}
-            index={index + 1}
-            selection={selection}
-            handleGraderChange={(grader) => handleChange(index, grader)}
-            inputProps={{ required: requiredField, helperText }}
-          />
-        )
-      })}
+      <SingleGraderSelect
+        key={secondaryGrader?.user?.id ?? 'grader-1'}
+        index={2}
+        selection={secondaryGrader}
+        handleGraderChange={(grader) => handleChange(1, grader)}
+        inputProps={{
+          required: false,
+          helperText: t('thesisForm:graderInstructions:phd'),
+        }}
+      />
     </Stack>
   )
 }
