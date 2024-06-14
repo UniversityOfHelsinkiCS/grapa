@@ -2,9 +2,7 @@ import { AuthorData, ThesisData } from '@backend/types'
 import { styled } from '@mui/material/styles'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
-import ErrorIcon from '@mui/icons-material/Error'
 import {
-  Alert,
   Autocomplete,
   Button,
   Chip,
@@ -13,6 +11,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
+  FormHelperText,
   Grid,
   InputLabel,
   Link,
@@ -29,13 +28,15 @@ import 'dayjs/locale/fi'
 import { useState } from 'react'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
+import { ZodIssue } from 'zod'
 import programs from '../mockPorgrams'
 import SupervisorSelect from './SupervisorSelect/SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
 import { BASE_PATH } from '../../../config'
 import { useDebounce } from '../../hooks/useDebounce'
-import { getTotalPercentage } from './util'
+import { getFormErrors } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
+import ErrorSummary from '../Common/ErrorSummary'
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -58,6 +59,7 @@ const ThesisEditForm: React.FC<{
   const { t, i18n } = useTranslation()
   const { language } = i18n
 
+  const [formErrors, setFormErrors] = useState<ZodIssue[]>([])
   const [editedThesis, setEditedThesis] = useState<ThesisData | null>(
     initialThesis
   )
@@ -66,26 +68,19 @@ const ThesisEditForm: React.FC<{
   const debouncedSearch = useDebounce(userSearch, 700)
   const { users } = useUsers(debouncedSearch)
 
-  const totalPercentage = getTotalPercentage(editedThesis.supervisions)
+  const handleSubmit = async () => {
+    console.log(editedThesis)
 
-  const canSubmit = Boolean(
-    editedThesis?.supervisions.length &&
-      totalPercentage === 100 &&
-      editedThesis?.graders?.[0] &&
-      editedThesis?.topic &&
-      editedThesis?.status &&
-      editedThesis?.startDate &&
-      editedThesis?.targetDate &&
-      editedThesis?.startDate < editedThesis?.targetDate &&
-      editedThesis?.researchPlan &&
-      editedThesis?.waysOfWorking
-  )
+    const thesisErrors = getFormErrors(editedThesis)
+    console.log(thesisErrors)
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (!canSubmit) return
+    if (thesisErrors.length > 0) {
+      setFormErrors(thesisErrors)
+      return
+    }
 
     await onSubmit(editedThesis)
+    setFormErrors([])
   }
 
   return (
@@ -103,6 +98,16 @@ const ThesisEditForm: React.FC<{
         {formTitle}
       </DialogTitle>
       <DialogContent>
+        {formErrors.length > 0 && (
+          <ErrorSummary autofocus label={t('thesisForm:errorSummary')}>
+            {formErrors.map((error, index) => (
+              <li key={`error-${error.path.join('-')}`}>
+                {`Error ${index + 1}: `}
+                <a href={`#${error.path.join('-')}`}>{error.message}</a>
+              </li>
+            ))}
+          </ErrorSummary>
+        )}
         <Stack spacing={6}>
           <Stack
             spacing={3}
@@ -130,9 +135,14 @@ const ThesisEditForm: React.FC<{
                   topic: event.target.value,
                 }))
               }}
+              error={formErrors.some((error) => error.path[0] === 'topic')}
+              helperText={
+                formErrors.find((error) => error.path[0] === 'topic')?.message
+              }
               fullWidth
               variant="outlined"
             />
+
             <FormControl fullWidth>
               <InputLabel id="program-select-label">
                 {t('programHeader')}
@@ -140,6 +150,7 @@ const ThesisEditForm: React.FC<{
               <Select
                 required
                 value={editedThesis.programId}
+                id="programId"
                 label="Program"
                 name="programId"
                 onChange={(event) => {
@@ -148,6 +159,9 @@ const ThesisEditForm: React.FC<{
                     programId: event.target.value as ThesisData['programId'],
                   }))
                 }}
+                error={formErrors.some(
+                  (error) => error.path[0] === 'programId'
+                )}
               >
                 {programs.map((program) => (
                   <MenuItem key={program.key} value={program.key}>
@@ -155,9 +169,17 @@ const ThesisEditForm: React.FC<{
                   </MenuItem>
                 ))}
               </Select>
+              <FormHelperText error>
+                {
+                  formErrors.find((error) => error.path[0] === 'programId')
+                    ?.message
+                }
+              </FormHelperText>
             </FormControl>
+
             <FormControl fullWidth>
               <Autocomplete<AuthorData>
+                id="authors"
                 data-testid="author-select-input"
                 disablePortal
                 options={users ?? []}
@@ -165,7 +187,18 @@ const ThesisEditForm: React.FC<{
                   `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.username ? `(${user.username})` : ''}`
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label={t('author')} required />
+                  <TextField
+                    {...params}
+                    label={t('author')}
+                    required
+                    error={formErrors.some(
+                      (error) => error.path[0] === 'authors'
+                    )}
+                    helperText={
+                      formErrors.find((error) => error.path[0] === 'authors')
+                        ?.message
+                    }
+                  />
                 )}
                 inputValue={userSearch}
                 filterOptions={(x) => x}
@@ -189,6 +222,7 @@ const ThesisEditForm: React.FC<{
                 }}
               />
             </FormControl>
+
             <FormControl fullWidth>
               <InputLabel id="status-select-label">
                 {t('statusHeader')}
@@ -197,6 +231,7 @@ const ThesisEditForm: React.FC<{
                 required
                 value={editedThesis.status}
                 label={t('statusHeader')}
+                id="status"
                 name="status"
                 onChange={(event) => {
                   setEditedThesis((oldThesis) => ({
@@ -204,6 +239,7 @@ const ThesisEditForm: React.FC<{
                     status: event.target.value as ThesisData['status'],
                   }))
                 }}
+                error={formErrors.some((error) => error.path[0] === 'status')}
               >
                 <MenuItem value="PLANNING">Planning</MenuItem>
                 <MenuItem value="STARTED">Started</MenuItem>
@@ -211,6 +247,12 @@ const ThesisEditForm: React.FC<{
                 <MenuItem value="COMPLETED">Completed</MenuItem>
                 <MenuItem value="CANCELLED">Cancelled</MenuItem>
               </Select>
+              <FormHelperText error>
+                {
+                  formErrors.find((error) => error.path[0] === 'status')
+                    ?.message
+                }
+              </FormHelperText>
             </FormControl>
 
             <LocalizationProvider
@@ -223,8 +265,15 @@ const ThesisEditForm: React.FC<{
                     label={t('startDateHeader')}
                     slotProps={{
                       textField: {
-                        helperText: 'MM.DD.YYYY',
+                        id: 'startDate',
+                        helperText:
+                          formErrors.find(
+                            (error) => error.path[0] === 'startDate'
+                          )?.message || 'MM.DD.YYYY',
                         fullWidth: true,
+                        error: formErrors.some(
+                          (error) => error.path[0] === 'startDate'
+                        ),
                       },
                     }}
                     name="startDate"
@@ -243,8 +292,15 @@ const ThesisEditForm: React.FC<{
                     label={t('targetDateHeader')}
                     slotProps={{
                       textField: {
-                        helperText: 'MM.DD.YYYY',
+                        id: 'targetDate',
+                        helperText:
+                          formErrors.find(
+                            (error) => error.path[0] === 'targetDate'
+                          )?.message || 'MM.DD.YYYY',
                         fullWidth: true,
+                        error: formErrors.some(
+                          (error) => error.path[0] === 'targetDate'
+                        ),
                       },
                     }}
                     name="targetDate"
@@ -264,6 +320,9 @@ const ThesisEditForm: React.FC<{
           </Stack>
 
           <SupervisorSelect
+            errors={formErrors.filter(
+              (error) => error.path[0] === 'supervisions'
+            )}
             supervisorSelections={editedThesis.supervisions}
             setSupervisorSelections={(newSupervisions) =>
               setEditedThesis((oldThesis) => ({
@@ -274,6 +333,7 @@ const ThesisEditForm: React.FC<{
           />
 
           <GraderSelect
+            errors={formErrors.filter((error) => error.path[0] === 'graders')}
             graderSelections={editedThesis.graders}
             setGraderSelections={(newGraders) =>
               setEditedThesis((oldThesis) => ({
@@ -296,6 +356,7 @@ const ThesisEditForm: React.FC<{
               {t('thesisForm:appendices')}
             </Typography>
             <Button
+              id="researchPlan"
               component="label"
               variant="contained"
               tabIndex={-1}
@@ -339,6 +400,7 @@ const ThesisEditForm: React.FC<{
               />
             )}
             <Button
+              id="waysOfWorking"
               component="label"
               variant="contained"
               tabIndex={-1}
@@ -383,32 +445,16 @@ const ThesisEditForm: React.FC<{
             )}
           </Stack>
         </Stack>
-        <Stack spacing={1} sx={{ mt: '2rem' }}>
-          {totalPercentage !== 100 && (
-            <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
-              {t('thesisForm:supervisionPercentageError')}
-            </Alert>
-          )}
-          {!editedThesis.researchPlan && (
-            <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
-              {t('thesisForm:researchPlanMissingError')}
-            </Alert>
-          )}
-          {!editedThesis.waysOfWorking && (
-            <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
-              {t('thesisForm:waysOfWorkingMissingError')}
-            </Alert>
-          )}
-        </Stack>
       </DialogContent>
       <DialogActions>
         <Button type="button" onClick={onClose}>
           {t('cancelButton')}
         </Button>
         <Button
-          type="submit"
+          type="button"
           variant="contained"
           sx={{ borderRadius: '0.5rem' }}
+          onClick={handleSubmit}
         >
           {t('submitButton')}
         </Button>
