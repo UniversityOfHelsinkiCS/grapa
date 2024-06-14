@@ -2,12 +2,14 @@ import React from 'react'
 import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
 import { AuthorData, GraderData } from '@backend/types'
 import { useTranslation } from 'react-i18next'
+import { ZodIssue } from 'zod'
 import SingleGraderSelect from './SingleGraderSelect'
 
 const GraderSelect: React.FC<{
+  errors: ZodIssue[]
   graderSelections: GraderData[]
   setGraderSelections: (newAuthors: GraderData[]) => void
-}> = ({ graderSelections, setGraderSelections }) => {
+}> = ({ errors, graderSelections, setGraderSelections }) => {
   const { t } = useTranslation()
 
   const [
@@ -21,6 +23,13 @@ const GraderSelect: React.FC<{
     updatedSelections[index] = updatedGrader
     setGraderSelections(updatedSelections)
   }
+
+  const professorInputError = errors.find(
+    (error) => error.path.join('-') === 'graders-0-user'
+  )
+  const phdInputError = errors.find(
+    (error) => error.path.join('-') === 'graders-1-user'
+  )
 
   return (
     <Stack
@@ -49,7 +58,10 @@ const GraderSelect: React.FC<{
         handleGraderChange={(grader) => handleChange(0, grader)}
         inputProps={{
           required: true,
-          helperText: t('thesisForm:graderInstructions:professor'),
+          helperText: professorInputError
+            ? professorInputError.message
+            : t('thesisForm:graderInstructions:professor'),
+          error: Boolean(professorInputError),
         }}
       />
 
@@ -60,7 +72,10 @@ const GraderSelect: React.FC<{
         handleGraderChange={(grader) => handleChange(1, grader)}
         inputProps={{
           required: false,
-          helperText: t('thesisForm:graderInstructions:phd'),
+          helperText: phdInputError
+            ? phdInputError.message
+            : t('thesisForm:graderInstructions:phd'),
+          error: Boolean(phdInputError),
         }}
       />
     </Stack>
