@@ -4,6 +4,7 @@ import { Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material'
 import { AuthorData, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { useTranslation } from 'react-i18next'
+import { ZodIssue } from 'zod'
 import SingleSupervisorSelect from './SingleSupervisorSelect'
 import {
   getEqualSupervisorSelectionWorkloads,
@@ -11,9 +12,10 @@ import {
 } from '../util'
 
 const SupervisorSelect: React.FC<{
+  errors: ZodIssue[]
   supervisorSelections: SupervisorSelection[]
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
-}> = ({ supervisorSelections, setSupervisorSelections }) => {
+}> = ({ errors, supervisorSelections, setSupervisorSelections }) => {
   const { t } = useTranslation()
 
   const totalPercentage = getTotalPercentage(supervisorSelections)
@@ -77,6 +79,9 @@ const SupervisorSelect: React.FC<{
         <SingleSupervisorSelect
           key={selection.user?.id ?? `supervisor-${index}`}
           index={index}
+          error={errors.find(
+            (error) => error.path.join('-') === `supervisions-${index}-user`
+          )}
           selection={selection}
           handleSupervisorChange={(supervisor) =>
             handleSupervisorChange(index, supervisor)
@@ -97,7 +102,11 @@ const SupervisorSelect: React.FC<{
           placement="bottom"
           arrow
         >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box
+            id="supervisions-percentage"
+            tabIndex={-1}
+            sx={{ display: 'flex', alignItems: 'center' }}
+          >
             {totalPercentage !== 100 && (
               <ReportOutlinedIcon color="error" sx={{ mr: '0.5rem' }} />
             )}
