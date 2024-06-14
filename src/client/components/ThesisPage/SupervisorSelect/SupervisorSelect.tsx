@@ -79,9 +79,6 @@ const SupervisorSelect: React.FC<{
         <SingleSupervisorSelect
           key={selection.user?.id ?? `supervisor-${index}`}
           index={index}
-          error={errors.find(
-            (error) => error.path.join('-') === `supervisions-${index}-user`
-          )}
           selection={selection}
           handleSupervisorChange={(supervisor) =>
             handleSupervisorChange(index, supervisor)
@@ -90,6 +87,17 @@ const SupervisorSelect: React.FC<{
           handlePercentageChange={(percentage) =>
             handlePercentageChange(index, percentage)
           }
+          inputProps={{
+            required: true,
+            helperText: errors.find(
+              (error) => error.path.join('-') === `supervisions-${index}-user`
+            )?.message,
+            error: Boolean(
+              errors.find(
+                (error) => error.path.join('-') === `supervisions-${index}-user`
+              )
+            ),
+          }}
           iconButtonProps={{
             disabled: supervisorSelections.length === 1,
           }}

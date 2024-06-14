@@ -7,30 +7,30 @@ import {
   IconButton,
   InputAdornment,
   ButtonProps,
+  TextFieldProps,
 } from '@mui/material'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { ZodIssue } from 'zod'
 import useUsers from '../../../hooks/useUsers'
 import { useDebounce } from '../../../hooks/useDebounce'
 
 interface SingleSupervisorSelectProps {
   index: number
   selection: { user: AuthorData | null; percentage: number }
-  error: ZodIssue | undefined
   handleSupervisorChange: (value: AuthorData | null) => void
   handleRemoveSupervisor: () => void
   handlePercentageChange: (percentage: number) => void
+  inputProps: TextFieldProps
   iconButtonProps: ButtonProps
 }
 const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
   index,
   selection,
-  error,
   handleSupervisorChange,
   handleRemoveSupervisor,
   handlePercentageChange,
+  inputProps,
   iconButtonProps,
 }) => {
   const { t } = useTranslation()
@@ -53,9 +53,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
             <TextField
               {...params}
               label={t('thesisForm:selectSupervisor')}
-              required
-              error={error !== undefined}
-              helperText={error?.message}
+              {...inputProps}
             />
           )}
           filterOptions={(x) => x}
