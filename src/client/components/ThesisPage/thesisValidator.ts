@@ -13,14 +13,20 @@ const supervisionSchema = z.object({
   percentage: z.number().min(0).max(100),
 })
 
-const graderSchema = z.object({
-  user: userSchema,
-  isPrimaryGrader: z.boolean(),
-})
-
-const fileSchema = z.object({
-  name: z.string().min(1, 'Please upload a file'),
-})
+const graderSchema = z
+  .object({
+    user: userSchema.nullable(),
+    isPrimaryGrader: z.boolean(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.isPrimaryGrader && !data.user) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Primary grader must be selected',
+        path: ['user'],
+      })
+    }
+  })
 
 // Because of Zod's design choices the superrefine is not called when there are other
 // issues on the object. This is why the dates are validated separately.
@@ -65,9 +71,13 @@ export const ThesisSchema = z.object({
       }
     ),
   authors: z.array(userSchema).min(1, 'Please select the author of the thesis'),
-  graders: z.array(graderSchema).min(1, 'Please specify at least one grader'),
-  researchPlan: fileSchema,
-  waysOfWorking: fileSchema,
+  graders: z.array(graderSchema),
+  researchPlan: z.instanceof(File, {
+    message: 'Please upload a valid research plan',
+  }),
+  waysOfWorking: z.instanceof(File, {
+    message: 'Please upload a valid ways of working file',
+  }),
 })
 
 export type ValidatedThesis = z.infer<typeof ThesisSchema>
