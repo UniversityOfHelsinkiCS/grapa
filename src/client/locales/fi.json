@@ -14,9 +14,25 @@
     "cancelButton": "Peruuta",
     "submitButton": "Tallenna",
     "newThesisButton": "Uusi gradu",
-    "removeButton": "Poista"
+    "removeButton": "Poista",
+    "error": "Virhe"
+  },
+  "errors:": {
+    "thesisForm": {
+      "topic": "Anna tutkielman aihe",
+      "program": "Valitse ohjelma",
+      "status": "Valitse tutkielman tila",
+      "supervisors": "Anna puuttuvat ohjaajatiedot",
+      "supervisorPercentage": "Ohjaajien työosuuksien on oltava yhteensä 100%",
+      "graders": "Anna puuttuvat arvioijatiedot",
+      "researchPlan": "Lataa kelvollinen tutkimussuunnitelmatiedosto",
+      "waysOfWorking": "Lataa kelvollinen työskentelytavat-tiedosto",
+      "startDate": "Aloituspäivän on oltava ennen tavoitepäivää",
+      "targetDate": "Tavoitepäivän on oltava aloituspäivän jälkeen"
+    }
   },
   "thesisForm": {
+    "errorSummary": "Lomake sisältää seuraavia virheitä",
     "newThesisFormTitle": "Uuden tutkielman luonti",
     "editThesisFormTitle": "Tutkielman muokkaus",
     "authorMissingError": "Tekijä puuttuu",
