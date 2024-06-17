@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Box, Typography } from '@mui/material'
 import { red } from '@mui/material/colors'
 import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined'
@@ -28,6 +28,7 @@ const ErrorSummary = ({
     <Box
       aria-label={t('errorSummary:ariaLabel')}
       aria-atomic="true"
+      data-testid="error-summary"
       sx={{
         borderLeft: (theme) => `6px solid ${theme.palette.error.main}`,
         backgroundColor: red[100],

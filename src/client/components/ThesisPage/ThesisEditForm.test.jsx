@@ -100,12 +100,14 @@ describe('ThesisEditForm', () => {
       expect(screen.getByText('Lataa työskentelysopimus')).toBeInTheDocument()
       expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
 
-      expect(
-        screen.getByText('Tutkimussuunnitelma puuttuu')
-      ).toBeInTheDocument()
-      expect(screen.getByText('Työskentelysopimus puuttuu')).toBeInTheDocument()
+      const submitButton = screen.getByTestId('submit-button')
+      expect(submitButton).toBeEnabled()
+      fireEvent.click(submitButton)
 
-      expect(screen.getByRole('button', { name: 'Tallenna' })).toBeEnabled()
+      expect(screen.getByTestId('errorsummary-topic')).toBeInTheDocument()
+      expect(screen.getByTestId('errorsummary-authors')).toBeInTheDocument()
+      expect(screen.getByTestId('errorsummary-researchPlan')).toBeInTheDocument()
+      expect(screen.getByTestId('errorsummary-waysOfWorking')).toBeInTheDocument()
     })
 
     describe('when all required fields are filled', () => {
@@ -193,18 +195,9 @@ describe('ThesisEditForm', () => {
       }, 10000)
 
       it('renders Submit button enabled and when clicked, calls onSubmit', async () => {
-        expect(
-          screen.queryByText('Tutkimussuunnitelma puuttuu')
-        ).not.toBeInTheDocument()
-        expect(
-          screen.queryByText('Työskentelysopimus puuttuu')
-        ).not.toBeInTheDocument()
-        expect(
-          screen.queryByText('Varmista, että ohjaajien yhteisprosentti on 100')
-        ).not.toBeInTheDocument()
+        expect(screen.queryByTestId('error-summary')).not.toBeInTheDocument()
 
-        const submitButton = screen.getByText('Tallenna').closest('button')
-
+        const submitButton = screen.getByTestId('submit-button')
         expect(submitButton).toBeEnabled()
 
         await userEvent.click(submitButton)

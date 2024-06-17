@@ -98,7 +98,10 @@ const ThesisEditForm: React.FC<{
         {formErrors.length > 0 && (
           <ErrorSummary autofocus label={t('thesisForm:errorSummary')}>
             {formErrors.map((error, index) => (
-              <li key={`error-${error.path.join('-')}`}>
+              <li
+                data-testid={`errorsummary-${error.path.join('-')}`}
+                key={`error-${error.path.join('-')}`}
+              >
                 {`${t('common:error')} ${index + 1}: `}
                 <a href={`#${error.path.join('-')}`}>{t(error.message)}</a>
               </li>
@@ -452,6 +455,7 @@ const ThesisEditForm: React.FC<{
           {t('cancelButton')}
         </Button>
         <Button
+          data-testid="submit-button"
           type="button"
           variant="contained"
           sx={{ borderRadius: '0.5rem' }}
