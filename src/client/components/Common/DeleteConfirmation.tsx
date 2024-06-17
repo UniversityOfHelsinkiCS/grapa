@@ -29,7 +29,11 @@ const DeleteConfirmation = ({
     <DialogTitle>{title}</DialogTitle>
     <DialogContent>{children}</DialogContent>
     <DialogActions>
-      <Button type="button" onClick={() => setOpen(false)}>
+      <Button
+        data-testid="delete-cancel-button"
+        type="button"
+        onClick={() => setOpen(false)}
+      >
         {t('cancelButton')}
       </Button>
       <Button
