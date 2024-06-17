@@ -103,6 +103,45 @@ describe('SupervisorSelect', () => {
     expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
   })
 
+  it('renders the SupervisorSelect component with an error', () => {
+    const select = render(
+      <SupervisorSelect
+        errors={[
+          {code: 'custom', message: 'formErrors:supervisors', path: ['supervisions', 0, 'user']}
+        ]}
+        supervisorSelections={[
+          { user: null, percentage: 100 }
+        ]}
+        setSupervisorSelections={setSupervisorSelections}
+      />
+    )
+
+
+    const helperText = select.container.querySelector('#supervisions-0-user-helper-text')
+    expect(helperText).toBeInTheDocument()
+
+    const inputElement = select.container.querySelector('#supervisions-0-user')
+    expect(inputElement).toHaveAttribute('aria-invalid', 'true')
+  })
+
+  it('renders the SupervisorSelect component with an error when percentage is invalid', () => {
+    render(
+      <SupervisorSelect
+        errors={[
+          {code: 'custom', message: 'formErrors:supervisors', path: ['supervisions', 0, 'percentage']}
+        ]}
+        supervisorSelections={[
+          { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 80 }
+        ]}
+        setSupervisorSelections={setSupervisorSelections}
+      />
+    )
+
+    const percentageError = screen.getByTestId('supervisions-percentage-error')
+    expect(percentageError).toBeInTheDocument()
+
+  })
+
   describe('interactions', () => {
     it('should call setSupervisorSelections when a supervision is added', () => {
       render(

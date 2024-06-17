@@ -114,6 +114,7 @@ const SupervisorSelect: React.FC<{
         >
           <Box
             id="supervisions-percentage"
+            data-testid="supervisions-percentage-error"
             tabIndex={-1}
             sx={{ display: 'flex', alignItems: 'center' }}
           >
