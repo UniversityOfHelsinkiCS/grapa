@@ -46,6 +46,7 @@ describe('GraderSelect', () => {
   it('renders the GraderSelect component', () => {
     render(
       <GraderSelect
+        errors={[]}
         graderSelections={graderSelections}
         setGraderSelections={setGraderSelections}
       />
@@ -59,6 +60,7 @@ describe('GraderSelect', () => {
   it('renders the GraderSelect component with a grader', () => {
     render(
       <GraderSelect
+        errors={[]}
         graderSelections={[
           {user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe'}, isPrimaryGrader: true }, 
           { user: null, isPrimaryGrader: false },
@@ -77,6 +79,7 @@ describe('GraderSelect', () => {
   it('renders the GraderSelect component with multiple supervisors', () => {
     render(
       <GraderSelect
+        errors={[]}
         graderSelections={[
           { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe'}, isPrimaryGrader: true },
           { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith'}, isPrimaryGrader: false },
@@ -92,8 +95,9 @@ describe('GraderSelect', () => {
     it('should call setGraderSelections when a grader is added', () => {
       render(
         <GraderSelect
-        graderSelections={graderSelections}
-        setGraderSelections={setGraderSelections}
+          errors={[]}
+          graderSelections={graderSelections}
+          setGraderSelections={setGraderSelections}
         />
       )
 
