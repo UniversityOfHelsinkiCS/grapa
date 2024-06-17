@@ -59,7 +59,7 @@ const GraderSelect: React.FC<{
         inputProps={{
           required: true,
           helperText: professorInputError
-            ? professorInputError.message
+            ? t(professorInputError.message)
             : t('thesisForm:graderInstructions:professor'),
           error: Boolean(professorInputError),
         }}
@@ -73,7 +73,7 @@ const GraderSelect: React.FC<{
         inputProps={{
           required: false,
           helperText: phdInputError
-            ? phdInputError.message
+            ? t(phdInputError.message)
             : t('thesisForm:graderInstructions:phd'),
           error: Boolean(phdInputError),
         }}

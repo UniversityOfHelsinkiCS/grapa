@@ -133,9 +133,9 @@ const ThesisEditForm: React.FC<{
                 }))
               }}
               error={formErrors.some((error) => error.path[0] === 'topic')}
-              helperText={
+              helperText={t(
                 formErrors.find((error) => error.path[0] === 'topic')?.message
-              }
+              )}
               fullWidth
               variant="outlined"
             />
@@ -167,10 +167,10 @@ const ThesisEditForm: React.FC<{
                 ))}
               </Select>
               <FormHelperText error>
-                {
+                {t(
                   formErrors.find((error) => error.path[0] === 'programId')
                     ?.message
-                }
+                )}
               </FormHelperText>
             </FormControl>
 
@@ -191,10 +191,10 @@ const ThesisEditForm: React.FC<{
                     error={formErrors.some(
                       (error) => error.path[0] === 'authors'
                     )}
-                    helperText={
+                    helperText={t(
                       formErrors.find((error) => error.path[0] === 'authors')
                         ?.message
-                    }
+                    )}
                   />
                 )}
                 inputValue={userSearch}
@@ -245,10 +245,10 @@ const ThesisEditForm: React.FC<{
                 <MenuItem value="CANCELLED">Cancelled</MenuItem>
               </Select>
               <FormHelperText error>
-                {
+                {t(
                   formErrors.find((error) => error.path[0] === 'status')
                     ?.message
-                }
+                )}
               </FormHelperText>
             </FormControl>
 
@@ -264,9 +264,11 @@ const ThesisEditForm: React.FC<{
                       textField: {
                         id: 'startDate',
                         helperText:
-                          formErrors.find(
-                            (error) => error.path[0] === 'startDate'
-                          )?.message || 'MM.DD.YYYY',
+                          t(
+                            formErrors.find(
+                              (error) => error.path[0] === 'startDate'
+                            )?.message
+                          ) || 'MM.DD.YYYY',
                         fullWidth: true,
                         error: formErrors.some(
                           (error) => error.path[0] === 'startDate'
@@ -291,9 +293,11 @@ const ThesisEditForm: React.FC<{
                       textField: {
                         id: 'targetDate',
                         helperText:
-                          formErrors.find(
-                            (error) => error.path[0] === 'targetDate'
-                          )?.message || 'MM.DD.YYYY',
+                          t(
+                            formErrors.find(
+                              (error) => error.path[0] === 'targetDate'
+                            )?.message
+                          ) || 'MM.DD.YYYY',
                         fullWidth: true,
                         error: formErrors.some(
                           (error) => error.path[0] === 'targetDate'

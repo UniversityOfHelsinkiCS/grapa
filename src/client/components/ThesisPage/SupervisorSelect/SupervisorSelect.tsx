@@ -89,9 +89,11 @@ const SupervisorSelect: React.FC<{
           }
           inputProps={{
             required: true,
-            helperText: errors.find(
-              (error) => error.path.join('-') === `supervisions-${index}-user`
-            )?.message,
+            helperText: t(
+              errors.find(
+                (error) => error.path.join('-') === `supervisions-${index}-user`
+              )?.message
+            ),
             error: Boolean(
               errors.find(
                 (error) => error.path.join('-') === `supervisions-${index}-user`
