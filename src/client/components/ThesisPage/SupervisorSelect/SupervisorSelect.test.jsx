@@ -60,6 +60,7 @@ describe('SupervisorSelect', () => {
   it('renders the SupervisorSelect component', () => {
     render(
       <SupervisorSelect
+        errors={[]}
         supervisorSelections={supervisorSelections}
         setSupervisorSelections={setSupervisorSelections}
       />
@@ -71,6 +72,7 @@ describe('SupervisorSelect', () => {
   it('renders the SupervisorSelect component with a supervisor', () => {
     render(
       <SupervisorSelect
+        errors={[]}
         supervisorSelections={[
           { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 100 },
         ]}
@@ -87,6 +89,7 @@ describe('SupervisorSelect', () => {
   it('renders the SupervisorSelect component with multiple supervisors', () => {
     render(
       <SupervisorSelect
+        errors={[]}
         supervisorSelections={[
           { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50 },
           { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 50 },
@@ -104,6 +107,7 @@ describe('SupervisorSelect', () => {
     it('should call setSupervisorSelections when a supervision is added', () => {
       render(
         <SupervisorSelect
+          errors={[]}
           supervisorSelections={supervisorSelections}
           setSupervisorSelections={setSupervisorSelections}
         />
@@ -121,6 +125,7 @@ describe('SupervisorSelect', () => {
     it('should adjust the supervisor workload percentages accordingly', () => {
       render(
         <SupervisorSelect
+          errors={[]}
           supervisorSelections={[
             { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50 },
             { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 50 },
@@ -143,6 +148,7 @@ describe('SupervisorSelect', () => {
     it('should call setSupervisorSelections when a supervisor is removed', () => {
       render(
         <SupervisorSelect
+          errors={[]}
           supervisorSelections={[
             { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50 },
             { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 50 },
@@ -163,6 +169,7 @@ describe('SupervisorSelect', () => {
     it('should not allow to delete supervisor when there is only a single supervisor', () => {
       render(
         <SupervisorSelect
+          errors={[]}
           supervisorSelections={[{ user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50 },]}
           setSupervisorSelections={setSupervisorSelections}
         />
