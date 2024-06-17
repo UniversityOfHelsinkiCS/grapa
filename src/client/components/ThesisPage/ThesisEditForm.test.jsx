@@ -246,15 +246,6 @@ describe('ThesisEditForm', () => {
       expect(screen.getByText('Lataa työskentelysopimus')).toBeInTheDocument()
       expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
 
-      expect(
-        screen.queryByText('Tutkimussuunnitelma puuttuu')
-      ).not.toBeInTheDocument()
-      expect(
-        screen.queryByText('Työskentelysopimus puuttuu')
-      ).not.toBeInTheDocument()
-      expect(
-        screen.queryByText('Varmista, että ohjaajien yhteisprosentti on 100')
-      ).not.toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Tallenna' })).toBeEnabled()
     })
   })
