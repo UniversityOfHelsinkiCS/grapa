@@ -51,5 +51,5 @@ const usersHandler = async (users: SisuUser[]) => {
 }
 
 export const fetchUsers = async () => {
-  await mangleData('persons', 10_000, usersHandler)
+  await mangleData({ url: 'persons', limit: 10_000, handler: usersHandler })
 }

@@ -19,21 +19,30 @@ const checkTimeout = (start: number) => {
   return true
 }
 
+interface MangleDataProps<T = object> {
+  // the Importer palaute endpoint to call
+  url: string
+  // number of entities in one batch
+  limit: number
+  // handler function to mangel and store entities in db
+  handler: (data: T[]) => Promise<void>
+  // date since the data is to be fetched
+  since?: Date
+  // additional query parameters to be sent to the Importer
+  queryParams?: Record<string, string | number | string[] | number[]>
+}
 /**
  * mangle === mangel === mankeloida in Finnish. Usually means 'to do some heavy processing on data to transform it into another format'.
  *
  * In this case, it also means 'to fetch data from API in batches, process them, and produce logs about the progress'
- * @param {string} url the Importer palaute endpoint to call
- * @param {number} limit number of entities in one batch
- * @param {(data: object[]) => Promise<void>} handler handler function to mangel and store entities in db
- * @param {Date} since date since the data is to be fetched
  */
-export const mangleData = async <T = object>(
-  url: string,
-  limit: number,
-  handler: (data: T[]) => Promise<void>,
-  since: Date = null
-) => {
+export const mangleData = async <T = object>({
+  url,
+  limit,
+  handler,
+  since = null,
+  queryParams = {},
+}: MangleDataProps<T>) => {
   logger.info(`[UPDATER] Starting to update items with url ${url}`)
   const offsetKey = `${url}-offset`
   const start = Date.now()
@@ -69,7 +78,7 @@ export const mangleData = async <T = object>(
       const requestTime = (Date.now() - requestStart).toFixed(0)
       requestStart = Date.now()
 
-      nextData = fetchData<T[]>(url, { limit, offset, since })
+      nextData = fetchData<T[]>(url, { limit, offset, since, ...queryParams })
 
       // eslint-disable-next-line no-continue
       if (!currentData) continue // first iteration

@@ -3,9 +3,11 @@ import logger from '../util/logger'
 import { fetchUsers } from './users'
 import { clearOffsets } from './util'
 import { fetchPrograms } from './programs'
+import { fetchStudyTracks } from './studyTracks'
 
 const runUpdater = async () => {
   await fetchPrograms()
+  await fetchStudyTracks()
   await fetchUsers()
 }
 

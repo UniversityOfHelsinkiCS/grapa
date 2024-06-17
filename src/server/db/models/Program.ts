@@ -7,6 +7,7 @@ import {
 } from 'sequelize'
 
 import { sequelize } from '../connection'
+import { TranslatedName } from '../../types'
 
 class Program extends Model<
   InferAttributes<Program>,
@@ -14,7 +15,7 @@ class Program extends Model<
 > {
   declare id: string
 
-  declare name: { fi: string; en: string; sv: string }
+  declare name: TranslatedName
 
   declare level: string
 

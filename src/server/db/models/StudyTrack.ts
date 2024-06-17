@@ -7,6 +7,7 @@ import {
 } from 'sequelize'
 
 import { sequelize } from '../connection'
+import { TranslatedName } from '../../types'
 
 class StudyTracks extends Model<
   InferAttributes<StudyTracks>,
@@ -14,7 +15,7 @@ class StudyTracks extends Model<
 > {
   declare id: string
 
-  declare name: { fi: string; en: string; sv: string }
+  declare name: TranslatedName
 
   declare programId: string
 }
@@ -43,6 +44,13 @@ StudyTracks.init(
   {
     underscored: true,
     sequelize,
+    indexes: [
+      // unique index on name and programId
+      {
+        unique: true,
+        fields: ['name', 'program_Id'],
+      },
+    ],
   }
 )
 

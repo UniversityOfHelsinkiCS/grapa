@@ -1,5 +1,11 @@
 import { Request } from 'express'
 
+export interface TranslatedName {
+  fi: string
+  en: string
+  sv: string
+}
+
 export interface UserInfo {
   uid: string
   hyPersonSisuId: string
