@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 // import SupervisorSelect from './SupervisorSelect'
 import initializeI18n from '../../../util/il18n'
@@ -184,7 +184,7 @@ describe('SupervisorSelect', () => {
       ])
     })
 
-    it('should call setSupervisorSelections when a supervisor is removed', () => {
+    it('should call setSupervisorSelections when a supervisor is removed', async () => {
       render(
         <SupervisorSelect
           errors={[]}
@@ -195,14 +195,27 @@ describe('SupervisorSelect', () => {
           setSupervisorSelections={setSupervisorSelections}
         />
       )
-
+  
+      // Click on the remove button to trigger the DeleteConfirmation dialog
       const removeButton = screen.getAllByTestId('remove-supervisor-button')[0]
-      removeButton.click()
-
-      expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
-      expect(setSupervisorSelections).toHaveBeenCalledWith([
-        { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 100 }
-      ])
+      fireEvent.click(removeButton)
+  
+      // Wait for the DeleteConfirmation dialog to appear
+      await waitFor(() => {
+        expect(screen.getByTestId('delete-confirm-dialog')).toBeInTheDocument()
+      })
+  
+      // Click on the confirm delete button
+      const confirmDeleteButton = screen.getByTestId('delete-confirm-button')
+      fireEvent.click(confirmDeleteButton)
+  
+      // Assert the function call and the updated state
+      await waitFor(() => {
+        expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
+        expect(setSupervisorSelections).toHaveBeenCalledWith([
+          { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 100 }
+        ])
+      })
     })
 
     it('should not allow to delete supervisor when there is only a single supervisor', () => {
