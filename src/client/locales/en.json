@@ -54,6 +54,9 @@
     "uploadResearchPlanButton": "Upload research plan",
     "selectSupervisor": "Select supervisor",
     "selectSupervisorPercentage": "Percentage",
-    "totalSupervisionPercentage": "Total supervision percentage: {{totalPercentage}} %"
+    "totalSupervisionPercentage": "Total supervision percentage: {{totalPercentage}} %",
+    "removeSupervisorConfirmationTitle": "Delete supervisor",
+    "removeSupervisorConfirmationContent": "Are you sure you want to delete the supervisor: {{name}}?",
+    "removeSupervisorConfirmationNoName": "Are you sure you want to delete an unnamed supervisor?"
   }
 }

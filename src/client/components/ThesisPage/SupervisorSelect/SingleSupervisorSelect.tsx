@@ -99,13 +99,14 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
         setOpen={setDeleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         onDelete={handleRemoveSupervisor}
-        title={t('deleteSupervisorConfirmation', {
-          name: `${selection.user?.firstName} ${selection.user?.lastName}`,
-        })}
+        title={t('thesisForm:removeSupervisorConfirmationTitle')}
       >
         <Box>
-          Are you sure you want to remove supervisor:{' '}
-          {selection.user?.firstName} {selection.user?.lastName}?
+          {selection.user
+            ? t('thesisForm:removeSupervisorConfirmationContent', {
+                name: `${selection.user.firstName} ${selection.user.lastName}`,
+              })
+            : t('thesisForm:removeSupervisorConfirmationNoName')}
         </Box>
       </DeleteConfirmation>
     </Stack>

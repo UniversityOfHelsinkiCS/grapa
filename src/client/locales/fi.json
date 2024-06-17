@@ -54,8 +54,9 @@
     "uploadResearchPlanButton": "Lataa tutkimussuunnitelma",
     "selectSupervisor": "Valitse ohjaaja",
     "selectSupervisorPercentage": "Osuus",
+    "totalSupervisionPercentage": "Työjakauma yhteensä: {{totalPercentage}} %",
     "removeSupervisorConfirmationTitle": "Poista ohjaaja",
-    "removeSupervisorConfirmationContent": "Haluatko varmasti poistaa ohjaajan {{name}}?",
-    "totalSupervisionPercentage": "Työjakauma yhteensä: {{totalPercentage}} %"
+    "removeSupervisorConfirmationContent": "Haluatko varmasti poistaa ohjaajan: {{name}}?",
+    "removeSupervisorConfirmationNoName": "Haluatko varmasti poistaa nimeämättömän ohjaajan?"
   }
 }
