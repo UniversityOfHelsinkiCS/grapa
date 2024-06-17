@@ -8,12 +8,14 @@ import {
   InputAdornment,
   ButtonProps,
   TextFieldProps,
+  Box,
 } from '@mui/material'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import DeleteIcon from '@mui/icons-material/Delete'
 import useUsers from '../../../hooks/useUsers'
 import { useDebounce } from '../../../hooks/useDebounce'
+import DeleteConfirmation from '../../Common/DeleteConfirmation'
 
 interface SingleSupervisorSelectProps {
   index: number
@@ -34,6 +36,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
   iconButtonProps,
 }) => {
   const { t } = useTranslation()
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [userSearch, setUserSearch] = React.useState('')
   const debouncedSearch = useDebounce(userSearch, 700)
   const { users } = useUsers(debouncedSearch)
@@ -83,7 +86,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
       <IconButton
         data-testid="remove-supervisor-button"
         type="button"
-        onClick={handleRemoveSupervisor}
+        onClick={() => setDeleteDialogOpen(true)}
         color="error"
         size="small"
         aria-label={`${t('removeButton')} ${selection.user?.firstName} ${selection.user?.lastName}`}
@@ -91,6 +94,20 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
       >
         <DeleteIcon />
       </IconButton>
+      <DeleteConfirmation
+        open={deleteDialogOpen}
+        setOpen={setDeleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onDelete={handleRemoveSupervisor}
+        title={t('deleteSupervisorConfirmation', {
+          name: `${selection.user?.firstName} ${selection.user?.lastName}`,
+        })}
+      >
+        <Box>
+          Are you sure you want to remove supervisor:{' '}
+          {selection.user?.firstName} {selection.user?.lastName}?
+        </Box>
+      </DeleteConfirmation>
     </Stack>
   )
 }
