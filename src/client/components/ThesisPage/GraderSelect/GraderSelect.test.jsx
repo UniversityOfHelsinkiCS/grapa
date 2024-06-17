@@ -91,6 +91,36 @@ describe('GraderSelect', () => {
     expect(screen.getAllByRole('combobox')[1].value).toBe('Jane Smith  (janesmith)')
   })
 
+  it('renders the GraderSelect component with an error', () => {
+    const select = render(
+      <GraderSelect
+        errors={[
+          {
+            code: "custom",
+            message: "formErrors:graders",
+            path: [
+              "graders",
+              0,
+              "user"
+            ]
+          }
+        ]}
+        graderSelections={[
+          { user: null, isPrimaryGrader: true },
+        ]}
+        setGraderSelections={setGraderSelections}
+      />
+    )
+
+
+    const helperText = select.container.querySelector('#graders-0-user-helper-text')
+    expect(helperText).toBeInTheDocument()
+
+    const inputElement = select.container.querySelector('#graders-0-user')
+    expect(inputElement).toHaveAttribute('aria-invalid', 'true')
+  })
+
+
   describe('interactions', () => {
     it('should call setGraderSelections when a grader is added', () => {
       render(
