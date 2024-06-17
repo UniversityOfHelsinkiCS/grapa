@@ -79,12 +79,22 @@ export const ThesisSchema = z.object({
     }
   ),
   graders: z.array(graderSchema),
-  researchPlan: z.instanceof(File, {
-    message: 'formErrors:researchPlan',
-  }),
-  waysOfWorking: z.instanceof(File, {
-    message: 'formErrors:waysOfWorking',
-  }),
+  researchPlan: z
+    .object({
+      name: z.string().min(1, 'formErrors:researchPlan'),
+    })
+    .optional()
+    .refine((value) => value !== undefined, {
+      message: 'formErrors:researchPlan',
+    }),
+  waysOfWorking: z
+    .object({
+      name: z.string().min(1, 'formErrors:waysOfWorking'),
+    })
+    .optional()
+    .refine((value) => value !== undefined, {
+      message: 'formErrors:waysOfWorking',
+    }),
 })
 
 export type ValidatedThesis = z.infer<typeof ThesisSchema>
