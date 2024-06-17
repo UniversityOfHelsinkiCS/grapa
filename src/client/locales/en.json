@@ -17,19 +17,18 @@
     "removeButton": "Remove",
     "error": "Error"
   },
-  "errors:": {
-    "thesisForm": {
-      "topic": "Please provide a topic for the thesis",
-      "program": "Please select a program",
-      "status": "Please select a status for the thesis",
-      "supervisors": "Please provide missing supervisor information",
-      "supervisorPercentage": "Supervision workloads must add up to 100%",
-      "graders": "Please provide missing primary grader information",
-      "researchPlan": "Please upload a valid research plan file",
-      "waysOfWorking": "Please upload a valid ways of working file",
-      "startDate": "Start date must be before target date",
-      "targetDate": "Target date must be after start date"
-    }
+  "formErrors": {
+    "topic": "Please provide a topic for the thesis",
+    "program": "Please select a program",
+    "status": "Please select a status for the thesis",
+    "authors": "Please provide missing author information",
+    "supervisors": "Please provide missing supervisor information",
+    "supervisorPercentage": "Supervision workloads must add up to 100%",
+    "graders": "Please provide missing primary grader information",
+    "researchPlan": "Please upload a valid research plan file",
+    "waysOfWorking": "Please upload a valid ways of working file",
+    "startDate": "Start date must be before target date",
+    "targetDate": "Target date must be after start date"
   },
   "thesisForm": {
     "errorSummary": "Form contains the following errors",

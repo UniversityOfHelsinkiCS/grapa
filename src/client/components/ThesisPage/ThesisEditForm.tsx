@@ -69,10 +69,7 @@ const ThesisEditForm: React.FC<{
   const { users } = useUsers(debouncedSearch)
 
   const handleSubmit = async () => {
-    console.log(editedThesis)
-
     const thesisErrors = getFormErrors(editedThesis)
-    console.log(thesisErrors)
 
     if (thesisErrors.length > 0) {
       setFormErrors(thesisErrors)
@@ -102,8 +99,8 @@ const ThesisEditForm: React.FC<{
           <ErrorSummary autofocus label={t('thesisForm:errorSummary')}>
             {formErrors.map((error, index) => (
               <li key={`error-${error.path.join('-')}`}>
-                {`Error ${index + 1}: `}
-                <a href={`#${error.path.join('-')}`}>{error.message}</a>
+                {`${t('common:error')} ${index + 1}: `}
+                <a href={`#${error.path.join('-')}`}>{t(error.message)}</a>
               </li>
             ))}
           </ErrorSummary>
