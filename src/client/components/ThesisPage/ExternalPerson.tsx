@@ -38,19 +38,12 @@ const ExternalPersonInput = ({
   const { t } = useTranslation()
 
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
-  const [inputValues, setInputValues] = React.useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    username: '',
-    affiliate: '',
-  })
 
   const handleInputChange = (key: string, value: string) => {
-    setInputValues((prev) => ({
-      ...prev,
+    handleSupervisorChange({
+      ...selection.user,
       [key]: value,
-    }))
+    })
   }
 
   return (
@@ -73,7 +66,6 @@ const ExternalPersonInput = ({
         />
 
         <TextField
-          autoFocus
           required
           margin="dense"
           id={`${inputGroup}-${index}-user-lastName`}
@@ -90,7 +82,6 @@ const ExternalPersonInput = ({
       </Stack>
       <Stack spacing={1} direction="row">
         <TextField
-          autoFocus
           required
           margin="dense"
           id={`${inputGroup}-${index}-user-email`}
@@ -104,7 +95,6 @@ const ExternalPersonInput = ({
         />
 
         {/* <TextField
-          autoFocus
           required
           margin="dense"
           id={`${inputGroup}-${index}-user-affiliate`}
