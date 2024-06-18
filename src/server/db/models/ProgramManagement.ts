@@ -8,20 +8,18 @@ import {
 
 import { sequelize } from '../connection'
 
-class Supervision extends Model<
-  InferAttributes<Supervision>,
-  InferCreationAttributes<Supervision>
+class ProgramManagement extends Model<
+  InferAttributes<ProgramManagement>,
+  InferCreationAttributes<ProgramManagement>
 > {
   declare id: string
 
-  declare thesisId: string
+  declare programId: string
 
   declare userId: string
-
-  declare percentage: number
 }
 
-Supervision.init(
+ProgramManagement.init(
   {
     id: {
       type: DataTypes.STRING,
@@ -29,11 +27,11 @@ Supervision.init(
       defaultValue: UUIDV4,
       primaryKey: true,
     },
-    thesisId: {
+    programId: {
       type: DataTypes.STRING,
       allowNull: false,
       references: {
-        model: 'theses',
+        model: 'programs',
         key: 'id',
       },
       onDelete: 'CASCADE',
@@ -47,15 +45,6 @@ Supervision.init(
       },
       onDelete: 'CASCADE',
     },
-    percentage: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 100,
-      validate: {
-        min: 0,
-        max: 100,
-      },
-    },
   },
   {
     underscored: true,
@@ -63,4 +52,4 @@ Supervision.init(
   }
 )
 
-export default Supervision
+export default ProgramManagement

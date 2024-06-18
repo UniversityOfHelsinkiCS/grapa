@@ -6,6 +6,7 @@ import Attachment from './Attachment'
 import Program from './Program'
 import StudyTrack from './StudyTrack'
 import Grader from './Grader'
+import ProgramManagement from './ProgramManagement'
 
 User.belongsToMany(Thesis, {
   through: Supervision,
@@ -17,12 +18,14 @@ Thesis.belongsToMany(User, {
   as: 'supervisors',
 })
 
-Supervision.belongsTo(User, { as: 'user' })
-
 Thesis.hasMany(Supervision, { foreignKey: 'thesisId' })
 Thesis.hasMany(Supervision, { foreignKey: 'thesisId', as: 'supervisions' })
 
+Supervision.belongsTo(User, { as: 'user' })
 Supervision.belongsTo(Thesis, { as: 'thesis' })
+
+ProgramManagement.belongsTo(User, { as: 'user' })
+ProgramManagement.belongsTo(Program, { as: 'program' })
 
 Grader.belongsTo(User, { as: 'user' })
 
@@ -55,4 +58,5 @@ export {
   Program,
   StudyTrack,
   Grader,
+  ProgramManagement,
 }
