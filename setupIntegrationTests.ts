@@ -1,4 +1,5 @@
 import supertest from 'supertest'
+import { toIncludeSameMembers } from 'jest-extended'
 import { jest } from '@jest/globals'
 import * as db from './src/server/db/connection'
 import app from './src/server/index'
@@ -6,10 +7,13 @@ import {
   Attachment,
   Author,
   Program,
+  StudyTrack,
   Supervision,
   Thesis,
   User,
 } from './src/server/db/models'
+
+expect.extend({ toIncludeSameMembers })
 
 // eslint-disable-next-line no-promise-executor-return
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -46,6 +50,7 @@ global.afterEach(async () => {
   await Author.destroy({ where: {} })
   await Thesis.destroy({ where: {} })
   await User.destroy({ where: {} })
+  await StudyTrack.destroy({ where: {} })
   await Program.destroy({ where: {} })
 })
 

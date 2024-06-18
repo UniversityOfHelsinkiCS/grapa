@@ -1,12 +1,12 @@
 import supertest from 'supertest'
 import app from '../index'
-import { Program } from '../db/models'
+import { Program, StudyTrack } from '../db/models'
 
 const request = supertest.agent(app)
 
 describe('program router', () => {
   beforeEach(async () => {
-    await await Program.create({
+    await Program.create({
       id: 'test1',
       name: { fi: 'test1suomeksi', en: 'test1inenglish', sv: 'test1pasvenska' },
       level: 'master',
@@ -22,6 +22,23 @@ describe('program router', () => {
       international: false,
       companionFaculties: [],
       enabled: false,
+    })
+
+    await StudyTrack.create({
+      name: 'test1',
+      programId: 'test1',
+    })
+    await StudyTrack.create({
+      name: 'test2',
+      programId: 'test1',
+    })
+    await StudyTrack.create({
+      name: 'test3',
+      programId: 'test2',
+    })
+    await StudyTrack.create({
+      name: 'test4',
+      programId: 'test2',
     })
   })
 
@@ -50,10 +67,10 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
-              level: 'master',
-              international: true,
-              companionFaculties: [],
-              enabled: true,
+              studyTracks: expect.toIncludeSameMembers([
+                expect.objectContaining({ name: 'test1' }),
+                expect.objectContaining({ name: 'test2' }), 
+              ])
             },
           ])
         })
@@ -75,10 +92,10 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
-              level: 'master',
-              international: true,
-              companionFaculties: [],
-              enabled: true,
+              studyTracks: expect.toIncludeSameMembers([
+                expect.objectContaining({ name: 'test1' }),
+                expect.objectContaining({ name: 'test2' }), 
+              ])
             },
           ])
         })
@@ -92,7 +109,7 @@ describe('program router', () => {
             .query({ includeDisabled: true })
 
           expect(response.status).toEqual(200)
-          expect(response.body).toMatchObject([
+          expect(response.body).toIncludeSameMembers([
             {
               id: 'test1',
               name: {
@@ -100,10 +117,10 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
-              level: 'master',
-              international: true,
-              companionFaculties: [],
-              enabled: true,
+              studyTracks: expect.toIncludeSameMembers([
+                expect.objectContaining({ name: 'test1' }),
+                expect.objectContaining({ name: 'test2' }), 
+              ])
             },
             {
               id: 'test2',
@@ -112,10 +129,10 @@ describe('program router', () => {
                 en: 'test2inenglish',
                 sv: 'test2pasvenska',
               },
-              level: 'master',
-              international: false,
-              companionFaculties: [],
-              enabled: false,
+              studyTracks: expect.toIncludeSameMembers([
+                expect.objectContaining({ name: 'test3' }),
+                expect.objectContaining({ name: 'test4' }), 
+              ])
             },
           ])
         })
@@ -139,10 +156,10 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
-              level: 'master',
-              international: true,
-              companionFaculties: [],
-              enabled: true,
+              studyTracks: expect.toIncludeSameMembers([
+                expect.objectContaining({ name: 'test1' }),
+                expect.objectContaining({ name: 'test2' }), 
+              ])
             },
           ])
         })
@@ -164,10 +181,10 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
-              level: 'master',
-              international: true,
-              companionFaculties: [],
-              enabled: true,
+              studyTracks: expect.toIncludeSameMembers([
+                expect.objectContaining({ name: 'test1' }),
+                expect.objectContaining({ name: 'test2' }), 
+              ])
             },
           ])
         })
@@ -181,7 +198,7 @@ describe('program router', () => {
             .query({ includeDisabled: true })
 
           expect(response.status).toEqual(200)
-          expect(response.body).toMatchObject([
+          expect(response.body).toIncludeSameMembers([
             {
               id: 'test1',
               name: {
@@ -189,10 +206,10 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
-              level: 'master',
-              international: true,
-              companionFaculties: [],
-              enabled: true,
+              studyTracks: expect.toIncludeSameMembers([
+                expect.objectContaining({ name: 'test1' }),
+                expect.objectContaining({ name: 'test2' }), 
+              ])
             },
             {
               id: 'test2',
@@ -201,10 +218,10 @@ describe('program router', () => {
                 en: 'test2inenglish',
                 sv: 'test2pasvenska',
               },
-              level: 'master',
-              international: false,
-              companionFaculties: [],
-              enabled: false,
+              studyTracks: expect.toIncludeSameMembers([
+                expect.objectContaining({ name: 'test3' }),
+                expect.objectContaining({ name: 'test4' }), 
+              ])
             },
           ])
         })

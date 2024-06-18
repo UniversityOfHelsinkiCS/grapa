@@ -76,6 +76,18 @@ export interface ThesisData {
   waysOfWorking?: FileData | File
 }
 
+export interface StudyTrackData {
+  id: string
+  name: TranslatedName
+  programId: string
+}
+
+export interface ProgramData {
+  id: string
+  name: TranslatedName
+  studyTrack: StudyTrackData
+}
+
 export interface ServerGetRequest extends Request {
   user: User
 }

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import apiClient from '../util/apiClient'
-import { Program } from '../../server/db/models'
+import { ProgramData as Program } from '../../server/types'
 
 const usePrograms = () => {
   const queryKey = ['programs']

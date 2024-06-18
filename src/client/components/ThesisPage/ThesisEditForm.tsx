@@ -36,7 +36,7 @@ import { useDebounce } from '../../hooks/useDebounce'
 import { getFormErrors } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
 import ErrorSummary from '../Common/ErrorSummary'
-import { Program } from '../../../server/db/models'
+import { ProgramData as Program } from '../../../server/types'
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
