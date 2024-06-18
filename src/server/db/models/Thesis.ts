@@ -17,6 +17,8 @@ class Thesis extends Model<
 
   declare programId: string
 
+  declare studyTrackId: string | undefined
+
   declare topic: string
 
   declare status: ThesisStatus
@@ -37,6 +39,10 @@ Thesis.init(
     programId: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    studyTrackId: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     topic: {
       type: DataTypes.STRING,

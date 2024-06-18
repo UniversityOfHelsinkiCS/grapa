@@ -148,6 +148,7 @@ describe('thesis router', () => {
 
       thesis1 = await Thesis.create({
         programId: 'Testing program',
+        studyTrackId: 'test-study-track-id',
         topic: 'test topic',
         status: 'PLANNING',
         startDate: '1970-01-01',
@@ -203,6 +204,7 @@ describe('thesis router', () => {
           expect(response.body).toMatchObject([
             {
               programId: 'Testing program',
+              studyTrackId: 'test-study-track-id',
               topic: 'test topic',
               status: 'PLANNING',
               startDate: '1970-01-01T00:00:00.000Z',
@@ -242,6 +244,7 @@ describe('thesis router', () => {
           expect(response.body).toMatchObject([
             {
               programId: 'Testing program',
+              studyTrackId: 'test-study-track-id',
               topic: 'test topic',
               status: 'PLANNING',
               startDate: '1970-01-01T00:00:00.000Z',
@@ -304,6 +307,7 @@ describe('thesis router', () => {
       it('should return 201 and create a new thesis', async () => {
         const newThesis = {
           programId: 'New program',
+          studyTrackId: 'new-test-study-track-id',
           topic: 'New topic',
           status: 'PLANNING',
           startDate: '1970-01-01T00:00:00.000Z',
@@ -352,6 +356,7 @@ describe('thesis router', () => {
         it('should return 200 and update the thesis', async () => {
           const updatedThesis = {
             programId: 'Updated program',
+            studyTrackId: 'new-test-study-track-id',
             topic: 'Updated topic',
             status: 'PLANNING',
             startDate: '1970-01-01T00:00:00.000Z',
@@ -416,6 +421,7 @@ describe('thesis router', () => {
         it('should return 200 and update the thesis', async () => {
           const updatedThesis = {
             programId: 'Updated program',
+            studyTrackId: 'new-test-study-track-id',
             topic: 'Updated topic',
             status: 'PLANNING',
             startDate: '1970-01-01T00:00:00.000Z',
@@ -472,6 +478,7 @@ describe('thesis router', () => {
         it('should return 200 and update the thesis', async () => {
           const updatedThesis = {
             programId: 'Updated program',
+            studyTrackId: 'new-test-study-track-id',
             topic: 'Updated topic',
             status: 'PLANNING',
             startDate: '1970-01-01T00:00:00.000Z',

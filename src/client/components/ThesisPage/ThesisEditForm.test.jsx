@@ -7,6 +7,7 @@ import userEvent from '@testing-library/user-event'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
+import { fiFI } from '@mui/material/locale'
 
 jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   default: jest.fn().mockReturnValue({
@@ -20,25 +21,51 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
         username: 'bobluukkainen',
       },
       {
-        id: 4, 
-        firstName: 'Henri', 
-        lastName: 'Tunkkaaja', 
-        username: 'tunkkaus'
-      }
+        id: 4,
+        firstName: 'Henri',
+        lastName: 'Tunkkaaja',
+        username: 'tunkkaus',
+      },
     ],
   }),
 }))
 
 const programs = [
-  { id: 1, name: { en: 'Bachelor\'s Programme in Mathematical Sciences', fi: 'Bachelor\'s Programme in Mathematical Sciences' } },
-  { id: 2, name: { en: 'Test program 2', fi: 'testi 2' } },
+  {
+    id: 1,
+    name: {
+      en: "Bachelor's Programme in Mathematical Sciences",
+      fi: "Bachelor's Programme in Mathematical Sciences",
+    },
+    studyTracks: [
+      {
+        id: 'test-study-track1',
+        name: { en: 'Test Track 1', fi: 'Testi opintosuunta 1' },
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: { en: 'Test program 2', fi: 'testi 2' },
+    studyTracks: [
+      {
+        id: 'test-study-track2',
+        name: { en: 'Test Track 2', fi: 'Testi opintosuunta 2' },
+      },
+    ],
+  },
 ]
 
 jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
   default: jest.fn().mockReturnValue({
-    user: {id: 4, firstName: 'Henri', lastName: 'Tunkkaaja', username: 'tunkkaus'},
+    user: {
+      id: 4,
+      firstName: 'Henri',
+      lastName: 'Tunkkaaja',
+      username: 'tunkkaus',
+    },
     isLoading: false,
-  },),
+  }),
 }))
 
 jest.unstable_mockModule('@mui/icons-material/CloudUpload', () => ({
@@ -72,10 +99,13 @@ describe('ThesisEditForm', () => {
     beforeEach(() => {
       const initialThesis = {
         programId: programs[0].id,
+        studyTrackId: programs[0].studyTracks[0].id,
         supervisions: [],
         authors: [],
-        graders: [{ user: null, isPrimaryGrader: true },
-          { user: null, isPrimaryGrader: false },],
+        graders: [
+          { user: null, isPrimaryGrader: true },
+          { user: null, isPrimaryGrader: false },
+        ],
         topic: '',
         status: 'PLANNING',
         startDate: dayjs().format('YYYY-MM-DD'),
@@ -110,8 +140,12 @@ describe('ThesisEditForm', () => {
 
       expect(screen.getByTestId('errorsummary-topic')).toBeInTheDocument()
       expect(screen.getByTestId('errorsummary-authors')).toBeInTheDocument()
-      expect(screen.getByTestId('errorsummary-researchPlan')).toBeInTheDocument()
-      expect(screen.getByTestId('errorsummary-waysOfWorking')).toBeInTheDocument()
+      expect(
+        screen.getByTestId('errorsummary-researchPlan')
+      ).toBeInTheDocument()
+      expect(
+        screen.getByTestId('errorsummary-waysOfWorking')
+      ).toBeInTheDocument()
     })
 
     describe('when all required fields are filled', () => {
@@ -128,12 +162,13 @@ describe('ThesisEditForm', () => {
         const addSupervisorBtn = screen.getByTestId('add-supervisor-button')
         await user.click(addSupervisorBtn)
 
-        const superVisorSelect1 = screen.getByTestId('supervisor-select-input-1')
+        const superVisorSelect1 = screen.getByTestId(
+          'supervisor-select-input-1'
+        )
         const superVisorInput1 = within(superVisorSelect1).getByRole('combobox')
 
         const graderSelect1 = screen.getByTestId('grader-select-input-1')
         const graderInput1 = within(graderSelect1).getByRole('combobox')
-
 
         const researchPlanInput = screen
           .getByRole('button', {
@@ -215,11 +250,28 @@ describe('ThesisEditForm', () => {
     beforeEach(() => {
       const initialThesis = {
         programId: programs[0].key,
+        studyTrackId: programs[0].studyTracks[0].id,
         supervisions: [{ userId: 1, percentage: 100 }],
         authors: [{ userId: 2 }],
         graders: [
-          { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe'}, isPrimaryGrader: true },
-          { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith'}, isPrimaryGrader: false },
+          {
+            user: {
+              id: 1,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+            },
+            isPrimaryGrader: true,
+          },
+          {
+            user: {
+              id: 2,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              username: 'janesmith',
+            },
+            isPrimaryGrader: false,
+          },
         ],
         topic: 'Test',
         status: 'PLANNING',

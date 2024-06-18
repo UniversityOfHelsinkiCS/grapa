@@ -65,6 +65,7 @@ export interface FileData {
 export interface ThesisData {
   id?: string
   programId: string
+  studyTrackId?: string
   topic: string
   status: ThesisStatus
   startDate: string
@@ -85,7 +86,7 @@ export interface StudyTrackData {
 export interface ProgramData {
   id: string
   name: TranslatedName
-  studyTrack: StudyTrackData
+  studyTracks: StudyTrackData[]
 }
 
 export interface ServerGetRequest extends Request {

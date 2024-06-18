@@ -113,6 +113,7 @@ const ThesesPage = () => {
         onClick={() => {
           setNewThesis({
             programId: programs[0].id,
+            studyTrackId: programs[0].studyTracks[0]?.id,
             supervisions: [{ user, percentage: 100 }],
             authors: [],
             graders: [

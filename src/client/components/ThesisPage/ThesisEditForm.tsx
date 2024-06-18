@@ -81,6 +81,10 @@ const ThesisEditForm: React.FC<{
     setFormErrors([])
   }
 
+  const selectedProgram = programs.find(
+    (program) => program.id === editedThesis.programId
+  )
+
   return (
     <Dialog
       open
@@ -158,6 +162,9 @@ const ThesisEditForm: React.FC<{
                   setEditedThesis((oldThesis) => ({
                     ...oldThesis,
                     programId: event.target.value as ThesisData['programId'],
+                    studyTrackId: programs.find(
+                      (program) => program.id === event.target.value
+                    )?.studyTracks?.[0]?.id,
                   }))
                 }}
                 error={formErrors.some(
@@ -177,6 +184,45 @@ const ThesisEditForm: React.FC<{
                 )}
               </FormHelperText>
             </FormControl>
+
+            {Boolean(
+              selectedProgram && selectedProgram.studyTracks?.length
+            ) && (
+              <FormControl fullWidth>
+                <InputLabel id="study-track-select-label">
+                  {t('studyTrackHeader')}
+                </InputLabel>
+                <Select
+                  required
+                  value={editedThesis.studyTrackId}
+                  id="studyTrackId"
+                  label="Study Track"
+                  name="studyTrackId"
+                  onChange={(event) => {
+                    setEditedThesis((oldThesis) => ({
+                      ...oldThesis,
+                      studyTrackId: event.target
+                        .value as ThesisData['studyTrackId'],
+                    }))
+                  }}
+                  error={formErrors.some(
+                    (error) => error.path[0] === 'studyTrackId'
+                  )}
+                >
+                  {selectedProgram.studyTracks.map((studyTrack) => (
+                    <MenuItem key={studyTrack.id} value={studyTrack.id}>
+                      {studyTrack.name.en}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText error>
+                  {t(
+                    formErrors.find((error) => error.path[0] === 'programId')
+                      ?.message
+                  )}
+                </FormHelperText>
+              </FormControl>
+            )}
 
             <FormControl fullWidth>
               <Autocomplete<AuthorData>

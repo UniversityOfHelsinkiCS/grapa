@@ -5,6 +5,7 @@
     "grader": "Grader {{index}}",
     "profileButton": "Profile",
     "programHeader": "Program",
+    "studyTrackHeader": "Study track",
     "topicHeader": "Topic",
     "statusHeader": "Status",
     "startDateHeader": "Start date",
