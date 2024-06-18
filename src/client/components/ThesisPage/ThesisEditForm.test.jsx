@@ -29,6 +29,11 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   }),
 }))
 
+const programs = [
+  { id: 1, name: { en: 'Bachelor\'s Programme in Mathematical Sciences', fi: 'Bachelor\'s Programme in Mathematical Sciences' } },
+  { id: 2, name: { en: 'Test program 2', fi: 'testi 2' } },
+]
+
 jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
   default: jest.fn().mockReturnValue({
     user: {id: 4, firstName: 'Henri', lastName: 'Tunkkaaja', username: 'tunkkaus'},
@@ -58,8 +63,6 @@ describe('ThesisEditForm', () => {
   let mockOnClose
   let mockOnSubmit
 
-  const programs = [{ key: 'KH50_001', name: 'Test Program' }]
-
   beforeEach(() => {
     mockOnClose = jest.fn()
     mockOnSubmit = jest.fn()
@@ -68,7 +71,7 @@ describe('ThesisEditForm', () => {
   describe('when initialThesis is a new thesis', () => {
     beforeEach(() => {
       const initialThesis = {
-        programId: programs[0].key,
+        programId: programs[0].id,
         supervisions: [],
         authors: [],
         graders: [{ user: null, isPrimaryGrader: true },
@@ -83,6 +86,7 @@ describe('ThesisEditForm', () => {
 
       render(
         <ThesisEditForm
+          programs={programs}
           initialThesis={initialThesis}
           onClose={mockOnClose}
           onSubmit={mockOnSubmit}
@@ -229,6 +233,7 @@ describe('ThesisEditForm', () => {
 
       render(
         <ThesisEditForm
+          programs={programs}
           initialThesis={initialThesis}
           onClose={mockOnClose}
           onSubmit={mockOnSubmit}

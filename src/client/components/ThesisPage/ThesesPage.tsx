@@ -7,7 +7,6 @@ import { useState } from 'react'
 import { ThesisData as Thesis } from '@backend/types'
 import { useTranslation } from 'react-i18next'
 import { Button, Stack } from '@mui/material'
-import programs from '../mockPorgrams'
 import useTheses from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import {
@@ -17,6 +16,7 @@ import {
 } from '../../hooks/useThesesMutation'
 import ThesisEditForm from './ThesisEditForm'
 import DeleteConfirmation from '../Common/DeleteConfirmation'
+import usePrograms from '../../hooks/usePrograms'
 
 const ThesesPage = () => {
   const { t } = useTranslation()
@@ -28,6 +28,7 @@ const ThesesPage = () => {
   const [newThesis, setNewThesis] = useState<Thesis | null>(null)
 
   const { theses } = useTheses()
+  const { programs } = usePrograms()
   const { mutateAsync: editThesis } = useEditThesisMutation()
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
   const { mutateAsync: createThesis } = useCreateThesisMutation()
@@ -39,7 +40,7 @@ const ThesesPage = () => {
       headerName: t('programHeader'),
       width: 350,
       valueGetter: (value, row) =>
-        programs.find((program) => program.key === row.programId)?.name.en,
+        programs.find((program) => program.id === row.programId)?.name.en,
       // editable: true,
     },
     {
@@ -111,7 +112,7 @@ const ThesesPage = () => {
         sx={{ width: 200, borderRadius: '0.5rem' }}
         onClick={() => {
           setNewThesis({
-            programId: programs[0].key,
+            programId: programs[0].id,
             supervisions: [{ user, percentage: 100 }],
             authors: [],
             graders: [
@@ -144,6 +145,7 @@ const ThesesPage = () => {
       </Box>
       {editedTesis && (
         <ThesisEditForm
+          programs={programs ?? []}
           formTitle={t('thesisForm:editThesisFormTitle')}
           initialThesis={editedTesis}
           onSubmit={async (updatedThesis) => {
@@ -155,6 +157,7 @@ const ThesesPage = () => {
       )}
       {newThesis && (
         <ThesisEditForm
+          programs={programs ?? []}
           formTitle={t('thesisForm:newThesisFormTitle')}
           initialThesis={newThesis}
           onSubmit={async (variables) => {

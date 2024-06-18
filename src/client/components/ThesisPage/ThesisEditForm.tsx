@@ -29,7 +29,6 @@ import { useState } from 'react'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ZodIssue } from 'zod'
-import programs from '../mockPorgrams'
 import SupervisorSelect from './SupervisorSelect/SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
 import { BASE_PATH } from '../../../config'
@@ -37,6 +36,7 @@ import { useDebounce } from '../../hooks/useDebounce'
 import { getFormErrors } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
 import ErrorSummary from '../Common/ErrorSummary'
+import { Program } from '../../../server/db/models'
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -51,11 +51,12 @@ const VisuallyHiddenInput = styled('input')({
 })
 
 const ThesisEditForm: React.FC<{
+  programs: Program[]
   formTitle: string
   initialThesis: ThesisData
   onClose: () => void
   onSubmit: (data: ThesisData) => Promise<void>
-}> = ({ formTitle, initialThesis, onSubmit, onClose }) => {
+}> = ({ programs, formTitle, initialThesis, onSubmit, onClose }) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n
 
@@ -164,7 +165,7 @@ const ThesisEditForm: React.FC<{
                 )}
               >
                 {programs.map((program) => (
-                  <MenuItem key={program.key} value={program.key}>
+                  <MenuItem key={program.id} value={program.id}>
                     {program.name.en}
                   </MenuItem>
                 ))}
