@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/node'
 import logger from '../util/logger'
 import { inProduction } from '../../config'
 
-import ZodValidationError from '../errors/ValidationError'
+import CustomValidationError from '../errors/ValidationError'
 
 const errorHandler = (
   error: Error,
@@ -18,10 +18,10 @@ const errorHandler = (
 
   if (inProduction) Sentry.captureException(error)
 
-  if (error.name === 'ZodValidationError') {
+  if (error.name === 'CustomValidationError') {
     return res.status(400).send({
       error: error.message,
-      data: (error as ZodValidationError).errors,
+      data: (error as CustomValidationError).errors,
     })
   }
 
