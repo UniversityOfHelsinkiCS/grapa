@@ -56,7 +56,7 @@ const ExternalPersonInput = ({
           id={`${inputGroup}-${index}-user-firstName`}
           name="firstName"
           label={t('firstName')}
-          value={selection.user?.firstName}
+          value={selection.user?.firstName ?? ''}
           onChange={(event) =>
             handleInputChange('firstName', event.target.value)
           }
@@ -71,7 +71,7 @@ const ExternalPersonInput = ({
           id={`${inputGroup}-${index}-user-lastName`}
           name="lastName"
           label={t('lastName')}
-          value={selection.user?.lastName}
+          value={selection.user?.lastName ?? ''}
           onChange={(event) =>
             handleInputChange('lastName', event.target.value)
           }
@@ -87,7 +87,7 @@ const ExternalPersonInput = ({
           id={`${inputGroup}-${index}-user-email`}
           name="email"
           label={t('email')}
-          value={selection.user?.email}
+          value={selection.user?.email ?? ''}
           onChange={(event) => handleInputChange('email', event.target.value)}
           fullWidth
           variant="outlined"
