@@ -23,6 +23,8 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 
   declare isAdmin: boolean
 
+  declare isExternal: boolean
+
   declare iamGroups: string[]
 }
 
@@ -51,6 +53,11 @@ User.init(
       type: DataTypes.STRING,
     },
     isAdmin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    isExternal: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
