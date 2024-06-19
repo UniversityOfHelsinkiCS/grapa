@@ -44,6 +44,10 @@ jest.unstable_mockModule('@mui/icons-material/ReportOutlined', () => ({
   default: jest.fn().mockReturnValue('ReportOutlinedIcon'),
 }))
 
+jest.unstable_mockModule('@mui/icons-material/ArrowDropDown', () => ({
+  default: jest.fn().mockReturnValue('ArrowDropDownIcon'),
+}))
+
 const SupervisorSelect = (await import('./SupervisorSelect')).default
 
 describe('SupervisorSelect', () => {
