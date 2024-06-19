@@ -75,9 +75,25 @@ const createThesisAndSupervisions = async (
 ) => {
   const createdThesis = await Thesis.create(thesisData, { transaction: t })
 
+  // Create the external users from the supervisions
+  const extUsers = await User.bulkCreate(
+    thesisData.supervisions
+      .filter((supervision) => supervision.isExternal)
+      .map((supervision) => ({
+        username: `ext-${supervision.user?.email}`,
+        firstName: supervision.user?.firstName,
+        lastName: supervision.user?.lastName,
+        email: supervision.user?.email,
+        isExternal: true,
+      })),
+    { transaction: t, validate: true, individualHooks: true }
+  )
+
   await Supervision.bulkCreate(
     thesisData.supervisions.map((supervision) => ({
-      userId: supervision.user.id,
+      userId:
+        supervision.user?.id ??
+        extUsers.find((u) => u.email === supervision.user?.email)?.id,
       thesisId: createdThesis.id,
       percentage: supervision.percentage,
     })),
