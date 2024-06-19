@@ -349,6 +349,39 @@ describe('thesis router', () => {
         const thesis = await Thesis.findByPk(response.body.id)
         expect(thesis).not.toBeNull()
       })
+
+      it('should return 400 if the request is missing a required field', async () => {
+        const newThesis = {
+          programId: 'New program',
+          studyTrackId: 'new-test-study-track-id',
+          topic: 'New topic',
+          status: 'PLANNING',
+          startDate: '1970-01-01T00:00:00.000Z',
+          targetDate: '2070-01-01T00:00:00.000Z',
+          supervisions: [
+            {
+              user: user1,
+              percentage: 100,
+            },
+          ],
+          graders: [
+            {
+              user: user4,
+              isPrimaryGrader: true,
+            },
+          ],
+          authors: [user2],
+        }
+        const response = await request
+          .post('/api/theses')
+          .set('hygroupcn', 'grp-toska')
+          .attach(
+            'waysOfWorking',
+            path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
+          )
+          .field('json', JSON.stringify(newThesis))
+        expect(response.status).toEqual(400)
+      })
     })
 
     describe('PUT /api/theses/:id', () => {
