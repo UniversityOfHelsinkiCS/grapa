@@ -1,6 +1,6 @@
 import React from 'react'
 import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined'
-import { Box, Button, Divider, Stack, Tooltip, Typography } from '@mui/material'
+import { Box, Divider, Stack, Tooltip, Typography } from '@mui/material'
 import { AuthorData, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { useTranslation } from 'react-i18next'
@@ -11,6 +11,7 @@ import {
   getTotalPercentage,
 } from '../util'
 import ExternalPersonInput from '../ExternalPerson'
+import NewSupervisorControls from './NewSupervisorControls'
 
 const SupervisorSelect: React.FC<{
   errors: ZodIssue[]
@@ -146,22 +147,7 @@ const SupervisorSelect: React.FC<{
       </Divider>
 
       {supervisorSelections.length < 5 && (
-        <Stack direction="row" justifyContent="space-between">
-          <Button
-            data-testid="add-external-supervisor-button"
-            type="button"
-            onClick={() => handleAddSupervisor(true)}
-          >
-            {t('thesisForm:addExternalSupervisor')}
-          </Button>
-          <Button
-            data-testid="add-supervisor-button"
-            type="button"
-            onClick={() => handleAddSupervisor(false)}
-          >
-            {t('thesisForm:addSupervisor')}
-          </Button>
-        </Stack>
+        <NewSupervisorControls handleAddSupervisor={handleAddSupervisor} />
       )}
     </Stack>
   )
