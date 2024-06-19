@@ -33,6 +33,8 @@ const ThesesPage = () => {
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
   const { mutateAsync: createThesis } = useCreateThesisMutation()
 
+  if (!programs || !theses || loggedInUserLoading) return null
+
   const columns: GridColDef<Thesis>[] = [
     { field: 'id', headerName: 'ID', width: 90 },
     {
@@ -101,8 +103,6 @@ const ThesesPage = () => {
       ],
     },
   ]
-
-  if (!theses || loggedInUserLoading) return null
 
   return (
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
