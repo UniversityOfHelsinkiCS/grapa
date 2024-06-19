@@ -88,9 +88,8 @@ const createThesisAndSupervisions = async (
       })),
     {
       transaction: t,
+      updateOnDuplicate: ['username'],
       validate: true,
-      individualHooks: true,
-      ignoreDuplicates: true,
     }
   )
 
