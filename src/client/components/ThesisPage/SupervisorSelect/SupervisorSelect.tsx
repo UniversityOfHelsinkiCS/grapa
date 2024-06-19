@@ -10,6 +10,7 @@ import {
   getEqualSupervisorSelectionWorkloads,
   getTotalPercentage,
 } from '../util'
+import ExternalPersonInput from '../ExternalPerson'
 
 const SupervisorSelect: React.FC<{
   errors: ZodIssue[]
@@ -34,7 +35,7 @@ const SupervisorSelect: React.FC<{
     setSupervisorSelections(updatedSelections)
   }
 
-  const handleAddSupervisor = () => {
+  const handleAddSupervisor = (isExternal: boolean) => {
     const numberOfSupervisors = supervisorSelections.length + 1
 
     const updatedSelections = getEqualSupervisorSelectionWorkloads(
@@ -44,7 +45,11 @@ const SupervisorSelect: React.FC<{
 
     setSupervisorSelections([
       ...updatedSelections,
-      { user: null, percentage: Math.floor((1 / numberOfSupervisors) * 100) },
+      {
+        user: null,
+        percentage: Math.floor((1 / numberOfSupervisors) * 100),
+        external: isExternal,
+      },
     ])
   }
 
@@ -75,36 +80,45 @@ const SupervisorSelect: React.FC<{
       <Typography component="legend" sx={{ px: '1rem' }}>
         {t('thesisForm:supervisors')}
       </Typography>
-      {supervisorSelections.map((selection, index) => (
-        <SingleSupervisorSelect
-          key={selection.user?.id ?? `supervisor-${index}`}
-          index={index}
-          selection={selection}
-          handleSupervisorChange={(supervisor) =>
-            handleSupervisorChange(index, supervisor)
-          }
-          handleRemoveSupervisor={() => handleRemoveSupervisor(index)}
-          handlePercentageChange={(percentage) =>
-            handlePercentageChange(index, percentage)
-          }
-          inputProps={{
-            required: true,
-            helperText: t(
-              errors.find(
-                (error) => error.path.join('-') === `supervisions-${index}-user`
-              )?.message
-            ),
-            error: Boolean(
-              errors.find(
-                (error) => error.path.join('-') === `supervisions-${index}-user`
-              )
-            ),
-          }}
-          iconButtonProps={{
-            disabled: supervisorSelections.length === 1,
-          }}
-        />
-      ))}
+      {supervisorSelections.map((selection, index) => {
+        const SupervisorElement = selection.external
+          ? ExternalPersonInput
+          : SingleSupervisorSelect
+
+        return (
+          <SupervisorElement
+            key={selection.user?.id ?? `supervisions-${index}`}
+            index={index}
+            inputGroup="supervisions"
+            selection={selection}
+            handleSupervisorChange={(value) =>
+              handleSupervisorChange(index, value)
+            }
+            handleRemoveSupervisor={() => handleRemoveSupervisor(index)}
+            handlePercentageChange={(percentage) =>
+              handlePercentageChange(index, percentage)
+            }
+            inputProps={{
+              required: true,
+              helperText: t(
+                errors.find(
+                  (error) =>
+                    error.path.join('-') === `supervisions-${index}-user`
+                )?.message
+              ),
+              error: Boolean(
+                errors.find(
+                  (error) =>
+                    error.path.join('-') === `supervisions-${index}-user`
+                )
+              ),
+            }}
+            iconButtonProps={{
+              disabled: supervisorSelections.length === 1,
+            }}
+          />
+        )
+      })}
 
       <Divider component="div" role="presentation" textAlign="right">
         <Tooltip
@@ -132,13 +146,22 @@ const SupervisorSelect: React.FC<{
       </Divider>
 
       {supervisorSelections.length < 5 && (
-        <Button
-          data-testid="add-supervisor-button"
-          type="button"
-          onClick={handleAddSupervisor}
-        >
-          {t('thesisForm:addSupervisor')}
-        </Button>
+        <Stack direction="row" justifyContent="space-between">
+          <Button
+            data-testid="add-external-supervisor-button"
+            type="button"
+            onClick={() => handleAddSupervisor(true)}
+          >
+            {t('thesisForm:addExternalSupervisor')}
+          </Button>
+          <Button
+            data-testid="add-supervisor-button"
+            type="button"
+            onClick={() => handleAddSupervisor(false)}
+          >
+            {t('thesisForm:addSupervisor')}
+          </Button>
+        </Stack>
       )}
     </Stack>
   )
