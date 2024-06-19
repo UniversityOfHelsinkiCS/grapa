@@ -1,10 +1,8 @@
 import { z } from 'zod'
 
 const userSchema = z.object({
-  id: z.string(),
-  username: z.string(),
-  firstName: z.string(),
-  lastName: z.string(),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
   email: z.string().nullable(),
 })
 
