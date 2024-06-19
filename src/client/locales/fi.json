@@ -16,6 +16,8 @@
     "submitButton": "Tallenna",
     "newThesisButton": "Uusi gradu",
     "removeButton": "Poista",
+    "removeThesisTitle": "Poista gradu",
+    "removeThesisConfirmationContent": "Haluatko varmasti poistaa gradun: {{topic}}?",
     "error": "Virhe"
   },
   "formErrors": {

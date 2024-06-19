@@ -181,11 +181,12 @@ const ThesesPage = () => {
             setDeleteDialogOpen(false)
             setDeletedThesis(null)
           }}
-          title={t('deleteThesisTitle')}
+          title={t('removeThesisTitle')}
         >
           <Box>
-            Are you sure you want to delete the thesis with ID{' '}
-            {deletedThesis.id}?
+            {t('removeThesisConfirmationContent', {
+              topic: deletedThesis.topic,
+            })}
           </Box>
         </DeleteConfirmation>
       )}
