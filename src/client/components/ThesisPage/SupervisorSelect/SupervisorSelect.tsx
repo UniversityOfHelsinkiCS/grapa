@@ -49,7 +49,7 @@ const SupervisorSelect: React.FC<{
       {
         user: null,
         percentage: Math.floor((1 / numberOfSupervisors) * 100),
-        external: isExternal,
+        isExternal,
       },
     ])
   }
@@ -82,7 +82,7 @@ const SupervisorSelect: React.FC<{
         {t('thesisForm:supervisors')}
       </Typography>
       {supervisorSelections.map((selection, index) => {
-        const SupervisorElement = selection.external
+        const SupervisorElement = selection.isExternal
           ? ExternalPersonInput
           : SingleSupervisorSelect
 

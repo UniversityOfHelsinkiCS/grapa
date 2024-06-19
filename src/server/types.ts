@@ -41,7 +41,7 @@ export type ThesisStatus =
 export interface SupervisionData {
   user: AuthorData
   percentage: number
-  external: boolean
+  isExternal: boolean
 }
 
 export interface AuthorData {

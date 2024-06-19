@@ -78,7 +78,7 @@ describe('SupervisorSelect', () => {
       <SupervisorSelect
         errors={[]}
         supervisorSelections={[
-          { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 100, external: false },
+          { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 100, isExternal: false },
         ]}
         setSupervisorSelections={setSupervisorSelections}
       />
@@ -95,8 +95,8 @@ describe('SupervisorSelect', () => {
       <SupervisorSelect
         errors={[]}
         supervisorSelections={[
-          { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50, external: false },
-          { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 50, external: false },
+          { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50, isExternal: false },
+          { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 50, isExternal: false },
         ]}
         setSupervisorSelections={setSupervisorSelections}
       />
@@ -114,7 +114,7 @@ describe('SupervisorSelect', () => {
           {code: 'custom', message: 'formErrors:supervisors', path: ['supervisions', 0, 'user']}
         ]}
         supervisorSelections={[
-          { user: null, percentage: 100, external: false }
+          { user: null, percentage: 100, isExternal: false }
         ]}
         setSupervisorSelections={setSupervisorSelections}
       />
@@ -135,7 +135,7 @@ describe('SupervisorSelect', () => {
           {code: 'custom', message: 'formErrors:supervisors', path: ['supervisions', 0, 'percentage']}
         ]}
         supervisorSelections={[
-          { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 80, external: false }
+          { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 80, isExternal: false }
         ]}
         setSupervisorSelections={setSupervisorSelections}
       />
@@ -161,7 +161,7 @@ describe('SupervisorSelect', () => {
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
       expect(setSupervisorSelections).toHaveBeenCalledWith([
-        { user: null, percentage: 100, external: false },
+        { user: null, percentage: 100, isExternal: false },
       ])
     })
 
@@ -170,8 +170,8 @@ describe('SupervisorSelect', () => {
         <SupervisorSelect
           errors={[]}
           supervisorSelections={[
-            { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50, external: false },
-            { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 50, external: false },
+            { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50, isExternal: false },
+            { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 50, isExternal: false },
           ]}
           setSupervisorSelections={setSupervisorSelections}
         />
@@ -182,9 +182,9 @@ describe('SupervisorSelect', () => {
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
       expect(setSupervisorSelections).toHaveBeenCalledWith([
-        { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 34, external: false },
-        { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 33, external: false },
-        { user: null, percentage: 33, external: false },
+        { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 34, isExternal: false },
+        { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 33, isExternal: false },
+        { user: null, percentage: 33, isExternal: false },
       ])
     })
 
@@ -193,8 +193,8 @@ describe('SupervisorSelect', () => {
         <SupervisorSelect
           errors={[]}
           supervisorSelections={[
-            { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50, external: false },
-            { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 50, external: false },
+            { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50, isExternal: false },
+            { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 50, isExternal: false },
           ]}
           setSupervisorSelections={setSupervisorSelections}
         />
@@ -217,7 +217,7 @@ describe('SupervisorSelect', () => {
       await waitFor(() => {
         expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
         expect(setSupervisorSelections).toHaveBeenCalledWith([
-          { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 100, external: false }
+          { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' }, percentage: 100, isExternal: false }
         ])
       })
     })
@@ -226,7 +226,7 @@ describe('SupervisorSelect', () => {
       render(
         <SupervisorSelect
           errors={[]}
-          supervisorSelections={[{ user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50, external: false },]}
+          supervisorSelections={[{ user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' }, percentage: 50, isExternal: false },]}
           setSupervisorSelections={setSupervisorSelections}
         />
       )

@@ -28,18 +28,18 @@ const NewSupervisorControls = ({
   const options = [
     {
       label: t('thesisForm:addSupervisor'),
-      external: false,
+      isExternal: false,
     },
     {
       label: t('thesisForm:addExternalSupervisor'),
-      external: true,
+      isExternal: true,
     },
   ]
 
   const handleClick = () => {
     const selectedAction = options[selectedIndex]
 
-    handleAddSupervisor(selectedAction.external)
+    handleAddSupervisor(selectedAction.isExternal)
   }
 
   const handleMenuItemClick = (
