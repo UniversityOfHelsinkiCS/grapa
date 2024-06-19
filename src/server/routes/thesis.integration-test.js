@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url'
 
 import app from '../index'
 import { Attachment, Author, Grader, Supervision, Thesis, User } from '../db/models'
+import { isExternal } from 'util/types'
 
 const request = supertest.agent(app)
 
@@ -350,6 +351,65 @@ describe('thesis router', () => {
         expect(thesis).not.toBeNull()
       })
 
+      it('should return 201 with external supervisors', async () => {
+        const extUserData = {
+          firstName: 'External',
+          lastName: 'Supervisor',
+          email: 'ext-test@helsinki.fi',
+        }
+
+        const newThesis = {
+          programId: 'New program',
+          studyTrackId: 'new-test-study-track-id',
+          topic: 'New topic',
+          status: 'PLANNING',
+          startDate: '1970-01-01T00:00:00.000Z',
+          targetDate: '2070-01-01T00:00:00.000Z',
+          supervisions: [
+            {
+              user: user1,
+              percentage: 50,
+              isExternal: false,
+            },
+            {
+              user: extUserData,
+              percentage: 50,
+              isExternal: true,
+            },
+          ],
+          graders: [
+            {
+              user: user4,
+              isPrimaryGrader: true,
+            },
+          ],
+          authors: [user2],
+        }
+
+        const response = await request
+          .post('/api/theses')
+          .set('hygroupcn', 'grp-toska')
+          .attach(
+            'waysOfWorking',
+            path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
+          )
+          .attach(
+            'researchPlan',
+            path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
+          )
+          .field('json', JSON.stringify(newThesis))
+
+        expect(response.status).toEqual(201)
+
+        const extUser = await User.findOne({
+          where: { email: extUserData.email },
+        })
+        expect(extUser).not.toBeNull()
+        expect(extUser).toMatchObject(extUserData)
+        expect(extUser.isExternal).toBe(true)
+      })
+
+
       it('should return 400 if the request is missing a required field', async () => {
         const newThesis = {
           programId: 'New program',
@@ -380,6 +440,8 @@ describe('thesis router', () => {
             path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
           )
           .field('json', JSON.stringify(newThesis))
+
+        // We expect the response to be 400 because the request is missing the researchPlan attachment
         expect(response.status).toEqual(400)
       })
     })
