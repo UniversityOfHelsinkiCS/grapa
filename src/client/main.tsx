@@ -20,7 +20,7 @@ root.render(
       <CssBaseline>
         <Router />
       </CssBaseline>
-      <ReactQueryDevtools position="bottom-right" />
+      <ReactQueryDevtools />
     </QueryClientProvider>
   </React.StrictMode>
 )
