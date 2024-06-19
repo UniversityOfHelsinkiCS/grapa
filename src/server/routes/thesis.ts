@@ -86,7 +86,12 @@ const createThesisAndSupervisions = async (
         email: supervision.user?.email,
         isExternal: true,
       })),
-    { transaction: t, validate: true, individualHooks: true }
+    {
+      transaction: t,
+      validate: true,
+      individualHooks: true,
+      ignoreDuplicates: true,
+    }
   )
 
   await Supervision.bulkCreate(
