@@ -55,7 +55,7 @@ const ExternalPersonInput = ({
           margin="dense"
           id={`${inputGroup}-${index}-user-firstName`}
           name="firstName"
-          label={t('firstName')}
+          label={t('thesisForm:firstName')}
           value={selection.user?.firstName ?? ''}
           onChange={(event) =>
             handleInputChange('firstName', event.target.value)
@@ -70,7 +70,7 @@ const ExternalPersonInput = ({
           margin="dense"
           id={`${inputGroup}-${index}-user-lastName`}
           name="lastName"
-          label={t('lastName')}
+          label={t('thesisForm:lastName')}
           value={selection.user?.lastName ?? ''}
           onChange={(event) =>
             handleInputChange('lastName', event.target.value)
@@ -86,7 +86,7 @@ const ExternalPersonInput = ({
           margin="dense"
           id={`${inputGroup}-${index}-user-email`}
           name="email"
-          label={t('email')}
+          label={t('thesisForm:email')}
           value={selection.user?.email ?? ''}
           onChange={(event) => handleInputChange('email', event.target.value)}
           fullWidth
