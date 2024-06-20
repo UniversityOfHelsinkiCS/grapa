@@ -1,6 +1,7 @@
 import { NextFunction } from 'express'
 import { ServerPostRequest, ServerPutRequest } from '@backend/types'
 import CustomValidationError from '../errors/ValidationError'
+import { getTotalPercentage } from '../util/helpers'
 
 // eslint-disable-next-line import/prefer-default-export
 export const validateThesisData = (
@@ -42,10 +43,7 @@ export const validateThesisData = (
   }
 
   // sum of supervision percentages must add up to 100
-  const totalPercentage = thesisData.supervisions.reduce(
-    (total, supervision) => total + supervision.percentage,
-    0
-  )
+  const totalPercentage = getTotalPercentage(thesisData.supervisions)
   if (totalPercentage !== 100) {
     throw new CustomValidationError(
       'Supervision percentages must add up to 100',
