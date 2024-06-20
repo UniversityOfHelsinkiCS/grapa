@@ -155,7 +155,7 @@ const handleAttachmentByLabel = async (
       {
         filename: newFile.filename,
         originalname: newFile.originalname,
-        mimetype: newFile.mimetyp,
+        mimetype: newFile.mimetype,
       },
       {
         where: { thesisId, label },
