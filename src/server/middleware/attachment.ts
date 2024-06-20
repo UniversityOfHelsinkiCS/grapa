@@ -20,7 +20,7 @@ const storage = () => {
 }
 
 const upload = multer({ storage: storage() }).fields([
-  { name: 'data', maxCount: 1 },
+  { name: 'json', maxCount: 1 },
   { name: 'researchPlan', maxCount: 1 },
   { name: 'waysOfWorking', maxCount: 1 },
 ])

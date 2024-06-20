@@ -19,7 +19,7 @@ async function waitForDatabase() {
       console.log('Waiting for database to become ready...')
     }
     maxAttempts--
-    await new Promise((resolve) => setTimeout(resolve, 3000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
   }
 }
 
