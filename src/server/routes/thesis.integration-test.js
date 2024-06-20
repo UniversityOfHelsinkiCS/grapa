@@ -5,7 +5,7 @@ import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import app from '../index'
-import { Attachment, Author, Grader, Supervision, Thesis, User } from '../db/models'
+import { Attachment, Author, Grader, Program, ProgramManagement, Supervision, Thesis, User } from '../db/models'
 
 const request = supertest.agent(app)
 
@@ -80,6 +80,28 @@ describe('thesis router', () => {
     let thesis1
 
     beforeEach(async () => {
+      await Program.create({
+        id: 'Testing program',
+        name: { fi: 'Testausohjelma', en: 'Testing program', sv: 'Testprogram' },
+        level: 'master',
+        international: true,
+        enabled: true,
+      })
+      await Program.create({
+        id: 'Updated program',
+        name: { fi: 'Testausohjelma', en: 'Testing program', sv: 'Testprogram' },
+        level: 'master',
+        international: true,
+        enabled: true,
+      })
+      await Program.create({
+        id: 'New program',
+        name: { fi: 'Testausohjelma', en: 'Testing program', sv: 'Testprogram' },
+        level: 'master',
+        international: true,
+        enabled: true,
+      })
+
       await User.create({
         username: 'test1',
         firstName: 'test1',
@@ -220,18 +242,18 @@ describe('thesis router', () => {
                 name: 'testfile.pdf2',
                 mimetype: 'application/pdf2',
               },
+              supervisions: expect.toIncludeSameMembers([
+                {
+                  user: user1,
+                  percentage: 50,
+                },
+                {
+                  user: user3,
+                  percentage: 50,
+                }
+              ])
             },
           ])
-          // because the order of supervisions is not guaranteed, we need to check the array length and the content separately to avoid flaky tests
-          expect(response.body[0].supervisions).toHaveLength(2)
-          expect(response.body[0].supervisions).toContainEqual({
-            user: user1,
-            percentage: 50,
-          })
-          expect(response.body[0].supervisions).toContainEqual({
-            user: user3,
-            percentage: 50,
-          })
         })
       })
 
@@ -260,18 +282,18 @@ describe('thesis router', () => {
                 name: 'testfile.pdf2',
                 mimetype: 'application/pdf2',
               },
+              supervisions: expect.toIncludeSameMembers([
+                {
+                  user: user1,
+                  percentage: 50,
+                },
+                {
+                  user: user3,
+                  percentage: 50,
+                }
+              ])
             },
           ])
-          // because the order of supervisions is not guaranteed, we need to check the array length and the content separately to avoid flaky tests
-          expect(response.body[0].supervisions).toHaveLength(2)
-          expect(response.body[0].supervisions).toContainEqual({
-            user: user1,
-            percentage: 50,
-          })
-          expect(response.body[0].supervisions).toContainEqual({
-            user: user3,
-            percentage: 50,
-          })
         })
       })
 
