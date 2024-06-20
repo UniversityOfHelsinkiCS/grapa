@@ -1,5 +1,6 @@
 import express, { Response } from 'express'
 import { Includeable, type Transaction } from 'sequelize'
+import { uniqBy } from 'lodash-es'
 import fs from 'fs'
 
 import {
@@ -20,6 +21,7 @@ import {
 } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
+import { getEqualSupervisorSelectionWorkloads } from '../util/helpers'
 
 const thesisRouter = express.Router()
 const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
@@ -201,15 +203,46 @@ const updateThesis = async (
   transaction: Transaction
 ) => {
   await Thesis.update(thesisData, { where: { id }, transaction })
+
+  // Create the external users from the supervisions
+  const extUsers = await User.bulkCreate(
+    thesisData.supervisions
+      .filter((supervision) => supervision.isExternal)
+      .map((supervision) => ({
+        username: `ext-${supervision.user?.email}`,
+        firstName: supervision.user?.firstName,
+        lastName: supervision.user?.lastName,
+        email: supervision.user?.email,
+        isExternal: true,
+      })),
+    {
+      transaction,
+      updateOnDuplicate: ['username'],
+      validate: true,
+    }
+  )
+
+  const nonDuplicateSupervisors = uniqBy(
+    thesisData.supervisions,
+    (x) => x.user?.email
+  )
+  const updatedSupervisions = getEqualSupervisorSelectionWorkloads(
+    nonDuplicateSupervisors.length,
+    nonDuplicateSupervisors
+  )
+
   await Supervision.destroy({ where: { thesisId: id }, transaction })
   await Supervision.bulkCreate(
-    thesisData.supervisions.map((supervision) => ({
-      userId: supervision.user.id,
+    updatedSupervisions.map((supervision) => ({
+      userId:
+        supervision.user?.id ??
+        extUsers.find((u) => u.email === supervision.user?.email)?.id,
       thesisId: id,
       percentage: supervision.percentage,
     })),
     { transaction, validate: true, individualHooks: true }
   )
+
   await Grader.destroy({ where: { thesisId: id }, transaction })
   await Grader.bulkCreate(
     thesisData.graders
