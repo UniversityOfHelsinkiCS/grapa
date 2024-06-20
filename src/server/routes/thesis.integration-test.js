@@ -626,6 +626,66 @@ describe('thesis router', () => {
         })
       })
 
+      describe('when the request contains duplicate supervisors', () => {
+        it('should return 200 and update the thesis', async () => {
+          const updatedThesis = {
+            programId: 'Updated program',
+            studyTrackId: 'new-test-study-track-id',
+            topic: 'Updated topic',
+            status: 'PLANNING',
+            startDate: '1970-01-01T00:00:00.000Z',
+            targetDate: '2070-01-01T00:00:00.000Z',
+            supervisions: [
+              {
+                user: user1,
+                percentage: 50,
+              },
+              {
+                user: user1,
+                percentage: 50,
+              },
+            ],
+            graders: [
+              {
+                user: user4,
+                isPrimaryGrader: true,
+              },
+            ],
+            authors: [user2],
+            waysOfWorking: {
+              filename: 'testfile.pdf2',
+              name: 'testfile.pdf2',
+              mimetype: 'application/pdf2',
+            },
+            researchPlan: {
+              filename: 'testfile.pdf1',
+              name: 'testfile.pdf1',
+              mimetype: 'application/pdf1',
+            },
+          }
+          const response = await request
+            .put(`/api/theses/${thesis1.id}`)
+            .set('hygroupcn', 'grp-toska')
+            .field('json', JSON.stringify(updatedThesis))
+
+          expect(response.status).toEqual(200)
+
+          const thesisSupervisions = await Supervision.findAll({
+            where: { thesisId: thesis1.id },
+          })
+
+          expect(thesisSupervisions).toHaveLength(1)
+          expect(thesisSupervisions).toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                userId: user1.id,
+                percentage: 100,
+              }),
+            ])
+          )
+        })
+      })
+
       describe('when the request contains external supervisors', () => {
         it('should return 200 and update the thesis', async () => {
           const extUserData = {
