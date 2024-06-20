@@ -33,11 +33,13 @@ const fetchThesisById = async (id: string) => {
         model: Supervision,
         as: 'supervisions',
         attributes: ['percentage'],
-        include: {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
-        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+          },
+        ],
       },
       {
         model: User,
@@ -48,11 +50,13 @@ const fetchThesisById = async (id: string) => {
         model: Grader,
         as: 'graders',
         attributes: ['isPrimaryGrader'],
-        include: {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
-        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+          },
+        ],
       },
       {
         model: Attachment,
@@ -283,21 +287,25 @@ thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
       model: Supervision,
       as: 'supervisions',
       attributes: ['percentage'],
-      include: {
-        model: User,
-        as: 'user',
-        attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
-      },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+        },
+      ],
     },
     {
       model: Grader,
       as: 'graders',
       attributes: ['isPrimaryGrader'],
-      include: {
-        model: User,
-        as: 'user',
-        attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
-      },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+        },
+      ],
     },
     {
       model: User,
