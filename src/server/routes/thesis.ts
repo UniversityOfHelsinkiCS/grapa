@@ -155,7 +155,7 @@ const handleAttachmentByLabel = async (
       {
         filename: newFile.filename,
         originalname: newFile.originalname,
-        mimetype: newFile.mimetype,
+        mimetype: newFile.mimetyp,
       },
       {
         where: { thesisId, label },
@@ -331,6 +331,9 @@ thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
 thesisRouter.get('/:id', async (req, res) => {
   const { id } = req.params
   const thesis = await fetchThesisById(id)
+
+  if (!thesis) res.status(404).send('Thesis not found')
+
   res.send(thesis)
 })
 
@@ -366,6 +369,9 @@ thesisRouter.put(
     const { id } = req.params
     const thesisData = req.body
 
+    const thesis = await fetchThesisById(id)
+    if (!thesis) res.status(404).send('Thesis not found')
+
     await sequelize.transaction(async (t) => {
       await updateThesis(id, thesisData, t)
 
@@ -380,6 +386,9 @@ thesisRouter.put(
 
 thesisRouter.delete('/:id', async (req, res) => {
   const { id } = req.params
+
+  const thesis = await fetchThesisById(id)
+  if (!thesis) res.status(404).send('Thesis not found')
 
   await sequelize.transaction(async (t) => {
     await deleteThesisAttachments(id, t)

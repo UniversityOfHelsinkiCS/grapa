@@ -302,6 +302,11 @@ describe('thesis router', () => {
           '/opt/app-root/src/uploads/testfile.pdf2'
         )
       })
+
+      it('should return 404 if the thesis does not exist', async () => {
+        const response = await request.delete('/api/theses/999').set('hygroupcn', 'grp-toska')
+        expect(response.status).toEqual(404)
+      })
     })
 
     describe('POST /api/theses', () => {
@@ -447,6 +452,51 @@ describe('thesis router', () => {
     })
 
     describe('PUT /api/theses/:id', () => {
+      describe('when the thesis does not exist', () => {
+        it('should return 404', async () => {
+          const updatedThesis = {
+            programId: 'Updated program',
+            studyTrackId: 'new-test-study-track-id',
+            topic: 'Updated topic',
+            status: 'PLANNING',
+            startDate: '1970-01-01T00:00:00.000Z',
+            targetDate: '2070-01-01T00:00:00.000Z',
+            supervisions: [
+              {
+                user: user1,
+                percentage: 100,
+              },
+            ],
+            authors: [user2],
+            graders: [
+              {
+                user: user4,
+                isPrimaryGrader: true,
+              },
+            ],
+          }
+          const response = await request
+            .put('/api/theses/999')
+            .set('hygroupcn', 'grp-toska')
+            .attach(
+              'waysOfWorking',
+              path.resolve(
+                dirname(fileURLToPath(import.meta.url)),
+                './index.ts'
+              )
+            )
+            .attach(
+              'researchPlan',
+              path.resolve(
+                dirname(fileURLToPath(import.meta.url)),
+                './index.ts'
+              )
+            )
+            .field('json', JSON.stringify(updatedThesis))
+          expect(response.status).toEqual(404)
+        })
+      })
+
       describe('when both attachments are updated', () => {
         it('should return 200 and update the thesis', async () => {
           const updatedThesis = {
