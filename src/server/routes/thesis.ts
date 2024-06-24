@@ -341,6 +341,7 @@ thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
       'studyTrackId',
     ],
     include: includes,
+    order: [['targetDate', 'ASC']],
   })
   res.send(theses)
 })
