@@ -331,6 +331,15 @@ thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
   }
 
   const theses = await Thesis.findAll({
+    attributes: [
+      'id',
+      'topic',
+      'status',
+      'startDate',
+      'targetDate',
+      'programId',
+      'studyTrackId',
+    ],
     include: includes,
   })
   res.send(theses)
