@@ -8,6 +8,7 @@ import {
   ServerGetRequest,
   ServerPostRequest,
   ServerPutRequest,
+  SupervisionData,
   ThesisData,
   User as UserType,
 } from '../types'
@@ -293,7 +294,7 @@ const updateThesis = async (
 
   const nonDuplicateSupervisors = uniqBy(
     thesisData.supervisions,
-    (x) => x.user?.email
+    (x: SupervisionData) => x.user?.email
   )
   const updatedSupervisions = getEqualSupervisorSelectionWorkloads(
     nonDuplicateSupervisors.length,
@@ -390,6 +391,7 @@ thesisRouter.put(
     const thesisData = req.body
 
     const thesis = await fetchThesisById(id, req.user)
+    console.log(thesis)
     if (!thesis) res.status(404).send('Thesis not found')
 
     await sequelize.transaction(async (t) => {
