@@ -360,6 +360,43 @@ describe('thesis router', () => {
         })
       })
 
+      describe('when the user does not supervise theses but is a manager of a program', () => {
+        let thesisSupervisedByOtherUser
+        beforeEach(async () => {
+          await ProgramManagement.create({
+            programId: 'Updated program',
+            userId: user2.id,
+          })
+          thesisSupervisedByOtherUser = await Thesis.create({
+            programId: 'Updated program',
+            studyTrackId: 'test-study-track-id',
+            topic: 'Thesis in the program managed by the user, supervised by another user',
+            status: 'PLANNING',
+            startDate: '1970-01-01',
+            targetDate: '2050-01-01',
+          })
+
+          await Supervision.create({
+            userId: user1.id,
+            thesisId: thesisSupervisedByOtherUser.id,
+            percentage: 100,
+          })
+        })
+
+        it('should return theses of the managed program but no other theses', async () => {
+          const response = await request
+            .get('/api/theses')
+            .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+          expect(response.status).toEqual(200)
+          expect(response.body).toHaveLength(1)
+          expect(response.body).toMatchObject([
+            {
+              topic: 'Thesis in the program managed by the user, supervised by another user'
+            }
+          ])
+        })
+      })
+
       describe('when the user is a teacher and is a supervisor of the thesis', () => {
         it('should return 200 and the theses', async () => {
           const response = await request
