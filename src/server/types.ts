@@ -94,6 +94,10 @@ export interface ServerGetRequest extends Request {
   user: User
 }
 
+export interface ServerDeleteRequest extends Request {
+  user: User
+}
+
 export interface ServerPostRequest extends Request {
   body: ThesisData & {
     researchPlan: Record<string, never>
@@ -103,6 +107,7 @@ export interface ServerPostRequest extends Request {
     researchPlan: Express.Multer.File[]
     waysOfWorking: Express.Multer.File[]
   }
+  user: User
 }
 
 export interface ServerPutRequest extends Request {
@@ -114,4 +119,5 @@ export interface ServerPutRequest extends Request {
     researchPlan?: Express.Multer.File[]
     waysOfWorking?: Express.Multer.File[]
   }
+  user: User
 }
