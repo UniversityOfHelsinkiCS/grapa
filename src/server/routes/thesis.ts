@@ -328,6 +328,12 @@ thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
       where: { userId: req.user.id },
     })
 
+    // We want to include theses where current user is a supervisor
+    // but for the returned theses, we still want to include all
+    // supervisions.
+    // To achieve this, we use 2 Supervision includes, one above
+    // with attribute listed and one below with no attributes.
+    // The only purpose of this include is to be used in filtering.
     const teacherClause: Includeable = {
       model: Supervision,
       as: 'supervisionsForFiltering',
