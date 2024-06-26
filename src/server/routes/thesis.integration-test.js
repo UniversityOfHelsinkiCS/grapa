@@ -1159,52 +1159,66 @@ describe('thesis router', () => {
       })
 
       describe('when the user is a teacher', () => {
+        let updatedThesis
+
+        beforeEach(() => {
+          updatedThesis = {
+            programId: 'Updated program',
+            studyTrackId: 'new-test-study-track-id',
+            topic: 'Updated topic',
+            status: 'PLANNING',
+            startDate: '1970-01-01T00:00:00.000Z',
+            targetDate: '2070-01-01T00:00:00.000Z',
+            supervisions: [
+              {
+                user: user1,
+                percentage: 100,
+              },
+            ],
+            graders: [
+              {
+                user: user4,
+                isPrimaryGrader: true,
+              },
+              {
+                user: user5,
+                isPrimaryGrader: false,
+              },
+            ],
+            authors: [user2],
+          }
+        })
+
         describe('when the user is a supervisor of the thesis being deleted', () => {
           it('should return 200 and update the thesis', async () => {
-            const updatedThesis = {
-              programId: 'Updated program',
-              studyTrackId: 'new-test-study-track-id',
-              topic: 'Updated topic',
-              status: 'PLANNING',
-              startDate: '1970-01-01T00:00:00.000Z',
-              targetDate: '2070-01-01T00:00:00.000Z',
-              supervisions: [
-                {
-                  user: user1,
-                  percentage: 100,
-                },
-              ],
-              authors: [user2],
-              graders: [
-                {
-                  user: user4,
-                  isPrimaryGrader: true,
-                },
-              ],
-              waysOfWorking: {
-                filename: 'testfile.pdf2',
-                name: 'testfile.pdf2',
-                mimetype: 'application/pdf2',
-              },
-              researchPlan: {
-                filename: 'testfile.pdf1',
-                name: 'testfile.pdf1',
-                mimetype: 'application/pdf1',
-              },
-            }
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
               .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
               .field('json', JSON.stringify(updatedThesis))
-
-            expect(fs.unlinkSync).toHaveBeenCalledTimes(0)
-
+  
+            expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
+            expect(fs.unlinkSync).toHaveBeenCalledWith(
+              '/opt/app-root/src/uploads/testfile.pdf1'
+            )
+            expect(fs.unlinkSync).toHaveBeenCalledWith(
+              '/opt/app-root/src/uploads/testfile.pdf2'
+            )
+  
             expect(response.status).toEqual(200)
-            delete updatedThesis.supervisions
-            delete updatedThesis.authors
-            delete updatedThesis.waysOfWorking
-            delete updatedThesis.researchPlan
-            expect(response.body).toMatchObject(updatedThesis)
   
             const thesis = await Thesis.findByPk(thesis1.id)
             expect(thesis.programId).toEqual('Updated program')
@@ -1215,8 +1229,9 @@ describe('thesis router', () => {
         // describe('when the user is not a supervisor of the thesis deleted', () => {
         //   it('should return 404', async () => {
         //     const response = await request
-        //       .delete(`/api/theses/${thesis1.id}`)
+        //       .put(`/api/theses/${thesis1.id}`)
         //       .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+        //       .field('json', JSON.stringify(updatedThesis))
         //     expect(response.status).toEqual(404)
         //   })
         // })
