@@ -450,28 +450,30 @@ describe('thesis router', () => {
     })
 
     describe('DELETE /api/theses/:id', () => {
-      it('should return 204 and delete the thesis', async () => {
-        const response = await request
-          .delete(`/api/theses/${thesis1.id}`)
-          .set('hygroupcn', 'grp-toska')
-        expect(response.status).toEqual(204)
-        const thesis = await Thesis.findByPk(thesis1.id)
-        expect(thesis).toBeNull()
+      describe('when the user is an admin', () => {
+        it('should return 204 and delete the thesis', async () => {
+          const response = await request
+            .delete(`/api/theses/${thesis1.id}`)
+            .set('hygroupcn', 'grp-toska')
+          expect(response.status).toEqual(204)
+          const thesis = await Thesis.findByPk(thesis1.id)
+          expect(thesis).toBeNull()
+  
+          expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
+          expect(fs.unlinkSync).toHaveBeenCalledWith(
+            '/opt/app-root/src/uploads/testfile.pdf1'
+          )
+          expect(fs.unlinkSync).toHaveBeenCalledWith(
+            '/opt/app-root/src/uploads/testfile.pdf2'
+          )
+        })
 
-        expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
-        expect(fs.unlinkSync).toHaveBeenCalledWith(
-          '/opt/app-root/src/uploads/testfile.pdf1'
-        )
-        expect(fs.unlinkSync).toHaveBeenCalledWith(
-          '/opt/app-root/src/uploads/testfile.pdf2'
-        )
-      })
-
-      it('should return 404 if the thesis does not exist', async () => {
-        const response = await request
-          .delete('/api/theses/999')
-          .set('hygroupcn', 'grp-toska')
-        expect(response.status).toEqual(404)
+        it('should return 404 if the thesis does not exist', async () => {
+          const response = await request
+            .delete('/api/theses/999')
+            .set('hygroupcn', 'grp-toska')
+          expect(response.status).toEqual(404)
+        })
       })
     })
 
