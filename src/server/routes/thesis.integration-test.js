@@ -5,7 +5,16 @@ import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import app from '../index'
-import { Attachment, Author, Grader, Program, ProgramManagement, Supervision, Thesis, User } from '../db/models'
+import {
+  Attachment,
+  Author,
+  Grader,
+  Program,
+  ProgramManagement,
+  Supervision,
+  Thesis,
+  User,
+} from '../db/models'
 
 const request = supertest.agent(app)
 
@@ -64,7 +73,9 @@ describe('thesis router', () => {
   describe('when there are no theses', () => {
     describe('GET /api/theses', () => {
       it('should return 200 and an empty array', async () => {
-        const response = await request.get('/api/theses').set('hygroupcn', 'grp-toska')
+        const response = await request
+          .get('/api/theses')
+          .set('hygroupcn', 'grp-toska')
         expect(response.status).toEqual(200)
         expect(response.body).toEqual([])
       })
@@ -82,21 +93,33 @@ describe('thesis router', () => {
     beforeEach(async () => {
       await Program.create({
         id: 'Testing program',
-        name: { fi: 'Testausohjelma', en: 'Testing program', sv: 'Testprogram' },
+        name: {
+          fi: 'Testausohjelma',
+          en: 'Testing program',
+          sv: 'Testprogram',
+        },
         level: 'master',
         international: true,
         enabled: true,
       })
       await Program.create({
         id: 'Updated program',
-        name: { fi: 'Testausohjelma', en: 'Testing program', sv: 'Testprogram' },
+        name: {
+          fi: 'Testausohjelma',
+          en: 'Testing program',
+          sv: 'Testprogram',
+        },
         level: 'master',
         international: true,
         enabled: true,
       })
       await Program.create({
         id: 'New program',
-        name: { fi: 'Testausohjelma', en: 'Testing program', sv: 'Testprogram' },
+        name: {
+          fi: 'Testausohjelma',
+          en: 'Testing program',
+          sv: 'Testprogram',
+        },
         level: 'master',
         international: true,
         enabled: true,
@@ -250,9 +273,49 @@ describe('thesis router', () => {
                 {
                   user: user3,
                   percentage: 50,
-                }
-              ])
+                },
+              ]),
             },
+          ])
+        })
+      })
+
+      describe('when the user is a teacher and is a manager of one program', () => {
+        let thesisSupervisedByOtherUser
+        beforeEach(async () => {
+          await ProgramManagement.create({
+            programId: 'Testing program',
+            userId: user1.id,
+          })
+          thesisSupervisedByOtherUser = await Thesis.create({
+            programId: 'Testing program',
+            studyTrackId: 'test-study-track-id',
+            topic: 'Thesis in the same program but supervised by another user',
+            status: 'PLANNING',
+            startDate: '1970-01-01',
+            targetDate: '2050-01-01',
+          })
+
+          await Supervision.create({
+            userId: user2.id,
+            thesisId: thesisSupervisedByOtherUser.id,
+            percentage: 100,
+          })
+        })
+
+        it('should return theses that the teacher supervisers and theses of the managed program but no other theses', async () => {
+          const response = await request
+            .get('/api/theses')
+            .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+          expect(response.status).toEqual(200)
+          expect(response.body).toHaveLength(2)
+          expect(response.body).toMatchObject([
+            {
+              topic: 'Thesis in the same program but supervised by another user'
+            },
+            {
+              topic: 'test topic',
+            }
           ])
         })
       })
@@ -290,8 +353,8 @@ describe('thesis router', () => {
                 {
                   user: user3,
                   percentage: 50,
-                }
-              ])
+                },
+              ]),
             },
           ])
         })
@@ -299,9 +362,10 @@ describe('thesis router', () => {
 
       describe('when the user is a teacher and is not a supervisor of the thesis', () => {
         it('should return 200 and the theses', async () => {
-          const response = await request
-            .get('/api/theses')
-            .set({ uid: 'test-id-of-not-supervisor', hygroupcn: 'hy-employees' })
+          const response = await request.get('/api/theses').set({
+            uid: 'test-id-of-not-supervisor',
+            hygroupcn: 'hy-employees',
+          })
           expect(response.status).toEqual(200)
           expect(response.body).toMatchObject([])
         })
@@ -310,7 +374,9 @@ describe('thesis router', () => {
 
     describe('DELETE /api/theses/:id', () => {
       it('should return 204 and delete the thesis', async () => {
-        const response = await request.delete(`/api/theses/${thesis1.id}`).set('hygroupcn', 'grp-toska')
+        const response = await request
+          .delete(`/api/theses/${thesis1.id}`)
+          .set('hygroupcn', 'grp-toska')
         expect(response.status).toEqual(204)
         const thesis = await Thesis.findByPk(thesis1.id)
         expect(thesis).toBeNull()
@@ -325,7 +391,9 @@ describe('thesis router', () => {
       })
 
       it('should return 404 if the thesis does not exist', async () => {
-        const response = await request.delete('/api/theses/999').set('hygroupcn', 'grp-toska')
+        const response = await request
+          .delete('/api/theses/999')
+          .set('hygroupcn', 'grp-toska')
         expect(response.status).toEqual(404)
       })
     })
@@ -370,7 +438,7 @@ describe('thesis router', () => {
         delete newThesis.supervisions
         delete newThesis.authors
         delete newThesis.graders
-        
+
         expect(response.body).toMatchObject(newThesis)
 
         const thesis = await Thesis.findByPk(response.body.id)
@@ -435,7 +503,6 @@ describe('thesis router', () => {
         expect(extUser.isExternal).toBe(true)
       })
 
-
       it('should return 400 if the request is missing a required field', async () => {
         const newThesis = {
           programId: 'New program',
@@ -496,7 +563,7 @@ describe('thesis router', () => {
               {
                 user: user5,
                 isPrimaryGrader: false,
-              }
+              },
             ],
             authors: [user2],
           }
@@ -757,7 +824,6 @@ describe('thesis router', () => {
             .put(`/api/theses/${thesis1.id}`)
             .set('hygroupcn', 'grp-toska')
             .field('json', JSON.stringify(updatedThesis))
-
 
           expect(response.status).toEqual(200)
 
