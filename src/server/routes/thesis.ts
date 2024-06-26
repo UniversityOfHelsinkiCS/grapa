@@ -4,10 +4,12 @@ import { uniqBy } from 'lodash-es'
 import fs from 'fs'
 
 import {
+  ServerDeleteRequest,
   ServerGetRequest,
   ServerPostRequest,
   ServerPutRequest,
   ThesisData,
+  User as UserType,
 } from '../types'
 import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMutlipartFormData from '../middleware/attachment'
@@ -27,53 +29,115 @@ import { getEqualSupervisorSelectionWorkloads } from '../util/helpers'
 const thesisRouter = express.Router()
 const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
 
-const fetchThesisById = async (id: string) => {
-  const thesis = await Thesis.findByPk(id, {
-    include: [
-      {
-        model: Supervision,
-        as: 'supervisions',
-        attributes: ['percentage'],
-        include: [
-          {
-            model: User,
-            as: 'user',
-            attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
-          },
-        ],
-      },
-      {
-        model: User,
-        as: 'authors',
-        attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
-      },
-      {
-        model: Grader,
-        as: 'graders',
-        attributes: ['isPrimaryGrader'],
-        include: [
-          {
-            model: User,
-            as: 'user',
-            attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
-          },
-        ],
-      },
-      {
-        model: Attachment,
-        as: 'researchPlan',
-        attributes: ['filename', ['original_name', 'name'], 'mimetype'],
-        where: { label: 'researchPlan' },
-      },
-      {
-        model: Attachment,
-        as: 'waysOfWorking',
-        attributes: ['filename', ['original_name', 'name'], 'mimetype'],
-        where: { label: 'waysOfWorking' },
-      },
+interface FetchThesisProps {
+  thesisId?: string
+  actionUser: UserType
+}
+const getFindThesesOptions = async ({
+  thesisId,
+  actionUser,
+}: FetchThesisProps) => {
+  let includes: Includeable[] = [
+    {
+      model: Supervision,
+      as: 'supervisions',
+      attributes: ['percentage'],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+        },
+      ],
+    },
+    {
+      model: Grader,
+      as: 'graders',
+      attributes: ['isPrimaryGrader'],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+        },
+      ],
+    },
+    {
+      model: User,
+      as: 'authors',
+      attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+    },
+    {
+      model: Attachment,
+      as: 'researchPlan',
+      attributes: ['filename', ['original_name', 'name'], 'mimetype'],
+      where: { label: 'researchPlan' },
+      required: false,
+    },
+    {
+      model: Attachment,
+      as: 'waysOfWorking',
+      attributes: ['filename', ['original_name', 'name'], 'mimetype'],
+      where: { label: 'waysOfWorking' },
+      required: false,
+    },
+  ]
+
+  let whereClause: Record<any, any> = thesisId ? { id: thesisId } : {}
+  if (!actionUser.isAdmin) {
+    const programManagement = await ProgramManagement.findAll({
+      attributes: ['programId'],
+      where: { userId: actionUser.id },
+    })
+
+    // We want to include theses where current user is a supervisor
+    // but for the returned theses, we still want to include all
+    // supervisions.
+    // To achieve this, we use 2 Supervision includes, one above
+    // with attribute listed and one below with no attributes.
+    // The only purpose of this include is to be used in filtering.
+    const teacherClause: Includeable = {
+      model: Supervision,
+      as: 'supervisionsForFiltering',
+      attributes: [] as const,
+    }
+    includes = [...includes, teacherClause]
+
+    const programIds = programManagement.map((pm) => pm.programId)
+    whereClause = {
+      [Op.or]: [
+        // if a user is only a teacher, they should only see
+        // theses they supervise
+        { '$supervisionsForFiltering.user_id$': actionUser.id },
+        // but we also want to show all theses within programs
+        // managed by the user
+        programIds?.length ? { programId: programIds } : {},
+      ],
+    }
+  }
+
+  return {
+    where: whereClause,
+    attributes: [
+      'id',
+      'topic',
+      'status',
+      'startDate',
+      'targetDate',
+      'programId',
+      'studyTrackId',
     ],
-  })
-  return thesis
+    include: includes,
+  }
+}
+
+const fetchThesisById = async (id: string, user: UserType) => {
+  const options = await getFindThesesOptions({ thesisId: id, actionUser: user })
+  // We need to use findAll here because we need to include
+  // Supervision model twice (see the explanation twice above).
+  // For some reason. findOne does not support that
+  const thesis = await Thesis.findAll({ ...options })
+  return thesis[0]
 }
 
 const createThesisAndSupervisions = async (
@@ -275,105 +339,18 @@ const deleteThesis = async (id: string, transaction: Transaction) => {
 
 // @ts-expect-error the user middleware updates the req object with user field
 thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
-  let includes: Includeable[] = [
-    {
-      model: Supervision,
-      as: 'supervisions',
-      attributes: ['percentage'],
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
-        },
-      ],
-    },
-    {
-      model: Grader,
-      as: 'graders',
-      attributes: ['isPrimaryGrader'],
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
-        },
-      ],
-    },
-    {
-      model: User,
-      as: 'authors',
-      attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
-    },
-    {
-      model: Attachment,
-      as: 'researchPlan',
-      attributes: ['filename', ['original_name', 'name'], 'mimetype'],
-      where: { label: 'researchPlan' },
-      required: false,
-    },
-    {
-      model: Attachment,
-      as: 'waysOfWorking',
-      attributes: ['filename', ['original_name', 'name'], 'mimetype'],
-      where: { label: 'waysOfWorking' },
-      required: false,
-    },
-  ]
-
-  let whereClause = {}
-  if (!req.user.isAdmin) {
-    const programManagement = await ProgramManagement.findAll({
-      attributes: ['programId'],
-      where: { userId: req.user.id },
-    })
-
-    // We want to include theses where current user is a supervisor
-    // but for the returned theses, we still want to include all
-    // supervisions.
-    // To achieve this, we use 2 Supervision includes, one above
-    // with attribute listed and one below with no attributes.
-    // The only purpose of this include is to be used in filtering.
-    const teacherClause: Includeable = {
-      model: Supervision,
-      as: 'supervisionsForFiltering',
-      attributes: [] as const,
-    }
-    includes = [...includes, teacherClause]
-
-    const programIds = programManagement.map((pm) => pm.programId)
-    whereClause = {
-      [Op.or]: [
-        // if a user is only a teacher, they should only see
-        // theses they supervise
-        { '$supervisionsForFiltering.user_id$': req.user.id },
-        // but we also want to show all theses within programs
-        // managed by the user
-        programIds?.length ? { programId: programIds } : {},
-      ],
-    }
-  }
-
+  const options = await getFindThesesOptions({ actionUser: req.user })
   const theses = await Thesis.findAll({
-    where: whereClause,
-    attributes: [
-      'id',
-      'topic',
-      'status',
-      'startDate',
-      'targetDate',
-      'programId',
-      'studyTrackId',
-    ],
-    include: includes,
+    ...options,
     order: [['targetDate', 'ASC']],
   })
   res.send(theses)
 })
 
-thesisRouter.get('/:id', async (req, res) => {
+// @ts-expect-error the user middleware updates the req object with user field
+thesisRouter.get('/:id', async (req: ServerGetRequest, res: Response) => {
   const { id } = req.params
-  const thesis = await fetchThesisById(id)
+  const thesis = await fetchThesisById(id, req.user)
 
   if (!thesis) res.status(404).send('Thesis not found')
 
@@ -412,7 +389,7 @@ thesisRouter.put(
     const { id } = req.params
     const thesisData = req.body
 
-    const thesis = await fetchThesisById(id)
+    const thesis = await fetchThesisById(id, req.user)
     if (!thesis) res.status(404).send('Thesis not found')
 
     await sequelize.transaction(async (t) => {
@@ -422,15 +399,16 @@ thesisRouter.put(
       await handleAttachmentByLabel(req, id, 'waysOfWorking', t)
     })
 
-    const updatedThesis = await fetchThesisById(id)
+    const updatedThesis = await fetchThesisById(id, req.user)
     res.send(updatedThesis)
   }
 )
 
-thesisRouter.delete('/:id', async (req, res) => {
+// @ts-expect-error the user middleware updates the req object with user field
+thesisRouter.delete('/:id', async (req: ServerDeleteRequest, res) => {
   const { id } = req.params
 
-  const thesis = await fetchThesisById(id)
+  const thesis = await fetchThesisById(id, req.user)
   if (!thesis) res.status(404).send('Thesis not found')
 
   await sequelize.transaction(async (t) => {
