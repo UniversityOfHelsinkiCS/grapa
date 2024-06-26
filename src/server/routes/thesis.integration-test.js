@@ -505,6 +505,51 @@ describe('thesis router', () => {
           })
         })
       })
+
+
+      describe('when the user is a program manager', () => {
+        describe('when the user is a manager of the thesis\' program', () => {
+          beforeEach(async () => {
+            await ProgramManagement.create({
+              programId: 'Testing program',
+              userId: user2.id,
+            })
+          })
+
+          it('should return 204 and delete the thesis', async () => {
+            const response = await request
+              .delete(`/api/theses/${thesis1.id}`)
+              .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+            expect(response.status).toEqual(204)
+            const thesis = await Thesis.findByPk(thesis1.id)
+            expect(thesis).toBeNull()
+    
+            expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
+            expect(fs.unlinkSync).toHaveBeenCalledWith(
+              '/opt/app-root/src/uploads/testfile.pdf1'
+            )
+            expect(fs.unlinkSync).toHaveBeenCalledWith(
+              '/opt/app-root/src/uploads/testfile.pdf2'
+            )
+          })
+        })
+
+        describe('when the user is not a manager of the thesis\' program', () => {
+          beforeEach(async () => {
+            await ProgramManagement.create({
+              programId: 'Updated program',
+              userId: user2.id,
+            })
+          })
+
+          it('should return 404', async () => {
+            const response = await request
+              .delete(`/api/theses/${thesis1.id}`)
+              .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+            expect(response.status).toEqual(404)
+          })
+        })
+      })
     })
 
     describe('POST /api/theses', () => {
