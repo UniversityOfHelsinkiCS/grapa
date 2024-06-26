@@ -1,5 +1,5 @@
 import express, { Response } from 'express'
-import { Includeable, type Transaction } from 'sequelize'
+import { Includeable, Op, type Transaction } from 'sequelize'
 import { uniqBy } from 'lodash-es'
 import fs from 'fs'
 
@@ -18,6 +18,7 @@ import {
   Author,
   Attachment,
   User,
+  ProgramManagement,
 } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
@@ -274,14 +275,6 @@ const deleteThesis = async (id: string, transaction: Transaction) => {
 
 // @ts-expect-error the user middleware updates the req object with user field
 thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
-  // if a user is only a teacher, they should only see theses they supervise
-  const teacherClause: Includeable = {
-    model: Supervision,
-    attributes: [] as const,
-    where: {
-      userId: req.user.id,
-    },
-  }
   let includes: Includeable[] = [
     {
       model: Supervision,
@@ -317,20 +310,46 @@ thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
       as: 'researchPlan',
       attributes: ['filename', ['original_name', 'name'], 'mimetype'],
       where: { label: 'researchPlan' },
+      required: false,
     },
     {
       model: Attachment,
       as: 'waysOfWorking',
       attributes: ['filename', ['original_name', 'name'], 'mimetype'],
       where: { label: 'waysOfWorking' },
+      required: false,
     },
   ]
 
+  let whereClause = {}
   if (!req.user.isAdmin) {
+    const programManagement = await ProgramManagement.findAll({
+      attributes: ['programId'],
+      where: { userId: req.user.id },
+    })
+
+    const teacherClause: Includeable = {
+      model: Supervision,
+      as: 'supervisionsForFiltering',
+      attributes: [] as const,
+    }
     includes = [...includes, teacherClause]
+
+    const programIds = programManagement.map((pm) => pm.programId)
+    whereClause = {
+      [Op.or]: [
+        // if a user is only a teacher, they should only see
+        // theses they supervise
+        { '$supervisionsForFiltering.user_id$': req.user.id },
+        // but we also want to show all theses within programs
+        // managed by the user
+        programIds?.length ? { programId: programIds } : {},
+      ],
+    }
   }
 
   const theses = await Thesis.findAll({
+    where: whereClause,
     attributes: [
       'id',
       'topic',
