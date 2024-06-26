@@ -475,6 +475,36 @@ describe('thesis router', () => {
           expect(response.status).toEqual(404)
         })
       })
+
+      describe('when the user is a teacher', () => {
+        describe('when the user is a supervisor of the thesis being deleted', () => {
+          it('should return 204 and delete the thesis', async () => {
+            const response = await request
+              .delete(`/api/theses/${thesis1.id}`)
+              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+            expect(response.status).toEqual(204)
+            const thesis = await Thesis.findByPk(thesis1.id)
+            expect(thesis).toBeNull()
+    
+            expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
+            expect(fs.unlinkSync).toHaveBeenCalledWith(
+              '/opt/app-root/src/uploads/testfile.pdf1'
+            )
+            expect(fs.unlinkSync).toHaveBeenCalledWith(
+              '/opt/app-root/src/uploads/testfile.pdf2'
+            )
+          })
+        })
+
+        describe('when the user is not a supervisor of the thesis deleted', () => {
+          it('should return 404', async () => {
+            const response = await request
+              .delete(`/api/theses/${thesis1.id}`)
+              .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+            expect(response.status).toEqual(404)
+          })
+        })
+      })
     })
 
     describe('POST /api/theses', () => {
