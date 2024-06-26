@@ -280,7 +280,7 @@ describe('thesis router', () => {
         })
       })
 
-      describe('when the user is a teacher-supervisor of one thesis and is a manager of the program the thesis belongs to', () => {
+      describe('when the user is a teacher-supervisor of one thesis and is a manager of the program that thesis belongs to', () => {
         let thesisSupervisedByOtherUser
         beforeEach(async () => {
           await ProgramManagement.create({
@@ -312,6 +312,46 @@ describe('thesis router', () => {
           expect(response.body).toMatchObject([
             {
               topic: 'Thesis in the same program but supervised by another user'
+            },
+            {
+              topic: 'test topic',
+            }
+          ])
+        })
+      })
+
+      describe('when the user is a teacher-supervisor of one thesis and is a manager of the program that thesis does not belong to', () => {
+        let thesisSupervisedByOtherUser
+        beforeEach(async () => {
+          await ProgramManagement.create({
+            programId: 'Updated program',
+            userId: user1.id,
+          })
+          thesisSupervisedByOtherUser = await Thesis.create({
+            programId: 'Updated program',
+            studyTrackId: 'test-study-track-id',
+            topic: 'Thesis in the program managed by the user, supervised by another user',
+            status: 'PLANNING',
+            startDate: '1970-01-01',
+            targetDate: '2050-01-01',
+          })
+
+          await Supervision.create({
+            userId: user2.id,
+            thesisId: thesisSupervisedByOtherUser.id,
+            percentage: 100,
+          })
+        })
+
+        it('should return theses that the teacher supervisers and theses of the managed program but no other theses', async () => {
+          const response = await request
+            .get('/api/theses')
+            .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+          expect(response.status).toEqual(200)
+          expect(response.body).toHaveLength(2)
+          expect(response.body).toMatchObject([
+            {
+              topic: 'Thesis in the program managed by the user, supervised by another user'
             },
             {
               topic: 'test topic',
