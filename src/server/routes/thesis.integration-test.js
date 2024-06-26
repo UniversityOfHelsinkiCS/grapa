@@ -1332,6 +1332,44 @@ describe('thesis router', () => {
             expect(thesis.topic).toEqual('Updated topic')
           })
         })
+
+        describe('when the user is a manager of a different program that the updated thesis is of', () => {
+          beforeEach(async () => {
+            await ProgramManagement.create({
+              programId: 'Updated program',
+              userId: user2.id,
+            })
+          })
+
+          it('should return 200 and update the thesis', async () => {
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+
+            expect(fs.unlinkSync).toHaveBeenCalledTimes(0)
+  
+            expect(response.status).toEqual(404)
+  
+            const thesis = await Thesis.findByPk(thesis1.id)
+            expect(thesis.programId).toEqual('Testing program')
+            expect(thesis.topic).toEqual('test topic')
+          })
+        })
       })
     })
   })
