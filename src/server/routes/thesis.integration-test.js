@@ -1226,15 +1226,36 @@ describe('thesis router', () => {
           })
         })
 
-        // describe('when the user is not a supervisor of the thesis deleted', () => {
-        //   it('should return 404', async () => {
-        //     const response = await request
-        //       .put(`/api/theses/${thesis1.id}`)
-        //       .set({ uid: user2.id, hygroupcn: 'hy-employees' })
-        //       .field('json', JSON.stringify(updatedThesis))
-        //     expect(response.status).toEqual(404)
-        //   })
-        // })
+        describe('when the user is not a supervisor of the thesis deleted', () => {
+          it('should return 404 and not update thesis', async () => {
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+
+              expect(fs.unlinkSync).toHaveBeenCalledTimes(0)
+    
+              expect(response.status).toEqual(404)
+    
+              const thesis = await Thesis.findByPk(thesis1.id)
+              expect(thesis.programId).toEqual('Testing program')
+              expect(thesis.topic).toEqual('test topic')
+          })
+        })
       })
     })
   })
