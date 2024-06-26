@@ -280,7 +280,7 @@ describe('thesis router', () => {
         })
       })
 
-      describe('when the user is a teacher and is a manager of one program', () => {
+      describe('when the user is a teacher-supervisor of one thesis and is a manager of one program', () => {
         let thesisSupervisedByOtherUser
         beforeEach(async () => {
           await ProgramManagement.create({
