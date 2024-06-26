@@ -1257,6 +1257,82 @@ describe('thesis router', () => {
           })
         })
       })
+
+      describe('when the user is a program manager', () => {
+        let updatedThesis
+
+        beforeEach(() => {
+          updatedThesis = {
+            programId: 'Updated program',
+            studyTrackId: 'new-test-study-track-id',
+            topic: 'Updated topic',
+            status: 'PLANNING',
+            startDate: '1970-01-01T00:00:00.000Z',
+            targetDate: '2070-01-01T00:00:00.000Z',
+            supervisions: [
+              {
+                user: user1,
+                percentage: 100,
+              },
+            ],
+            graders: [
+              {
+                user: user4,
+                isPrimaryGrader: true,
+              },
+              {
+                user: user5,
+                isPrimaryGrader: false,
+              },
+            ],
+            authors: [user2],
+          }
+        })
+
+        describe('when the user is a manager of the same program that the updated thesis is of', () => {
+          beforeEach(async () => {
+            await ProgramManagement.create({
+              programId: 'Testing program',
+              userId: user2.id,
+            })
+          })
+
+          it('should return 200 and update the thesis', async () => {
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+  
+            expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
+            expect(fs.unlinkSync).toHaveBeenCalledWith(
+              '/opt/app-root/src/uploads/testfile.pdf1'
+            )
+            expect(fs.unlinkSync).toHaveBeenCalledWith(
+              '/opt/app-root/src/uploads/testfile.pdf2'
+            )
+  
+            expect(response.status).toEqual(200)
+  
+            const thesis = await Thesis.findByPk(thesis1.id)
+            expect(thesis.programId).toEqual('Updated program')
+            expect(thesis.topic).toEqual('Updated topic')
+          })
+        })
+      })
     })
   })
 })
