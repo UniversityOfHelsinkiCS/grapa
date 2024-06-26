@@ -18,8 +18,13 @@ Thesis.belongsToMany(User, {
   as: 'supervisors',
 })
 
-Thesis.hasMany(Supervision, { foreignKey: 'thesisId' })
+// see GET /theses endpoint for more details on why
+// we need both of theses associations
 Thesis.hasMany(Supervision, { foreignKey: 'thesisId', as: 'supervisions' })
+Thesis.hasMany(Supervision, {
+  foreignKey: 'thesisId',
+  as: 'supervisionsForFiltering',
+})
 
 Supervision.belongsTo(User, { as: 'user' })
 Supervision.belongsTo(Thesis, { as: 'thesis' })
