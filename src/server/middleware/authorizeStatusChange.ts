@@ -1,7 +1,7 @@
 import { NextFunction } from 'express'
 import { ServerPostRequest, ServerPutRequest } from '../types'
 import { ProgramManagement } from '../db/models'
-import CustomValidationError from '../errors/ValidationError'
+import CustomAuthorizationError from '../errors/AuthorizationError'
 
 export const authorizeStatusChange = async (
   req: ServerPostRequest | ServerPutRequest,
@@ -34,7 +34,7 @@ export const authorizeStatusChange = async (
   )
 
   if (!programIdsManagedByUser.includes(req.body.programId)) {
-    throw new CustomValidationError(
+    throw new CustomAuthorizationError(
       'User is not authorized to change the status of the thesis',
       {
         programId: [

@@ -7,6 +7,7 @@ import logger from '../util/logger'
 import { inProduction } from '../../config'
 
 import CustomValidationError from '../errors/ValidationError'
+import CustomAuthorizationError from '../errors/AuthorizationError'
 
 const errorHandler = (
   error: Error,
@@ -22,6 +23,13 @@ const errorHandler = (
     return res.status(400).send({
       error: error.message,
       data: (error as CustomValidationError).errors,
+    })
+  }
+
+  if (error.name === 'CustomAuthorizationError') {
+    return res.status(403).send({
+      error: error.message,
+      data: (error as CustomAuthorizationError).errors,
     })
   }
 
