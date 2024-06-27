@@ -2,7 +2,6 @@ import { NextFunction } from 'express'
 import { ServerPostRequest, ServerPutRequest } from '@backend/types'
 import CustomValidationError from '../errors/ValidationError'
 import { getTotalPercentage } from '../util/helpers'
-import { ProgramManagement } from '../db/models'
 
 export const validateThesisData = (
   req: ServerPostRequest | ServerPutRequest,
@@ -92,51 +91,6 @@ export const validateThesisData = (
     throw new CustomValidationError('Program is required', {
       programId: ['Program is required'],
     })
-  }
-
-  next()
-}
-
-export const authorizeStatusChange = async (
-  req: ServerPostRequest | ServerPutRequest,
-  _: Express.Response,
-  next: NextFunction
-) => {
-  const actionUser = req.user
-
-  console.log(actionUser.isAdmin)
-  // admins are allowed to do anything
-  if (actionUser.isAdmin) {
-    next()
-    return
-  }
-
-  // Allow having/changing status to PLANNING
-  // to anyone.
-  // But only users with elevated permissions
-  // can change the status to anything else.
-  if (req.body.status === 'PLANNING') {
-    next()
-    return
-  }
-
-  const programsManagedByUser = await ProgramManagement.findAll({
-    attributes: ['programId'],
-    where: { userId: actionUser.id },
-  })
-  const programIdsManagedByUser = programsManagedByUser.map(
-    (program) => program.programId
-  )
-
-  if (!programIdsManagedByUser.includes(req.body.programId)) {
-    throw new CustomValidationError(
-      'User is not authorized to change the status of the thesis',
-      {
-        programId: [
-          'User is not authorized to change the status of the thesis',
-        ],
-      }
-    )
   }
 
   next()

@@ -24,7 +24,7 @@ import {
   ProgramManagement,
 } from '../db/models'
 import { sequelize } from '../db/connection'
-import { validateThesisData } from '../validators/thesis'
+import { authorizeStatusChange, validateThesisData } from '../validators/thesis'
 import { getEqualSupervisorSelectionWorkloads } from '../util/helpers'
 
 const thesisRouter = express.Router()
@@ -364,6 +364,7 @@ thesisRouter.post(
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisData,
+  authorizeStatusChange,
   async (req: ServerPostRequest, res: Response) => {
     const thesisData = req.body
 
