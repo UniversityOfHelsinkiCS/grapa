@@ -280,7 +280,7 @@ const ThesisEditForm: React.FC<{
                 required
                 disabled={
                   !user.isAdmin &&
-                  !user.managedProgramIds.includes(editedThesis.programId)
+                  !user.managedProgramIds?.includes(editedThesis.programId)
                 }
                 value={editedThesis.status}
                 label={t('statusHeader')}
