@@ -122,3 +122,9 @@ export interface ServerPutRequest extends Request {
   }
   user: User
 }
+
+export interface ProgramManagementData {
+  userId: string
+  programId: string
+  id: string
+}
