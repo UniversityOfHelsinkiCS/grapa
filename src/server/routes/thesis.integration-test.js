@@ -311,11 +311,12 @@ describe('thesis router', () => {
           expect(response.body).toHaveLength(2)
           expect(response.body).toMatchObject([
             {
-              topic: 'Thesis in the same program but supervised by another user'
+              topic:
+                'Thesis in the same program but supervised by another user',
             },
             {
               topic: 'test topic',
-            }
+            },
           ])
         })
       })
@@ -330,7 +331,8 @@ describe('thesis router', () => {
           thesisSupervisedByOtherUser = await Thesis.create({
             programId: 'Updated program',
             studyTrackId: 'test-study-track-id',
-            topic: 'Thesis in the program managed by the user, supervised by another user',
+            topic:
+              'Thesis in the program managed by the user, supervised by another user',
             status: 'PLANNING',
             startDate: '1970-01-01',
             targetDate: '2050-01-01',
@@ -351,11 +353,12 @@ describe('thesis router', () => {
           expect(response.body).toHaveLength(2)
           expect(response.body).toMatchObject([
             {
-              topic: 'Thesis in the program managed by the user, supervised by another user'
+              topic:
+                'Thesis in the program managed by the user, supervised by another user',
             },
             {
               topic: 'test topic',
-            }
+            },
           ])
         })
       })
@@ -370,7 +373,8 @@ describe('thesis router', () => {
           thesisSupervisedByOtherUser = await Thesis.create({
             programId: 'Updated program',
             studyTrackId: 'test-study-track-id',
-            topic: 'Thesis in the program managed by the user, supervised by another user',
+            topic:
+              'Thesis in the program managed by the user, supervised by another user',
             status: 'PLANNING',
             startDate: '1970-01-01',
             targetDate: '2050-01-01',
@@ -391,8 +395,9 @@ describe('thesis router', () => {
           expect(response.body).toHaveLength(1)
           expect(response.body).toMatchObject([
             {
-              topic: 'Thesis in the program managed by the user, supervised by another user'
-            }
+              topic:
+                'Thesis in the program managed by the user, supervised by another user',
+            },
           ])
         })
       })
@@ -458,7 +463,7 @@ describe('thesis router', () => {
           expect(response.status).toEqual(204)
           const thesis = await Thesis.findByPk(thesis1.id)
           expect(thesis).toBeNull()
-  
+
           expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
           expect(fs.unlinkSync).toHaveBeenCalledWith(
             '/opt/app-root/src/uploads/testfile.pdf1'
@@ -485,7 +490,7 @@ describe('thesis router', () => {
             expect(response.status).toEqual(204)
             const thesis = await Thesis.findByPk(thesis1.id)
             expect(thesis).toBeNull()
-    
+
             expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
             expect(fs.unlinkSync).toHaveBeenCalledWith(
               '/opt/app-root/src/uploads/testfile.pdf1'
@@ -506,9 +511,8 @@ describe('thesis router', () => {
         })
       })
 
-
       describe('when the user is a program manager', () => {
-        describe('when the user is a manager of the thesis\' program', () => {
+        describe("when the user is a manager of the thesis' program", () => {
           beforeEach(async () => {
             await ProgramManagement.create({
               programId: 'Testing program',
@@ -523,7 +527,7 @@ describe('thesis router', () => {
             expect(response.status).toEqual(204)
             const thesis = await Thesis.findByPk(thesis1.id)
             expect(thesis).toBeNull()
-    
+
             expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
             expect(fs.unlinkSync).toHaveBeenCalledWith(
               '/opt/app-root/src/uploads/testfile.pdf1'
@@ -534,7 +538,7 @@ describe('thesis router', () => {
           })
         })
 
-        describe('when the user is not a manager of the thesis\' program', () => {
+        describe("when the user is not a manager of the thesis' program", () => {
           beforeEach(async () => {
             await ProgramManagement.create({
               programId: 'Updated program',
@@ -691,6 +695,216 @@ describe('thesis router', () => {
         // We expect the response to be 400 because the request is missing the researchPlan attachment
         expect(response.status).toEqual(400)
       })
+
+      describe('when trying to create a thesis with status other than PLANNING', () => {
+        describe('when the user is an admin', () => {
+          it('should return 201 and create the thesis', async () => {
+            const newThesis = {
+              programId: 'New program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'New topic',
+              status: 'IN_PROGRESS',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .post('/api/theses')
+              .set('hygroupcn', 'grp-toska')
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(newThesis))
+            expect(response.status).toEqual(201)
+          })
+        })
+
+        describe("when the user is a manager of the thesis' program", () => {
+          it('should return 201 and create the thesis', async () => {
+            await ProgramManagement.create({
+              programId: 'New program',
+              userId: user2.id,
+            })
+
+            const newThesis = {
+              programId: 'New program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'New topic',
+              status: 'IN_PROGRESS',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .post('/api/theses')
+              .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(newThesis))
+            expect(response.status).toEqual(201)
+          })
+        })
+
+        describe('when the user is a manager of a different program', () => {
+          it('should return 403 and a correct error message', async () => {
+            await ProgramManagement.create({
+              programId: 'Updated program',
+              userId: user2.id,
+            })
+
+            const newThesis = {
+              programId: 'New program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'New topic',
+              status: 'IN_PROGRESS',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .post('/api/theses')
+              .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(newThesis))
+
+            expect(response.status).toEqual(403)
+            expect(response.body).toEqual({
+              error:
+                'User is not authorized to change the status of the thesis',
+              data: {
+                programId: [
+                  'User is not authorized to change the status of the thesis',
+                ],
+              },
+            })
+          })
+        })
+
+        describe('when the user is a teacher and is a supervisor of the thesis', () => {
+          it('should return 403 and a correct error message', async () => {
+            const newThesis = {
+              programId: 'New program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'New topic',
+              status: 'IN_PROGRESS',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .post('/api/theses')
+              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(newThesis))
+            expect(response.status).toEqual(403)
+            expect(response.body).toEqual({
+              error: 'User is not authorized to change the status of the thesis',
+              data: {
+                programId: [
+                  'User is not authorized to change the status of the thesis',
+                ],
+              },
+            })
+          })
+        })
+      })
     })
 
     describe('PUT /api/theses/:id', () => {
@@ -741,7 +955,7 @@ describe('thesis router', () => {
                 )
               )
               .field('json', JSON.stringify(updatedThesis))
-  
+
             expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
             expect(fs.unlinkSync).toHaveBeenCalledWith(
               '/opt/app-root/src/uploads/testfile.pdf1'
@@ -749,18 +963,18 @@ describe('thesis router', () => {
             expect(fs.unlinkSync).toHaveBeenCalledWith(
               '/opt/app-root/src/uploads/testfile.pdf2'
             )
-  
+
             expect(response.status).toEqual(200)
             delete updatedThesis.supervisions
             delete updatedThesis.authors
             expect(response.body).toMatchObject(updatedThesis)
-  
+
             const thesis = await Thesis.findByPk(thesis1.id)
             expect(thesis.programId).toEqual('Updated program')
             expect(thesis.topic).toEqual('Updated topic')
           })
         })
-  
+
         describe('when one attachment is updated and another stays the same', () => {
           it('should return 200 and update the thesis', async () => {
             const updatedThesis = {
@@ -800,24 +1014,24 @@ describe('thesis router', () => {
                 )
               )
               .field('json', JSON.stringify(updatedThesis))
-  
+
             expect(fs.unlinkSync).toHaveBeenCalledTimes(1)
             expect(fs.unlinkSync).toHaveBeenCalledWith(
               '/opt/app-root/src/uploads/testfile.pdf1'
             )
-  
+
             expect(response.status).toEqual(200)
             delete updatedThesis.supervisions
             delete updatedThesis.authors
             delete updatedThesis.waysOfWorking
             expect(response.body).toMatchObject(updatedThesis)
-  
+
             const thesis = await Thesis.findByPk(thesis1.id)
             expect(thesis.programId).toEqual('Updated program')
             expect(thesis.topic).toEqual('Updated topic')
           })
         })
-  
+
         describe('when neither of the attachments are updated', () => {
           it('should return 200 and update the thesis', async () => {
             const updatedThesis = {
@@ -855,22 +1069,22 @@ describe('thesis router', () => {
               .put(`/api/theses/${thesis1.id}`)
               .set('hygroupcn', 'grp-toska')
               .field('json', JSON.stringify(updatedThesis))
-  
+
             expect(fs.unlinkSync).toHaveBeenCalledTimes(0)
-  
+
             expect(response.status).toEqual(200)
             delete updatedThesis.supervisions
             delete updatedThesis.authors
             delete updatedThesis.waysOfWorking
             delete updatedThesis.researchPlan
             expect(response.body).toMatchObject(updatedThesis)
-  
+
             const thesis = await Thesis.findByPk(thesis1.id)
             expect(thesis.programId).toEqual('Updated program')
             expect(thesis.topic).toEqual('Updated topic')
           })
         })
-  
+
         describe('when the request contains duplicate supervisors', () => {
           it('should return 200 and update the thesis', async () => {
             const updatedThesis = {
@@ -912,13 +1126,13 @@ describe('thesis router', () => {
               .put(`/api/theses/${thesis1.id}`)
               .set('hygroupcn', 'grp-toska')
               .field('json', JSON.stringify(updatedThesis))
-  
+
             expect(response.status).toEqual(200)
-  
+
             const thesisSupervisions = await Supervision.findAll({
               where: { thesisId: thesis1.id },
             })
-  
+
             expect(thesisSupervisions).toHaveLength(1)
             expect(thesisSupervisions).toEqual(
               expect.arrayContaining([
@@ -930,7 +1144,7 @@ describe('thesis router', () => {
             )
           })
         })
-  
+
         describe('when the request contains external supervisors', () => {
           it('should return 200 and update the thesis', async () => {
             const extUserData = {
@@ -938,7 +1152,7 @@ describe('thesis router', () => {
               lastName: 'Supervisor',
               email: 'ext-test@helsinki.fi',
             }
-  
+
             const updatedThesis = {
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
@@ -980,20 +1194,20 @@ describe('thesis router', () => {
               .put(`/api/theses/${thesis1.id}`)
               .set('hygroupcn', 'grp-toska')
               .field('json', JSON.stringify(updatedThesis))
-  
+
             expect(response.status).toEqual(200)
-  
+
             const extUser = await User.findOne({
               where: { email: extUserData.email },
             })
             expect(extUser).not.toBeNull()
             expect(extUser).toMatchObject(extUserData)
             expect(extUser.isExternal).toBe(true)
-  
+
             const thesisSupervisions = await Supervision.findAll({
               where: { thesisId: thesis1.id },
             })
-  
+
             expect(thesisSupervisions).toHaveLength(2)
             expect(thesisSupervisions).toEqual(
               expect.arrayContaining([
@@ -1008,20 +1222,20 @@ describe('thesis router', () => {
               ])
             )
           })
-  
+
           it('should return 200 and ignore duplicate external supervisors', async () => {
             const extUserData = {
               firstName: 'External',
               lastName: 'Supervisor',
               email: 'ext-test@helsinki.fi',
             }
-  
+
             const duplicateExtUserData = {
               firstName: 'test1',
               lastName: 'test1',
               email: 'test@test.test1',
             }
-  
+
             const updatedThesis = {
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
@@ -1064,14 +1278,14 @@ describe('thesis router', () => {
                 mimetype: 'application/pdf1',
               },
             }
-  
+
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
               .set('hygroupcn', 'grp-toska')
               .field('json', JSON.stringify(updatedThesis))
-  
+
             expect(response.status).toEqual(200)
-  
+
             // Check that the external user is created
             const extUser = await User.findOne({
               where: { email: extUserData.email },
@@ -1079,7 +1293,7 @@ describe('thesis router', () => {
             expect(extUser).not.toBeNull()
             expect(extUser).toMatchObject(extUserData)
             expect(extUser.isExternal).toBe(true)
-  
+
             // Check that the original user is not updated
             const duplicateExtUser = await User.findOne({
               where: { email: duplicateExtUserData.email },
@@ -1087,13 +1301,13 @@ describe('thesis router', () => {
             expect(duplicateExtUser).not.toBeNull()
             expect(duplicateExtUser).toMatchObject(duplicateExtUserData)
             expect(duplicateExtUser.isExternal).toBe(false)
-  
+
             // Check that the supervisions are correct
             const thesisSupervisions = await Supervision.findAll({
               where: { thesisId: thesis1.id },
             })
             expect(thesisSupervisions).toHaveLength(2)
-  
+
             // Here we check that the supervisions contain the correct users and percentages
             // even though the updated data contains duplicate external supervisors with different percentages
             // The percentages should be calculated based on the total number of valid supervisors
@@ -1111,7 +1325,7 @@ describe('thesis router', () => {
             )
           })
         })
-  
+
         describe('when the thesis does not exist', () => {
           it('should return 404', async () => {
             const updatedThesis = {
@@ -1209,7 +1423,7 @@ describe('thesis router', () => {
                 )
               )
               .field('json', JSON.stringify(updatedThesis))
-  
+
             expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
             expect(fs.unlinkSync).toHaveBeenCalledWith(
               '/opt/app-root/src/uploads/testfile.pdf1'
@@ -1217,9 +1431,9 @@ describe('thesis router', () => {
             expect(fs.unlinkSync).toHaveBeenCalledWith(
               '/opt/app-root/src/uploads/testfile.pdf2'
             )
-  
+
             expect(response.status).toEqual(200)
-  
+
             const thesis = await Thesis.findByPk(thesis1.id)
             expect(thesis.programId).toEqual('Updated program')
             expect(thesis.topic).toEqual('Updated topic')
@@ -1247,13 +1461,13 @@ describe('thesis router', () => {
               )
               .field('json', JSON.stringify(updatedThesis))
 
-              expect(fs.unlinkSync).toHaveBeenCalledTimes(0)
-    
-              expect(response.status).toEqual(404)
-    
-              const thesis = await Thesis.findByPk(thesis1.id)
-              expect(thesis.programId).toEqual('Testing program')
-              expect(thesis.topic).toEqual('test topic')
+            expect(fs.unlinkSync).toHaveBeenCalledTimes(0)
+
+            expect(response.status).toEqual(404)
+
+            const thesis = await Thesis.findByPk(thesis1.id)
+            expect(thesis.programId).toEqual('Testing program')
+            expect(thesis.topic).toEqual('test topic')
           })
         })
       })
@@ -1316,7 +1530,7 @@ describe('thesis router', () => {
                 )
               )
               .field('json', JSON.stringify(updatedThesis))
-  
+
             expect(fs.unlinkSync).toHaveBeenCalledTimes(2)
             expect(fs.unlinkSync).toHaveBeenCalledWith(
               '/opt/app-root/src/uploads/testfile.pdf1'
@@ -1324,9 +1538,9 @@ describe('thesis router', () => {
             expect(fs.unlinkSync).toHaveBeenCalledWith(
               '/opt/app-root/src/uploads/testfile.pdf2'
             )
-  
+
             expect(response.status).toEqual(200)
-  
+
             const thesis = await Thesis.findByPk(thesis1.id)
             expect(thesis.programId).toEqual('Updated program')
             expect(thesis.topic).toEqual('Updated topic')
@@ -1362,9 +1576,9 @@ describe('thesis router', () => {
               .field('json', JSON.stringify(updatedThesis))
 
             expect(fs.unlinkSync).toHaveBeenCalledTimes(0)
-  
+
             expect(response.status).toEqual(404)
-  
+
             const thesis = await Thesis.findByPk(thesis1.id)
             expect(thesis.programId).toEqual('Testing program')
             expect(thesis.topic).toEqual('test topic')
