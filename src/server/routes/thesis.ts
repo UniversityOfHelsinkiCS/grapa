@@ -388,12 +388,13 @@ thesisRouter.put(
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisData,
+  authorizeStatusChange,
   async (req: ServerPutRequest, res) => {
     const { id } = req.params
     const thesisData = req.body
 
     const thesis = await fetchThesisById(id, req.user)
-    console.log(thesis)
+
     if (!thesis) res.status(404).send('Thesis not found')
 
     await sequelize.transaction(async (t) => {
