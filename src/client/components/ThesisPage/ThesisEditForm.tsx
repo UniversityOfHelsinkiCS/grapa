@@ -33,6 +33,7 @@ import SupervisorSelect from './SupervisorSelect/SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
 import { BASE_PATH } from '../../../config'
 import { useDebounce } from '../../hooks/useDebounce'
+import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { getFormErrors } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
 import ErrorSummary from '../Common/ErrorSummary'
@@ -68,6 +69,7 @@ const ThesisEditForm: React.FC<{
 
   const debouncedSearch = useDebounce(userSearch, 700)
   const { users } = useUsers(debouncedSearch)
+  const { user } = useLoggedInUser()
 
   const handleSubmit = async () => {
     const thesisErrors = getFormErrors(editedThesis)
@@ -230,8 +232,8 @@ const ThesisEditForm: React.FC<{
                 data-testid="author-select-input"
                 disablePortal
                 options={users ?? []}
-                getOptionLabel={(user) =>
-                  `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.username ? `(${user.username})` : ''}`
+                getOptionLabel={(author) =>
+                  `${author.firstName} ${author.lastName} ${author.email ? `(${author.email})` : ''} ${author.username ? `(${author.username})` : ''}`
                 }
                 renderInput={(params) => (
                   <TextField
@@ -276,6 +278,10 @@ const ThesisEditForm: React.FC<{
               </InputLabel>
               <Select
                 required
+                disabled={
+                  !user.isAdmin &&
+                  !user.managedProgramIds.includes(editedThesis.programId)
+                }
                 value={editedThesis.status}
                 label={t('statusHeader')}
                 id="status"

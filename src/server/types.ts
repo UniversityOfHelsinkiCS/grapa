@@ -25,6 +25,7 @@ export interface User {
   language: string
   isAdmin: boolean
   iamGroups: string[]
+  managedProgramIds: string[]
 }
 
 export interface RequestWithUser extends Request {
