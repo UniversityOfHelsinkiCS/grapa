@@ -24,8 +24,9 @@ import {
   ProgramManagement,
 } from '../db/models'
 import { sequelize } from '../db/connection'
-import { authorizeStatusChange, validateThesisData } from '../validators/thesis'
+import { validateThesisData } from '../validators/thesis'
 import { getEqualSupervisorSelectionWorkloads } from '../util/helpers'
+import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 
 const thesisRouter = express.Router()
 const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
