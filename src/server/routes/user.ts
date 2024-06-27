@@ -1,6 +1,7 @@
 import express from 'express'
 
 import { RequestWithUser } from '../types'
+import { ProgramManagement } from '../db/models'
 
 const userRouter = express.Router()
 
@@ -9,7 +10,12 @@ userRouter.get('/', async (req: RequestWithUser, res: any) => {
 
   if (!user) return res.send({})
 
-  return res.send(user)
+  const managedPrograms = await ProgramManagement.findAll({
+    where: { userId: user.id },
+  })
+  const managedProgramIds = managedPrograms.map((program) => program.programId)
+
+  return res.send({ ...user, managedProgramIds })
 })
 
 export default userRouter
