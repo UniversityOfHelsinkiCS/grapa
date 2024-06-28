@@ -10,7 +10,13 @@ import initializeI18n from '../../../util/il18n'
 jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   default: jest.fn().mockReturnValue({
     users: [
-      { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' },
+      {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'johndoe',
+        studentNumber: '12345',
+      },
       { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
       {
         id: 3,
@@ -19,11 +25,11 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
         username: 'bobluukkainen',
       },
       {
-        id: 4, 
-        firstName: 'Henri', 
-        lastName: 'Tunkkaaja', 
-        username: 'tunkkaus'
-      }
+        id: 4,
+        firstName: 'Henri',
+        lastName: 'Tunkkaaja',
+        username: 'tunkkaus',
+      },
     ],
   }),
 }))
@@ -62,7 +68,16 @@ describe('GraderSelect', () => {
       <GraderSelect
         errors={[]}
         graderSelections={[
-          {user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe'}, isPrimaryGrader: true }, 
+          {
+            user: {
+              id: 1,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+              studentNumber: '12345',
+            },
+            isPrimaryGrader: true,
+          },
           { user: null, isPrimaryGrader: false },
         ]}
         setGraderSelections={setGraderSelections}
@@ -73,7 +88,7 @@ describe('GraderSelect', () => {
     expect(screen.getByTestId('grader-select-input-1')).toBeInTheDocument()
     expect(screen.getByTestId('grader-select-input-2')).toBeInTheDocument()
 
-    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe  (johndoe)')
+    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe  (12345)')
   })
 
   it('renders the GraderSelect component with multiple supervisors', () => {
@@ -81,14 +96,31 @@ describe('GraderSelect', () => {
       <GraderSelect
         errors={[]}
         graderSelections={[
-          { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe'}, isPrimaryGrader: true },
-          { user: { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith'}, isPrimaryGrader: false },
+          {
+            user: {
+              id: 1,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+              studentNumber: '12345',
+            },
+            isPrimaryGrader: true,
+          },
+          {
+            user: {
+              id: 2,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              username: 'janesmith',
+            },
+            isPrimaryGrader: false,
+          },
         ]}
         setGraderSelections={setGraderSelections}
       />
     )
-    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe  (johndoe)')
-    expect(screen.getAllByRole('combobox')[1].value).toBe('Jane Smith  (janesmith)')
+    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe  (12345)')
+    expect(screen.getAllByRole('combobox')[1].value).toBe('Jane Smith  ')
   })
 
   it('renders the GraderSelect component with an error', () => {
@@ -96,30 +128,24 @@ describe('GraderSelect', () => {
       <GraderSelect
         errors={[
           {
-            code: "custom",
-            message: "formErrors:graders",
-            path: [
-              "graders",
-              0,
-              "user"
-            ]
-          }
+            code: 'custom',
+            message: 'formErrors:graders',
+            path: ['graders', 0, 'user'],
+          },
         ]}
-        graderSelections={[
-          { user: null, isPrimaryGrader: true },
-        ]}
+        graderSelections={[{ user: null, isPrimaryGrader: true }]}
         setGraderSelections={setGraderSelections}
       />
     )
 
-
-    const helperText = select.container.querySelector('#graders-0-user-helper-text')
+    const helperText = select.container.querySelector(
+      '#graders-0-user-helper-text'
+    )
     expect(helperText).toBeInTheDocument()
 
     const inputElement = select.container.querySelector('#graders-0-user')
     expect(inputElement).toHaveAttribute('aria-invalid', 'true')
   })
-
 
   describe('interactions', () => {
     it('should call setGraderSelections when a grader is added', () => {
@@ -135,7 +161,7 @@ describe('GraderSelect', () => {
       const input = within(autocomplete).getByRole('combobox')
 
       autocomplete.focus()
-      // the value here can be any string you want, so you may also consider to 
+      // the value here can be any string you want, so you may also consider to
       // wrapper it as a function and pass in inputValue as parameter
       fireEvent.change(input, { target: { value: 'John Doe' } })
       fireEvent.keyDown(autocomplete, { key: 'ArrowDown' })
@@ -143,7 +169,16 @@ describe('GraderSelect', () => {
 
       expect(setGraderSelections).toHaveBeenCalledTimes(1)
       expect(setGraderSelections).toHaveBeenCalledWith([
-        { user: { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe'}, isPrimaryGrader: true }, 
+        {
+          user: {
+            id: 1,
+            firstName: 'John',
+            lastName: 'Doe',
+            username: 'johndoe',
+            studentNumber: '12345',
+          },
+          isPrimaryGrader: true,
+        },
         { user: null, isPrimaryGrader: false },
       ])
     })
