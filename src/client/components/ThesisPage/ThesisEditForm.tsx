@@ -1,4 +1,4 @@
-import { AuthorData, ThesisData } from '@backend/types'
+import { User, ThesisData } from '@backend/types'
 import { styled } from '@mui/material/styles'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
@@ -227,13 +227,13 @@ const ThesisEditForm: React.FC<{
             )}
 
             <FormControl fullWidth>
-              <Autocomplete<AuthorData>
+              <Autocomplete<User>
                 id="authors"
                 data-testid="author-select-input"
                 disablePortal
                 options={users ?? []}
                 getOptionLabel={(author) =>
-                  `${author.firstName} ${author.lastName} ${author.email ? `(${author.email})` : ''} ${author.username ? `(${author.username})` : ''}`
+                  `${author.firstName} ${author.lastName} ${author.email ? `(${author.email})` : ''} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
                 }
                 renderInput={(params) => (
                   <TextField

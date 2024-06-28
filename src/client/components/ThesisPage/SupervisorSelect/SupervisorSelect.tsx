@@ -1,7 +1,7 @@
 import React from 'react'
 import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined'
 import { Box, Divider, Stack, Tooltip, Typography } from '@mui/material'
-import { AuthorData, SupervisionData } from '@backend/types'
+import { User, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { useTranslation } from 'react-i18next'
 import { ZodIssue } from 'zod'
@@ -22,7 +22,7 @@ const SupervisorSelect: React.FC<{
 
   const totalPercentage = getTotalPercentage(supervisorSelections)
 
-  const handleSupervisorChange = (index: number, supervisor: AuthorData) => {
+  const handleSupervisorChange = (index: number, supervisor: User) => {
     const updatedSelections = [...supervisorSelections]
     updatedSelections[index].user = supervisor
     setSupervisorSelections(updatedSelections)

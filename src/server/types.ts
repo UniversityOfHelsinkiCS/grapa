@@ -24,8 +24,9 @@ export interface User {
   email: string
   language: string
   isAdmin: boolean
+  studentNumber?: string
   iamGroups: string[]
-  managedProgramIds: string[]
+  managedProgramIds?: string[]
 }
 
 export interface RequestWithUser extends Request {
@@ -40,21 +41,13 @@ export type ThesisStatus =
   | 'CANCELLED'
 
 export interface SupervisionData {
-  user: AuthorData
+  user: User
   percentage: number
   isExternal: boolean
 }
 
-export interface AuthorData {
-  id: string
-  username: string
-  firstName: string
-  lastName: string
-  email: string | null
-}
-
 export interface GraderData {
-  user: AuthorData
+  user: User
   isPrimaryGrader: boolean
 }
 
@@ -73,7 +66,7 @@ export interface ThesisData {
   startDate: string
   targetDate?: string
   supervisions: SupervisionData[]
-  authors: AuthorData[]
+  authors: User[]
   graders: GraderData[]
   researchPlan?: FileData | File
   waysOfWorking?: FileData | File

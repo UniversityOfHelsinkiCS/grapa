@@ -1,6 +1,6 @@
 import React from 'react'
 import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
-import { AuthorData, GraderData } from '@backend/types'
+import { User, GraderData } from '@backend/types'
 import { useTranslation } from 'react-i18next'
 import { ZodIssue } from 'zod'
 import SingleGraderSelect from './SingleGraderSelect'
@@ -17,7 +17,7 @@ const GraderSelect: React.FC<{
     secondaryGrader = { user: null, isPrimaryGrader: false },
   ] = graderSelections
 
-  const handleChange = (index: number, grader: AuthorData) => {
+  const handleChange = (index: number, grader: User) => {
     const updatedSelections = [...graderSelections]
     const updatedGrader = { user: grader, isPrimaryGrader: index === 0 }
     updatedSelections[index] = updatedGrader

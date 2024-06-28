@@ -26,6 +26,7 @@ const userMiddleware = (req: any, _: any, next: any) => {
           given_name: req.headers.given_name,
           family_name: req.headers.family_name,
           email: req.headers.email,
+
           preferredLanguage: req.headers.preferredlanguage,
           hyPersonSisuId: req.headers.hypersonsisuid,
           hyGroupCn: parseIamGroups(req.headers.hygroupcn),

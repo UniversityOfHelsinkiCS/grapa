@@ -1,6 +1,7 @@
 import { Op } from 'sequelize'
 import express from 'express'
 import { User } from '../db/models'
+import { userFields } from './config'
 
 const usersRouter = express.Router()
 
@@ -19,6 +20,7 @@ usersRouter.get('/', async (req, res) => {
   if (trimmedSearch.split(' ').length === 2) {
     const [firstName, lastName] = trimmedSearch.split(' ')
     const users = await User.findAll({
+      attributes: userFields,
       where: {
         [Op.and]: [
           {
@@ -37,6 +39,7 @@ usersRouter.get('/', async (req, res) => {
     res.send(users)
   } else {
     const users = await User.findAll({
+      attributes: userFields,
       where: {
         [Op.or]: [
           {

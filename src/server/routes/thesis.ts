@@ -27,6 +27,7 @@ import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
 import { getEqualSupervisorSelectionWorkloads } from '../util/helpers'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
+import { userFields } from './config'
 
 const thesisRouter = express.Router()
 const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
@@ -48,7 +49,7 @@ const getFindThesesOptions = async ({
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+          attributes: userFields,
         },
       ],
     },
@@ -60,14 +61,14 @@ const getFindThesesOptions = async ({
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+          attributes: userFields,
         },
       ],
     },
     {
       model: User,
       as: 'authors',
-      attributes: ['id', 'username', 'firstName', 'lastName', 'email'],
+      attributes: userFields,
     },
     {
       model: Attachment,

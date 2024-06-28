@@ -1,7 +1,7 @@
-import { AuthorData } from '@backend/types'
+import { User } from '@backend/types'
 
 export interface SupervisorSelection {
-  user: AuthorData | null
+  user: User | null
   percentage: number
   isExternal: boolean
 }

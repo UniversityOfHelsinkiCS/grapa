@@ -1,4 +1,4 @@
-import { AuthorData } from '@backend/types'
+import { User } from '@backend/types'
 import {
   Autocomplete,
   Stack,
@@ -19,8 +19,8 @@ import DeleteConfirmation from '../../Common/DeleteConfirmation'
 
 interface SingleSupervisorSelectProps {
   index: number
-  selection: { user: AuthorData | null; percentage: number }
-  handleSupervisorChange: (value: AuthorData | null) => void
+  selection: { user: User | null; percentage: number }
+  handleSupervisorChange: (value: User | null) => void
   handleRemoveSupervisor: () => void
   handlePercentageChange: (percentage: number) => void
   inputProps: TextFieldProps
@@ -44,13 +44,13 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
   return (
     <Stack spacing={1} direction="row">
       <FormControl fullWidth>
-        <Autocomplete<AuthorData>
+        <Autocomplete<User>
           id={`supervisions-${index}-user`}
           data-testid={`supervisor-select-input-${index + 1}`}
           disablePortal
           options={users ?? []}
           getOptionLabel={(user) =>
-            `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.username ? `(${user.username})` : ''}`
+            `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.studentNumber ? `(${user.studentNumber})` : ''}`
           }
           renderInput={(params) => (
             <TextField

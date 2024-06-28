@@ -5,14 +5,14 @@ import {
   TextField,
   TextFieldProps,
 } from '@mui/material'
-import { AuthorData, GraderData } from '@backend/types'
+import { User, GraderData } from '@backend/types'
 import { useTranslation } from 'react-i18next'
 import { useDebounce } from '../../../hooks/useDebounce'
 import useUsers from '../../../hooks/useUsers'
 
 interface SingleGraderSelectProps {
   index: number
-  handleGraderChange: (value: AuthorData | null) => void
+  handleGraderChange: (value: User | null) => void
   selection: GraderData
   inputProps: TextFieldProps
 }
@@ -30,13 +30,13 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
 
   return (
     <FormControl fullWidth>
-      <Autocomplete<AuthorData>
+      <Autocomplete<User>
         id={`graders-${index}-user`}
         data-testid={`grader-select-input-${index + 1}`}
         disablePortal
         options={users ?? []}
         getOptionLabel={(user) =>
-          `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.username ? `(${user.username})` : ''}`
+          `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.studentNumber ? `(${user.studentNumber})` : ''}`
         }
         renderInput={(params) => (
           <TextField

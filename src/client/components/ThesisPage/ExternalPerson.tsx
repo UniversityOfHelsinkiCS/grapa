@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { AuthorData } from '@backend/types'
+import { User } from '@backend/types'
 import {
   Stack,
   TextField,
@@ -17,8 +17,8 @@ import DeleteConfirmation from '../Common/DeleteConfirmation'
 interface ExternalPersonInputProps {
   index: number
   inputGroup: 'supervisions' | 'graders'
-  selection: { user: AuthorData | null; percentage: number }
-  handleSupervisorChange: (value: AuthorData | null) => void
+  selection: { user: User | null; percentage: number }
+  handleSupervisorChange: (value: User | null) => void
   handleRemoveSupervisor: () => void
   handlePercentageChange: (percentage: number) => void
   inputProps: TextFieldProps
