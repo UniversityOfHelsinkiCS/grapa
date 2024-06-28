@@ -55,6 +55,7 @@ usersRouter.get('/', async (req, res) => {
         },
         ...whereClauses,
       },
+      limit: 100,
     })
     res.send(users)
   } else {
@@ -90,8 +91,9 @@ usersRouter.get('/', async (req, res) => {
         ],
         ...whereClauses,
       },
+      limit: 100,
     })
-    console.log(users)
+
     res.send(users)
   }
 })
