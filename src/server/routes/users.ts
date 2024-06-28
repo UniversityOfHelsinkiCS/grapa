@@ -59,6 +59,11 @@ usersRouter.get('/', async (req, res) => {
               [Op.iLike]: `${trimmedSearch}%`,
             },
           },
+          {
+            studentNumber: {
+              [Op.iLike]: `${trimmedSearch}%`,
+            },
+          },
         ],
       },
     })
