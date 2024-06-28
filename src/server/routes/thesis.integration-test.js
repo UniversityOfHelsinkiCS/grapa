@@ -15,16 +15,11 @@ import {
   Thesis,
   User,
 } from '../db/models'
+import { userFields } from './config'
 
 const request = supertest.agent(app)
 
-const userAttributesToFetch = [
-  'email',
-  'firstName',
-  'id',
-  'lastName',
-  'username',
-]
+const userAttributesToFetch = userFields
 
 describe('thesis router', () => {
   let mockUnlinkSync
