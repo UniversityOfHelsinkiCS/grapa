@@ -98,6 +98,7 @@ const ProgramManagement: React.FC = () => {
         <FormControl fullWidth>
           <Autocomplete
             id="program-manager"
+            noOptionsText={t('userSearchNoOptions')}
             data-testid="program-manager-select-input"
             disablePortal
             options={users ?? []}

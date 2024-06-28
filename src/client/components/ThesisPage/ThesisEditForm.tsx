@@ -232,6 +232,7 @@ const ThesisEditForm: React.FC<{
             <FormControl fullWidth>
               <Autocomplete<User>
                 id="authors"
+                noOptionsText={t('userSearchNoOptions')}
                 data-testid="author-select-input"
                 disablePortal
                 options={authorOptions ?? []}

@@ -46,6 +46,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
       <FormControl fullWidth>
         <Autocomplete<User>
           id={`supervisions-${index}-user`}
+          noOptionsText={t('userSearchNoOptions')}
           data-testid={`supervisor-select-input-${index + 1}`}
           disablePortal
           options={users ?? []}

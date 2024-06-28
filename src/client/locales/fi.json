@@ -3,6 +3,7 @@
     "appName": "GRAdut Pikaisesti Alkuun",
     "author": "Tekijä",
     "grader": "Arvioija {{index}}",
+    "userSearchNoOptions": "Kirjoita vähintään 5 merkkiä etsiäksesi käyttäjiä",
     "programManagersNavItem": "Vastaavat",
     "programHeader": "Ohjelma",
     "studyTrackHeader": "Opintosuunta",

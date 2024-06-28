@@ -32,6 +32,7 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
     <FormControl fullWidth>
       <Autocomplete<User>
         id={`graders-${index}-user`}
+        noOptionsText={t('userSearchNoOptions')}
         data-testid={`grader-select-input-${index + 1}`}
         disablePortal
         options={users ?? []}
