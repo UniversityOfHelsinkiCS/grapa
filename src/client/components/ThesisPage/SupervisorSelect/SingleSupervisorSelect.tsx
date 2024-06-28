@@ -39,7 +39,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [userSearch, setUserSearch] = React.useState('')
   const debouncedSearch = useDebounce(userSearch, 700)
-  const { users } = useUsers(debouncedSearch)
+  const { users } = useUsers({ search: debouncedSearch, onlyEmployees: true })
 
   return (
     <Stack spacing={1} direction="row">

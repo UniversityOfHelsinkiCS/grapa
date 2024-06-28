@@ -68,7 +68,10 @@ const ThesisEditForm: React.FC<{
   const [userSearch, setUserSearch] = useState('')
 
   const debouncedSearch = useDebounce(userSearch, 700)
-  const { users } = useUsers(debouncedSearch)
+  const { users: authorOptions } = useUsers({
+    search: debouncedSearch,
+    onlyWithStudyRight: true,
+  })
   const { user } = useLoggedInUser()
 
   const handleSubmit = async () => {
@@ -231,7 +234,7 @@ const ThesisEditForm: React.FC<{
                 id="authors"
                 data-testid="author-select-input"
                 disablePortal
-                options={users ?? []}
+                options={authorOptions ?? []}
                 getOptionLabel={(author) =>
                   `${author.firstName} ${author.lastName} ${author.email ? `(${author.email})` : ''} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
                 }

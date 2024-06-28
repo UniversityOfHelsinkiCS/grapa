@@ -5,8 +5,15 @@ import { userFields } from './config'
 
 const usersRouter = express.Router()
 
+interface UserSearchQuery {
+  search?: string
+  onlyWithStudyRight?: boolean
+  onlyEmployees?: boolean
+}
+
 usersRouter.get('/', async (req, res) => {
-  const { search } = req.query as { search: string }
+  const { search, onlyEmployees, onlyWithStudyRight } =
+    req.query as UserSearchQuery
 
   if (!search) {
     res.send(400, 'Search string must be provided as a query parameter')
@@ -17,23 +24,36 @@ usersRouter.get('/', async (req, res) => {
 
   const trimmedSearch = search.trim()
 
+  let whereClauses: Record<string, any> = {}
+  if (onlyWithStudyRight) {
+    whereClauses = {
+      ...whereClauses,
+      hasStudyRight: {
+        [Op.is]: true,
+      },
+    }
+  }
+  if (onlyEmployees) {
+    whereClauses = {
+      ...whereClauses,
+      employeeNumber: {
+        [Op.not]: null,
+      },
+    }
+  }
+
   if (trimmedSearch.split(' ').length === 2) {
     const [firstName, lastName] = trimmedSearch.split(' ')
     const users = await User.findAll({
       attributes: userFields,
       where: {
-        [Op.and]: [
-          {
-            firstName: {
-              [Op.iLike]: `${firstName}%`,
-            },
-          },
-          {
-            lastName: {
-              [Op.iLike]: `${lastName}%`,
-            },
-          },
-        ],
+        firstName: {
+          [Op.iLike]: `${firstName}%`,
+        },
+        lastName: {
+          [Op.iLike]: `${lastName}%`,
+        },
+        ...whereClauses,
       },
     })
     res.send(users)
@@ -68,8 +88,10 @@ usersRouter.get('/', async (req, res) => {
             },
           },
         ],
+        ...whereClauses,
       },
     })
+    console.log(users)
     res.send(users)
   }
 })

@@ -2,8 +2,17 @@ import { useQuery } from '@tanstack/react-query'
 import { User } from '@backend/types'
 import apiClient from '../util/apiClient'
 
-const useUsers = (search: string) => {
-  const queryKey = ['users', search]
+interface UseUsersOptions {
+  search?: string
+  onlyEmployees?: boolean
+  onlyWithStudyRight?: boolean
+}
+const useUsers = ({
+  search,
+  onlyEmployees,
+  onlyWithStudyRight,
+}: UseUsersOptions) => {
+  const queryKey = ['users', search, onlyEmployees, onlyWithStudyRight]
 
   const queryFn = async (): Promise<User[]> => {
     const trimmedSearch = search.trim()
@@ -11,7 +20,9 @@ const useUsers = (search: string) => {
       return []
     }
 
-    const { data } = await apiClient.get(`/users?search=${trimmedSearch}`)
+    const { data } = await apiClient.get(
+      `/users?search=${trimmedSearch}${onlyEmployees ? '&onlyEmployees=true' : ''}${onlyWithStudyRight ? '&onlyWithStudyRight=true' : ''}`
+    )
 
     return data
   }

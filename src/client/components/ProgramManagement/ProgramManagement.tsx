@@ -36,7 +36,7 @@ const ProgramManagement: React.FC = () => {
 
   const [userSearch, setUserSearch] = useState('')
   const debouncedSearch = useDebounce(userSearch, 700)
-  const { users } = useUsers(debouncedSearch)
+  const { users } = useUsers({ search: debouncedSearch })
 
   const handleAddProgramManagement = async () => {
     if (managerCandidate && programId) {

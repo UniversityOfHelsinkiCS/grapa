@@ -26,7 +26,7 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
   const { t } = useTranslation()
   const [userSearch, setUserSearch] = React.useState('')
   const debouncedSearch = useDebounce(userSearch, 700)
-  const { users } = useUsers(debouncedSearch)
+  const { users } = useUsers({ search: debouncedSearch, onlyEmployees: true })
 
   return (
     <FormControl fullWidth>
