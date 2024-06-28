@@ -18,6 +18,9 @@ interface SisuUser {
   firstNames: string
   lastName: string
   primaryEmail: string
+  employeeNumber: string
+  studentNumber: string
+  hasStudyRight: boolean
 }
 
 const usersHandler = async (users: SisuUser[]) => {
@@ -30,6 +33,9 @@ const usersHandler = async (users: SisuUser[]) => {
     firstName: user.firstNames,
     lastName: user.lastName,
     email: user.primaryEmail,
+    studentNumber: user.studentNumber,
+    employeeNumber: user.employeeNumber,
+    hasStudyRight: user.hasStudyRight,
   }))
 
   // By default updates all fields on duplicate id
@@ -45,6 +51,9 @@ const usersHandler = async (users: SisuUser[]) => {
         'firstName',
         'lastName',
         'email',
+        'studentNumber',
+        'employeeNumber',
+        'hasStudyRight',
       ],
     },
   })
