@@ -126,5 +126,7 @@ export interface ServerPutRequest extends Request {
 export interface ProgramManagementData {
   userId: string
   programId: string
-  id: string
+  program?: ProgramData
+  user?: User
+  id?: string
 }

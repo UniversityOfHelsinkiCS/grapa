@@ -6,6 +6,7 @@ import RootBoundary from './components/Errors/RootBoundary'
 import NotFound from './components/Errors/NotFound'
 
 import { BASE_PATH } from '../config'
+import ProgramManagement from './components/ProgramManagement/ProgramManagement'
 
 const router = createBrowserRouter(
   [
@@ -18,6 +19,10 @@ const router = createBrowserRouter(
           index: true,
           element: <ThesesPage />,
           errorElement: <RootBoundary />,
+        },
+        {
+          path: '/program-managements',
+          element: <ProgramManagement />,
         },
         {
           path: '*',

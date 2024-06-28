@@ -66,5 +66,9 @@
     "removeSupervisorConfirmationTitle": "Poista ohjaaja",
     "removeSupervisorConfirmationContent": "Haluatko varmasti poistaa ohjaajan: {{name}}?",
     "removeSupervisorConfirmationNoName": "Haluatko varmasti poistaa nimeämättömän ohjaajan?"
+  },
+  "programManagementPage": {
+    "programHeader": "Ohjelma",
+    "managerHeader": "Vastaava"
   }
 }
