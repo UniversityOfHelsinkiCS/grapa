@@ -25,6 +25,12 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 
   declare isExternal: boolean
 
+  declare employeeNumber: string | null
+
+  declare studentNumber: string | null
+
+  declare hasStudyRight: boolean | null
+
   declare iamGroups: string[]
 }
 
@@ -66,6 +72,18 @@ User.init(
     iamGroups: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       defaultValue: [],
+    },
+    employeeNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    studentNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    hasStudyRight: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
     },
   },
   {
