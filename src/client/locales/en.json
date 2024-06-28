@@ -3,7 +3,7 @@
     "appName": "Master theses progress tracking",
     "author": "Author",
     "grader": "Grader {{index}}",
-    "profileButton": "Profile",
+    "programManagersNavItem": "Program managers",
     "programHeader": "Program",
     "studyTrackHeader": "Study track",
     "topicHeader": "Topic",

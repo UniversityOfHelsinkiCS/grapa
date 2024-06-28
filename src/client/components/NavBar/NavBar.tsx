@@ -49,20 +49,31 @@ const NavBar = () => {
       <Container maxWidth={false}>
         <Toolbar sx={navStyles.toolbar} disableGutters>
           <Box sx={navStyles.navBox}>
-            <img src={hyLogo} alt="University of Helsinki" width="40" />
-            <Box ml="2rem">
-              <Typography sx={navStyles.appName}>{t('appName')}</Typography>
-            </Box>
+            <Link
+              to="/"
+              style={{
+                textDecoration: 'none',
+                color: 'inherit',
+                display: 'flex',
+              }}
+            >
+              <img src={hyLogo} alt="University of Helsinki" width="40" />
+              <Box ml="2rem">
+                <Typography sx={navStyles.appName}>{t('appName')}</Typography>
+              </Box>
+            </Link>
           </Box>
           <Box sx={{ display: 'flex' }}>
-            <Button variant="outlined" sx={{ marginRight: '25px' }}>
-              <Link
-                to="/user"
-                style={{ textDecoration: 'none', color: 'inherit' }}
-              >
-                {t('profileButton')}
-              </Link>
-            </Button>
+            {user.isAdmin || user.managedProgramIds?.length ? (
+              <Button variant="outlined" sx={{ marginRight: '25px' }}>
+                <Link
+                  to="/program-managements"
+                  style={{ textDecoration: 'none', color: 'inherit' }}
+                >
+                  {t('programManagersNavItem')}
+                </Link>
+              </Button>
+            ) : null}
             <Button
               ref={anchorRef}
               id="composition-button"

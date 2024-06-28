@@ -3,7 +3,7 @@
     "appName": "GRAdut Pikaisesti Alkuun",
     "author": "Tekijä",
     "grader": "Arvioija {{index}}",
-    "profileButton": "Oma tiedot",
+    "programManagersNavItem": "Vastaavat",
     "programHeader": "Ohjelma",
     "studyTrackHeader": "Opintosuunta",
     "topicHeader": "Aihe",
