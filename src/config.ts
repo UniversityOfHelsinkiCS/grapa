@@ -18,7 +18,7 @@ export const UPDATER_CRON_ENABLED = process.env.UPDATER_CRON_ENABLED === 'true'
 export const FULL_URL = inProduction
   ? 'https://grapa.ext.ocp-prod-0.k8s.it.helsinki.fi'
   : inStaging
-    ? 'https://toska-staging.cs.helsinki.fi/grapa'
+    ? 'https://grapa.ext.ocp-test-0.k8s.it.helsinki.fi'
     : 'http://localhost:3000'
 
 export const FORM_DATA_KEY = 'grapa_local_save'
