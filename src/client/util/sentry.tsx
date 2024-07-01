@@ -5,7 +5,7 @@ const initializeSentry = () => {
   if (!inProduction || inStaging || inE2EMode) return
 
   Sentry.init({
-    dsn: 'https://144f4b59d562a36afcdca13de964eb9a@toska.cs.helsinki.fi/3',
+    dsn: 'https://4760b7af8d5702d8e858b22d4c182289@toska.cs.helsinki.fi/22',
     release: GIT_SHA,
     integrations: [Sentry.browserTracingIntegration()],
     tracesSampleRate: 1.0,
