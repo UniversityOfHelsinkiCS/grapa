@@ -29,7 +29,7 @@ jobs:
           containerfiles: |
             ./Dockerfile
           build-args: |
-            BASE_PATH=/grapa
+            BASE_PATH=
             GIT_SHA=${{ github.sha }}
             STAGING=true
             E2E=false
