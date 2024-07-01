@@ -21,6 +21,9 @@ jobs:
             ./Dockerfile
           build-args: |
             GIT_SHA=${{ github.sha }}
+          # ulimit 4096 is required for the buildah to work
+          # otherwise throws error "Too many open files"
+          extra-args: --ulimit nofile=4096:4096
 
       - name: Push to quay.io
         uses: redhat-actions/push-to-registry@v2
