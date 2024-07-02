@@ -1,15 +1,16 @@
 import { z } from 'zod'
 
 const userSchema = z.object({
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  email: z.string().nullable(),
+  firstName: z.string().min(1, 'formErrors:firstName'),
+  lastName: z.string().min(1, 'formErrors:lastName'),
+  email: z.string().min(1, 'formErrors:email'),
 })
 
 const supervisionSchema = z
   .object({
-    user: userSchema.nullable(),
+    user: userSchema,
     percentage: z.number().min(0).max(100),
+    isExternal: z.boolean(),
   })
   .superRefine((data, ctx) => {
     if (!data.user) {
