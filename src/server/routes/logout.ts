@@ -2,7 +2,7 @@ import express from 'express'
 
 const logoutRouter = express.Router()
 
-logoutRouter.get('/logout', async (req, res, next) => {
+logoutRouter.get('/', async (req, res, next) => {
   // eslint-disable-next-line consistent-return
   req.logout((err) => {
     if (err) return next(err)
