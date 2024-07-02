@@ -1,18 +1,25 @@
 import { z } from 'zod'
 
 const userSchema = z.object({
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  email: z.string().nullable(),
+  firstName: z
+    .string({ required_error: 'formErrors:firstName' })
+    .min(1, 'formErrors:firstName'),
+  lastName: z
+    .string({ required_error: 'formErrors:lastName' })
+    .min(1, 'formErrors:lastName'),
+  email: z
+    .string({ required_error: 'formErrors:email' })
+    .email('formErrors:email'),
 })
 
 const supervisionSchema = z
   .object({
     user: userSchema.nullable(),
     percentage: z.number().min(0).max(100),
+    isExternal: z.boolean(),
   })
   .superRefine((data, ctx) => {
-    if (!data.user) {
+    if (!data.isExternal && !data.user) {
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:supervisors',
