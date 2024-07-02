@@ -127,6 +127,7 @@ const ProgramManagement: React.FC = () => {
         <FormControl fullWidth>
           <InputLabel>{t('programManagementPage:programHeader')}</InputLabel>
           <Select
+            data-testid="program-select-input"
             value={programId ?? ''}
             onChange={(e) => setProgramId(e.target.value as string)}
           >
@@ -138,6 +139,7 @@ const ProgramManagement: React.FC = () => {
           </Select>
         </FormControl>
         <Button
+          data-testid="add-program-management-button"
           disabled={!programId || !managerCandidate}
           onClick={handleAddProgramManagement}
         >
