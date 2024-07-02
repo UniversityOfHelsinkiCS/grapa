@@ -82,15 +82,59 @@ const SupervisorSelect: React.FC<{
         {t('thesisForm:supervisors')}
       </Typography>
       {supervisorSelections.map((selection, index) => {
-        const SupervisorElement = selection.isExternal
-          ? ExternalPersonInput
-          : SingleSupervisorSelect
+        const { isExternal } = selection
+
+        if (isExternal) {
+          return (
+            <ExternalPersonInput
+              key={selection.user?.id ?? `supervisions-${index}`}
+              index={index}
+              inputGroup="supervisions"
+              selection={selection}
+              handleSupervisorChange={(value) =>
+                handleSupervisorChange(index, value)
+              }
+              handleRemoveSupervisor={() => handleRemoveSupervisor(index)}
+              handlePercentageChange={(percentage) =>
+                handlePercentageChange(index, percentage)
+              }
+              inputErrors={{
+                firstName: t(
+                  errors.find(
+                    (error) =>
+                      error.path.join('-') ===
+                      `supervisions-${index}-user-firstName`
+                  )?.message
+                ),
+                lastName: t(
+                  errors.find(
+                    (error) =>
+                      error.path.join('-') ===
+                      `supervisions-${index}-user-lastName`
+                  )?.message
+                ),
+                email: t(
+                  errors.find(
+                    (error) =>
+                      error.path.join('-') ===
+                      `supervisions-${index}-user-email`
+                  )?.message
+                ),
+              }}
+              inputProps={{
+                required: true,
+              }}
+              iconButtonProps={{
+                disabled: supervisorSelections.length === 1,
+              }}
+            />
+          )
+        }
 
         return (
-          <SupervisorElement
+          <SingleSupervisorSelect
             key={selection.user?.id ?? `supervisions-${index}`}
             index={index}
-            inputGroup="supervisions"
             selection={selection}
             handleSupervisorChange={(value) =>
               handleSupervisorChange(index, value)

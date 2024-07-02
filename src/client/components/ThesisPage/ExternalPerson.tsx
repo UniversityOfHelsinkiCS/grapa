@@ -14,6 +14,12 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import DeleteConfirmation from '../Common/DeleteConfirmation'
 
+type ExternalPersonInputErrors = {
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
+}
+
 interface ExternalPersonInputProps {
   index: number
   inputGroup: 'supervisions' | 'graders'
@@ -21,6 +27,7 @@ interface ExternalPersonInputProps {
   handleSupervisorChange: (value: User | null) => void
   handleRemoveSupervisor: () => void
   handlePercentageChange: (percentage: number) => void
+  inputErrors: ExternalPersonInputErrors
   inputProps: TextFieldProps
   iconButtonProps: ButtonProps
 }
@@ -32,6 +39,7 @@ const ExternalPersonInput = ({
   handleSupervisorChange,
   handleRemoveSupervisor,
   handlePercentageChange,
+  inputErrors,
   inputProps,
   iconButtonProps,
 }: ExternalPersonInputProps) => {
@@ -62,6 +70,8 @@ const ExternalPersonInput = ({
           }
           fullWidth
           variant="outlined"
+          error={Boolean(inputErrors?.firstName)}
+          helperText={inputErrors?.firstName}
           {...inputProps}
         />
 
@@ -77,6 +87,8 @@ const ExternalPersonInput = ({
           }
           fullWidth
           variant="outlined"
+          error={Boolean(inputErrors?.lastName)}
+          helperText={inputErrors?.lastName}
           {...inputProps}
         />
       </Stack>
@@ -91,6 +103,8 @@ const ExternalPersonInput = ({
           onChange={(event) => handleInputChange('email', event.target.value)}
           fullWidth
           variant="outlined"
+          error={Boolean(inputErrors?.email)}
+          helperText={inputErrors?.email}
           {...inputProps}
         />
 
