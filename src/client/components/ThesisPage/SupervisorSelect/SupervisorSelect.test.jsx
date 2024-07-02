@@ -79,7 +79,7 @@ describe('SupervisorSelect', () => {
       />
     )
 
-    expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
+    expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
   })
 
   it('renders the SupervisorSelect component with a supervisor', () => {
@@ -103,10 +103,10 @@ describe('SupervisorSelect', () => {
       />
     )
 
-    expect(screen.getByText('Valitse ohjaaja')).toBeInTheDocument()
+    expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
     expect(screen.getByText('Osuus')).toBeInTheDocument()
     expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe  (12345)')
-    expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
+    expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
   })
 
   it('renders the SupervisorSelect component with multiple supervisors', () => {
@@ -142,7 +142,7 @@ describe('SupervisorSelect', () => {
     expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe  (12345)')
     expect(screen.getAllByRole('combobox')[1].value).toBe('Jane Smith  ')
 
-    expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
+    expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
   })
 
   it('renders the SupervisorSelect component with an error', () => {
@@ -212,7 +212,7 @@ describe('SupervisorSelect', () => {
         />
       )
 
-      const select = screen.getByText('Lisää ohjaaja')
+      const select = screen.getByTestId('add-supervisor-button')
       select.click()
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
@@ -252,7 +252,7 @@ describe('SupervisorSelect', () => {
         />
       )
 
-      const select = screen.getByText('Lisää ohjaaja')
+      const select = screen.getByTestId('add-supervisor-button')
       select.click()
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
