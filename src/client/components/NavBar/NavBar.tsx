@@ -13,7 +13,8 @@ import {
   Popper,
   Typography,
 } from '@mui/material'
-import { Language } from '@mui/icons-material'
+import LogoutIcon from '@mui/icons-material/Logout'
+import Language from '@mui/icons-material/Language'
 import { useTranslation } from 'react-i18next'
 
 import { Link } from 'react-router-dom'
@@ -134,6 +135,13 @@ const NavBar = () => {
                 </Grow>
               )}
             </Popper>
+            <Button
+              onClick={() => {
+                window.location.href = '/api/logout'
+              }}
+            >
+              <LogoutIcon />
+            </Button>
           </Box>
         </Toolbar>
       </Container>
