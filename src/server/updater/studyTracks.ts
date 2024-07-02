@@ -22,7 +22,7 @@ const studyTracksHandler = async (studyTracks: ImporterStudyTrack[]) => {
     bulkCreate: async (e, opt) => StudyTrack.bulkCreate(e, opt),
     fallbackCreate: async (e, opt) => StudyTrack.upsert(e, opt),
     options: {
-      updateOnDuplicate: [],
+      ignoreDuplicates: true,
     },
   })
 }
