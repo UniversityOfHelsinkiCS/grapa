@@ -26,6 +26,17 @@ const supervisionSchema = z
         path: ['user'],
       })
     }
+
+    if (data.isExternal && !data.user) {
+      userSchema
+        .safeParse({ firstName: '', lastName: '', email: '' })
+        .error.issues.forEach((issue) => {
+          ctx.addIssue({
+            ...issue,
+            path: ['user', ...issue.path],
+          })
+        })
+    }
   })
 
 const graderSchema = z
