@@ -7,7 +7,6 @@ import userEvent from '@testing-library/user-event'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
-import { fiFI } from '@mui/material/locale'
 
 jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   default: jest.fn().mockReturnValue({

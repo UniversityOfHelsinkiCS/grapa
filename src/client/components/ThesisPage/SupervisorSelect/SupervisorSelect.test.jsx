@@ -221,6 +221,40 @@ describe('SupervisorSelect', () => {
       ])
     })
 
+    it('should call setSupervisorSelections when an external supervisor is added', async () => {
+      render(
+        <SupervisorSelect
+          errors={[]}
+          supervisorSelections={supervisorSelections}
+          setSupervisorSelections={setSupervisorSelections}
+        />
+      )
+
+      const supervisorOptions = screen.getByTestId('change-add-supervisor-button-action')
+      fireEvent.click(supervisorOptions)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('add-supervisor-menu-item-external')).toBeInTheDocument()
+      })
+
+      const externalSupervisor = screen.getByTestId('add-supervisor-menu-item-external')
+      fireEvent.click(externalSupervisor)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
+      })
+
+      const select = screen.getByTestId('add-supervisor-button')
+      fireEvent.click(select)
+
+      await waitFor(() => {
+        expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
+        expect(setSupervisorSelections).toHaveBeenCalledWith([
+          { user: null, percentage: 100, isExternal: true },
+        ])
+      })
+    })  
+
     it('should adjust the supervisor workload percentages accordingly', () => {
       render(
         <SupervisorSelect
@@ -280,6 +314,83 @@ describe('SupervisorSelect', () => {
         },
         { user: null, percentage: 33, isExternal: false },
       ])
+    })
+
+    it('should adjust the supervisor workload percentages accordingly when an external supervisor is added', async () => {
+      render(
+        <SupervisorSelect
+          errors={[]}
+          supervisorSelections={[
+            {
+              user: {
+                id: 1,
+                firstName: 'John',
+                lastName: 'Doe',
+                username: 'johndoe',
+                studentNumber: '12345',
+              },
+              percentage: 50,
+              isExternal: false,
+            },
+            {
+              user: {
+                id: 2,
+                firstName: 'Jane',
+                lastName: 'Smith',
+                username: 'janesmith',
+              },
+              percentage: 50,
+              isExternal: false,
+            },
+          ]}
+          setSupervisorSelections={setSupervisorSelections}
+        />
+      )
+
+       const supervisorOptions = screen.getByTestId('change-add-supervisor-button-action')
+      fireEvent.click(supervisorOptions)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('add-supervisor-menu-item-external')).toBeInTheDocument()
+      })
+
+      const externalSupervisor = screen.getByTestId('add-supervisor-menu-item-external')
+      fireEvent.click(externalSupervisor)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
+      })
+
+      const select = screen.getByTestId('add-supervisor-button')
+      fireEvent.click(select)
+
+      await waitFor(() => {
+        expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
+        expect(setSupervisorSelections).toHaveBeenCalledWith([
+          {
+            user: {
+              id: 1,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+              studentNumber: '12345',
+            },
+            percentage: 34,
+            isExternal: false,
+          },
+          {
+            user: {
+              id: 2,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              username: 'janesmith',
+            },
+            percentage: 33,
+            isExternal: false,
+          },
+          { user: null, percentage: 33, isExternal: true },
+        ])
+      })
     })
 
     it('should call setSupervisorSelections when a supervisor is removed', async () => {

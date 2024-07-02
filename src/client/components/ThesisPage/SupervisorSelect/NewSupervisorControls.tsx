@@ -120,6 +120,7 @@ const NewSupervisorControls = ({
                   {options.map((option, index) => (
                     <MenuItem
                       key={option.label}
+                      data-testid={`add-supervisor-menu-item-${option.isExternal ? 'external' : 'internal'}`}
                       selected={index === selectedIndex}
                       onClick={(event) => handleMenuItemClick(event, index)}
                     >
