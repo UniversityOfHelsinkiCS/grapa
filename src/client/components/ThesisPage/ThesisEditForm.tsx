@@ -328,7 +328,7 @@ const ThesisEditForm: React.FC<{
                             formErrors.find(
                               (error) => error.path[0] === 'startDate'
                             )?.message
-                          ) || 'MM.DD.YYYY',
+                          ) || 'DD.MM.YYYY',
                         fullWidth: true,
                         error: formErrors.some(
                           (error) => error.path[0] === 'startDate'
@@ -357,7 +357,7 @@ const ThesisEditForm: React.FC<{
                             formErrors.find(
                               (error) => error.path[0] === 'targetDate'
                             )?.message
-                          ) || 'MM.DD.YYYY',
+                          ) || 'DD.MM.YYYY',
                         fullWidth: true,
                         error: formErrors.some(
                           (error) => error.path[0] === 'targetDate'
