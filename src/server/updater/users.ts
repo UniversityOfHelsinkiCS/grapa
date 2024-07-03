@@ -46,6 +46,7 @@ const usersHandler = async (users: SisuUser[]) => {
     fallbackCreate: async (e, opt) => User.upsert(e, opt),
     options: {
       updateOnDuplicate: [
+        'id',
         'language',
         'username',
         'firstName',
