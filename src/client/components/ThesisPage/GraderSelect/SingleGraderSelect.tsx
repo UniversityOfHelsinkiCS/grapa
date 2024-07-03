@@ -71,32 +71,36 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
           }}
         />
       </FormControl>
-      <IconButton
-        data-testid="remove-grader-button"
-        type="button"
-        onClick={() => setDeleteDialogOpen(true)}
-        color="error"
-        size="small"
-        aria-label={`${t('removeButton')} ${selection.user?.firstName} ${selection.user?.lastName}`}
-        {...iconButtonProps}
-      >
-        <DeleteIcon />
-      </IconButton>
-      <DeleteConfirmation
-        open={deleteDialogOpen}
-        setOpen={setDeleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-        onDelete={handleRemoveGrader}
-        title={t('thesisForm:removeGraderConfirmationTitle')}
-      >
-        <Box>
-          {selection.user
-            ? t('thesisForm:removeGraderConfirmationContent', {
-                name: `${selection.user.firstName} ${selection.user.lastName}`,
-              })
-            : t('thesisForm:removeGraderConfirmationNoName')}
-        </Box>
-      </DeleteConfirmation>
+      {!selection.isPrimaryGrader && (
+        <>
+          <IconButton
+            data-testid="remove-grader-button"
+            type="button"
+            onClick={() => setDeleteDialogOpen(true)}
+            color="error"
+            size="small"
+            aria-label={`${t('removeButton')} ${selection.user?.firstName} ${selection.user?.lastName}`}
+            {...iconButtonProps}
+          >
+            <DeleteIcon />
+          </IconButton>
+          <DeleteConfirmation
+            open={deleteDialogOpen}
+            setOpen={setDeleteDialogOpen}
+            onClose={() => setDeleteDialogOpen(false)}
+            onDelete={handleRemoveGrader}
+            title={t('thesisForm:removeGraderConfirmationTitle')}
+          >
+            <Box>
+              {selection.user
+                ? t('thesisForm:removeGraderConfirmationContent', {
+                    name: `${selection.user.firstName} ${selection.user.lastName}`,
+                  })
+                : t('thesisForm:removeGraderConfirmationNoName')}
+            </Box>
+          </DeleteConfirmation>
+        </>
+      )}
     </Stack>
   )
 }

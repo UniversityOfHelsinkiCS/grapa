@@ -39,13 +39,6 @@ const GraderSelect: React.FC<{
     setGraderSelections(initialSelections)
   }
 
-  const professorInputError = errors.find(
-    (error) => error.path.join('-') === 'graders-0-user'
-  )
-  const phdInputError = errors.find(
-    (error) => error.path.join('-') === 'graders-1-user'
-  )
-
   return (
     <Stack
       data-testid="grader-select"
@@ -114,21 +107,19 @@ const GraderSelect: React.FC<{
             handleRemoveGrader={() => handleRemoveGrader(index)}
             inputProps={{
               required: index === 0,
-              helperText:
-                index === 0
-                  ? t(
-                      professorInputError?.message ??
-                        'thesisForm:graderInstructions:primaryGrader'
-                    )
-                  : t(
-                      phdInputError?.message ??
-                        'thesisForm:graderInstructions:secondaryGrader'
-                    ),
-              error: Boolean(index === 0 ? professorInputError : phdInputError),
+              helperText: t(
+                errors.find(
+                  (error) => error.path.join('-') === `graders-${index}-user`
+                )?.message
+              ),
+              error: Boolean(
+                errors.find(
+                  (error) => error.path.join('-') === `graders-${index}-user`
+                )
+              ),
             }}
             iconButtonProps={{
               disabled: index === 0,
-              sx: { display: index === 0 ? 'none' : 'block' },
             }}
           />
         )
