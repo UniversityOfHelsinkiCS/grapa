@@ -43,14 +43,26 @@ const graderSchema = z
   .object({
     user: userSchema.nullable(),
     isPrimaryGrader: z.boolean(),
+    isExternal: z.boolean(),
   })
   .superRefine((data, ctx) => {
-    if (data.isPrimaryGrader && !data.user) {
+    if (!data.isExternal && data.isPrimaryGrader && !data.user) {
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:graders',
         path: ['user'],
       })
+    }
+
+    if (data.isExternal && !data.user) {
+      userSchema
+        .safeParse({ firstName: '', lastName: '', email: '' })
+        .error.issues.forEach((issue) => {
+          ctx.addIssue({
+            ...issue,
+            path: ['user', ...issue.path],
+          })
+        })
     }
   })
 
