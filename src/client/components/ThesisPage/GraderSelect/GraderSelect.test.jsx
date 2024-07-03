@@ -50,8 +50,8 @@ const GraderSelect = (await import('./GraderSelect')).default
 
 describe('GraderSelect', () => {
   const graderSelections = [
-    { user: null, isPrimaryGrader: true },
-    { user: null, isPrimaryGrader: false },
+    { user: null, isPrimaryGrader: true, isExternal: false },
+    { user: null, isPrimaryGrader: false, isExternal: false },
   ]
   let setGraderSelections
 
@@ -89,8 +89,9 @@ describe('GraderSelect', () => {
               studentNumber: '12345',
             },
             isPrimaryGrader: true,
+            isExternal: false,
           },
-          { user: null, isPrimaryGrader: false },
+          { user: null, isPrimaryGrader: false, isExternal: false },
         ]}
         setGraderSelections={setGraderSelections}
       />
@@ -103,7 +104,7 @@ describe('GraderSelect', () => {
     expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe  (12345)')
   })
 
-  it('renders the GraderSelect component with multiple supervisors', () => {
+  it('renders the GraderSelect component with multiple graders', () => {
     render(
       <GraderSelect
         errors={[]}
@@ -117,6 +118,7 @@ describe('GraderSelect', () => {
               studentNumber: '12345',
             },
             isPrimaryGrader: true,
+            isExternal: false,
           },
           {
             user: {
@@ -126,6 +128,7 @@ describe('GraderSelect', () => {
               username: 'janesmith',
             },
             isPrimaryGrader: false,
+            isExternal: false,
           },
         ]}
         setGraderSelections={setGraderSelections}
@@ -145,7 +148,7 @@ describe('GraderSelect', () => {
             path: ['graders', 0, 'user'],
           },
         ]}
-        graderSelections={[{ user: null, isPrimaryGrader: true }]}
+        graderSelections={[{ user: null, isPrimaryGrader: true, isExternal: false }]}
         setGraderSelections={setGraderSelections}
       />
     )
@@ -190,8 +193,9 @@ describe('GraderSelect', () => {
             studentNumber: '12345',
           },
           isPrimaryGrader: true,
+          isExternal: false,
         },
-        { user: null, isPrimaryGrader: false },
+        { user: null, isPrimaryGrader: false, isExternal: false },
       ])
     })
   })
