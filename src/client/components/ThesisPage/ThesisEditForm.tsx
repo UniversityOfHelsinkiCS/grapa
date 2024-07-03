@@ -74,6 +74,12 @@ const ThesisEditForm: React.FC<{
   })
   const { user } = useLoggedInUser()
 
+  const clearURL = () => {
+    if (window.location.hash) {
+      window.history.pushState('', document.title, window.location.pathname)
+    }
+  }
+
   const handleSubmit = async () => {
     const thesisErrors = getFormErrors(editedThesis)
 
@@ -84,6 +90,9 @@ const ThesisEditForm: React.FC<{
 
     await onSubmit(editedThesis)
     setFormErrors([])
+
+    // Clear the hash location from the URL
+    clearURL()
   }
 
   const selectedProgram = programs.find(
@@ -508,7 +517,13 @@ const ThesisEditForm: React.FC<{
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button type="button" onClick={onClose}>
+        <Button
+          type="button"
+          onClick={() => {
+            clearURL()
+            onClose()
+          }}
+        >
           {t('cancelButton')}
         </Button>
         <Button
