@@ -663,6 +663,65 @@ describe('thesis router', () => {
         expect(extUser.isExternal).toBe(true)
       })
 
+      it('should return 201 with external graders', async () => {
+        const extUserData = {
+          firstName: 'External',
+          lastName: 'Grader',
+          email: 'ext-grader@helsinki.fi',
+        }
+
+        const newThesis = {
+          programId: 'New program',
+          studyTrackId: 'new-test-study-track-id',
+          topic: 'New topic',
+          status: 'PLANNING',
+          startDate: '1970-01-01T00:00:00.000Z',
+          targetDate: '2070-01-01T00:00:00.000Z',
+          supervisions: [
+            {
+              user: user1,
+              percentage: 100,
+              isExternal: false,
+            },
+          ],
+          graders: [
+            {
+              user: user4,
+              isPrimaryGrader: true,
+              isExternal: false,
+            },
+            {
+              user: extUserData,
+              isPrimaryGrader: false,
+              isExternal: true,
+            },
+          ],
+          authors: [user2],
+        }
+
+        const response = await request
+          .post('/api/theses')
+          .set('hygroupcn', 'grp-toska')
+          .attach(
+            'waysOfWorking',
+            path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
+          )
+          .attach(
+            'researchPlan',
+            path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
+          )
+          .field('json', JSON.stringify(newThesis))
+
+        expect(response.status).toEqual(201)
+        
+        const extUser = await User.findOne({
+          where: { email: extUserData.email },
+        })
+        expect(extUser).not.toBeNull()
+        expect(extUser).toMatchObject(extUserData)
+        expect(extUser.isExternal).toBe(true)
+      }) 
+
       it('should return 400 if the request is missing a required field', async () => {
         const newThesis = {
           programId: 'New program',
@@ -1160,6 +1219,71 @@ describe('thesis router', () => {
           })
         })
 
+        describe('when the request contains duplicate graders', () => {
+          it('should return 200 and update the thesis', async () => {
+            const updatedThesis = {
+              programId: 'Updated program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isExternal: false,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+                {
+                  user: user4,
+                  isPrimaryGrader: false,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+              waysOfWorking: {
+                filename: 'testfile.pdf2',
+                name: 'testfile.pdf2',
+                mimetype: 'application/pdf2',
+              },
+              researchPlan: {
+                filename: 'testfile.pdf1',
+                name: 'testfile.pdf1',
+                mimetype: 'application/pdf1',
+              },
+            }
+
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set('hygroupcn', 'grp-toska')
+              .field('json', JSON.stringify(updatedThesis))
+
+            expect(response.status).toEqual(200)
+
+            const thesisGraders = await Grader.findAll({
+              where: { thesisId: thesis1.id },
+            })
+
+            expect(thesisGraders).toHaveLength(1)
+            expect(thesisGraders).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  userId: user4.id,
+                  isPrimaryGrader: true,
+                }),
+              ])
+            )
+          })
+        })
+
+
         describe('when the request contains external supervisors', () => {
           it('should return 200 and update the thesis', async () => {
             const extUserData = {
@@ -1388,6 +1512,87 @@ describe('thesis router', () => {
               .field('json', JSON.stringify(updatedThesis))
             expect(response.status).toEqual(404)
           })
+        })
+      })
+
+      describe('when the request contains external graders', () => {
+        it('should return 200 and update the thesis', async () => {
+          const extUserData = {
+            firstName: 'External',
+            lastName: 'Supervisor',
+            email: 'ext-grader@helsinki.fi',
+          }
+
+          const updatedThesis = {
+            programId: 'Updated program',
+            studyTrackId: 'new-test-study-track-id',
+            topic: 'Updated topic',
+            status: 'PLANNING',
+            startDate: '1970-01-01T00:00:00.000Z',
+            targetDate: '2070-01-01T00:00:00.000Z',
+            supervisions: [
+              {
+                user: user1,
+                percentage: 100,
+                isExternal: false,
+              },
+  
+            ],
+            graders: [
+              {
+                user: user4,
+                isPrimaryGrader: true,
+                isExternal: false,
+              },
+              {
+                user: extUserData,
+                isPrimaryGrader: false,
+                isExternal: true,
+              },
+            ],
+            authors: [user2],
+            waysOfWorking: {
+              filename: 'testfile.pdf2',
+              name: 'testfile.pdf2',
+              mimetype: 'application/pdf2',
+            },
+            researchPlan: {
+              filename: 'testfile.pdf1',
+              name: 'testfile.pdf1',
+              mimetype: 'application/pdf1',
+            },
+          }
+          const response = await request
+            .put(`/api/theses/${thesis1.id}`)
+            .set('hygroupcn', 'grp-toska')
+            .field('json', JSON.stringify(updatedThesis))
+
+          expect(response.status).toEqual(200)
+
+          const extUser = await User.findOne({
+            where: { email: extUserData.email },
+          })
+          expect(extUser).not.toBeNull()
+          expect(extUser).toMatchObject(extUserData)
+          expect(extUser.isExternal).toBe(true)
+
+          const thesisGraders = await Grader.findAll({
+            where: { thesisId: thesis1.id },
+          })
+
+          expect(thesisGraders).toHaveLength(2)
+          expect(thesisGraders).toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                userId: user4.id,
+                isPrimaryGrader: true,
+              }),
+              expect.objectContaining({
+                userId: extUser.id,
+                isPrimaryGrader: false,
+              }),
+            ])
+          )
         })
       })
 

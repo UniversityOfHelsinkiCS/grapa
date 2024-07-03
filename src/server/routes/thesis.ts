@@ -4,6 +4,7 @@ import { uniqBy } from 'lodash-es'
 import fs from 'fs'
 
 import {
+  GraderData,
   ServerDeleteRequest,
   ServerGetRequest,
   ServerPostRequest,
@@ -335,35 +336,20 @@ const updateThesis = async (
     { transaction, validate: true, individualHooks: true }
   )
 
-  // Create the external users from the graders
-  await User.bulkCreate(
-    thesisData.graders
-      .filter((grader) => grader.isExternal)
-      .map((grader) => ({
-        username: `ext-${grader.user?.email}`,
-        firstName: grader.user?.firstName,
-        lastName: grader.user?.lastName,
-        email: grader.user?.email,
-        isExternal: true,
-      })),
-    {
-      transaction,
-      updateOnDuplicate: ['username'],
-      validate: true,
-    }
-  )
+  const nonDuplicateGraders = uniqBy(
+    thesisData.graders.filter((x) => Boolean(x?.user)),
+    (x: GraderData) => x.user?.email
+  ) as unknown as GraderData[]
 
   await Grader.destroy({ where: { thesisId: id }, transaction })
   await Grader.bulkCreate(
-    thesisData.graders
-      .filter((x) => Boolean(x?.user))
-      .map((grader) => ({
-        userId:
-          grader.user?.id ??
-          extUsers.find((u) => u.email === grader.user?.email)?.id,
-        thesisId: id,
-        isPrimaryGrader: grader?.isPrimaryGrader,
-      })),
+    nonDuplicateGraders.map((grader) => ({
+      userId:
+        grader.user?.id ??
+        extUsers.find((u) => u.email === grader.user?.email)?.id,
+      thesisId: id,
+      isPrimaryGrader: grader?.isPrimaryGrader,
+    })),
     { transaction, validate: true, individualHooks: true }
   )
   await Author.destroy({ where: { thesisId: id }, transaction })
