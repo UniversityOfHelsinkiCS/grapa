@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { ZodIssue } from 'zod'
 import SingleGraderSelect from './SingleGraderSelect'
 import NewPersonControls from '../NewPersonControls'
+import ExternalPersonInput from '../ExternalPerson'
 
 const GraderSelect: React.FC<{
   errors: ZodIssue[]
@@ -28,6 +29,14 @@ const GraderSelect: React.FC<{
     ]
 
     setGraderSelections(updatedSelections)
+  }
+
+  const handleRemoveGrader = (index: number) => {
+    const initialSelections = [...graderSelections]
+    initialSelections.splice(index, 1)
+    if (initialSelections.length === 0) return // Do not allow removing all graders
+
+    setGraderSelections(initialSelections)
   }
 
   const professorInputError = errors.find(
@@ -57,28 +66,73 @@ const GraderSelect: React.FC<{
         {t('thesisForm:graderInstructions:content')}
       </Alert>
 
-      {graderSelections.map((selection, index) => (
-        <SingleGraderSelect
-          key={selection.user?.id ?? `grader-${index}`}
-          index={index}
-          selection={selection}
-          handleGraderChange={(grader) => handleChange(index, grader)}
-          inputProps={{
-            required: index === 0,
-            helperText:
-              index === 0
-                ? t(
-                    professorInputError?.message ??
-                      'thesisForm:graderInstructions:primaryGrader'
-                  )
-                : t(
-                    phdInputError?.message ??
-                      'thesisForm:graderInstructions:secondaryGrader'
-                  ),
-            error: Boolean(index === 0 ? professorInputError : phdInputError),
-          }}
-        />
-      ))}
+      {graderSelections.map((selection, index) => {
+        const { isExternal } = selection
+
+        if (isExternal) {
+          return (
+            <ExternalPersonInput
+              key={selection.user?.id ?? `grader-${index}`}
+              index={index}
+              inputGroup="graders"
+              selection={selection}
+              handlePersonChange={(value) => handleChange(index, value)}
+              handleRemovePerson={() => handleRemoveGrader(index)}
+              inputErrors={{
+                firstName: t(
+                  errors.find(
+                    (error) =>
+                      error.path.join('-') === `graders-${index}-user-firstName`
+                  )?.message
+                ),
+                lastName: t(
+                  errors.find(
+                    (error) =>
+                      error.path.join('-') === `graders-${index}-user-lastName`
+                  )?.message
+                ),
+                email: t(
+                  errors.find(
+                    (error) =>
+                      error.path.join('-') === `graders-${index}-user-email`
+                  )?.message
+                ),
+              }}
+              inputProps={{
+                required: false,
+              }}
+            />
+          )
+        }
+
+        return (
+          <SingleGraderSelect
+            key={selection.user?.id ?? `grader-${index}`}
+            index={index}
+            selection={selection}
+            handleGraderChange={(grader) => handleChange(index, grader)}
+            handleRemoveGrader={() => handleRemoveGrader(index)}
+            inputProps={{
+              required: index === 0,
+              helperText:
+                index === 0
+                  ? t(
+                      professorInputError?.message ??
+                        'thesisForm:graderInstructions:primaryGrader'
+                    )
+                  : t(
+                      phdInputError?.message ??
+                        'thesisForm:graderInstructions:secondaryGrader'
+                    ),
+              error: Boolean(index === 0 ? professorInputError : phdInputError),
+            }}
+            iconButtonProps={{
+              disabled: index === 0,
+              sx: { display: index === 0 ? 'none' : 'block' },
+            }}
+          />
+        )
+      })}
 
       {graderSelections.length < 2 && (
         <NewPersonControls
