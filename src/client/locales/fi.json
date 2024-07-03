@@ -3,6 +3,7 @@
     "appName": "GRAdut Pikaisesti Alkuun",
     "author": "Tekijä",
     "grader": "Arvioija {{index}}",
+    "supervisor": "Ohjaaja {{index}}",
     "userSearchNoOptions": "Kirjoita vähintään 5 merkkiä etsiäksesi käyttäjiä",
     "programManagersNavItem": "Vastaavat",
     "programHeader": "Ohjelma",
@@ -48,7 +49,7 @@
     "basicInfo": "Perustiedot",
     "graders": "Arvioijat",
     "graderInstructions": {
-      "title": "Ohjeita täyttämiseen",
+      "title": "Ohjeita arvioijien täyttämiseen",
       "content": "Arvioijan 1 tulee olla Helsingin Yliopiston professori.\n\n Arvioijan 2 tulee olla tohtori. Arvioija 2 voi olla Helsingin yliopiston ulkopuolinen henkilö.\n Syöttääksesi ulkopuolisen arvioijan tiedot, valitse 'Lisää ulkopuolinen arvioija'.\n\n",
       "primaryGrader": "Professori",
       "secondaryGrader": "Tohtori"
@@ -66,7 +67,6 @@
     "editThesisDialog": "Muokkaa gradu",
     "uploadWaysOfWorkingButton": "Lataa työskentelysopimus",
     "uploadResearchPlanButton": "Lataa tutkimussuunnitelma",
-    "selectSupervisor": "Valitse ohjaaja",
     "selectSupervisorPercentage": "Osuus",
     "totalSupervisionPercentage": "Työjakauma yhteensä: {{totalPercentage}} %",
     "removeSupervisorConfirmationTitle": "Poista ohjaaja",

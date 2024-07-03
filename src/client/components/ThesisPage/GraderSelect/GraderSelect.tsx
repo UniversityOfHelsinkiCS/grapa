@@ -54,7 +54,12 @@ const GraderSelect: React.FC<{
         {t('thesisForm:graders')}
       </Typography>
 
-      <Alert severity="info" variant="outlined" sx={{ whiteSpace: 'pre-line' }}>
+      <Alert
+        id="grader-select-instructions"
+        severity="info"
+        variant="outlined"
+        sx={{ whiteSpace: 'pre-line' }}
+      >
         <AlertTitle>{t('thesisForm:graderInstructions:title')}</AlertTitle>
         {t('thesisForm:graderInstructions:content')}
       </Alert>
@@ -93,6 +98,7 @@ const GraderSelect: React.FC<{
               }}
               inputProps={{
                 required: false,
+                'aria-describedby': 'grader-select-instructions',
               }}
             />
           )
@@ -117,6 +123,7 @@ const GraderSelect: React.FC<{
                   (error) => error.path.join('-') === `graders-${index}-user`
                 )
               ),
+              'aria-describedby': 'grader-select-instructions',
             }}
             iconButtonProps={{
               disabled: index === 0,
