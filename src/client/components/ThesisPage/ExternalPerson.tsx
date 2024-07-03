@@ -20,35 +20,62 @@ type ExternalPersonInputErrors = {
   email?: string | null
 }
 
-interface ExternalPersonInputProps {
+type SupervisorSelection = {
+  user: User | null
+  percentage: number
+}
+
+type GraderSelection = {
+  user: User | null
+  isPrimaryGrader: boolean
+  isExternal: boolean
+}
+
+interface BaseExternalPersonInputProps {
   index: number
   inputGroup: 'supervisions' | 'graders'
-  selection: { user: User | null; percentage: number }
-  handleSupervisorChange: (value: User | null) => void
-  handleRemoveSupervisor: () => void
-  handlePercentageChange: (percentage: number) => void
+  selection: SupervisorSelection | GraderSelection
+  handlePersonChange: (value: User | null) => void
+  handleRemovePerson: () => void
   inputErrors: ExternalPersonInputErrors
   inputProps: TextFieldProps
-  iconButtonProps: ButtonProps
+  iconButtonProps?: ButtonProps // iconButtonProps can have a default value
 }
+
+// Props when inputGroup is 'supervisions'
+interface SupervisionsExternalPersonInputProps
+  extends BaseExternalPersonInputProps {
+  inputGroup: 'supervisions'
+  handlePercentageChange: (percentage: number) => void
+}
+
+// Props when inputGroup is 'graders'
+interface GradersExternalPersonInputProps extends BaseExternalPersonInputProps {
+  inputGroup: 'graders'
+  handlePercentageChange?: (percentage: number) => void
+}
+
+type ExternalPersonInputProps =
+  | SupervisionsExternalPersonInputProps
+  | GradersExternalPersonInputProps
 
 const ExternalPersonInput = ({
   index,
   inputGroup,
   selection,
-  handleSupervisorChange,
-  handleRemoveSupervisor,
-  handlePercentageChange,
+  handlePersonChange,
+  handleRemovePerson,
+  handlePercentageChange = () => {},
   inputErrors,
   inputProps,
-  iconButtonProps,
+  iconButtonProps = {},
 }: ExternalPersonInputProps) => {
   const { t } = useTranslation()
 
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
 
   const handleInputChange = (key: string, value: string) => {
-    handleSupervisorChange({
+    handlePersonChange({
       ...selection.user,
       [key]: value,
     })
@@ -121,20 +148,22 @@ const ExternalPersonInput = ({
           {...inputProps}
         /> */}
 
-        <TextField
-          required
-          type="number"
-          sx={{ width: '12ch' }}
-          InputProps={{
-            inputProps: { min: 1, max: 100 },
-            endAdornment: <InputAdornment position="end">%</InputAdornment>,
-          }}
-          label={t('thesisForm:selectSupervisorPercentage')}
-          value={selection.percentage}
-          onChange={(event) =>
-            handlePercentageChange(parseInt(event.target.value, 10))
-          }
-        />
+        {inputGroup === 'supervisions' && (
+          <TextField
+            required
+            type="number"
+            sx={{ width: '12ch' }}
+            InputProps={{
+              inputProps: { min: 1, max: 100 },
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
+            }}
+            label={t('thesisForm:selectSupervisorPercentage')}
+            value={(selection as SupervisorSelection).percentage}
+            onChange={(event) =>
+              handlePercentageChange(parseInt(event.target.value, 10))
+            }
+          />
+        )}
 
         <IconButton
           data-testid="remove-supervisor-button"
@@ -153,7 +182,7 @@ const ExternalPersonInput = ({
         open={deleteDialogOpen}
         setOpen={setDeleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-        onDelete={handleRemoveSupervisor}
+        onDelete={handleRemovePerson}
         title={t('thesisForm:removeSupervisorConfirmationTitle')}
       >
         <Box>

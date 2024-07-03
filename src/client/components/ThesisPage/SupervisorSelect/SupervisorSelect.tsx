@@ -91,10 +91,10 @@ const SupervisorSelect: React.FC<{
               index={index}
               inputGroup="supervisions"
               selection={selection}
-              handleSupervisorChange={(value) =>
+              handlePersonChange={(value) =>
                 handleSupervisorChange(index, value)
               }
-              handleRemoveSupervisor={() => handleRemoveSupervisor(index)}
+              handleRemovePerson={() => handleRemoveSupervisor(index)}
               handlePercentageChange={(percentage) =>
                 handlePercentageChange(index, percentage)
               }
