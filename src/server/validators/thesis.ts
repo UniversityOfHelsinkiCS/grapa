@@ -41,6 +41,27 @@ export const validateThesisData = (
     })
   }
 
+  if (
+    thesisData.graders.length > 1 &&
+    thesisData.graders.every((grader) => grader.isPrimaryGrader)
+  ) {
+    throw new CustomValidationError('Only one primary grader is allowed', {
+      graders: ['Only one primary grader is allowed'],
+    })
+  }
+
+  const primaryGrader = thesisData.graders.find(
+    (grader) => grader.isPrimaryGrader
+  )
+  if (primaryGrader.isExternal) {
+    throw new CustomValidationError(
+      'Primary grader cannot be an external user',
+      {
+        graders: ['Primary grader cannot be an external user'],
+      }
+    )
+  }
+
   // sum of supervision percentages must add up to 100
   const totalPercentage = getTotalPercentage(thesisData.supervisions)
   if (totalPercentage !== 100) {
