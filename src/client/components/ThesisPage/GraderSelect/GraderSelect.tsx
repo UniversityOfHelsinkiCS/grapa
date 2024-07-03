@@ -4,6 +4,7 @@ import { User, GraderData } from '@backend/types'
 import { useTranslation } from 'react-i18next'
 import { ZodIssue } from 'zod'
 import SingleGraderSelect from './SingleGraderSelect'
+import NewPersonControls from '../NewPersonControls'
 
 const GraderSelect: React.FC<{
   errors: ZodIssue[]
@@ -12,15 +13,20 @@ const GraderSelect: React.FC<{
 }> = ({ errors, graderSelections, setGraderSelections }) => {
   const { t } = useTranslation()
 
-  const [
-    primaryGrader = { user: null, isPrimaryGrader: true },
-    secondaryGrader = { user: null, isPrimaryGrader: false },
-  ] = graderSelections
-
   const handleChange = (index: number, grader: User) => {
     const updatedSelections = [...graderSelections]
-    const updatedGrader = { user: grader, isPrimaryGrader: index === 0 }
-    updatedSelections[index] = updatedGrader
+
+    updatedSelections[index].user = grader
+    updatedSelections[index].isPrimaryGrader = index === 0
+    setGraderSelections(updatedSelections)
+  }
+
+  const handleAddGrader = (isExternal: boolean) => {
+    const updatedSelections = [
+      graderSelections[0],
+      { user: null, isPrimaryGrader: false, isExternal },
+    ]
+
     setGraderSelections(updatedSelections)
   }
 
@@ -46,38 +52,44 @@ const GraderSelect: React.FC<{
         {t('thesisForm:graders')}
       </Typography>
 
-      <Alert severity="info" variant="outlined">
+      <Alert severity="info" variant="outlined" sx={{ whiteSpace: 'pre-line' }}>
         <AlertTitle>{t('thesisForm:graderInstructions:title')}</AlertTitle>
         {t('thesisForm:graderInstructions:content')}
       </Alert>
 
-      <SingleGraderSelect
-        key={primaryGrader?.user?.id ?? 'grader-0'}
-        index={0}
-        selection={primaryGrader}
-        handleGraderChange={(grader) => handleChange(0, grader)}
-        inputProps={{
-          required: true,
-          helperText: professorInputError
-            ? t(professorInputError.message)
-            : t('thesisForm:graderInstructions:professor'),
-          error: Boolean(professorInputError),
-        }}
-      />
+      {graderSelections.map((selection, index) => (
+        <SingleGraderSelect
+          key={selection.user?.id ?? `grader-${index}`}
+          index={index}
+          selection={selection}
+          handleGraderChange={(grader) => handleChange(index, grader)}
+          inputProps={{
+            required: index === 0,
+            helperText:
+              index === 0
+                ? t(
+                    professorInputError?.message ??
+                      'thesisForm:graderInstructions:primaryGrader'
+                  )
+                : t(
+                    phdInputError?.message ??
+                      'thesisForm:graderInstructions:secondaryGrader'
+                  ),
+            error: Boolean(index === 0 ? professorInputError : phdInputError),
+          }}
+        />
+      ))}
 
-      <SingleGraderSelect
-        key={secondaryGrader?.user?.id ?? 'grader-1'}
-        index={1}
-        selection={secondaryGrader}
-        handleGraderChange={(grader) => handleChange(1, grader)}
-        inputProps={{
-          required: false,
-          helperText: phdInputError
-            ? t(phdInputError.message)
-            : t('thesisForm:graderInstructions:phd'),
-          error: Boolean(phdInputError),
-        }}
-      />
+      {graderSelections.length < 2 && (
+        <NewPersonControls
+          personGroup="grader"
+          options={[
+            { label: t('thesisForm:addPrimaryGrader'), isExternal: false },
+            { label: t('thesisForm:addSecondaryGrader'), isExternal: true },
+          ]}
+          handleAddPerson={handleAddGrader}
+        />
+      )}
     </Stack>
   )
 }

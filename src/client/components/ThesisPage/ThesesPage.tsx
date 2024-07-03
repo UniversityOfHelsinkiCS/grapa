@@ -116,10 +116,7 @@ const ThesesPage = () => {
             studyTrackId: programs[0].studyTracks[0]?.id,
             supervisions: [{ user, percentage: 100, isExternal: false }],
             authors: [],
-            graders: [
-              { user, isPrimaryGrader: true },
-              { user: null, isPrimaryGrader: false },
-            ],
+            graders: [{ user, isPrimaryGrader: true, isExternal: false }],
             topic: '',
             status: 'PLANNING',
             startDate: dayjs().format('YYYY-MM-DD'),

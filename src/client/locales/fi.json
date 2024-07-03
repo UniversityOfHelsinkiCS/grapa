@@ -49,10 +49,12 @@
     "graders": "Arvioijat",
     "graderInstructions": {
       "title": "Ohjeita täyttämiseen",
-      "content": "Arvioijan 1 tulee olla Helsingin Yliopiston professori ja arvioijan 2 tulee olla tohtori.",
-      "professor": "Professori",
-      "phd": "Tohtori (Valinnainen)"
+      "content": "Arvioijan 1 tulee olla Helsingin Yliopiston professori.\n\n Arvioijan 2 tulee olla tohtori. Arvioija 2 voi olla Helsingin yliopiston ulkopuolinen henkilö.\n Syöttääksesi ulkopuolisen arvioijan tiedot, valitse 'Lisää ulkopuolinen arvioija'.\n\n",
+      "primaryGrader": "Professori",
+      "secondaryGrader": "Tohtori"
     },
+    "addPrimaryGrader": "Lisää arvioija",
+    "addSecondaryGrader": "Lisää ulkopuolinen arvioija",
     "supervisors": "Ohjaajat",
     "appendices": "Liitteet",
     "supervisorButtonGroupAriaLabel": "Ohjaajien lisäys",

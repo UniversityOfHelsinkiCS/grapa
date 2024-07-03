@@ -49,10 +49,12 @@
     "graders": "Graders",
     "graderInstructions": {
       "title": "Instructions for filling the graders",
-      "content": "Grader 1 must be a professor from the University of Helsinki and grader 2 must have PhD.",
-      "professor": "Professor",
-      "phd": "PhD (Optional)"
+      "content": "Grader 1 must be a professor at the University of Helsinki.\n\n Grader 2 must be a doctor. Grader 2 can be a person outside the University of Helsinki.\n To enter the details of the external assessor, click 'Add external grader'.\n\n",
+      "primaryGrader": "Professor",
+      "secondaryGrader": "PhD"
     },
+    "addPrimaryGrader": "Add grader",
+    "addSecondaryGrader": "Add external grader",
     "supervisors": "Supervisors",
     "appendices": "Appendices",
     "supervisorButtonGroupAriaLabel": "Supervisor actions",

@@ -49,6 +49,7 @@ export interface SupervisionData {
 export interface GraderData {
   user: User
   isPrimaryGrader: boolean
+  isExternal: boolean
 }
 
 export interface FileData {
