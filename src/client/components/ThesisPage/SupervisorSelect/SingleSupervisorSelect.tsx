@@ -56,7 +56,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
           renderInput={(params) => (
             <TextField
               {...params}
-              label={t('thesisForm:selectSupervisor')}
+              label={t('supervisor', { index: index + 1 })}
               {...inputProps}
             />
           )}
