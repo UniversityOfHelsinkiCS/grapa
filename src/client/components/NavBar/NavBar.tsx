@@ -22,6 +22,7 @@ import useLoggedInUser from '../../hooks/useLoggedInUser'
 
 import styles from '../../styles'
 import hyLogo from '../../assets/hy_logo.svg'
+import apiClient from '../../util/apiClient'
 
 const NavBar = () => {
   const { t, i18n } = useTranslation()
@@ -136,8 +137,8 @@ const NavBar = () => {
               )}
             </Popper>
             <Button
-              onClick={() => {
-                window.location.href = '/api/logout'
+              onClick={async () => {
+                await apiClient.post('/logout')
               }}
             >
               <LogoutIcon />
