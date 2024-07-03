@@ -11,7 +11,7 @@ import {
   getTotalPercentage,
 } from '../util'
 import ExternalPersonInput from '../ExternalPerson'
-import NewSupervisorControls from './NewSupervisorControls'
+import NewPersonControls from '../NewPersonControls'
 
 const SupervisorSelect: React.FC<{
   errors: ZodIssue[]
@@ -191,7 +191,20 @@ const SupervisorSelect: React.FC<{
       </Divider>
 
       {supervisorSelections.length < 5 && (
-        <NewSupervisorControls handleAddSupervisor={handleAddSupervisor} />
+        <NewPersonControls
+          personGroup="supervisor"
+          options={[
+            {
+              label: t('thesisForm:addSupervisor'),
+              isExternal: false,
+            },
+            {
+              label: t('thesisForm:addExternalSupervisor'),
+              isExternal: true,
+            },
+          ]}
+          handleAddSupervisor={handleAddSupervisor}
+        />
       )}
     </Stack>
   )
