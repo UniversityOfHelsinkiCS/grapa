@@ -203,7 +203,7 @@ const SupervisorSelect: React.FC<{
               isExternal: true,
             },
           ]}
-          handleAddSupervisor={handleAddSupervisor}
+          handleAddPerson={handleAddSupervisor}
         />
       )}
     </Stack>
