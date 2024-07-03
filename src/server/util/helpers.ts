@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { ThesisData, SupervisionData } from '@backend/types'
 
 export const getTotalPercentage = (supervisions: SupervisionData[]) =>
@@ -37,10 +38,12 @@ export const getEqualSupervisorSelectionWorkloads = (
 export const transformThesisData = (thesisData: ThesisData[]) =>
   thesisData.map((thesis) => ({
     ...thesis,
-    graders: thesis.graders.map((grader) => ({
-      ...grader,
-      isExternal: grader.user.isExternal,
-    })),
+    graders: thesis.graders
+      .map((grader) => ({
+        ...grader,
+        isExternal: grader.user.isExternal,
+      }))
+      .sort((a, b) => (a.isPrimaryGrader ? -1 : b.isPrimaryGrader ? 1 : 0)),
     supervisions: thesis.supervisions.map((supervision) => ({
       ...supervision,
       isExternal: supervision.user.isExternal,
