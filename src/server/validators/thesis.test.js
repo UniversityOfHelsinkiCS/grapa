@@ -12,7 +12,7 @@ describe('validateThesisData', () => {
         programId: 'test-program',
         supervisions: [{ percentage: 100 }],
         authors: [{}],
-        graders: [{user: {}, isPrimaryGrader: true}],
+        graders: [{user: {}, isPrimaryGrader: true, isExternal: false}],
         researchPlan: {},
         waysOfWorking: {},
         startDate: '2021-01-01',
@@ -112,6 +112,43 @@ describe('validateThesisData', () => {
 
     expect(() => validateThesisData(req, res, next)).toThrow(
       'Primary grader must be set'
+    )
+    expect(next).toHaveBeenCalledTimes(0)
+  })
+
+  it('should return an error if primary grader is external', () => {
+    req.body = {
+      ...req.body,
+      graders: [{user: {}, isPrimaryGrader: true, isExternal: true}]
+    }
+
+    expect(() => validateThesisData(req, res, next)).toThrow(
+      'Primary grader cannot be an external user'
+    )
+    expect(next).toHaveBeenCalledTimes(0)
+  })
+
+  it('should return an error if there is two primary graders', () => { 
+    req.body = {
+      ...req.body,
+      graders: [{user: {}, isPrimaryGrader: true, isExternal: false},
+                {user: {}, isPrimaryGrader: true, isExternal: false}]
+    }
+
+    expect(() => validateThesisData(req, res, next)).toThrow(
+      'Only one primary grader is allowed'
+    )
+    expect(next).toHaveBeenCalledTimes(0)
+  })
+
+  it('should return an error if the primary grader is external', () => {
+    req.body = {
+      ...req.body,
+      graders: [{user: {}, isPrimaryGrader: true, isExternal: true}]
+    }
+
+    expect(() => validateThesisData(req, res, next)).toThrow(
+      'Primary grader cannot be an external user'
     )
     expect(next).toHaveBeenCalledTimes(0)
   })
