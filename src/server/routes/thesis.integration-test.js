@@ -568,12 +568,14 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 100,
+              isExternal: false,
             },
           ],
           graders: [
             {
               user: user4,
               isPrimaryGrader: true,
+              isExternal: false,
             },
           ],
           authors: [user2],
@@ -632,6 +634,7 @@ describe('thesis router', () => {
             {
               user: user4,
               isPrimaryGrader: true,
+              isExternal: false
             },
           ],
           authors: [user2],
@@ -672,12 +675,14 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 100,
+              isExternal: false,
             },
           ],
           graders: [
             {
               user: user4,
               isPrimaryGrader: true,
+              isExternal: false,
             },
           ],
           authors: [user2],
@@ -709,12 +714,14 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  isExternal: false,
                 },
               ],
               graders: [
                 {
                   user: user4,
                   isPrimaryGrader: true,
+                  isExternal: false,
                 },
               ],
               authors: [user2],
@@ -759,12 +766,14 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  isExternal: false,
                 },
               ],
               graders: [
                 {
                   user: user4,
                   isPrimaryGrader: true,
+                  isExternal: false,
                 },
               ],
               authors: [user2],
@@ -809,12 +818,14 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  isExternal: false,
                 },
               ],
               graders: [
                 {
                   user: user4,
                   isPrimaryGrader: true,
+                  isExternal: false,
                 },
               ],
               authors: [user2],
@@ -864,12 +875,14 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  isExternal: false,
                 },
               ],
               graders: [
                 {
                   user: user4,
                   isPrimaryGrader: true,
+                  isExternal: false,
                 },
               ],
               authors: [user2],
@@ -1097,16 +1110,19 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 50,
+                  isExternal: false,
                 },
                 {
                   user: user1,
                   percentage: 50,
+                  isExternal: false,
                 },
               ],
               graders: [
                 {
                   user: user4,
                   isPrimaryGrader: true,
+                  isExternal: false,
                 },
               ],
               authors: [user2],
@@ -1175,6 +1191,7 @@ describe('thesis router', () => {
                 {
                   user: user4,
                   isPrimaryGrader: true,
+                  isExternal: false,
                 },
               ],
               authors: [user2],
@@ -1263,6 +1280,7 @@ describe('thesis router', () => {
                 {
                   user: user4,
                   isPrimaryGrader: true,
+                  isExternal: false,
                 },
               ],
               authors: [user2],
@@ -1338,6 +1356,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  isExternal: false,
                 },
               ],
               authors: [user2],
@@ -1345,6 +1364,7 @@ describe('thesis router', () => {
                 {
                   user: user4,
                   isPrimaryGrader: true,
+                  isExternal: false,
                 },
               ],
             }
@@ -1386,16 +1406,19 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 100,
+                  isExternal: false,
               },
             ],
             graders: [
               {
                 user: user4,
                 isPrimaryGrader: true,
+                  isExternal: false,
               },
               {
                 user: user5,
                 isPrimaryGrader: false,
+                  isExternal: false,
               },
             ],
             authors: [user2],
@@ -1486,16 +1509,19 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 100,
+                  isExternal: false,
               },
             ],
             graders: [
               {
                 user: user4,
                 isPrimaryGrader: true,
+                  isExternal: false,
               },
               {
                 user: user5,
                 isPrimaryGrader: false,
+                  isExternal: false,
               },
             ],
             authors: [user2],
@@ -1599,16 +1625,20 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  isExternal: false,
+
                 },
               ],
               graders: [
                 {
                   user: user4,
                   isPrimaryGrader: true,
+                  isExternal: false,
                 },
                 {
                   user: user5,
                   isPrimaryGrader: false,
+                  isExternal: false,
                 },
               ],
               authors: [user2],
@@ -1654,17 +1684,19 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  isExternal: false,
                 },
               ],
               graders: [
                 {
                   user: user4,
                   isPrimaryGrader: true,
+                  isExternal: false,
                 },
                 {
-                  user:
-                    user5,
+                  user: user5,
                   isPrimaryGrader: false,
+                  isExternal: false,
                 },
               ],
               authors: [user2],
@@ -1710,16 +1742,20 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  isExternal: false,
                 },
               ],
               graders: [
                 {
                   user: user4,
                   isPrimaryGrader: true,
+                  isExternal: false,
+
                 },
                 {
                   user: user5,
                   isPrimaryGrader: false,
+                  isExternal: false,
                 },
               ],
               authors: [user2],
@@ -1769,16 +1805,19 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  isExternal: false,
                 },
               ],
               graders: [
                 {
                   user: user4,
                   isPrimaryGrader: true,
+                  isExternal: false,
                 },
                 {
                   user: user5,
                   isPrimaryGrader: false,
+                  isExternal: false,
                 },
               ],
               authors: [user2],
