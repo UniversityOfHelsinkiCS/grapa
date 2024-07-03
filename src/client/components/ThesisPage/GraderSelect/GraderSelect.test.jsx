@@ -34,6 +34,18 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   }),
 }))
 
+jest.unstable_mockModule('@mui/icons-material/Delete', () => ({
+  default: jest.fn().mockReturnValue('DeleteIcon'),
+}))
+
+jest.unstable_mockModule('@mui/icons-material/ReportOutlined', () => ({
+  default: jest.fn().mockReturnValue('ReportOutlinedIcon'),
+}))
+
+jest.unstable_mockModule('@mui/icons-material/ArrowDropDown', () => ({
+  default: jest.fn().mockReturnValue('ArrowDropDownIcon'),
+}))
+
 const GraderSelect = (await import('./GraderSelect')).default
 
 describe('GraderSelect', () => {
