@@ -25,7 +25,10 @@ import {
 } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
-import { getEqualSupervisorSelectionWorkloads } from '../util/helpers'
+import {
+  getEqualSupervisorSelectionWorkloads,
+  transformThesisData,
+} from '../util/helpers'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import { userFields } from './config'
 
@@ -149,6 +152,8 @@ const createThesisAndSupervisions = async (
 ) => {
   const createdThesis = await Thesis.create(thesisData, { transaction: t })
 
+  console.log(JSON.stringify(thesisData, null, 2))
+
   // Create the external users from the supervisions
   const extUsers = await User.bulkCreate(
     thesisData.supervisions
@@ -186,11 +191,31 @@ const createThesisAndSupervisions = async (
     { transaction: t, validate: true, individualHooks: true }
   )
 
+  // Create the external users from the graders
+  await User.bulkCreate(
+    thesisData.graders
+      .filter((grader) => grader.isExternal)
+      .map((grader) => ({
+        username: `ext-${grader.user?.email}`,
+        firstName: grader.user?.firstName,
+        lastName: grader.user?.lastName,
+        email: grader.user?.email,
+        isExternal: true,
+      })),
+    {
+      transaction: t,
+      updateOnDuplicate: ['username'],
+      validate: true,
+    }
+  )
+
   await Grader.bulkCreate(
     thesisData.graders
       .filter((x) => Boolean(x?.user))
       .map((grader) => ({
-        userId: grader?.user.id,
+        userId:
+          grader.user?.id ??
+          extUsers.find((u) => u.email === grader.user?.email)?.id,
         thesisId: createdThesis.id,
         isPrimaryGrader: grader?.isPrimaryGrader,
       })),
@@ -315,12 +340,32 @@ const updateThesis = async (
     { transaction, validate: true, individualHooks: true }
   )
 
+  // Create the external users from the graders
+  await User.bulkCreate(
+    thesisData.graders
+      .filter((grader) => grader.isExternal)
+      .map((grader) => ({
+        username: `ext-${grader.user?.email}`,
+        firstName: grader.user?.firstName,
+        lastName: grader.user?.lastName,
+        email: grader.user?.email,
+        isExternal: true,
+      })),
+    {
+      transaction,
+      updateOnDuplicate: ['username'],
+      validate: true,
+    }
+  )
+
   await Grader.destroy({ where: { thesisId: id }, transaction })
   await Grader.bulkCreate(
     thesisData.graders
       .filter((x) => Boolean(x?.user))
       .map((grader) => ({
-        userId: grader?.user.id,
+        userId:
+          grader.user?.id ??
+          extUsers.find((u) => u.email === grader.user?.email)?.id,
         thesisId: id,
         isPrimaryGrader: grader?.isPrimaryGrader,
       })),
@@ -347,7 +392,10 @@ thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
     ...options,
     order: [['targetDate', 'ASC']],
   })
-  res.send(theses)
+
+  const thesisData = transformThesisData(JSON.parse(JSON.stringify(theses)))
+
+  res.send(thesisData)
 })
 
 // @ts-expect-error the user middleware updates the req object with user field
@@ -357,7 +405,8 @@ thesisRouter.get('/:id', async (req: ServerGetRequest, res: Response) => {
 
   if (!thesis) res.status(404).send('Thesis not found')
 
-  res.send(thesis)
+  const thesisData = transformThesisData(JSON.parse(JSON.stringify(thesis)))
+  res.send(thesisData)
 })
 
 thesisRouter.post(

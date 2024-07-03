@@ -8,4 +8,5 @@ export const userFields = [
   'isAdmin',
   'studentNumber',
   'iamGroups',
+  'isExternal',
 ]

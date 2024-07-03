@@ -27,6 +27,7 @@ export interface User {
   studentNumber?: string
   iamGroups: string[]
   managedProgramIds?: string[]
+  isExternal: boolean
 }
 
 export interface RequestWithUser extends Request {
