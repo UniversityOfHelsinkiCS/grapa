@@ -137,6 +137,35 @@ const getFindThesesOptions = async ({
   }
 }
 
+const getAndCreateExtUsers = async (
+  thesisData: ThesisData,
+  transaction: Transaction
+) => {
+  const gradersAndSupervisors = [
+    ...thesisData.supervisions,
+    ...thesisData.graders,
+  ]
+  // Create the external users from the graders and supervisions
+  const extUsers = await User.bulkCreate(
+    gradersAndSupervisors
+      .filter((person) => person.isExternal)
+      .map((person) => ({
+        username: `ext-${person.user?.email}`,
+        firstName: person.user?.firstName,
+        lastName: person.user?.lastName,
+        email: person.user?.email,
+        isExternal: true,
+      })),
+    {
+      transaction,
+      updateOnDuplicate: ['username'],
+      validate: true,
+    }
+  )
+
+  return extUsers
+}
+
 const fetchThesisById = async (id: string, user: UserType) => {
   const options = await getFindThesesOptions({ thesisId: id, actionUser: user })
   // We need to use findAll here because we need to include
@@ -152,25 +181,7 @@ const createThesisAndSupervisions = async (
 ) => {
   const createdThesis = await Thesis.create(thesisData, { transaction: t })
 
-  console.log(JSON.stringify(thesisData, null, 2))
-
-  // Create the external users from the supervisions
-  const extUsers = await User.bulkCreate(
-    thesisData.supervisions
-      .filter((supervision) => supervision.isExternal)
-      .map((supervision) => ({
-        username: `ext-${supervision.user?.email}`,
-        firstName: supervision.user?.firstName,
-        lastName: supervision.user?.lastName,
-        email: supervision.user?.email,
-        isExternal: true,
-      })),
-    {
-      transaction: t,
-      updateOnDuplicate: ['username'],
-      validate: true,
-    }
-  )
+  const extUsers = await getAndCreateExtUsers(thesisData, t)
 
   await Supervision.bulkCreate(
     thesisData.supervisions.map((supervision) => ({
@@ -301,23 +312,7 @@ const updateThesis = async (
 ) => {
   await Thesis.update(thesisData, { where: { id }, transaction })
 
-  // Create the external users from the supervisions
-  const extUsers = await User.bulkCreate(
-    thesisData.supervisions
-      .filter((supervision) => supervision.isExternal)
-      .map((supervision) => ({
-        username: `ext-${supervision.user?.email}`,
-        firstName: supervision.user?.firstName,
-        lastName: supervision.user?.lastName,
-        email: supervision.user?.email,
-        isExternal: true,
-      })),
-    {
-      transaction,
-      updateOnDuplicate: ['username'],
-      validate: true,
-    }
-  )
+  const extUsers = await getAndCreateExtUsers(thesisData, transaction)
 
   const nonDuplicateSupervisors = uniqBy(
     thesisData.supervisions,
