@@ -264,10 +264,12 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 50,
+                  isExternal: false,
                 },
                 {
                   user: user3,
                   percentage: 50,
+                  isExternal: false,
                 },
               ]),
             },
@@ -426,10 +428,12 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 50,
+                  isExternal: false
                 },
                 {
                   user: user3,
                   percentage: 50,
+                  isExternal: false
                 },
               ]),
             },
