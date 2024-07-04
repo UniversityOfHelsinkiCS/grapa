@@ -34,4 +34,9 @@ export const IMPORTER_URL =
     ? 'https://api-toska.apps.ocp-prod-0.k8s.it.helsinki.fi/importer'
     : 'https://api-toska.apps.ocp-test-0.k8s.it.helsinki.fi/importer'
 
+export const LOGOUT_REDIRECT_URL =
+  inProduction || inDevelopment
+    ? 'https://login.helsinki.fi/idp/profile/Logout'
+    : 'https://login-test.it.helsinki.fi/idp/profile/Logout'
+
 export const adminIams = ['grp-toska', 'hy-ypa-opa-ote']
