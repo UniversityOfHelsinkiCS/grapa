@@ -37,8 +37,8 @@ export const authorizeStatusChange = async (
     const thesis = await Thesis.findByPk(req.params.id)
 
     // if the user is not admin, not program manager and the status is changed
-    // throw an Authorization error
-    if (thesis.status !== req.body.status) {
+    // or the thesis a new one throw an Authorization error
+    if (!thesis || thesis.status !== req.body.status) {
       throw new CustomAuthorizationError(
         'User is not authorized to change the status of the thesis',
         {
