@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react'
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 
 // import GraderSelect from './GraderSelect'
 import initializeI18n from '../../../util/il18n'
@@ -51,7 +51,6 @@ const GraderSelect = (await import('./GraderSelect')).default
 describe('GraderSelect', () => {
   const graderSelections = [
     { user: null, isPrimaryGrader: true, isExternal: false },
-    { user: null, isPrimaryGrader: false, isExternal: false },
   ]
   let setGraderSelections
 
@@ -72,7 +71,7 @@ describe('GraderSelect', () => {
 
     expect(screen.getByTestId('grader-select')).toBeInTheDocument()
     expect(screen.getByTestId('grader-select-input-1')).toBeInTheDocument()
-    expect(screen.getByTestId('grader-select-input-2')).toBeInTheDocument()
+    expect(screen.getByTestId('add-grader-button')).toBeInTheDocument()
   })
 
   it('renders the GraderSelect component with a grader', () => {
@@ -195,8 +194,127 @@ describe('GraderSelect', () => {
           isPrimaryGrader: true,
           isExternal: false,
         },
-        { user: null, isPrimaryGrader: false, isExternal: false },
       ])
+    })
+
+    it('should call setGraderSelections when an external grader is added', async () => {
+      render(
+        <GraderSelect
+          errors={[]}
+          graderSelections={graderSelections}
+          setGraderSelections={setGraderSelections}
+        />
+      )
+
+      const graderOptions = screen.getByTestId('change-add-grader-button-action')
+      fireEvent.click(graderOptions)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('add-grader-menu-item-external')).toBeInTheDocument()
+      })
+
+      const externalSupervisor = screen.getByTestId('add-grader-menu-item-external')
+      fireEvent.click(externalSupervisor)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('add-grader-button')).toBeInTheDocument()
+      })
+
+      const select = screen.getByTestId('add-grader-button')
+      fireEvent.click(select)
+
+      await waitFor(() => {
+        expect(setGraderSelections).toHaveBeenCalledTimes(1)
+        expect(setGraderSelections).toHaveBeenCalledWith([
+          {
+            user: {
+              id: 1,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+              studentNumber: '12345',
+            },
+            isPrimaryGrader: true,
+            isExternal: false,
+          }, 
+          { user: null, isPrimaryGrader: false, isExternal: true },
+        ])
+      })
+    })
+
+    it('should call setGraderSelections when a grader is removed', async () => {
+      render(
+        <GraderSelect
+          errors={[]}
+          graderSelections={[
+            {
+              user: {
+                id: 1,
+                firstName: 'John',
+                lastName: 'Doe',
+                username: 'johndoe',
+                studentNumber: '12345',
+              },
+              isPrimaryGrader: true,
+              isExternal: false,
+            },
+            { user: null, isPrimaryGrader: false, isExternal: false },
+          ]}
+          setGraderSelections={setGraderSelections}
+        />
+      )
+
+      const removeButton = screen.getAllByTestId('remove-grader-button')[0]
+      fireEvent.click(removeButton)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('delete-confirm-dialog')).toBeInTheDocument()
+      })
+
+      const confirmDeleteButton = screen.getByTestId('delete-confirm-button')
+      fireEvent.click(confirmDeleteButton)
+
+      await waitFor(() => {
+        expect(setGraderSelections).toHaveBeenCalledTimes(1)
+        expect(setGraderSelections).toHaveBeenCalledWith([
+          {
+            user: {
+              id: 1,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+              studentNumber: '12345',
+            },
+            isPrimaryGrader: true,
+            isExternal: false,
+          },
+        ])
+      })
+    })
+
+    it('should not display the remove button for the primary grader', () => {
+      render(
+        <GraderSelect
+          errors={[]}
+          graderSelections={[
+            {
+              user: {
+                id: 1,
+                firstName: 'John',
+                lastName: 'Doe',
+                username: 'johndoe',
+                studentNumber: '12345',
+              },
+              isPrimaryGrader: true,
+              isExternal: false,
+            },
+          ]}
+          setGraderSelections={setGraderSelections}
+        />
+      )
+
+      const removeButton = screen.queryByTestId('remove-grader-button')
+      expect(removeButton).toBeNull()
     })
   })
 })
