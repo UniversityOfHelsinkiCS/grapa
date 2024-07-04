@@ -32,6 +32,7 @@ programRouter.get('/', async (req: RequestWithUser, res: Response) => {
     attributes: ['id', 'name'],
     where: whereClause,
     include: includes,
+    order: [['name', 'ASC']],
   })
   res.send(programs)
 })
