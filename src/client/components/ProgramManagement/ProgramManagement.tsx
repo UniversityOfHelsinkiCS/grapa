@@ -32,7 +32,7 @@ const ProgramManagement: React.FC = () => {
   const { mutateAsync: deleteProgramManagement } =
     useDeleteProgramManagementMutation()
 
-  const { programs } = usePrograms()
+  const { programs } = usePrograms({ includeNotManaged: false })
 
   const [userSearch, setUserSearch] = useState('')
   const debouncedSearch = useDebounce(userSearch, 700)

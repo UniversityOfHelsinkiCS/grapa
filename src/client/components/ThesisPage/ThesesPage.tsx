@@ -28,7 +28,7 @@ const ThesesPage = () => {
   const [newThesis, setNewThesis] = useState<Thesis | null>(null)
 
   const { theses } = useTheses()
-  const { programs } = usePrograms()
+  const { programs } = usePrograms({ includeNotManaged: true })
   const { mutateAsync: editThesis } = useEditThesisMutation()
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
   const { mutateAsync: createThesis } = useCreateThesisMutation()
