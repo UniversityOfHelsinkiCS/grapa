@@ -31,6 +31,7 @@ Supervision.belongsTo(Thesis, { as: 'thesis' })
 
 ProgramManagement.belongsTo(User, { as: 'user' })
 ProgramManagement.belongsTo(Program, { as: 'program' })
+Program.hasMany(ProgramManagement)
 
 Grader.belongsTo(User, { as: 'user' })
 
