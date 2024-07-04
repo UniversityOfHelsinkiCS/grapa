@@ -7,9 +7,14 @@ import NotFound from './components/Errors/NotFound'
 
 import { BASE_PATH } from '../config'
 import ProgramManagement from './components/ProgramManagement/ProgramManagement'
+import NoAccess from './components/NoAccess'
 
 const router = createBrowserRouter(
   [
+    {
+      path: '/noaccess',
+      element: <NoAccess />,
+    },
     {
       path: '/',
       element: <App />,
