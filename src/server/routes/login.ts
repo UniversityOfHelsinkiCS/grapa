@@ -10,7 +10,7 @@ loginRouter.get('/', passport.authenticate('oidc'))
 loginRouter.get(
   '/callback',
   passport.authenticate('oidc', {
-    failureRedirect: `${BASE_PATH || ''}'/noaccess'`,
+    failureRedirect: `${BASE_PATH || ''}/noaccess`,
   }),
   (_, res) => {
     res.redirect(BASE_PATH || '/')
