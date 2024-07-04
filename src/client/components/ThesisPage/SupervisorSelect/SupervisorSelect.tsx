@@ -36,6 +36,15 @@ const SupervisorSelect: React.FC<{
     setSupervisorSelections(updatedSelections)
   }
 
+  const handlePrimarySupervisorChange = (index: number) => {
+    const updatedSelections = supervisorSelections.map((selection, i) => ({
+      ...selection,
+      isPrimarySupervisor: i === index,
+    }))
+
+    setSupervisorSelections(updatedSelections)
+  }
+
   const handleAddSupervisor = (isExternal: boolean) => {
     const numberOfSupervisors = supervisorSelections.length + 1
 
@@ -50,6 +59,7 @@ const SupervisorSelect: React.FC<{
         user: null,
         percentage: Math.floor((1 / numberOfSupervisors) * 100),
         isExternal,
+        isPrimarySupervisor: false,
       },
     ])
   }
@@ -143,6 +153,9 @@ const SupervisorSelect: React.FC<{
             handlePercentageChange={(percentage) =>
               handlePercentageChange(index, percentage)
             }
+            handlePrimarySupervisorChange={() =>
+              handlePrimarySupervisorChange(index)
+            }
             inputProps={{
               required: true,
               helperText: t(
@@ -159,7 +172,9 @@ const SupervisorSelect: React.FC<{
               ),
             }}
             iconButtonProps={{
-              disabled: supervisorSelections.length === 1,
+              disabled:
+                supervisorSelections.length === 1 ||
+                selection.isPrimarySupervisor,
             }}
           />
         )

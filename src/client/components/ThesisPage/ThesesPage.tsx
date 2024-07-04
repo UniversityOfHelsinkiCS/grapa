@@ -114,7 +114,14 @@ const ThesesPage = () => {
           setNewThesis({
             programId: programs[0].id,
             studyTrackId: programs[0].studyTracks[0]?.id,
-            supervisions: [{ user, percentage: 100, isExternal: false }],
+            supervisions: [
+              {
+                user,
+                percentage: 100,
+                isExternal: false,
+                isPrimarySupervisor: true,
+              },
+            ],
             authors: [],
             graders: [{ user, isPrimaryGrader: true, isExternal: false }],
             topic: '',

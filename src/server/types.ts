@@ -45,6 +45,7 @@ export interface SupervisionData {
   user: User
   percentage: number
   isExternal: boolean
+  isPrimarySupervisor: boolean
 }
 
 export interface GraderData {

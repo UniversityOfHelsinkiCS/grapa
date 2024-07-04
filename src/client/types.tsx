@@ -4,4 +4,5 @@ export interface SupervisorSelection {
   user: User | null
   percentage: number
   isExternal: boolean
+  isPrimarySupervisor: boolean
 }

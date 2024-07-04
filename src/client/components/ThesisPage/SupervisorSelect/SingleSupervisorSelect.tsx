@@ -9,20 +9,28 @@ import {
   ButtonProps,
   TextFieldProps,
   Box,
+  Checkbox,
+  Tooltip,
 } from '@mui/material'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { Star, StarOutline } from '@mui/icons-material'
 import useUsers from '../../../hooks/useUsers'
 import { useDebounce } from '../../../hooks/useDebounce'
 import DeleteConfirmation from '../../Common/DeleteConfirmation'
 
 interface SingleSupervisorSelectProps {
   index: number
-  selection: { user: User | null; percentage: number }
+  selection: {
+    user: User | null
+    percentage: number
+    isPrimarySupervisor: boolean
+  }
   handleSupervisorChange: (value: User | null) => void
   handleRemoveSupervisor: () => void
   handlePercentageChange: (percentage: number) => void
+  handlePrimarySupervisorChange: () => void
   inputProps: TextFieldProps
   iconButtonProps: ButtonProps
 }
@@ -32,6 +40,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
   handleSupervisorChange,
   handleRemoveSupervisor,
   handlePercentageChange,
+  handlePrimarySupervisorChange,
   inputProps,
   iconButtonProps,
 }) => {
@@ -70,6 +79,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
           }}
         />
       </FormControl>
+
       <TextField
         required
         type="number"
@@ -84,17 +94,43 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
           handlePercentageChange(parseInt(event.target.value, 10))
         }
       />
-      <IconButton
-        data-testid="remove-supervisor-button"
-        type="button"
-        onClick={() => setDeleteDialogOpen(true)}
-        color="error"
-        size="small"
-        aria-label={`${t('removeButton')} ${selection.user?.firstName} ${selection.user?.lastName}`}
-        {...iconButtonProps}
+
+      <Tooltip
+        title={
+          selection.isPrimarySupervisor
+            ? t('thesisForm:primarySupervisor')
+            : t('thesisForm:setPrimarySupervisor')
+        }
       >
-        <DeleteIcon />
-      </IconButton>
+        <Checkbox
+          icon={<StarOutline />}
+          checkedIcon={<Star />}
+          checked={selection.isPrimarySupervisor}
+          onChange={handlePrimarySupervisorChange}
+        />
+      </Tooltip>
+
+      <Tooltip
+        title={
+          selection.isPrimarySupervisor
+            ? t('thesisForm:primarySupervisorDeleteError')
+            : `${t('removeButton')} ${t('supervisor', { index: index + 1 })}`
+        }
+      >
+        <Box component="span" sx={{ alignContent: 'center' }}>
+          <IconButton
+            data-testid="remove-supervisor-button"
+            type="button"
+            onClick={() => setDeleteDialogOpen(true)}
+            color="error"
+            size="small"
+            {...iconButtonProps}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Box>
+      </Tooltip>
+
       <DeleteConfirmation
         open={deleteDialogOpen}
         setOpen={setDeleteDialogOpen}
