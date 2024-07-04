@@ -1816,7 +1816,7 @@ describe('thesis router', () => {
         })
       })
 
-      describe('when trying to update a thesis with status other than PLANNING', () => {
+      describe('when trying to update a thesis with IN_PROGRESS status', () => {
         describe('when the user is an admin', () => {
           it('should return 200 and update the thesis', async () => {
             const updatedThesis = {
@@ -1998,61 +1998,120 @@ describe('thesis router', () => {
         })
 
         describe('when the user is a teacher and is a supervisor of the thesis', () => {
-          it('should return 403 and a correct error message', async () => {
-            const updatedThesis = {
-              programId: 'Updated program',
-              studyTrackId: 'new-test-study-track-id',
-              topic: 'Updated topic',
-              status: 'IN_PROGRESS',
-              startDate: '1970-01-01T00:00:00.000Z',
-              targetDate: '2070-01-01T00:00:00.000Z',
-              supervisions: [
-                {
-                  user: user1,
-                  percentage: 100,
-                  isExternal: false,
-                },
-              ],
-              graders: [
-                {
-                  user: user4,
-                  isPrimaryGrader: true,
-                  isExternal: false,
-                },
-                {
-                  user: user5,
-                  isPrimaryGrader: false,
-                  isExternal: false,
-                },
-              ],
-              authors: [user2],
-            }
-            const response = await request
-              .put(`/api/theses/${thesis1.id}`)
-              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
-              .attach(
-                'waysOfWorking',
-                path.resolve(
-                  dirname(fileURLToPath(import.meta.url)),
-                  './index.ts'
-                )
-              )
-              .attach(
-                'researchPlan',
-                path.resolve(
-                  dirname(fileURLToPath(import.meta.url)),
-                  './index.ts'
-                )
-              )
-              .field('json', JSON.stringify(updatedThesis))
-            expect(response.status).toEqual(403)
-            expect(response.body).toEqual({
-              error: 'User is not authorized to change the status of the thesis',
-              data: {
-                programId: [
-                  'User is not authorized to change the status of the thesis',
+          describe('when the thesis has PLANNING status', () => {
+            it('should return 403 and a correct error message', async () => {
+              const updatedThesis = {
+                programId: 'Updated program',
+                studyTrackId: 'new-test-study-track-id',
+                topic: 'Updated topic',
+                status: 'IN_PROGRESS',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: user1,
+                    percentage: 100,
+                    isExternal: false,
+                  },
                 ],
-              },
+                graders: [
+                  {
+                    user: user4,
+                    isPrimaryGrader: true,
+                    isExternal: false,
+                  },
+                  {
+                    user: user5,
+                    isPrimaryGrader: false,
+                    isExternal: false,
+                  },
+                ],
+                authors: [user2],
+              }
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+              expect(response.status).toEqual(403)
+              expect(response.body).toEqual({
+                error: 'User is not authorized to change the status of the thesis',
+                data: {
+                  programId: [
+                    'User is not authorized to change the status of the thesis',
+                  ],
+                },
+              })
+            })
+          })
+          
+          describe('when the thesis already has IN_PROGRESS status', () => {
+            beforeEach(() => {
+              thesis1.status = 'IN_PROGRESS'
+              thesis1.save()
+            })
+
+            it('should return 200 and update the thesis', async () => {
+              const updatedThesis = {
+                programId: 'Updated program',
+                studyTrackId: 'new-test-study-track-id',
+                topic: 'Updated topic',
+                status: 'IN_PROGRESS',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: user1,
+                    percentage: 100,
+                    isExternal: false,
+                  },
+                ],
+                graders: [
+                  {
+                    user: user4,
+                    isPrimaryGrader: true,
+                    isExternal: false,
+                  },
+                  {
+                    user: user5,
+                    isPrimaryGrader: false,
+                    isExternal: false,
+                  },
+                ],
+                authors: [user2],
+              }
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+              expect(response.status).toEqual(200)
             })
           })
         })
