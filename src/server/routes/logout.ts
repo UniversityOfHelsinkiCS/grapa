@@ -7,9 +7,9 @@ logoutRouter.post('/', async (req, res, next) => {
   // eslint-disable-next-line consistent-return
   req.logout((err) => {
     if (err) return next(err)
-
-    res.redirect(LOGOUT_REDIRECT_URL)
   })
+
+  res.send({ url: LOGOUT_REDIRECT_URL })
 })
 
 export default logoutRouter

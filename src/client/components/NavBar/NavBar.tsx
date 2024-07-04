@@ -138,7 +138,9 @@ const NavBar = () => {
             </Popper>
             <Button
               onClick={async () => {
-                await apiClient.post('/logout')
+                const response = await apiClient.post('/logout')
+                const { url } = response.data
+                window.location.href = url
               }}
             >
               <LogoutIcon />
