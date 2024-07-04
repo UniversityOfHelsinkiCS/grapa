@@ -1630,7 +1630,7 @@ describe('thesis router', () => {
           }
         })
 
-        describe('when the user is a supervisor of the thesis being deleted', () => {
+        describe('when the user is a supervisor of the thesis being updated', () => {
           it('should return 200 and update the thesis', async () => {
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
@@ -1667,7 +1667,7 @@ describe('thesis router', () => {
           })
         })
 
-        describe('when the user is not a supervisor of the thesis deleted', () => {
+        describe('when the user is not a supervisor of the thesis being updated', () => {
           it('should return 404 and not update thesis', async () => {
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
