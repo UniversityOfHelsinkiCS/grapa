@@ -1,12 +1,24 @@
 import supertest from 'supertest'
 import app from '../index'
-import { Program, StudyTrack } from '../db/models'
+import { Program, ProgramManagement, StudyTrack, User } from '../db/models'
 
 const request = supertest.agent(app)
 
 describe('program router', () => {
+  let user1
+  let program1
+  let programManagement1
+
   beforeEach(async () => {
-    await Program.create({
+    user1 = await User.create({
+      username: 'test1',
+      firstName: 'test1',
+      lastName: 'test1',
+      email: 'test@test.test1',
+      language: 'fi',
+    })
+
+    program1 = await Program.create({
       id: 'test1',
       name: { fi: 'test1suomeksi', en: 'test1inenglish', sv: 'test1pasvenska' },
       level: 'master',
@@ -22,6 +34,11 @@ describe('program router', () => {
       international: false,
       companionFaculties: [],
       enabled: false,
+    })
+
+    programManagement1 = await ProgramManagement.create({
+      programId: program1.id,
+      userId: user1.id,
     })
 
     await StudyTrack.create({
@@ -57,7 +74,7 @@ describe('program router', () => {
         it('should return 200 and all enabled programs', async () => {
           const response = await request
             .get('/api/programs')
-            .set('hygroupcn', 'hy-employees')
+            .set({ hygroupcn: 'hy-employees', uid: user1.id })
           expect(response.status).toEqual(200)
           expect(response.body).toMatchObject([
             {
@@ -69,8 +86,8 @@ describe('program router', () => {
               },
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }), 
-              ])
+                expect.objectContaining({ name: 'test2' }),
+              ]),
             },
           ])
         })
@@ -80,7 +97,7 @@ describe('program router', () => {
         it('should return 200 and all enabled programs', async () => {
           const response = await request
             .get('/api/programs')
-            .set('hygroupcn', 'hy-employees')
+            .set({ hygroupcn: 'hy-employees', uid: user1.id })
             .query({ includeDisabled: false })
 
           expect(response.status).toEqual(200)
@@ -94,18 +111,18 @@ describe('program router', () => {
               },
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }), 
-              ])
+                expect.objectContaining({ name: 'test2' }),
+              ]),
             },
           ])
         })
       })
 
-      describe('when includeDisabled===true is passed', () => {
-        it('should return 200 and all enabled programs', async () => {
+      describe('when includeDisabled===true and includeNotManaged is omitted', () => {
+        it('should return 200 and only managed thesis', async () => {
           const response = await request
             .get('/api/programs')
-            .set('hygroupcn', 'hy-employees')
+            .set({ hygroupcn: 'hy-employees', uid: user1.id })
             .query({ includeDisabled: true })
 
           expect(response.status).toEqual(200)
@@ -119,8 +136,58 @@ describe('program router', () => {
               },
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }), 
-              ])
+                expect.objectContaining({ name: 'test2' }),
+              ]),
+            },
+          ])
+        })
+      })
+
+      describe('when includeDisabled===true and includeNotManaged===false', () => {
+        it('should return 200 and only managed thesis', async () => {
+          const response = await request
+            .get('/api/programs')
+            .set({ hygroupcn: 'hy-employees', uid: user1.id })
+            .query({ includeDisabled: true, includeNotManaged: false })
+
+          expect(response.status).toEqual(200)
+          expect(response.body).toIncludeSameMembers([
+            {
+              id: 'test1',
+              name: {
+                fi: 'test1suomeksi',
+                en: 'test1inenglish',
+                sv: 'test1pasvenska',
+              },
+              studyTracks: expect.toIncludeSameMembers([
+                expect.objectContaining({ name: 'test1' }),
+                expect.objectContaining({ name: 'test2' }),
+              ]),
+            },
+          ])
+        })
+      })
+
+      describe('when includeDisabled===true and includeNotManaged===true', () => {
+        it('should return 200 and all enabled theses', async () => {
+          const response = await request
+            .get('/api/programs')
+            .set({ hygroupcn: 'hy-employees', uid: user1.id })
+            .query({ includeDisabled: true, includeNotManaged: true })
+
+          expect(response.status).toEqual(200)
+          expect(response.body).toIncludeSameMembers([
+            {
+              id: 'test1',
+              name: {
+                fi: 'test1suomeksi',
+                en: 'test1inenglish',
+                sv: 'test1pasvenska',
+              },
+              studyTracks: expect.toIncludeSameMembers([
+                expect.objectContaining({ name: 'test1' }),
+                expect.objectContaining({ name: 'test2' }),
+              ]),
             },
             {
               id: 'test2',
@@ -131,8 +198,8 @@ describe('program router', () => {
               },
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test3' }),
-                expect.objectContaining({ name: 'test4' }), 
-              ])
+                expect.objectContaining({ name: 'test4' }),
+              ]),
             },
           ])
         })
@@ -146,7 +213,7 @@ describe('program router', () => {
         it('should return 200 and all enabled programs', async () => {
           const response = await request
             .get('/api/programs')
-            .set('hygroupcn', 'grp-toska')
+            .set({ hygroupcn: 'grp-toska', uid: user1.id })
           expect(response.status).toEqual(200)
           expect(response.body).toMatchObject([
             {
@@ -158,8 +225,8 @@ describe('program router', () => {
               },
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }), 
-              ])
+                expect.objectContaining({ name: 'test2' }),
+              ]),
             },
           ])
         })
@@ -169,7 +236,7 @@ describe('program router', () => {
         it('should return 200 and all enabled programs', async () => {
           const response = await request
             .get('/api/programs')
-            .set('hygroupcn', 'grp-toska')
+            .set({ hygroupcn: 'grp-toska', uid: user1.id })
             .query({ includeDisabled: false })
 
           expect(response.status).toEqual(200)
@@ -183,8 +250,8 @@ describe('program router', () => {
               },
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }), 
-              ])
+                expect.objectContaining({ name: 'test2' }),
+              ]),
             },
           ])
         })
@@ -194,7 +261,7 @@ describe('program router', () => {
         it('should return 200 and all enabled programs', async () => {
           const response = await request
             .get('/api/programs')
-            .set('hygroupcn', 'grp-toska')
+            .set({ hygroupcn: 'grp-toska', uid: user1.id })
             .query({ includeDisabled: true })
 
           expect(response.status).toEqual(200)
@@ -208,8 +275,8 @@ describe('program router', () => {
               },
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }), 
-              ])
+                expect.objectContaining({ name: 'test2' }),
+              ]),
             },
             {
               id: 'test2',
@@ -220,8 +287,8 @@ describe('program router', () => {
               },
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test3' }),
-                expect.objectContaining({ name: 'test4' }), 
-              ])
+                expect.objectContaining({ name: 'test4' }),
+              ]),
             },
           ])
         })
