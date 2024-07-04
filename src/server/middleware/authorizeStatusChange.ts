@@ -1,6 +1,6 @@
 import { NextFunction } from 'express'
 import { ServerPostRequest, ServerPutRequest } from '../types'
-import { ProgramManagement } from '../db/models'
+import { ProgramManagement, Thesis } from '../db/models'
 import CustomAuthorizationError from '../errors/AuthorizationError'
 
 export const authorizeStatusChange = async (
@@ -34,14 +34,20 @@ export const authorizeStatusChange = async (
   )
 
   if (!programIdsManagedByUser.includes(req.body.programId)) {
-    throw new CustomAuthorizationError(
-      'User is not authorized to change the status of the thesis',
-      {
-        programId: [
-          'User is not authorized to change the status of the thesis',
-        ],
-      }
-    )
+    const thesis = await Thesis.findByPk(req.params.id)
+
+    // if the user is not admin, not program manager and the status is changed
+    // throw an Authorization error
+    if (thesis.status !== req.body.status) {
+      throw new CustomAuthorizationError(
+        'User is not authorized to change the status of the thesis',
+        {
+          programId: [
+            'User is not authorized to change the status of the thesis',
+          ],
+        }
+      )
+    }
   }
 
   next()
