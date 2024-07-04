@@ -86,7 +86,7 @@ const verifyLogin = async (
 ) => {
   // if user is not an admin or hy-employees, return 403
   if (!isAuthorized(userinfo as unknown as UserInfo)) {
-    done(new Error('Unauthorized'))
+    done(null, false)
     return
   }
 
