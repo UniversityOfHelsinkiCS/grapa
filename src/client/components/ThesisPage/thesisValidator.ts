@@ -1,6 +1,14 @@
 import { z } from 'zod'
 
 const userSchema = z.object({
+  id: z.string(),
+  username: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().nullable(),
+})
+
+const extUserSchema = z.object({
   firstName: z
     .string({ required_error: 'formErrors:firstName' })
     .min(1, 'formErrors:firstName'),
@@ -14,7 +22,7 @@ const userSchema = z.object({
 
 const supervisionSchema = z
   .object({
-    user: userSchema.nullable(),
+    user: z.object({}).passthrough().nullable(),
     percentage: z.number().min(0).max(100),
     isExternal: z.boolean(),
   })
@@ -27,21 +35,21 @@ const supervisionSchema = z
       })
     }
 
-    if (data.isExternal && !data.user) {
-      userSchema
-        .safeParse({ firstName: '', lastName: '', email: '' })
-        .error.issues.forEach((issue) => {
-          ctx.addIssue({
-            ...issue,
-            path: ['user', ...issue.path],
-          })
+    if (data.isExternal) {
+      const userData = data.user ?? { firstName: '', lastName: '', email: '' }
+
+      extUserSchema.safeParse(userData).error?.issues.forEach((issue) => {
+        ctx.addIssue({
+          ...issue,
+          path: ['user', ...issue.path],
         })
+      })
     }
   })
 
 const graderSchema = z
   .object({
-    user: userSchema.nullable(),
+    user: z.object({}).passthrough().nullable(),
     isPrimaryGrader: z.boolean(),
     isExternal: z.boolean(),
   })
@@ -54,15 +62,15 @@ const graderSchema = z
       })
     }
 
-    if (data.isExternal && !data.user) {
-      userSchema
-        .safeParse({ firstName: '', lastName: '', email: '' })
-        .error.issues.forEach((issue) => {
-          ctx.addIssue({
-            ...issue,
-            path: ['user', ...issue.path],
-          })
+    if (data.isExternal) {
+      const userData = data.user ?? { firstName: '', lastName: '', email: '' }
+
+      extUserSchema.safeParse(userData).error?.issues.forEach((issue) => {
+        ctx.addIssue({
+          ...issue,
+          path: ['user', ...issue.path],
         })
+      })
     }
   })
 
