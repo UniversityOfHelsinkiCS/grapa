@@ -198,11 +198,13 @@ describe('thesis router', () => {
         userId: user1.id,
         thesisId: thesis1.id,
         percentage: 50,
+        isPrimarySupervisor: true,
       })
       await Supervision.create({
         userId: user3.id,
         thesisId: thesis1.id,
         percentage: 50,
+        isPrimarySupervisor: false,
       })
       await Author.create({
         userId: user2.id,
@@ -265,11 +267,13 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 50,
                   isExternal: false,
+                  isPrimarySupervisor: true,
                 },
                 {
                   user: user3,
                   percentage: 50,
                   isExternal: false,
+                  isPrimarySupervisor: false,
                 },
               ]),
             },
@@ -297,6 +301,7 @@ describe('thesis router', () => {
             userId: user2.id,
             thesisId: thesisSupervisedByOtherUser.id,
             percentage: 100,
+            isPrimarySupervisor: true,
           })
         })
 
@@ -339,6 +344,7 @@ describe('thesis router', () => {
             userId: user2.id,
             thesisId: thesisSupervisedByOtherUser.id,
             percentage: 100,
+            isPrimarySupervisor: true,
           })
         })
 
@@ -381,6 +387,7 @@ describe('thesis router', () => {
             userId: user1.id,
             thesisId: thesisSupervisedByOtherUser.id,
             percentage: 100,
+            isPrimarySupervisor: true,
           })
         })
 
@@ -428,12 +435,14 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 50,
-                  isExternal: false
+                  isExternal: false,
+                  isPrimarySupervisor: true,
                 },
                 {
                   user: user3,
                   percentage: 50,
-                  isExternal: false
+                  isExternal: false,
+                  isPrimarySupervisor: false,
                 },
               ]),
             },
@@ -569,6 +578,7 @@ describe('thesis router', () => {
               user: user1,
               percentage: 100,
               isExternal: false,
+              isPrimarySupervisor: true,
             },
           ],
           graders: [
@@ -576,6 +586,7 @@ describe('thesis router', () => {
               user: user4,
               isPrimaryGrader: true,
               isExternal: false,
+              isPrimarySupervisor: false,
             },
           ],
           authors: [user2],
@@ -623,11 +634,13 @@ describe('thesis router', () => {
               user: user1,
               percentage: 50,
               isExternal: false,
+              isPrimarySupervisor: true,
             },
             {
               user: extUserData,
               percentage: 50,
               isExternal: true,
+              isPrimarySupervisor: false,
             },
           ],
           graders: [
@@ -682,6 +695,7 @@ describe('thesis router', () => {
               user: user1,
               percentage: 100,
               isExternal: false,
+              isPrimarySupervisor: true,
             },
           ],
           graders: [
@@ -735,6 +749,7 @@ describe('thesis router', () => {
               user: user1,
               percentage: 100,
               isExternal: false,
+              isPrimarySupervisor: true,
             },
           ],
           graders: [
@@ -774,6 +789,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 100,
                   isExternal: false,
+                  isPrimarySupervisor: true,
                 },
               ],
               graders: [
@@ -826,6 +842,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 100,
                   isExternal: false,
+                  isPrimarySupervisor: true,
                 },
               ],
               graders: [
@@ -878,6 +895,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 100,
                   isExternal: false,
+                  isPrimarySupervisor: true,
                 },
               ],
               graders: [
@@ -935,6 +953,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 100,
                   isExternal: false,
+                  isPrimarySupervisor: true,
                 },
               ],
               graders: [
@@ -993,6 +1012,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  isPrimarySupervisor: true,
                 },
               ],
               graders: [
@@ -1059,6 +1079,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  isPrimarySupervisor: true,
                 },
               ],
               authors: [user2],
@@ -1116,6 +1137,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  isPrimarySupervisor: true,
                 },
               ],
               authors: [user2],
@@ -1170,11 +1192,13 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 50,
                   isExternal: false,
+                  isPrimarySupervisor: true,
                 },
                 {
                   user: user1,
                   percentage: 50,
                   isExternal: false,
+                  isPrimarySupervisor: false,
                 },
               ],
               graders: [
@@ -1213,6 +1237,7 @@ describe('thesis router', () => {
                 expect.objectContaining({
                   userId: user1.id,
                   percentage: 100,
+                  isPrimarySupervisor: true,
                 }),
               ])
             )
@@ -1233,6 +1258,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 100,
                   isExternal: false,
+                  isPrimarySupervisor: true,
                 },
               ],
               graders: [
@@ -1304,6 +1330,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 50,
                   isExternal: false,
+                  isPrimarySupervisor: true,
                 },
                 {
                   user: extUserData,
@@ -1354,6 +1381,7 @@ describe('thesis router', () => {
                 expect.objectContaining({
                   userId: user1.id,
                   percentage: 50,
+                  isPrimarySupervisor: true,
                 }),
                 expect.objectContaining({
                   userId: extUser.id,
@@ -1388,6 +1416,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 34,
                   isExternal: false,
+                  isPrimarySupervisor: true,
                 },
                 {
                   user: extUserData,
@@ -1457,10 +1486,12 @@ describe('thesis router', () => {
                 expect.objectContaining({
                   userId: user1.id,
                   percentage: 50,
+                  isPrimarySupervisor: true,
                 }),
                 expect.objectContaining({
                   userId: extUser.id,
                   percentage: 50,
+                  isPrimarySupervisor: false,
                 }),
               ])
             )
@@ -1481,6 +1512,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 100,
                   isExternal: false,
+                  isPrimarySupervisor: true,
                 },
               ],
               authors: [user2],
@@ -1535,6 +1567,7 @@ describe('thesis router', () => {
                 user: user1,
                 percentage: 100,
                 isExternal: false,
+                isPrimarySupervisor: true,
               },
   
             ],
@@ -1611,7 +1644,8 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 100,
-                  isExternal: false,
+                isExternal: false,
+                isPrimarySupervisor: true,
               },
             ],
             graders: [
@@ -1714,19 +1748,20 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 100,
-                  isExternal: false,
+                isExternal: false,
+                isPrimarySupervisor: true,
               },
             ],
             graders: [
               {
                 user: user4,
                 isPrimaryGrader: true,
-                  isExternal: false,
+                isExternal: false,
               },
               {
                 user: user5,
                 isPrimaryGrader: false,
-                  isExternal: false,
+                isExternal: false,
               },
             ],
             authors: [user2],
@@ -1831,7 +1866,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 100,
                   isExternal: false,
-
+                  isPrimarySupervisor: true, 
                 },
               ],
               graders: [
@@ -1890,6 +1925,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 100,
                   isExternal: false,
+                  isPrimarySupervisor: true, 
                 },
               ],
               graders: [
@@ -1948,6 +1984,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 100,
                   isExternal: false,
+                  isPrimarySupervisor: true, 
                 },
               ],
               graders: [
@@ -1955,7 +1992,6 @@ describe('thesis router', () => {
                   user: user4,
                   isPrimaryGrader: true,
                   isExternal: false,
-
                 },
                 {
                   user: user5,
@@ -2012,6 +2048,7 @@ describe('thesis router', () => {
                     user: user1,
                     percentage: 100,
                     isExternal: false,
+                    isPrimarySupervisor: true,
                   },
                 ],
                 graders: [
@@ -2077,6 +2114,7 @@ describe('thesis router', () => {
                     user: user1,
                     percentage: 100,
                     isExternal: false,
+                    isPrimarySupervisor: true,
                   },
                 ],
                 graders: [
