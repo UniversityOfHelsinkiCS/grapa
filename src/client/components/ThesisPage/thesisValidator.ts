@@ -25,6 +25,7 @@ const supervisionSchema = z
     user: z.object({}).passthrough().nullable(),
     percentage: z.number().min(0).max(100),
     isExternal: z.boolean(),
+    isPrimarySupervisor: z.boolean(),
   })
   .superRefine((data, ctx) => {
     if (!data.isExternal && !data.user) {
