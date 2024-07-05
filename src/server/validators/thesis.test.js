@@ -10,7 +10,7 @@ describe('validateThesisData', () => {
       body: {
         topic: 'Test thesis',
         programId: 'test-program',
-        supervisions: [{ percentage: 100 }],
+        supervisions: [{ percentage: 100, isPrimarySupervisor: true }],
         authors: [{}],
         graders: [{user: {}, isPrimaryGrader: true, isExternal: false}],
         researchPlan: {},
@@ -59,7 +59,7 @@ describe('validateThesisData', () => {
   it('should return an error if supervisions percentage sum is under 100', () => {
     req.body = {
       ...req.body,
-      supervisions: [{ percentage: 90 }],
+      supervisions: [{ percentage: 90, isPrimarySupervisor: true }],
     }
 
     expect(() => validateThesisData(req, res, next)).toThrow(
@@ -71,11 +71,35 @@ describe('validateThesisData', () => {
   it('should return an error if supervisions percentage sum is over 100', () => {
     req.body = {
       ...req.body,
-      supervisions: [{ percentage: 110 }],
+      supervisions: [{ percentage: 110, isPrimarySupervisor: true }],
     }
 
     expect(() => validateThesisData(req, res, next)).toThrow(
       'Supervision percentages must add up to 100'
+    )
+    expect(next).toHaveBeenCalledTimes(0)
+  })
+
+  it('should return an error if primary supervisor is missing', () => {
+    req.body = {
+      ...req.body,
+      supervisions: [{ percentage: 100 }],
+    }
+
+    expect(() => validateThesisData(req, res, next)).toThrow(
+      'Primary supervisor is required'
+    )
+    expect(next).toHaveBeenCalledTimes(0)
+  })
+
+  it('should return an error if there are more than one primary supervisors', () => {
+    req.body = {
+      ...req.body,
+      supervisions: [{ percentage: 50, isPrimarySupervisor: true }, { percentage: 50, isPrimarySupervisor: true }],
+    }
+
+    expect(() => validateThesisData(req, res, next)).toThrow(
+      'Only one primary supervisor is allowed'
     )
     expect(next).toHaveBeenCalledTimes(0)
   })
