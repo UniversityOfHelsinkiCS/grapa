@@ -22,6 +22,21 @@ export const validateThesisData = (
     })
   }
 
+  const thesisPrimarySupervisors = thesisData.supervisions.filter(
+    (supervision) => supervision.isPrimarySupervisor
+  )
+  if (thesisPrimarySupervisors.length === 0) {
+    throw new CustomValidationError('Primary supervisor is required', {
+      supervisions: ['Primary supervisor is required'],
+    })
+  }
+
+  if (thesisPrimarySupervisors.length > 1) {
+    throw new CustomValidationError('Only one primary supervisor is allowed', {
+      supervisions: ['Only one primary supervisor is allowed'],
+    })
+  }
+
   if (!thesisData.authors || thesisData.authors.length === 0) {
     throw new CustomValidationError('At least one author is required', {
       authors: ['At least one author is required'],
