@@ -58,6 +58,15 @@ jest.unstable_mockModule('@mui/icons-material/ArrowDropDown', () => ({
   default: jest.fn().mockReturnValue('ArrowDropDownIcon'),
 }))
 
+jest.unstable_mockModule('@mui/icons-material/Star', () => ({
+  default: jest.fn().mockReturnValue('Star'),
+}))
+
+jest.unstable_mockModule('@mui/icons-material/StarOutline', () => ({
+  default: jest.fn().mockReturnValue('StarOutline'),
+}))
+
+
 const SupervisorSelect = (await import('./SupervisorSelect')).default
 
 describe('SupervisorSelect', () => {
@@ -97,6 +106,7 @@ describe('SupervisorSelect', () => {
             },
             percentage: 100,
             isExternal: false,
+            isPrimarySupervisor: true,
           },
         ]}
         setSupervisorSelections={setSupervisorSelections}
@@ -124,6 +134,7 @@ describe('SupervisorSelect', () => {
             },
             percentage: 50,
             isExternal: false,
+            isPrimarySupervisor: true,
           },
           {
             user: {
@@ -134,6 +145,7 @@ describe('SupervisorSelect', () => {
             },
             percentage: 50,
             isExternal: false,
+            isPrimarySupervisor: false,
           },
         ]}
         setSupervisorSelections={setSupervisorSelections}
@@ -156,7 +168,7 @@ describe('SupervisorSelect', () => {
           },
         ]}
         supervisorSelections={[
-          { user: null, percentage: 100, isExternal: false },
+          { user: null, percentage: 100, isExternal: false, isPrimarySupervisor: true },
         ]}
         setSupervisorSelections={setSupervisorSelections}
       />
@@ -192,6 +204,7 @@ describe('SupervisorSelect', () => {
             },
             percentage: 80,
             isExternal: false,
+            isPrimarySupervisor: true,
           },
         ]}
         setSupervisorSelections={setSupervisorSelections}
@@ -217,7 +230,7 @@ describe('SupervisorSelect', () => {
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
       expect(setSupervisorSelections).toHaveBeenCalledWith([
-        { user: null, percentage: 100, isExternal: false },
+        { user: null, percentage: 100, isExternal: false, isPrimarySupervisor: false },
       ])
     })
 
@@ -250,7 +263,7 @@ describe('SupervisorSelect', () => {
       await waitFor(() => {
         expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
         expect(setSupervisorSelections).toHaveBeenCalledWith([
-          { user: null, percentage: 100, isExternal: true },
+          { user: null, percentage: 100, isExternal: true, isPrimarySupervisor: false },
         ])
       })
     })  
@@ -270,6 +283,7 @@ describe('SupervisorSelect', () => {
               },
               percentage: 50,
               isExternal: false,
+              isPrimarySupervisor: true,
             },
             {
               user: {
@@ -280,6 +294,7 @@ describe('SupervisorSelect', () => {
               },
               percentage: 50,
               isExternal: false,
+              isPrimarySupervisor: false,
             },
           ]}
           setSupervisorSelections={setSupervisorSelections}
@@ -301,6 +316,7 @@ describe('SupervisorSelect', () => {
           },
           percentage: 34,
           isExternal: false,
+          isPrimarySupervisor: true,
         },
         {
           user: {
@@ -311,8 +327,9 @@ describe('SupervisorSelect', () => {
           },
           percentage: 33,
           isExternal: false,
+          isPrimarySupervisor: false,
         },
-        { user: null, percentage: 33, isExternal: false },
+        { user: null, percentage: 33, isExternal: false, isPrimarySupervisor: false },
       ])
     })
 
@@ -331,6 +348,7 @@ describe('SupervisorSelect', () => {
               },
               percentage: 50,
               isExternal: false,
+              isPrimarySupervisor: true,
             },
             {
               user: {
@@ -341,6 +359,7 @@ describe('SupervisorSelect', () => {
               },
               percentage: 50,
               isExternal: false,
+              isPrimarySupervisor: false,
             },
           ]}
           setSupervisorSelections={setSupervisorSelections}
@@ -377,6 +396,7 @@ describe('SupervisorSelect', () => {
             },
             percentage: 34,
             isExternal: false,
+            isPrimarySupervisor: true,
           },
           {
             user: {
@@ -387,8 +407,9 @@ describe('SupervisorSelect', () => {
             },
             percentage: 33,
             isExternal: false,
+            isPrimarySupervisor: false,
           },
-          { user: null, percentage: 33, isExternal: true },
+          { user: null, percentage: 33, isExternal: true, isPrimarySupervisor: false },
         ])
       })
     })
@@ -408,6 +429,7 @@ describe('SupervisorSelect', () => {
               },
               percentage: 50,
               isExternal: false,
+              isPrimarySupervisor: true,
             },
             {
               user: {
@@ -418,6 +440,7 @@ describe('SupervisorSelect', () => {
               },
               percentage: 50,
               isExternal: false,
+              isPrimarySupervisor: false,
             },
           ]}
           setSupervisorSelections={setSupervisorSelections}
@@ -425,7 +448,7 @@ describe('SupervisorSelect', () => {
       )
 
       // Click on the remove button to trigger the DeleteConfirmation dialog
-      const removeButton = screen.getAllByTestId('remove-supervisor-button')[0]
+      const removeButton = screen.getAllByTestId('remove-supervisor-button')[1]
       fireEvent.click(removeButton)
 
       // Wait for the DeleteConfirmation dialog to appear
@@ -443,13 +466,15 @@ describe('SupervisorSelect', () => {
         expect(setSupervisorSelections).toHaveBeenCalledWith([
           {
             user: {
-              id: 2,
-              firstName: 'Jane',
-              lastName: 'Smith',
-              username: 'janesmith',
+              id: 1,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+              studentNumber: '12345',
             },
             percentage: 100,
             isExternal: false,
+            isPrimarySupervisor: true,
           },
         ])
       })
@@ -470,6 +495,7 @@ describe('SupervisorSelect', () => {
               },
               percentage: 50,
               isExternal: false,
+              isPrimarySupervisor: true,
             },
           ]}
           setSupervisorSelections={setSupervisorSelections}

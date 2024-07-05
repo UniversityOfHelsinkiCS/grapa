@@ -85,6 +85,13 @@ jest.unstable_mockModule('@mui/icons-material/ReportOutlined', () => ({
 jest.unstable_mockModule('@mui/icons-material/ArrowDropDown', () => ({
   default: jest.fn().mockReturnValue('ArrowDropDownIcon'),
 }))
+jest.unstable_mockModule('@mui/icons-material/Star', () => ({
+  default: jest.fn().mockReturnValue('Star'),
+}))
+jest.unstable_mockModule('@mui/icons-material/StarOutline', () => ({
+  default: jest.fn().mockReturnValue('StarOutline'),
+}))
+
 
 const ThesisEditForm = (await import('./ThesisEditForm')).default
 
@@ -253,7 +260,7 @@ describe('ThesisEditForm', () => {
       const initialThesis = {
         programId: programs[0].key,
         studyTrackId: programs[0].studyTracks[0].id,
-        supervisions: [{ userId: 1, percentage: 100 }],
+        supervisions: [{ userId: 1, percentage: 100, isPrimarySupervisor: true }],
         authors: [{ userId: 2 }],
         graders: [
           {
