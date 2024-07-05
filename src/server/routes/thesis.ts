@@ -48,7 +48,7 @@ const getFindThesesOptions = async ({
     {
       model: Supervision,
       as: 'supervisions',
-      attributes: ['percentage'],
+      attributes: ['percentage', 'isPrimarySupervisor'],
       include: [
         {
           model: User,
@@ -191,6 +191,7 @@ const createThesisAndSupervisions = async (
         extUsers.find((u) => u.email === supervision.user?.email)?.id,
       thesisId: createdThesis.id,
       percentage: supervision.percentage,
+      isPrimarySupervisor: supervision.isPrimarySupervisor,
     })),
     { transaction: t, validate: true, individualHooks: true }
   )
@@ -332,6 +333,7 @@ const updateThesis = async (
         extUsers.find((u) => u.email === supervision.user?.email)?.id,
       thesisId: id,
       percentage: supervision.percentage,
+      isPrimarySupervisor: supervision.isPrimarySupervisor,
     })),
     { transaction, validate: true, individualHooks: true }
   )

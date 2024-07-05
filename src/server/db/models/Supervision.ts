@@ -19,6 +19,8 @@ class Supervision extends Model<
   declare userId: string
 
   declare percentage: number
+
+  declare isPrimarySupervisor: boolean
 }
 
 Supervision.init(
@@ -55,6 +57,11 @@ Supervision.init(
         min: 0,
         max: 100,
       },
+    },
+    isPrimarySupervisor: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {
