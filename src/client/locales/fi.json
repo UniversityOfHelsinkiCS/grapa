@@ -32,6 +32,7 @@
     "authors": "Anna puuttuvat tekijätiedot",
     "supervisors": "Anna puuttuvat ohjaajatiedot",
     "supervisorPercentage": "Ohjaajien työosuuksien on oltava yhteensä 100%",
+    "primarySupervisor": "Aseta joking ohjaajista pääohjaajaksi",
     "graders": "Anna puuttuvat arvioijatiedot",
     "researchPlan": "Lataa kelvollinen tutkimussuunnitelmatiedosto",
     "waysOfWorking": "Lataa kelvollinen työskentelytavat-tiedosto",

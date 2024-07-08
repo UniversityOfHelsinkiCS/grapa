@@ -32,6 +32,7 @@
     "authors": "Please provide missing author information",
     "supervisors": "Please provide missing supervisor information",
     "supervisorPercentage": "Supervision workloads must add up to 100%",
+    "primarySupervisor": "Please select one of the supervisors as the primary supervisor",
     "graders": "Please provide missing primary grader information",
     "researchPlan": "Please upload a valid research plan file",
     "waysOfWorking": "Please upload a valid ways of working file",

@@ -11,6 +11,7 @@ import {
   Box,
   Checkbox,
   Tooltip,
+  FormControlProps,
 } from '@mui/material'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -34,6 +35,7 @@ interface SingleSupervisorSelectProps {
   handlePrimarySupervisorChange: () => void
   inputProps: TextFieldProps
   iconButtonProps: ButtonProps
+  primarySupervisorProps: FormControlProps
 }
 const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
   index,
@@ -44,6 +46,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
   handlePrimarySupervisorChange,
   inputProps,
   iconButtonProps,
+  primarySupervisorProps,
 }) => {
   const { t } = useTranslation()
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
@@ -103,12 +106,29 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
             : t('thesisForm:setPrimarySupervisor')
         }
       >
-        <Checkbox
-          icon={<StarOutline />}
-          checkedIcon={<Star />}
-          checked={selection.isPrimarySupervisor}
-          onChange={handlePrimarySupervisorChange}
-        />
+        <FormControl
+          {...primarySupervisorProps}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Checkbox
+            icon={
+              <StarOutline
+                color={primarySupervisorProps.error ? 'error' : 'primary'}
+              />
+            }
+            checkedIcon={<Star />}
+            checked={selection.isPrimarySupervisor}
+            onChange={handlePrimarySupervisorChange}
+            inputProps={{
+              'aria-invalid':
+                primarySupervisorProps.error && !selection.isPrimarySupervisor,
+            }}
+          />
+        </FormControl>
       </Tooltip>
 
       <Tooltip

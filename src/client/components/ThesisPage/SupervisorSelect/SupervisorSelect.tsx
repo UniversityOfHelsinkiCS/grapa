@@ -176,6 +176,15 @@ const SupervisorSelect: React.FC<{
                 supervisorSelections.length === 1 ||
                 selection.isPrimarySupervisor,
             }}
+            primarySupervisorProps={{
+              error: Boolean(
+                errors.find(
+                  (error) =>
+                    error.path.join('-') ===
+                    `supervisions-missingPrimarySupervisor`
+                )
+              ),
+            }}
           />
         )
       })}

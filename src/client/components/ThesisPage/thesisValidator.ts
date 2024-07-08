@@ -102,19 +102,29 @@ export const ThesisSchema = z.object({
   programId: z.string().min(1, 'formErrors:program'),
   authors: z.array(userSchema).min(1, 'formErrors:authors'),
   status: z.string().min(1, 'formErrors:status'),
-  supervisions: z.array(supervisionSchema).refine(
-    (supervisions) => {
-      const totalPercentage = supervisions.reduce(
-        (total, supervision) => total + supervision.percentage,
-        0
-      )
-      return totalPercentage === 100
-    },
-    {
-      message: 'formErrors:supervisorPercentage',
-      path: ['percentage'],
-    }
-  ),
+  supervisions: z
+    .array(supervisionSchema)
+    .refine(
+      (supervisions) => {
+        const totalPercentage = supervisions.reduce(
+          (total, supervision) => total + supervision.percentage,
+          0
+        )
+        return totalPercentage === 100
+      },
+      {
+        message: 'formErrors:supervisorPercentage',
+        path: ['percentage'],
+      }
+    )
+    .refine(
+      (supervisors) =>
+        supervisors.some((supervisor) => supervisor.isPrimarySupervisor),
+      {
+        message: 'formErrors:primarySupervisor',
+        path: ['missingPrimarySupervisor'],
+      }
+    ),
   graders: z.array(graderSchema),
   researchPlan: z
     .object({
