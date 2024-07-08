@@ -5,4 +5,5 @@ export interface SupervisorSelection {
   percentage: number
   isExternal: boolean
   isPrimarySupervisor: boolean
+  creationTimeIdentifier?: string
 }

@@ -32,10 +32,6 @@ const SupervisorSelect: React.FC<{
   const generalSupervisorErrors = errors.filter((error) =>
     error.path.join('-').endsWith('general-supervisor-error')
   )
-  const supervisorSelectionsWithIds = supervisorSelections.map((selection) => ({
-    ...selection,
-    creationTimeIdentifier: uuidv4(),
-  }))
 
   const handleSupervisorChange = (index: number, supervisor: User) => {
     const updatedSelections = [...supervisorSelections]
@@ -75,6 +71,7 @@ const SupervisorSelect: React.FC<{
         percentage: Math.floor((1 / numberOfSupervisors) * 100),
         isExternal,
         isPrimarySupervisor: false,
+        creationTimeIdentifier: uuidv4(), // This is a shit hack for dealing w/ React keys and an anti-pattern, but couldn't figure out anything else -- See #43 comments
       },
     ])
   }
@@ -126,7 +123,7 @@ const SupervisorSelect: React.FC<{
         </Alert>
       )}
 
-      {supervisorSelectionsWithIds.map((selection, index) => {
+      {supervisorSelections.map((selection, index) => {
         const { isExternal } = selection
 
         if (isExternal) {
@@ -134,7 +131,7 @@ const SupervisorSelect: React.FC<{
             <ExternalPersonInput
               key={
                 selection.user?.id ??
-                `supervisions-${selection.creationTimeIdentifier}`
+                `supervisions-${selection?.creationTimeIdentifier ?? index}`
               }
               index={index}
               inputGroup="supervisions"
