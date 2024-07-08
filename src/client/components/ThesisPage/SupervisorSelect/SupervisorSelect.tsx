@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   Alert,
   AlertTitle,
@@ -10,6 +10,7 @@ import {
 } from '@mui/material'
 import { User, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
+import { v4 as uuidv4 } from 'uuid'
 import { useTranslation } from 'react-i18next'
 import { ZodIssue } from 'zod'
 import SingleSupervisorSelect from './SingleSupervisorSelect'
@@ -30,6 +31,14 @@ const SupervisorSelect: React.FC<{
   const totalPercentage = getTotalPercentage(supervisorSelections)
   const generalSupervisorErrors = errors.filter((error) =>
     error.path.join('-').endsWith('general-supervisor-error')
+  )
+  const supervisorSelectionsWithIds = useMemo(
+    () =>
+      supervisorSelections.map((selection) => ({
+        ...selection,
+        creationTimeIdentifier: uuidv4(),
+      })),
+    [supervisorSelections.length]
   )
 
   const handleSupervisorChange = (index: number, supervisor: User) => {
@@ -121,13 +130,16 @@ const SupervisorSelect: React.FC<{
         </Alert>
       )}
 
-      {supervisorSelections.map((selection, index) => {
+      {supervisorSelectionsWithIds.map((selection, index) => {
         const { isExternal } = selection
 
         if (isExternal) {
           return (
             <ExternalPersonInput
-              key={selection.user?.id ?? `supervisions-${index}`}
+              key={
+                selection.user?.id ??
+                `supervisions-${selection.creationTimeIdentifier}`
+              }
               index={index}
               inputGroup="supervisions"
               selection={selection}
@@ -173,7 +185,10 @@ const SupervisorSelect: React.FC<{
 
         return (
           <SingleSupervisorSelect
-            key={selection.user?.id ?? `supervisions-${index}`}
+            key={
+              selection.user?.id ??
+              `supervisions-${selection.creationTimeIdentifier}`
+            }
             index={index}
             selection={selection}
             handleSupervisorChange={(value) =>
