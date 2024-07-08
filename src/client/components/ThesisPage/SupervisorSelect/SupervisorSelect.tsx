@@ -105,6 +105,7 @@ const SupervisorSelect: React.FC<{
       {generalSupervisorErrors.length > 0 && (
         <Alert
           id="supervisions-general-supervisor-error"
+          data-testid="supervisions-general-supervisor-error"
           severity="error"
           aria-live="polite"
           sx={{ whiteSpace: 'pre-line' }}

@@ -184,10 +184,15 @@ describe('SupervisorSelect', () => {
       <SupervisorSelect
         errors={[
           {
-            code: 'custom',
-            message: 'formErrors:supervisors',
-            path: ['supervisions', 0, 'percentage'],
-          },
+            code: "custom",
+            message: "formErrors:supervisorPercentage",
+            path: [
+              "supervisions",
+              "general",
+              "supervisor",
+              "error"
+            ]
+          }
         ]}
         supervisorSelections={[
           {
@@ -207,10 +212,47 @@ describe('SupervisorSelect', () => {
       />
     )
 
-    const percentageError = screen.getByTestId('supervisions-percentage-error')
+    const percentageError = screen.getByTestId('supervisions-general-supervisor-error')
     expect(percentageError).toBeInTheDocument()
   })
 
+  it('renders the SupervisorSelect component with an error when primary supervisor is missing', () => {
+    render(
+      <SupervisorSelect
+        errors={[
+          {
+            code: "custom",
+            message: "formErrors:primarySupervisor",
+            path: [
+              "supervisions",
+              "general",
+              "supervisor",
+              "error"
+            ]
+          }
+        ]}
+        supervisorSelections={[
+          {
+            user: {
+              id: 1,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+              studentNumber: '12345',
+            },
+            percentage: 100,
+            isExternal: false,
+            isPrimarySupervisor: false,
+          },
+        ]}
+        setSupervisorSelections={setSupervisorSelections}
+      />
+    )
+
+    const percentageError = screen.getByTestId('supervisions-general-supervisor-error')
+    expect(percentageError).toBeInTheDocument()
+  })
+  
   describe('interactions', () => {
     it('should call setSupervisorSelections when a supervision is added', () => {
       render(
