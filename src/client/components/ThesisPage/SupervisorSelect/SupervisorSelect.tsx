@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import {
   Alert,
   AlertTitle,
@@ -32,14 +32,10 @@ const SupervisorSelect: React.FC<{
   const generalSupervisorErrors = errors.filter((error) =>
     error.path.join('-').endsWith('general-supervisor-error')
   )
-  const supervisorSelectionsWithIds = useMemo(
-    () =>
-      supervisorSelections.map((selection) => ({
-        ...selection,
-        creationTimeIdentifier: uuidv4(),
-      })),
-    [supervisorSelections.length]
-  )
+  const supervisorSelectionsWithIds = supervisorSelections.map((selection) => ({
+    ...selection,
+    creationTimeIdentifier: uuidv4(),
+  }))
 
   const handleSupervisorChange = (index: number, supervisor: User) => {
     const updatedSelections = [...supervisorSelections]
