@@ -8,6 +8,7 @@ import NotFound from './components/Errors/NotFound'
 import { BASE_PATH } from '../config'
 import ProgramManagement from './components/ProgramManagement/ProgramManagement'
 import NoAccess from './components/NoAccess'
+import LoginAs from './components/LoginAs'
 
 const router = createBrowserRouter(
   [
@@ -28,6 +29,10 @@ const router = createBrowserRouter(
         {
           path: '/program-managements',
           element: <ProgramManagement />,
+        },
+        {
+          path: '/login-as',
+          element: <LoginAs />,
         },
         {
           path: '*',

@@ -76,6 +76,16 @@ const NavBar = () => {
                 </Link>
               </Button>
             ) : null}
+            {user.isAdmin ? (
+              <Button variant="outlined" sx={{ marginRight: '25px' }}>
+                <Link
+                  to="/login-as"
+                  style={{ textDecoration: 'none', color: 'inherit' }}
+                >
+                  {t('loginAsNavItem')}
+                </Link>
+              </Button>
+            ) : null}
             <Button
               ref={anchorRef}
               id="composition-button"
