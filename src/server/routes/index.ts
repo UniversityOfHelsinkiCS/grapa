@@ -15,6 +15,7 @@ import programRouter from './program'
 import programManagementRouter from './programManagement'
 import { inDevelopment, inE2EMode, inTest } from '../../config'
 import logoutRouter from './logout'
+import loginAsMiddleware from '../middleware/loginAs'
 
 const router = express()
 
@@ -25,6 +26,9 @@ router.use(express.json())
 router.use(express.urlencoded({ extended: true }))
 if (inDevelopment || inE2EMode || inTest) router.use(userMiddleware)
 
+// @ts-expect-error req.user is added to the request
+// as part of oidc passport authentication
+router.use(loginAsMiddleware)
 router.use(accessLogger)
 
 router.get('/ping', (_, res) => res.send('pong'))
