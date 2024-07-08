@@ -507,5 +507,110 @@ describe('SupervisorSelect', () => {
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(0)
     })
+
+    it('should call setSupervisorSelections when a supervisor is marked as primary', async () => {
+      render(
+        <SupervisorSelect
+          errors={[]}
+          supervisorSelections={[
+            {
+              user: {
+                id: 1,
+                firstName: 'John',
+                lastName: 'Doe',
+                username: 'johndoe',
+                studentNumber: '12345',
+              },
+              percentage: 50,
+              isExternal: false,
+              isPrimarySupervisor: true,
+            },
+            {
+              user: {
+                id: 2,
+                firstName: 'Jane',
+                lastName: 'Smith',
+                username: 'janesmith',
+              },
+              percentage: 50,
+              isExternal: false,
+              isPrimarySupervisor: false,
+            },
+          ]}
+          setSupervisorSelections={setSupervisorSelections}
+        />
+      )
+
+      const select = screen.getAllByRole('checkbox')[1]
+      fireEvent.click(select)
+
+      await waitFor(() => {
+        expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
+        expect(setSupervisorSelections).toHaveBeenCalledWith([
+          {
+            user: {
+              id: 1,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+              studentNumber: '12345',
+            },
+            percentage: 50,
+            isExternal: false,
+            isPrimarySupervisor: false,
+          },
+          {
+            user: {
+              id: 2,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              username: 'janesmith',
+            },
+            percentage: 50,
+            isExternal: false,
+            isPrimarySupervisor: true,
+          },
+        ])
+      })
+    })
+
+    it('should not be able to remove the primary supervisor', async () => {
+      render(
+        <SupervisorSelect
+          errors={[]}
+          supervisorSelections={[
+            {
+              user: {
+                id: 1,
+                firstName: 'John',
+                lastName: 'Doe',
+                username: 'johndoe',
+                studentNumber: '12345',
+              },
+              percentage: 50,
+              isExternal: false,
+              isPrimarySupervisor: true,
+            },
+            {
+              user: {
+                id: 2,
+                firstName: 'Jane',
+                lastName: 'Smith',
+                username: 'janesmith',
+              },
+              percentage: 50,
+              isExternal: false,
+              isPrimarySupervisor: false,
+            },
+          ]}
+          setSupervisorSelections={setSupervisorSelections}
+        />
+      )
+
+      const removeButton = screen.getAllByTestId('remove-supervisor-button')[0]
+      expect(removeButton).toBeDisabled()
+
+      expect(setSupervisorSelections).toHaveBeenCalledTimes(0)
+    })
   })
 })
