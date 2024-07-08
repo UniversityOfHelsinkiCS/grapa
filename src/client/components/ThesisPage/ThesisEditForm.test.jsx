@@ -70,24 +70,27 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
 jest.unstable_mockModule('@mui/icons-material/CloudUpload', () => ({
   default: jest.fn().mockReturnValue('CloudUploadIcon'),
 }))
+
 jest.unstable_mockModule('@mui/icons-material/UploadFile', () => ({
   default: jest.fn().mockReturnValue('UploadFileIcon'),
 }))
+
 jest.unstable_mockModule('@mui/icons-material/Delete', () => ({
   default: jest.fn().mockReturnValue('DeleteIcon'),
 }))
+
 jest.unstable_mockModule('@mui/icons-material/Error', () => ({
   default: jest.fn().mockReturnValue('ErrorIcon'),
 }))
-jest.unstable_mockModule('@mui/icons-material/ReportOutlined', () => ({
-  default: jest.fn().mockReturnValue('ReportOutlinedIcon'),
-}))
+
 jest.unstable_mockModule('@mui/icons-material/ArrowDropDown', () => ({
   default: jest.fn().mockReturnValue('ArrowDropDownIcon'),
 }))
+
 jest.unstable_mockModule('@mui/icons-material/Star', () => ({
   default: jest.fn().mockReturnValue('Star'),
 }))
+
 jest.unstable_mockModule('@mui/icons-material/StarOutline', () => ({
   default: jest.fn().mockReturnValue('StarOutline'),
 }))
