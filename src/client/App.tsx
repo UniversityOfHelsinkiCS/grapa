@@ -9,6 +9,7 @@ import { useTheme } from './theme'
 import useLoggedInUser from './hooks/useLoggedInUser'
 import Footer from './components/Footer'
 import NavBar from './components/NavBar/NavBar'
+import LoggedInAsBanner from './components/LoginAsBanner'
 
 const App = () => {
   const theme = useTheme()
@@ -25,6 +26,7 @@ const App = () => {
   return (
     <ThemeProvider theme={themeWithLocale}>
       <SnackbarProvider preventDuplicate>
+        <LoggedInAsBanner />
         <Box
           sx={{
             minHeight: '100vh',
