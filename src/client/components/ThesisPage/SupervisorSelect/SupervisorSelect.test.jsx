@@ -249,8 +249,13 @@ describe('SupervisorSelect', () => {
       />
     )
 
-    const percentageError = screen.getByTestId('supervisions-general-supervisor-error')
-    expect(percentageError).toBeInTheDocument()
+    const primaryError = screen.getByTestId('supervisions-general-supervisor-error')
+    expect(primaryError).toBeInTheDocument()
+
+    const primarySupervisorCheckbox = screen.getByRole('checkbox')
+    expect(primarySupervisorCheckbox).toBeInTheDocument()
+    expect(primarySupervisorCheckbox).not.toBeChecked()
+    expect(primarySupervisorCheckbox).toHaveAttribute('aria-invalid', 'true')
   })
   
   describe('interactions', () => {
