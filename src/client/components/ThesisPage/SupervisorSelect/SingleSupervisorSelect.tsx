@@ -35,6 +35,7 @@ interface SingleSupervisorSelectProps {
   handlePrimarySupervisorChange: () => void
   inputProps: TextFieldProps
   iconButtonProps: ButtonProps
+  percentageInputProps: TextFieldProps
   primarySupervisorProps: FormControlProps
 }
 const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
@@ -46,6 +47,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
   handlePrimarySupervisorChange,
   inputProps,
   iconButtonProps,
+  percentageInputProps,
   primarySupervisorProps,
 }) => {
   const { t } = useTranslation()
@@ -97,6 +99,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
         onChange={(event) =>
           handlePercentageChange(parseInt(event.target.value, 10))
         }
+        {...percentageInputProps}
       />
 
       <Tooltip

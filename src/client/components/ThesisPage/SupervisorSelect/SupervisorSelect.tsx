@@ -206,6 +206,14 @@ const SupervisorSelect: React.FC<{
                 supervisorSelections.length === 1 ||
                 selection.isPrimarySupervisor,
             }}
+            percentageInputProps={{
+              required: true,
+              error: Boolean(
+                errors.find(
+                  (error) => error.message === 'formErrors:supervisorPercentage'
+                )
+              ),
+            }}
             primarySupervisorProps={{
               error: Boolean(
                 errors.find(
