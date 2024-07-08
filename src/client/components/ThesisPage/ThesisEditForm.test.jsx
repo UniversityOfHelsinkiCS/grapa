@@ -83,6 +83,10 @@ jest.unstable_mockModule('@mui/icons-material/Error', () => ({
   default: jest.fn().mockReturnValue('ErrorIcon'),
 }))
 
+jest.unstable_mockModule('@mui/icons-material/ReportOutlined', () => ({
+  default: jest.fn().mockReturnValue('ReportOutlinedIcon'),
+}))
+
 jest.unstable_mockModule('@mui/icons-material/ArrowDropDown', () => ({
   default: jest.fn().mockReturnValue('ArrowDropDownIcon'),
 }))
