@@ -114,7 +114,7 @@ export const ThesisSchema = z.object({
       },
       {
         message: 'formErrors:supervisorPercentage',
-        path: ['percentage'],
+        path: ['general', 'supervisor', 'error'],
       }
     )
     .refine(
@@ -122,7 +122,7 @@ export const ThesisSchema = z.object({
         supervisors.some((supervisor) => supervisor.isPrimarySupervisor),
       {
         message: 'formErrors:primarySupervisor',
-        path: ['missingPrimarySupervisor'],
+        path: ['general', 'supervisor', 'error'],
       }
     ),
   graders: z.array(graderSchema),

@@ -1,6 +1,13 @@
 import React from 'react'
-import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined'
-import { Box, Divider, Stack, Tooltip, Typography } from '@mui/material'
+import {
+  Alert,
+  AlertTitle,
+  Box,
+  Divider,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { User, SupervisionData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { useTranslation } from 'react-i18next'
@@ -21,6 +28,9 @@ const SupervisorSelect: React.FC<{
   const { t } = useTranslation()
 
   const totalPercentage = getTotalPercentage(supervisorSelections)
+  const generalSupervisorErrors = errors.filter((error) =>
+    error.path.join('-').endsWith('general-supervisor-error')
+  )
 
   const handleSupervisorChange = (index: number, supervisor: User) => {
     const updatedSelections = [...supervisorSelections]
@@ -91,6 +101,25 @@ const SupervisorSelect: React.FC<{
       <Typography component="legend" sx={{ px: '1rem' }}>
         {t('thesisForm:supervisors')}
       </Typography>
+
+      {generalSupervisorErrors.length > 0 && (
+        <Alert
+          id="supervisions-general-supervisor-error"
+          severity="error"
+          aria-live="polite"
+          sx={{ whiteSpace: 'pre-line' }}
+        >
+          <AlertTitle>
+            {t('formErrors:supervisorGeneralErrorsTitle')}
+          </AlertTitle>
+          {generalSupervisorErrors.map((error, index) => (
+            <Typography variant="body2" key={error.message}>
+              {`${t(`${error.message}Content`)} ${index < generalSupervisorErrors.length - 1 ? '\n\n' : ''}`}
+            </Typography>
+          ))}
+        </Alert>
+      )}
+
       {supervisorSelections.map((selection, index) => {
         const { isExternal } = selection
 
@@ -179,9 +208,7 @@ const SupervisorSelect: React.FC<{
             primarySupervisorProps={{
               error: Boolean(
                 errors.find(
-                  (error) =>
-                    error.path.join('-') ===
-                    `supervisions-missingPrimarySupervisor`
+                  (error) => error.message === 'formErrors:primarySupervisor'
                 )
               ),
             }}
@@ -197,13 +224,9 @@ const SupervisorSelect: React.FC<{
         >
           <Box
             id="supervisions-percentage"
-            data-testid="supervisions-percentage-error"
             tabIndex={-1}
             sx={{ display: 'flex', alignItems: 'center' }}
           >
-            {totalPercentage !== 100 && (
-              <ReportOutlinedIcon color="error" sx={{ mr: '0.5rem' }} />
-            )}
             <Typography
               variant="overline"
               color={totalPercentage !== 100 ? 'error' : ''}

@@ -119,7 +119,7 @@ const ThesisEditForm: React.FC<{
             {formErrors.map((error, index) => (
               <li
                 data-testid={`errorsummary-${error.path.join('-')}`}
-                key={`error-${error.path.join('-')}`}
+                key={`error-${error.path.join('-')}-${error.message}`}
               >
                 {`${t('common:error')} ${index + 1}: `}
                 <a href={`#${error.path.join('-')}`}>{t(error.message)}</a>
