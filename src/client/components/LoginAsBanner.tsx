@@ -1,20 +1,21 @@
 import { User } from '@backend/types'
 import { Button, Paper, Typography } from '@mui/material'
-
 import React from 'react'
+
+import { LOGIN_AS_LOCAL_STORAGE_KEY } from '../../config'
 
 const LoggedInAsBanner = () => {
   const [user, setUser] = React.useState<User | null>(null)
 
   React.useLayoutEffect(() => {
-    const loggedInAs = localStorage.getItem('grapa-admin-logged-in-as')
+    const loggedInAs = localStorage.getItem(LOGIN_AS_LOCAL_STORAGE_KEY)
     if (!loggedInAs) return
 
     setUser(JSON.parse(loggedInAs) as User)
   }, [])
 
   const handleClick = () => {
-    localStorage.removeItem('grapa-admin-logged-in-as')
+    localStorage.removeItem(LOGIN_AS_LOCAL_STORAGE_KEY)
     window.location.reload()
   }
 

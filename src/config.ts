@@ -22,3 +22,6 @@ export const FULL_URL = inProduction
     : 'http://localhost:3000'
 
 export const FORM_DATA_KEY = 'grapa_local_save'
+
+export const LOGIN_AS_LOCAL_STORAGE_KEY = 'grapa-admin-logged-in-as'
+export const LOGIN_AS_HEADER_KEY = 'x-admin-logged-in-as'
