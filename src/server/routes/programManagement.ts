@@ -12,7 +12,7 @@ programManagementRouter.get(
   async (req: RequestWithUser, res: Response) => {
     const { isAdmin } = req.user
     const programs = await ProgramManagement.findAll({
-      attributes: ['programId', 'userId'],
+      attributes: ['id', 'programId', 'userId'],
       where: isAdmin
         ? {}
         : {

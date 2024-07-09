@@ -134,14 +134,16 @@ describe('program-managements router', () => {
         expect(response.status).toEqual(200)
         expect(response.body).toIncludeSameMembers([
           {
-            programId: program2.id,
-            userId: user2.id,
+            id: programManagement1.id,
+            programId: programManagement1.programId,
+            userId: programManagement1.userId,
             user: expect.any(Object),
             program: expect.any(Object),
           },
           {
-            programId: program1.id,
-            userId: user3.id,
+            id: programManagement2.id,
+            programId: programManagement2.programId,
+            userId: programManagement2.userId,
             user: expect.any(Object),
             program: expect.any(Object),
           },
@@ -207,14 +209,16 @@ describe('program-managements router', () => {
         expect(response.status).toEqual(200)
         expect(response.body).toIncludeSameMembers([
           {
-            programId: program1.id,
-            userId: user1.id,
+            id: programThatTheUserCanManage.id,
+            programId: programThatTheUserCanManage.programId,
+            userId: programThatTheUserCanManage.userId,
             user: expect.any(Object),
             program: expect.any(Object),
           },
           {
-            programId: program1.id,
-            userId: user3.id,
+            id: programManagement2.id,
+            programId: programManagement2.programId,
+            userId: programManagement2.userId,
             user: expect.any(Object),
             program: expect.any(Object),
           },
