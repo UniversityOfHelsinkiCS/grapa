@@ -5,7 +5,6 @@ import {
   TextField,
   FormControl,
   IconButton,
-  InputAdornment,
   ButtonProps,
   TextFieldProps,
   Box,
@@ -21,6 +20,7 @@ import StarOutline from '@mui/icons-material/StarOutline'
 import useUsers from '../../../hooks/useUsers'
 import { useDebounce } from '../../../hooks/useDebounce'
 import DeleteConfirmation from '../../Common/DeleteConfirmation'
+import PercentageInput from '../PercentageInput'
 
 interface SingleSupervisorSelectProps {
   index: number
@@ -86,20 +86,11 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
         />
       </FormControl>
 
-      <TextField
-        required
-        type="number"
-        sx={{ width: '12ch' }}
-        InputProps={{
-          inputProps: { min: 1, max: 100 },
-          endAdornment: <InputAdornment position="end">%</InputAdornment>,
-        }}
+      <PercentageInput
         label={t('thesisForm:selectSupervisorPercentage')}
         value={selection.percentage}
-        onChange={(event) =>
-          handlePercentageChange(parseInt(event.target.value, 10))
-        }
-        {...percentageInputProps}
+        onChange={handlePercentageChange}
+        percentageInputProps={percentageInputProps}
       />
 
       <Tooltip

@@ -46,10 +46,11 @@ const SupervisorSelect: React.FC<{
   }
 
   const handlePercentageChange = (index: number, percentage: number) => {
-    if (Number.isNaN(percentage) || percentage < 0 || percentage > 100) return
+    const newPercentage = Number.isNaN(percentage) ? 0 : percentage
+    if (newPercentage < 0 || newPercentage > 100) return
 
     const updatedSelections = [...supervisorSelections]
-    updatedSelections[index].percentage = percentage
+    updatedSelections[index].percentage = newPercentage
     setSupervisorSelections(updatedSelections)
   }
 
@@ -177,6 +178,15 @@ const SupervisorSelect: React.FC<{
               }}
               iconButtonProps={{
                 disabled: supervisorSelections.length === 1,
+              }}
+              percentageInputProps={{
+                required: true,
+                error: Boolean(
+                  errors.find(
+                    (error) =>
+                      error.message === 'formErrors:supervisorPercentage'
+                  )
+                ),
               }}
             />
           )

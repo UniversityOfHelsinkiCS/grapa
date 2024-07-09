@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { User } from '@backend/types'
 import {
   Stack,
   TextField,
-  InputAdornment,
   IconButton,
   Box,
   ButtonProps,
@@ -13,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import DeleteConfirmation from '../Common/DeleteConfirmation'
+import PercentageInput from './PercentageInput'
 
 type ExternalPersonInputErrors = {
   firstName?: string | null
@@ -42,17 +41,17 @@ interface BaseExternalPersonInputProps {
   iconButtonProps?: ButtonProps // iconButtonProps can have a default value
 }
 
-// Props when inputGroup is 'supervisions'
 interface SupervisionsExternalPersonInputProps
   extends BaseExternalPersonInputProps {
   inputGroup: 'supervisions'
   handlePercentageChange: (percentage: number) => void
+  percentageInputProps: TextFieldProps
 }
 
-// Props when inputGroup is 'graders'
 interface GradersExternalPersonInputProps extends BaseExternalPersonInputProps {
   inputGroup: 'graders'
-  handlePercentageChange?: (percentage: number) => void
+  handlePercentageChange?: never
+  percentageInputProps?: never
 }
 
 type ExternalPersonInputProps =
@@ -69,6 +68,7 @@ const ExternalPersonInput = ({
   inputErrors,
   inputProps,
   iconButtonProps = {},
+  percentageInputProps,
 }: ExternalPersonInputProps) => {
   const { t } = useTranslation()
 
@@ -149,19 +149,11 @@ const ExternalPersonInput = ({
         /> */}
 
         {inputGroup === 'supervisions' && (
-          <TextField
-            required
-            type="number"
-            sx={{ width: '12ch' }}
-            InputProps={{
-              inputProps: { min: 1, max: 100 },
-              endAdornment: <InputAdornment position="end">%</InputAdornment>,
-            }}
+          <PercentageInput
             label={t('thesisForm:selectSupervisorPercentage')}
             value={(selection as SupervisorSelection).percentage}
-            onChange={(event) =>
-              handlePercentageChange(parseInt(event.target.value, 10))
-            }
+            onChange={handlePercentageChange}
+            percentageInputProps={percentageInputProps}
           />
         )}
 
