@@ -49,6 +49,7 @@ ProgramManagement.init(
   {
     underscored: true,
     sequelize,
+    indexes: [{ fields: ['program_id', 'user_id'], unique: true }],
   }
 )
 
