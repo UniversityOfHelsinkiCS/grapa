@@ -36,7 +36,7 @@ const LoginAs: React.FC = () => {
         width: '70%',
       }}
     >
-      <Typography variant="h3">Login as another user</Typography>
+      <Typography variant="h3">{t('loginAsPage:title')}</Typography>
       <FormControl fullWidth>
         <Autocomplete
           id="login-as-user"

@@ -3,6 +3,7 @@
     "appName": "Master theses progress tracking",
     "author": "Author",
     "grader": "Grader {{index}}",
+    "loginAsNavItem": "Login as",
     "supervisor": "Supervisor {{index}}",
     "userSearchNoOptions": "Type at least 5 characters to search for users",
     "programManagersNavItem": "Program managers",
@@ -83,5 +84,9 @@
   "programManagementPage": {
     "programHeader": "Program",
     "managerHeader": "Manager"
+  },
+  "loginAsPage": {
+    "title": "Choose a user to impersonate",
+    "userHeader": "User"
   }
 }

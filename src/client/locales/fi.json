@@ -3,6 +3,7 @@
     "appName": "GRAdut Pikaisesti Alkuun",
     "author": "Tekijä",
     "grader": "Arvioija {{index}}",
+    "loginAsNavItem": "Kirjaudu toisella käyttäjällä",
     "supervisor": "Ohjaaja {{index}}",
     "userSearchNoOptions": "Kirjoita vähintään 5 merkkiä etsiäksesi käyttäjiä",
     "programManagersNavItem": "Vastaavat",
@@ -86,5 +87,9 @@
   "programManagementPage": {
     "programHeader": "Ohjelma",
     "managerHeader": "Vastaava"
+  },
+  "loginAsPage": {
+    "title": "Valitse käyttäjä, jota haluat matkia",
+    "userHeader": "Käyttäjä"
   }
 }
