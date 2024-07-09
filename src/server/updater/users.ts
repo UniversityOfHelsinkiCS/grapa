@@ -56,6 +56,7 @@ const usersHandler = async (users: SisuUser[]) => {
         'employeeNumber',
         'hasStudyRight',
       ],
+      conflictAttributes: ['id'],
     },
   })
 }
