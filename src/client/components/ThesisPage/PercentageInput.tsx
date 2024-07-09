@@ -23,7 +23,7 @@ const PercentageInput = ({
       endAdornment: <InputAdornment position="end">%</InputAdornment>,
     }}
     label={label}
-    value={value}
+    value={value.toString()}
     onChange={(event) =>
       handlePercentageChange(parseInt(event.target.value, 10))
     }
