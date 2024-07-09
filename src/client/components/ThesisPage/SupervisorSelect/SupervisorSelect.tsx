@@ -52,6 +52,11 @@ const SupervisorSelect: React.FC<{
     const updatedSelections = [...supervisorSelections]
     updatedSelections[index].percentage = newPercentage
     setSupervisorSelections(updatedSelections)
+
+    const updatedErrors = errors.filter(
+      (error) => error.message !== 'formErrors:supervisorPercentage'
+    )
+    setErrors(updatedErrors)
   }
 
   const handlePrimarySupervisorChange = (index: number) => {
