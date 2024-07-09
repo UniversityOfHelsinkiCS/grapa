@@ -66,6 +66,7 @@ jest.unstable_mockModule('@mui/icons-material/StarOutline', () => ({
 const SupervisorSelect = (await import('./SupervisorSelect')).default
 
 describe('SupervisorSelect', () => {
+  let setErrors
   const supervisorSelections = []
   let setSupervisorSelections
 
@@ -79,6 +80,7 @@ describe('SupervisorSelect', () => {
     render(
       <SupervisorSelect
         errors={[]}
+        setErrors={setErrors}
         supervisorSelections={supervisorSelections}
         setSupervisorSelections={setSupervisorSelections}
       />
@@ -91,6 +93,7 @@ describe('SupervisorSelect', () => {
     render(
       <SupervisorSelect
         errors={[]}
+        setErrors={setErrors}
         supervisorSelections={[
           {
             user: {
@@ -119,6 +122,7 @@ describe('SupervisorSelect', () => {
     render(
       <SupervisorSelect
         errors={[]}
+        setErrors={setErrors}
         supervisorSelections={[
           {
             user: {
@@ -163,6 +167,7 @@ describe('SupervisorSelect', () => {
             path: ['supervisions', 0, 'user'],
           },
         ]}
+        setErrors={setErrors}
         supervisorSelections={[
           { user: null, percentage: 100, isExternal: false, isPrimarySupervisor: true },
         ]}
@@ -194,6 +199,7 @@ describe('SupervisorSelect', () => {
             ]
           }
         ]}
+        setErrors={setErrors}
         supervisorSelections={[
           {
             user: {
@@ -231,6 +237,7 @@ describe('SupervisorSelect', () => {
             ]
           }
         ]}
+        setErrors={setErrors}
         supervisorSelections={[
           {
             user: {
@@ -263,6 +270,7 @@ describe('SupervisorSelect', () => {
       render(
         <SupervisorSelect
           errors={[]}
+          setErrors={setErrors}
           supervisorSelections={supervisorSelections}
           setSupervisorSelections={setSupervisorSelections}
         />
@@ -281,6 +289,7 @@ describe('SupervisorSelect', () => {
       render(
         <SupervisorSelect
           errors={[]}
+          setErrors={setErrors}
           supervisorSelections={supervisorSelections}
           setSupervisorSelections={setSupervisorSelections}
         />
@@ -315,6 +324,7 @@ describe('SupervisorSelect', () => {
       render(
         <SupervisorSelect
           errors={[]}
+          setErrors={setErrors}
           supervisorSelections={[
             {
               user: {
@@ -380,6 +390,7 @@ describe('SupervisorSelect', () => {
       render(
         <SupervisorSelect
           errors={[]}
+          setErrors={setErrors}
           supervisorSelections={[
             {
               user: {
@@ -461,6 +472,7 @@ describe('SupervisorSelect', () => {
       render(
         <SupervisorSelect
           errors={[]}
+          setErrors={setErrors}
           supervisorSelections={[
             {
               user: {
@@ -527,6 +539,7 @@ describe('SupervisorSelect', () => {
       render(
         <SupervisorSelect
           errors={[]}
+          setErrors={setErrors}
           supervisorSelections={[
             {
               user: {
@@ -555,6 +568,7 @@ describe('SupervisorSelect', () => {
       render(
         <SupervisorSelect
           errors={[]}
+          setErrors={setErrors}
           supervisorSelections={[
             {
               user: {
@@ -621,6 +635,7 @@ describe('SupervisorSelect', () => {
       render(
         <SupervisorSelect
           errors={[]}
+          setErrors={setErrors}
           supervisorSelections={[
             {
               user: {

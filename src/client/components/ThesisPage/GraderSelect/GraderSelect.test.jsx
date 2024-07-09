@@ -49,12 +49,15 @@ jest.unstable_mockModule('@mui/icons-material/ArrowDropDown', () => ({
 const GraderSelect = (await import('./GraderSelect')).default
 
 describe('GraderSelect', () => {
+  let setErrors
+
   const graderSelections = [
     { user: null, isPrimaryGrader: true, isExternal: false },
   ]
   let setGraderSelections
 
   beforeEach(() => {
+    setErrors = jest.fn()
     setGraderSelections = jest.fn()
 
     initializeI18n()
@@ -64,6 +67,7 @@ describe('GraderSelect', () => {
     render(
       <GraderSelect
         errors={[]}
+        setErrors={setErrors}
         graderSelections={graderSelections}
         setGraderSelections={setGraderSelections}
       />
@@ -78,6 +82,7 @@ describe('GraderSelect', () => {
     render(
       <GraderSelect
         errors={[]}
+        setErrors={setErrors}
         graderSelections={[
           {
             user: {
@@ -107,6 +112,7 @@ describe('GraderSelect', () => {
     render(
       <GraderSelect
         errors={[]}
+        setErrors={setErrors}
         graderSelections={[
           {
             user: {
@@ -147,6 +153,7 @@ describe('GraderSelect', () => {
             path: ['graders', 0, 'user'],
           },
         ]}
+        setErrors={setErrors}
         graderSelections={[{ user: null, isPrimaryGrader: true, isExternal: false }]}
         setGraderSelections={setGraderSelections}
       />
@@ -166,6 +173,7 @@ describe('GraderSelect', () => {
       render(
         <GraderSelect
           errors={[]}
+          setErrors={setErrors}
           graderSelections={graderSelections}
           setGraderSelections={setGraderSelections}
         />
@@ -201,6 +209,7 @@ describe('GraderSelect', () => {
       render(
         <GraderSelect
           errors={[]}
+          setErrors={setErrors}
           graderSelections={graderSelections}
           setGraderSelections={setGraderSelections}
         />
@@ -246,6 +255,7 @@ describe('GraderSelect', () => {
       render(
         <GraderSelect
           errors={[]}
+          setErrors={setErrors}
           graderSelections={[
             {
               user: {
@@ -296,6 +306,7 @@ describe('GraderSelect', () => {
       render(
         <GraderSelect
           errors={[]}
+          setErrors={setErrors}
           graderSelections={[
             {
               user: {
