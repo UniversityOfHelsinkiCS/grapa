@@ -20,7 +20,7 @@ const LoginAs: React.FC = () => {
 
   const [userSearch, setUserSearch] = useState('')
   const debouncedSearch = useDebounce(userSearch, 700)
-  const { users } = useUsers({ search: debouncedSearch })
+  const { users } = useUsers({ search: debouncedSearch, onlyEmployees: true })
 
   const handleLoginAs = () => {
     loginAs(loginAsCandidate)
