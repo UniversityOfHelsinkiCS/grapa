@@ -1,4 +1,6 @@
 import express, { Response } from 'express'
+import { literal, Op } from 'sequelize'
+
 import { Program, ProgramManagement, User } from '../db/models'
 import { RequestWithUser } from '../types'
 
@@ -10,7 +12,16 @@ programManagementRouter.get(
   async (req: RequestWithUser, res: Response) => {
     const { isAdmin } = req.user
     const programs = await ProgramManagement.findAll({
-      where: isAdmin ? {} : { userId: req.user.id },
+      attributes: ['programId', 'userId'],
+      where: isAdmin
+        ? {}
+        : {
+            programId: {
+              [Op.in]: literal(
+                `(SELECT program_id FROM program_managements WHERE user_id = $editorUserId)`
+              ),
+            },
+          },
       include: [
         {
           model: User,
@@ -21,6 +32,8 @@ programManagementRouter.get(
           as: 'program',
         },
       ],
+      order: [['programId', 'ASC']],
+      bind: { editorUserId: req.user.id },
     })
 
     res.send(programs)
@@ -31,20 +44,21 @@ programManagementRouter.delete(
   '/:id',
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
-    const { isAdmin } = req.user
+    const { user: editorUser } = req
+    const { isAdmin } = editorUser
     let whereClause: any = { id: req.params.id }
     if (!isAdmin) {
       // if not admin, check if user has access to the program
-      const programs = await ProgramManagement.findAll({
+      const programsUserHasAccessTo = await ProgramManagement.findAll({
         attributes: ['programId'],
         where: {
-          userId: req.user.id,
+          userId: editorUser.id,
         },
       })
 
       whereClause = {
         ...whereClause,
-        programId: programs.map((program) => program.programId),
+        programId: programsUserHasAccessTo.map((program) => program.programId),
       }
     }
 
@@ -64,19 +78,20 @@ programManagementRouter.post(
   '/',
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
-    const { programId, userId } = req.body
+    const { user: editorUser } = req
+    const { programId, userId: targetUserId } = req.body
     const { isAdmin } = req.user
     if (!isAdmin) {
       // if not admin, check if user has access to the program
-      const programs = await ProgramManagement.findOne({
+      const userHasAccessToProgram = await ProgramManagement.findOne({
         attributes: ['programId'],
         where: {
-          userId: req.user.id,
+          userId: editorUser.id,
           programId,
         },
       })
 
-      if (!programs) {
+      if (!userHasAccessToProgram) {
         res.status(403).send({ error: 'Forbidden' })
         return
       }
@@ -84,7 +99,7 @@ programManagementRouter.post(
 
     const programManagement = await ProgramManagement.create({
       programId,
-      userId,
+      userId: targetUserId,
     })
     res.status(201).send(programManagement)
   }

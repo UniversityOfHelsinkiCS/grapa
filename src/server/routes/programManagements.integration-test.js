@@ -11,6 +11,7 @@ describe('program-managements router', () => {
   let program1
   let program2
   let programManagement1
+  let programManagement2
 
   beforeEach(async () => {
     program1 = await Program.create({
@@ -54,6 +55,10 @@ describe('program-managements router', () => {
 
     programManagement1 = await ProgramManagement.create({
       programId: program2.id,
+      userId: user2.id,
+    })
+    programManagement2 = await ProgramManagement.create({
+      programId: program1.id,
       userId: user3.id,
     })
   })
@@ -127,10 +132,18 @@ describe('program-managements router', () => {
           .get('/api/program-managements')
           .set({ uid: user1.id, hygroupcn: 'grp-toska' })
         expect(response.status).toEqual(200)
-        expect(response.body).toMatchObject([
+        expect(response.body).toIncludeSameMembers([
           {
             programId: program2.id,
+            userId: user2.id,
+            user: expect.any(Object),
+            program: expect.any(Object),
+          },
+          {
+            programId: program1.id,
             userId: user3.id,
+            user: expect.any(Object),
+            program: expect.any(Object),
           },
         ])
       })
@@ -152,7 +165,9 @@ describe('program-managements router', () => {
         })
 
         expect(
-          await ProgramManagement.findOne({ where: { programId: program1.id } })
+          await ProgramManagement.findOne({
+            where: { programId: program1.id, userId: user1.id },
+          })
         ).toMatchObject({
           programId: program1.id,
           userId: user1.id,
@@ -190,10 +205,18 @@ describe('program-managements router', () => {
           .get('/api/program-managements')
           .set({ uid: user1.id, hygroupcn: 'hy-employees' })
         expect(response.status).toEqual(200)
-        expect(response.body).toMatchObject([
+        expect(response.body).toIncludeSameMembers([
           {
             programId: program1.id,
             userId: user1.id,
+            user: expect.any(Object),
+            program: expect.any(Object),
+          },
+          {
+            programId: program1.id,
+            userId: user3.id,
+            user: expect.any(Object),
+            program: expect.any(Object),
           },
         ])
       })
@@ -231,15 +254,15 @@ describe('program-managements router', () => {
           .post('/api/program-managements')
           .set({ uid: user1.id, hygroupcn: 'hy-employees' })
           .send({
-            programId: programManagement1.programId,
-            userId: user2.id,
+            programId: program2.id,
+            userId: user3.id,
           })
         expect(response.status).toEqual(403)
         expect(
           await ProgramManagement.findOne({
             where: {
-              programId: programManagement1.programId,
-              userId: user2.id,
+              programId: program2.id,
+              userId: user3.id,
             },
           })
         ).toBeNull()
