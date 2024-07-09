@@ -23,9 +23,10 @@ import NewPersonControls from '../NewPersonControls'
 
 const SupervisorSelect: React.FC<{
   errors: ZodIssue[]
+  setErrors: (errors: ZodIssue[]) => void
   supervisorSelections: SupervisorSelection[]
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
-}> = ({ errors, supervisorSelections, setSupervisorSelections }) => {
+}> = ({ errors, setErrors, supervisorSelections, setSupervisorSelections }) => {
   const { t } = useTranslation()
 
   const totalPercentage = getTotalPercentage(supervisorSelections)
@@ -37,6 +38,11 @@ const SupervisorSelect: React.FC<{
     const updatedSelections = [...supervisorSelections]
     updatedSelections[index].user = supervisor
     setSupervisorSelections(updatedSelections)
+
+    const updatedErrors = errors.filter(
+      (error) => !error.path.join('-').startsWith(`supervisions-${index}-user`)
+    )
+    setErrors(updatedErrors)
   }
 
   const handlePercentageChange = (index: number, percentage: number) => {

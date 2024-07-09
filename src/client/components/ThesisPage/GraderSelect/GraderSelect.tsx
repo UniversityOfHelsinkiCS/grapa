@@ -9,9 +9,10 @@ import ExternalPersonInput from '../ExternalPerson'
 
 const GraderSelect: React.FC<{
   errors: ZodIssue[]
+  setErrors: (errors: ZodIssue[]) => void
   graderSelections: GraderData[]
   setGraderSelections: (newAuthors: GraderData[]) => void
-}> = ({ errors, graderSelections, setGraderSelections }) => {
+}> = ({ errors, setErrors, graderSelections, setGraderSelections }) => {
   const { t } = useTranslation()
 
   const handleChange = (index: number, grader: User) => {
@@ -20,6 +21,11 @@ const GraderSelect: React.FC<{
     updatedSelections[index].user = grader
     updatedSelections[index].isPrimaryGrader = index === 0
     setGraderSelections(updatedSelections)
+
+    const updatedErrors = errors.filter(
+      (error) => !error.path.join('-').startsWith(`graders-${index}-user`)
+    )
+    setErrors(updatedErrors)
   }
 
   const handleAddGrader = (isExternal: boolean) => {

@@ -153,6 +153,10 @@ const ThesisEditForm: React.FC<{
                   ...oldThesis,
                   topic: event.target.value,
                 }))
+
+                setFormErrors(
+                  formErrors.filter((error) => error.path[0] !== 'topic')
+                )
               }}
               error={formErrors.some((error) => error.path[0] === 'topic')}
               helperText={t(
@@ -180,6 +184,10 @@ const ThesisEditForm: React.FC<{
                       (program) => program.id === event.target.value
                     )?.studyTracks?.[0]?.id,
                   }))
+
+                  setFormErrors(
+                    formErrors.filter((error) => error.path[0] !== 'programId')
+                  )
                 }}
                 error={formErrors.some(
                   (error) => error.path[0] === 'programId'
@@ -218,6 +226,12 @@ const ThesisEditForm: React.FC<{
                       studyTrackId: event.target
                         .value as ThesisData['studyTrackId'],
                     }))
+
+                    setFormErrors(
+                      formErrors.filter(
+                        (error) => error.path[0] !== 'studyTrackId'
+                      )
+                    )
                   }}
                   error={formErrors.some(
                     (error) => error.path[0] === 'studyTrackId'
@@ -275,6 +289,10 @@ const ThesisEditForm: React.FC<{
                     ...oldThesis,
                     authors: [value],
                   }))
+
+                  setFormErrors(
+                    formErrors.filter((error) => error.path[0] !== 'authors')
+                  )
                 }}
                 onInputChange={(event, value) => {
                   // Fetch potential authors based on the input value
@@ -304,6 +322,10 @@ const ThesisEditForm: React.FC<{
                     ...oldThesis,
                     status: event.target.value as ThesisData['status'],
                   }))
+
+                  setFormErrors(
+                    formErrors.filter((error) => error.path[0] !== 'status')
+                  )
                 }}
                 error={formErrors.some((error) => error.path[0] === 'status')}
               >
@@ -352,6 +374,12 @@ const ThesisEditForm: React.FC<{
                         ...oldThesis,
                         startDate: date.format('YYYY-MM-DD'),
                       }))
+
+                      setFormErrors(
+                        formErrors.filter(
+                          (error) => error.path[0] !== 'startDate'
+                        )
+                      )
                     }}
                   />
                 </Grid>
@@ -382,6 +410,12 @@ const ThesisEditForm: React.FC<{
                         ...oldThesis,
                         targetDate: date.format('YYYY-MM-DD'),
                       }))
+
+                      setFormErrors(
+                        formErrors.filter(
+                          (error) => error.path[0] !== 'targetDate'
+                        )
+                      )
                     }}
                   />
                 </Grid>
@@ -390,9 +424,8 @@ const ThesisEditForm: React.FC<{
           </Stack>
 
           <SupervisorSelect
-            errors={formErrors.filter(
-              (error) => error.path[0] === 'supervisions'
-            )}
+            errors={formErrors}
+            setErrors={(errors) => setFormErrors(errors)}
             supervisorSelections={editedThesis.supervisions}
             setSupervisorSelections={(newSupervisions) =>
               setEditedThesis((oldThesis) => ({
@@ -403,7 +436,8 @@ const ThesisEditForm: React.FC<{
           />
 
           <GraderSelect
-            errors={formErrors.filter((error) => error.path[0] === 'graders')}
+            errors={formErrors}
+            setErrors={(errors) => setFormErrors(errors)}
             graderSelections={editedThesis.graders}
             setGraderSelections={(newGraders) =>
               setEditedThesis((oldThesis) => ({
@@ -435,12 +469,18 @@ const ThesisEditForm: React.FC<{
               {t('thesisForm:uploadResearchPlanButton')}
               <VisuallyHiddenInput
                 value=""
-                onChange={(ev) =>
+                onChange={(ev) => {
                   setEditedThesis((oldThesis) => ({
                     ...oldThesis,
                     researchPlan: ev.target.files[0],
                   }))
-                }
+
+                  setFormErrors(
+                    formErrors.filter(
+                      (error) => error.path[0] !== 'researchPlan'
+                    )
+                  )
+                }}
                 type="file"
                 accept=".pdf"
               />
@@ -479,12 +519,18 @@ const ThesisEditForm: React.FC<{
               {t('thesisForm:uploadWaysOfWorkingButton')}
               <VisuallyHiddenInput
                 value=""
-                onChange={(ev) =>
+                onChange={(ev) => {
                   setEditedThesis((oldThesis) => ({
                     ...oldThesis,
                     waysOfWorking: ev.target.files[0],
                   }))
-                }
+
+                  setFormErrors(
+                    formErrors.filter(
+                      (error) => error.path[0] !== 'waysOfWorking'
+                    )
+                  )
+                }}
                 type="file"
                 accept=".pdf"
               />
