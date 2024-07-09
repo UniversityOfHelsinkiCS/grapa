@@ -176,10 +176,7 @@ const fetchThesisById = async (id: string, user: UserType) => {
   return thesis[0]
 }
 
-const createThesisAndSupervisions = async (
-  thesisData: ThesisData,
-  t: Transaction
-) => {
+const createThesis = async (thesisData: ThesisData, t: Transaction) => {
   const createdThesis = await Thesis.create(thesisData, { transaction: t })
 
   const extUsers = await getAndCreateExtUsers(thesisData, t)
@@ -403,7 +400,7 @@ thesisRouter.post(
     const thesisData = req.body
 
     const createdThesis = await sequelize.transaction(async (t) => {
-      const newThesis = await createThesisAndSupervisions(thesisData, t)
+      const newThesis = await createThesis(thesisData, t)
 
       await handleAttachmentByLabel(req, newThesis.id, 'researchPlan', t)
       await handleAttachmentByLabel(req, newThesis.id, 'waysOfWorking', t)
