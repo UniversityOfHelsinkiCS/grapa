@@ -1037,6 +1037,137 @@ describe('thesis router', () => {
           })
         })
       })
+
+      describe('when the request contains duplicate supervisors', () => {
+        it('should return 200 and update the thesis', async () => {
+          const newThesis = {
+            programId: 'Updated program',
+            studyTrackId: 'new-test-study-track-id',
+            topic: 'Updated topic',
+            status: 'PLANNING',
+            startDate: '1970-01-01T00:00:00.000Z',
+            targetDate: '2070-01-01T00:00:00.000Z',
+            supervisions: [
+              {
+                user: user1,
+                percentage: 50,
+                isExternal: false,
+                isPrimarySupervisor: true,
+              },
+              {
+                user: user1,
+                percentage: 50,
+                isExternal: false,
+                isPrimarySupervisor: false,
+              },
+            ],
+            graders: [
+              {
+                user: user4,
+                isPrimaryGrader: true,
+                isExternal: false,
+              },
+            ],
+            authors: [user2],
+            waysOfWorking: {
+              filename: 'testfile.pdf2',
+              name: 'testfile.pdf2',
+              mimetype: 'application/pdf2',
+            },
+            researchPlan: {
+              filename: 'testfile.pdf1',
+              name: 'testfile.pdf1',
+              mimetype: 'application/pdf1',
+            },
+          }
+          const response = await request
+            .post('/api/theses')
+            .set('hygroupcn', 'grp-toska')
+            .field('json', JSON.stringify(newThesis))
+
+          expect(response.status).toEqual(201)
+
+          const thesisSupervisions = await Supervision.findAll({
+            where: { thesisId: response.body.id },
+          })
+
+          expect(thesisSupervisions).toHaveLength(1)
+          expect(thesisSupervisions).toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                userId: user1.id,
+                percentage: 100,
+                isPrimarySupervisor: true,
+              }),
+            ])
+          )
+        })
+      })
+
+      describe('when the request contains duplicate graders', () => {
+        it('should return 200 and update the thesis', async () => {
+          const newThesis = {
+            programId: 'Updated program',
+            studyTrackId: 'new-test-study-track-id',
+            topic: 'Updated topic',
+            status: 'PLANNING',
+            startDate: '1970-01-01T00:00:00.000Z',
+            targetDate: '2070-01-01T00:00:00.000Z',
+            supervisions: [
+              {
+                user: user1,
+                percentage: 100,
+                isExternal: false,
+                isPrimarySupervisor: true,
+              },
+            ],
+            graders: [
+              {
+                user: user4,
+                isPrimaryGrader: true,
+                isExternal: false,
+              },
+              {
+                user: user4,
+                isPrimaryGrader: false,
+                isExternal: false,
+              },
+            ],
+            authors: [user2],
+            waysOfWorking: {
+              filename: 'testfile.pdf2',
+              name: 'testfile.pdf2',
+              mimetype: 'application/pdf2',
+            },
+            researchPlan: {
+              filename: 'testfile.pdf1',
+              name: 'testfile.pdf1',
+              mimetype: 'application/pdf1',
+            },
+          }
+
+          const response = await request
+            .post('/api/theses')
+            .set('hygroupcn', 'grp-toska')
+            .field('json', JSON.stringify(newThesis))
+
+          expect(response.status).toEqual(201)
+
+          const thesisGraders = await Grader.findAll({
+            where: { thesisId: response.body.id },
+          })
+
+          expect(thesisGraders).toHaveLength(1)
+          expect(thesisGraders).toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                userId: user4.id,
+                isPrimaryGrader: true,
+              }),
+            ])
+          )
+        })
+      })
     })
 
     describe('PUT /api/theses/:id', () => {

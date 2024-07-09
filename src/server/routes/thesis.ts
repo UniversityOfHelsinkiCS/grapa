@@ -181,8 +181,17 @@ const createThesis = async (thesisData: ThesisData, t: Transaction) => {
 
   const extUsers = await getAndCreateExtUsers(thesisData, t)
 
+  const nonDuplicateSupervisors = uniqBy(
+    thesisData.supervisions,
+    (x: SupervisionData) => x.user?.email
+  )
+  const updatedSupervisions = getEqualSupervisorSelectionWorkloads(
+    nonDuplicateSupervisors.length,
+    nonDuplicateSupervisors
+  )
+
   await Supervision.bulkCreate(
-    thesisData.supervisions.map((supervision) => ({
+    updatedSupervisions.map((supervision) => ({
       userId:
         supervision.user?.id ??
         extUsers.find((u) => u.email === supervision.user?.email)?.id,
@@ -219,8 +228,13 @@ const createThesis = async (thesisData: ThesisData, t: Transaction) => {
     }
   )
 
+  const nonDuplicateGraders = uniqBy(
+    thesisData.graders.filter((x) => Boolean(x?.user)),
+    (x: GraderData) => x.user?.email
+  )
+
   await Grader.bulkCreate(
-    thesisData.graders
+    nonDuplicateGraders
       .filter((x) => Boolean(x?.user))
       .map((grader) => ({
         userId:
