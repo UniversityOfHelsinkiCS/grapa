@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 
 // import SupervisorSelect from './SupervisorSelect'
 import initializeI18n from '../../../util/il18n'
@@ -71,6 +71,7 @@ describe('SupervisorSelect', () => {
   let setSupervisorSelections
 
   beforeEach(() => {
+    setErrors = jest.fn()
     setSupervisorSelections = jest.fn()
 
     initializeI18n()
@@ -669,6 +670,50 @@ describe('SupervisorSelect', () => {
       expect(removeButton).toBeDisabled()
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(0)
+    })
+
+    it('should call setErrors when an erroneuous supervisor field is changed', async () => {
+      const select = render(
+        <SupervisorSelect
+          errors={[
+            {
+              code: 'custom',
+              message: 'formErrors:supervisors',
+              path: ['supervisions', 0, 'user'],
+            },
+          ]}
+          setErrors={setErrors}
+          supervisorSelections={[
+            { user: null, percentage: 100, isExternal: false, isPrimarySupervisor: true },
+          ]}
+          setSupervisorSelections={setSupervisorSelections}
+        />
+      )
+
+      const helperText = select.container.querySelector(
+        '#supervisions-0-user-helper-text'
+      )
+      expect(helperText).toBeInTheDocument()
+
+      const inputElement = select.container.querySelector('#supervisions-0-user')
+      expect(inputElement).toHaveAttribute('aria-invalid', 'true')
+
+      const superVisorSelect1 = screen.getByTestId(
+        'supervisor-select-input-1'
+      )
+
+      const superVisorInput1 = within(superVisorSelect1).getByRole('combobox')
+
+      superVisorSelect1.focus()
+
+      fireEvent.change(superVisorInput1, { target: { value: 'Jane Smith' } })
+      fireEvent.keyDown(superVisorSelect1, { key: 'ArrowDown' })
+      fireEvent.keyDown(superVisorSelect1, { key: 'Enter' })
+
+      await waitFor(() => {
+        expect(setErrors).toHaveBeenCalledTimes(1)
+        expect(setErrors).toHaveBeenCalledWith([])
+      })
     })
   })
 })

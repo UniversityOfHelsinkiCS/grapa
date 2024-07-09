@@ -327,5 +327,46 @@ describe('GraderSelect', () => {
       const removeButton = screen.queryByTestId('remove-grader-button')
       expect(removeButton).toBeNull()
     })
+
+    it('should call setErrors when an erroneuous grader field is changed', async () => {
+      const select = render(
+        <GraderSelect
+          errors={[
+            {
+              code: 'custom',
+              message: 'formErrors:graders',
+              path: ['graders', 0, 'user'],
+            },
+          ]}
+          setErrors={setErrors}
+          graderSelections={[
+            { user: null, isExternal: false, isPrimaryGrader: true },
+          ]}
+          setGraderSelections={setGraderSelections}
+        />
+      )
+
+      const helperText = select.container.querySelector(
+        '#graders-0-user-helper-text'
+      )
+      expect(helperText).toBeInTheDocument()
+
+      const inputElement = select.container.querySelector('#graders-0-user')
+      expect(inputElement).toHaveAttribute('aria-invalid', 'true')
+
+      const graderSelect1 = screen.getByTestId('grader-select-input-1')
+      const graderInput1 = within(graderSelect1).getByRole('combobox')
+
+      graderSelect1.focus()
+
+      fireEvent.change(graderInput1, { target: { value: 'Bob Luukkainen' } })
+      fireEvent.keyDown(graderSelect1, { key: 'ArrowDown' })
+      fireEvent.keyDown(graderSelect1, { key: 'Enter' })
+
+      await waitFor(() => {
+        expect(setErrors).toHaveBeenCalledTimes(1)
+        expect(setErrors).toHaveBeenCalledWith([])
+      })
+    })
   })
 })
