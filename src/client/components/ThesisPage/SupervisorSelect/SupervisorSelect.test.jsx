@@ -282,7 +282,7 @@ describe('SupervisorSelect', () => {
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
       expect(setSupervisorSelections).toHaveBeenCalledWith([
-        expect.objectContaining({ user: null, percentage: 100, isExternal: false, isPrimarySupervisor: false }),
+        { user: null, percentage: 100, isExternal: false, isPrimarySupervisor: false, creationTimeIdentifier: expect.any(String) },
       ])
     })
 
@@ -316,7 +316,7 @@ describe('SupervisorSelect', () => {
       await waitFor(() => {
         expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
         expect(setSupervisorSelections).toHaveBeenCalledWith([
-          expect.objectContaining({ user: null, percentage: 100, isExternal: true, isPrimarySupervisor: false }),
+          { user: null, percentage: 100, isExternal: true, isPrimarySupervisor: false, creationTimeIdentifier: expect.any(String)},
         ])
       })
     })  
@@ -359,8 +359,8 @@ describe('SupervisorSelect', () => {
       select.click()
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
-      expect(setSupervisorSelections).toHaveBeenCalledWith(expect.arrayContaining([
-        expect.objectContaining({
+      expect(setSupervisorSelections).toHaveBeenCalledWith([
+        {
           user: {
             id: 1,
             firstName: 'John',
@@ -371,8 +371,8 @@ describe('SupervisorSelect', () => {
           percentage: 34,
           isExternal: false,
           isPrimarySupervisor: true,
-        }),
-        expect.objectContaining({
+        },
+        {
           user: {
             id: 2,
             firstName: 'Jane',
@@ -382,9 +382,9 @@ describe('SupervisorSelect', () => {
           percentage: 33,
           isExternal: false,
           isPrimarySupervisor: false,
-        }),
-        (expect.objectContaining({ user: null, percentage: 33, isExternal: false, isPrimarySupervisor: false })),
-      ]))
+        },
+        { user: null, percentage: 33, isExternal: false, isPrimarySupervisor: false, creationTimeIdentifier: expect.any(String)},
+      ])
     })
 
     it('should adjust the supervisor workload percentages accordingly when an external supervisor is added', async () => {
@@ -441,7 +441,7 @@ describe('SupervisorSelect', () => {
       await waitFor(() => {
         expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
         expect(setSupervisorSelections).toHaveBeenCalledWith([
-          expect.objectContaining({
+          {
             user: {
               id: 1,
               firstName: 'John',
@@ -452,8 +452,8 @@ describe('SupervisorSelect', () => {
             percentage: 34,
             isExternal: false,
             isPrimarySupervisor: true,
-          }),
-          expect.objectContaining({
+          },
+          {
             user: {
               id: 2,
               firstName: 'Jane',
@@ -463,8 +463,8 @@ describe('SupervisorSelect', () => {
             percentage: 33,
             isExternal: false,
             isPrimarySupervisor: false,
-          }),
-          expect.objectContaining({ user: null, percentage: 33, isExternal: true, isPrimarySupervisor: false }),
+          },
+          { user: null, percentage: 33, isExternal: true, isPrimarySupervisor: false, creationTimeIdentifier: expect.any(String) },
         ])
       })
     })
