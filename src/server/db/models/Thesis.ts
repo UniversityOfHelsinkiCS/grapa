@@ -47,6 +47,10 @@ Thesis.init(
     studyTrackId: {
       type: DataTypes.STRING,
       allowNull: true,
+      references: {
+        model: 'study_tracks',
+        key: 'id',
+      },
     },
     topic: {
       type: DataTypes.STRING,
