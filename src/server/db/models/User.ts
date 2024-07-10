@@ -21,6 +21,8 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 
   declare language: string
 
+  declare affiliation: string
+
   declare isAdmin: boolean
 
   declare isExternal: boolean
@@ -55,6 +57,10 @@ User.init(
     },
     email: {
       type: DataTypes.STRING,
+    },
+    affiliation: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     language: {
       type: DataTypes.STRING,

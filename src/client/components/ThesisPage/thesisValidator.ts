@@ -40,7 +40,12 @@ const supervisionSchema = z
     }
 
     if (data.isExternal) {
-      const userData = data.user ?? { firstName: '', lastName: '', email: '' }
+      const userData = data.user ?? {
+        firstName: '',
+        lastName: '',
+        email: '',
+        affiliation: '',
+      }
 
       extUserSchema.safeParse(userData).error?.issues.forEach((issue) => {
         ctx.addIssue({
@@ -67,7 +72,12 @@ const graderSchema = z
     }
 
     if (data.isExternal) {
-      const userData = data.user ?? { firstName: '', lastName: '', email: '' }
+      const userData = data.user ?? {
+        firstName: '',
+        lastName: '',
+        email: '',
+        affiliation: '',
+      }
 
       extUserSchema.safeParse(userData).error?.issues.forEach((issue) => {
         ctx.addIssue({

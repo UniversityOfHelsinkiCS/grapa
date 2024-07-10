@@ -146,6 +146,7 @@ const getAndCreateExtUsers = async (
     ...thesisData.supervisions,
     ...thesisData.graders,
   ]
+
   // Create the external users from the graders and supervisions
   const extUsers = await User.bulkCreate(
     gradersAndSupervisors
@@ -155,11 +156,18 @@ const getAndCreateExtUsers = async (
         firstName: person.user?.firstName,
         lastName: person.user?.lastName,
         email: person.user?.email,
+        affiliation: person.user?.affiliation,
         isExternal: true,
       })),
     {
       transaction,
-      updateOnDuplicate: ['username'],
+      updateOnDuplicate: [
+        'username',
+        'firstName',
+        'lastName',
+        'email',
+        'affiliation',
+      ],
       validate: true,
     }
   )

@@ -4,6 +4,7 @@ export const userFields = [
   'email',
   'firstName',
   'lastName',
+  'affiliation',
   'language',
   'isAdmin',
   'studentNumber',
