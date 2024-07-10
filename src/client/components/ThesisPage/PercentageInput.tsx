@@ -17,7 +17,7 @@ const PercentageInput = ({
 }: PercentageInputProps) => (
   <TextField
     type="number"
-    sx={{ width: '12ch' }}
+    sx={{ minWidth: '10%' }}
     InputProps={{
       inputProps: { min: 1, max: 100 },
       endAdornment: <InputAdornment position="end">%</InputAdornment>,

@@ -129,7 +129,7 @@ const ExternalPersonInput = ({
           label={t('thesisForm:email')}
           value={selection.user?.email ?? ''}
           onChange={(event) => handleInputChange('email', event.target.value)}
-          sx={{ width: '50ch' }}
+          sx={{ width: '40%' }}
           variant="outlined"
           error={Boolean(inputErrors?.email)}
           helperText={inputErrors?.email}
@@ -146,7 +146,7 @@ const ExternalPersonInput = ({
           onChange={(event) =>
             handleInputChange('affiliation', event.target.value)
           }
-          sx={{ width: '50ch' }}
+          sx={{ width: '40%' }}
           variant="outlined"
           error={Boolean(inputErrors?.affiliation)}
           helperText={inputErrors?.affiliation}

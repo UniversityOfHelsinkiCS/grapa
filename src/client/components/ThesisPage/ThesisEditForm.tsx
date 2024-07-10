@@ -347,8 +347,8 @@ const ThesisEditForm: React.FC<{
               adapterLocale={language}
               dateAdapter={AdapterDayjs}
             >
-              <Grid container>
-                <Grid item xs={6} sx={{ pr: '1rem' }}>
+              <Grid container rowSpacing={{ xs: 2, md: 0 }}>
+                <Grid item xs={12} md={6} sx={{ pr: { md: '1rem' } }}>
                   <DatePicker
                     label={t('startDateHeader')}
                     slotProps={{
@@ -383,7 +383,7 @@ const ThesisEditForm: React.FC<{
                     }}
                   />
                 </Grid>
-                <Grid item xs={6} sx={{ pl: '1rem' }}>
+                <Grid item xs={12} md={6} sx={{ pl: { md: '1rem' } }}>
                   <DatePicker
                     label={t('targetDateHeader')}
                     slotProps={{
