@@ -26,6 +26,8 @@ class Thesis extends Model<
   declare startDate: string
 
   declare targetDate: string | undefined
+
+  declare departmentId: string | undefined
 }
 
 Thesis.init(
@@ -49,6 +51,14 @@ Thesis.init(
       allowNull: true,
       references: {
         model: 'study_tracks',
+        key: 'id',
+      },
+    },
+    departmentId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      references: {
+        model: 'departments',
         key: 'id',
       },
     },
