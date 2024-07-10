@@ -7,6 +7,7 @@ import Program from './Program'
 import StudyTrack from './StudyTrack'
 import Grader from './Grader'
 import ProgramManagement from './ProgramManagement'
+import Department from './Department'
 
 User.belongsToMany(Thesis, {
   through: Supervision,
@@ -65,4 +66,5 @@ export {
   StudyTrack,
   Grader,
   ProgramManagement,
+  Department,
 }
