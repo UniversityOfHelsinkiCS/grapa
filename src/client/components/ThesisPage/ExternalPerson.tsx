@@ -20,12 +20,12 @@ type ExternalPersonInputErrors = {
 }
 
 type SupervisorSelection = {
-  user: User | null
+  user: Partial<User> | null
   percentage: number
 }
 
 type GraderSelection = {
-  user: User | null
+  user: Partial<User> | null
   isPrimaryGrader: boolean
   isExternal: boolean
 }
@@ -34,7 +34,7 @@ interface BaseExternalPersonInputProps {
   index: number
   inputGroup: 'supervisions' | 'graders'
   selection: SupervisorSelection | GraderSelection
-  handlePersonChange: (value: User | null) => void
+  handlePersonChange: (value: Partial<User> | null) => void
   handleRemovePerson: () => void
   inputErrors: ExternalPersonInputErrors
   inputProps: TextFieldProps

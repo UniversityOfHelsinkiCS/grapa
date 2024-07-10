@@ -25,11 +25,11 @@ import PercentageInput from '../PercentageInput'
 interface SingleSupervisorSelectProps {
   index: number
   selection: {
-    user: User | null
+    user: Partial<User> | null
     percentage: number
     isPrimarySupervisor: boolean
   }
-  handleSupervisorChange: (value: User | null) => void
+  handleSupervisorChange: (value: Partial<User> | null) => void
   handleRemoveSupervisor: () => void
   handlePercentageChange: (percentage: number) => void
   handlePrimarySupervisorChange: () => void
@@ -59,7 +59,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
   return (
     <Stack spacing={1} direction="row">
       <FormControl fullWidth>
-        <Autocomplete<User>
+        <Autocomplete<Partial<User>>
           id={`supervisions-${index}-user`}
           noOptionsText={t('userSearchNoOptions')}
           data-testid={`supervisor-select-input-${index + 1}`}

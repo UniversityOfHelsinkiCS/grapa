@@ -43,14 +43,15 @@ export type ThesisStatus =
   | 'CANCELLED'
 
 export interface SupervisionData {
-  user: User
+  user: Partial<User>
   percentage: number
   isExternal: boolean
   isPrimarySupervisor: boolean
+  creationTimeIdentifier?: string
 }
 
 export interface GraderData {
-  user: User
+  user: Partial<User>
   isPrimaryGrader: boolean
   isExternal: boolean
 }

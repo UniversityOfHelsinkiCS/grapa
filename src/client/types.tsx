@@ -1,7 +1,7 @@
 import { User } from '@backend/types'
 
 export interface SupervisorSelection {
-  user: User | null
+  user: Partial<User> | null
   percentage: number
   isExternal: boolean
   isPrimarySupervisor: boolean

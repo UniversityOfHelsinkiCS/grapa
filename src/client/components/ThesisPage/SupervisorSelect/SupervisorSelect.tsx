@@ -34,7 +34,7 @@ const SupervisorSelect: React.FC<{
     error.path.join('-').endsWith('general-supervisor-error')
   )
 
-  const handleSupervisorChange = (index: number, supervisor: User) => {
+  const handleSupervisorChange = (index: number, supervisor: Partial<User>) => {
     const updatedSelections = [...supervisorSelections]
     updatedSelections[index].user = supervisor
     setSupervisorSelections(updatedSelections)

@@ -15,7 +15,7 @@ const GraderSelect: React.FC<{
 }> = ({ errors, setErrors, graderSelections, setGraderSelections }) => {
   const { t } = useTranslation()
 
-  const handleChange = (index: number, grader: User) => {
+  const handleChange = (index: number, grader: Partial<User>) => {
     const updatedSelections = [...graderSelections]
 
     updatedSelections[index].user = grader
