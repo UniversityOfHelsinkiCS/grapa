@@ -620,6 +620,7 @@ describe('thesis router', () => {
           firstName: 'External',
           lastName: 'Supervisor',
           email: 'ext-test@helsinki.fi',
+          affiliation: 'External affiliation',
         }
 
         const newThesis = {
@@ -681,6 +682,7 @@ describe('thesis router', () => {
           firstName: 'External',
           lastName: 'Grader',
           email: 'ext-grader@helsinki.fi',
+          affiliation: 'External affiliation',
         }
 
         const newThesis = {
@@ -1489,6 +1491,7 @@ describe('thesis router', () => {
               firstName: 'External',
               lastName: 'Supervisor',
               email: 'ext-test@helsinki.fi',
+              affiliation: 'External affiliation',
             }
 
             const updatedThesis = {
@@ -1569,12 +1572,14 @@ describe('thesis router', () => {
               firstName: 'External',
               lastName: 'Supervisor',
               email: 'ext-test@helsinki.fi',
+              affiliation: 'External affiliation',
             }
 
             const duplicateExtUserData = {
               firstName: 'test1',
               lastName: 'test1',
               email: 'test@test.test1',
+              affiliation: 'External affiliation',
             }
 
             const updatedThesis = {
@@ -1637,12 +1642,12 @@ describe('thesis router', () => {
             expect(extUser).toMatchObject(extUserData)
             expect(extUser.isExternal).toBe(true)
 
-            // Check that the original user is not updated
+            // Check that the original user is not updated. Orinal user is user1 declared in the test data
             const duplicateExtUser = await User.findOne({
               where: { email: duplicateExtUserData.email },
             })
             expect(duplicateExtUser).not.toBeNull()
-            expect(duplicateExtUser).toMatchObject(duplicateExtUserData)
+            expect(duplicateExtUser).toMatchObject({ ...duplicateExtUserData, affiliation: null})
             expect(duplicateExtUser.isExternal).toBe(false)
 
             // Check that the supervisions are correct
@@ -1726,6 +1731,7 @@ describe('thesis router', () => {
             firstName: 'External',
             lastName: 'Supervisor',
             email: 'ext-grader@helsinki.fi',
+            affiliation: 'External affiliation',
           }
 
           const updatedThesis = {

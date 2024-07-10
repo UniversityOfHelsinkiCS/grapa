@@ -3,6 +3,57 @@ import { ServerPostRequest, ServerPutRequest } from '@backend/types'
 import CustomValidationError from '../errors/ValidationError'
 import { getTotalPercentage } from '../util/helpers'
 
+const validateUser = (user: any) => {
+  if (!user) {
+    throw new CustomValidationError('User is required', {
+      user,
+    })
+  }
+  if (!user.id) {
+    throw new CustomValidationError('User id is required', {
+      id: ['User id is required'],
+    })
+  }
+  if (!user.firstName) {
+    throw new CustomValidationError('First name is required', {
+      firstName: ['First name is required'],
+    })
+  }
+  if (!user.lastName) {
+    throw new CustomValidationError('Last name is required', {
+      lastName: ['Last name is required'],
+    })
+  }
+  if (!user.username) {
+    throw new CustomValidationError('Username is required', {
+      username: ['Username is required'],
+    })
+  }
+}
+
+const validateExtUser = (user: any) => {
+  if (!user.firstName) {
+    throw new CustomValidationError('First name is required', {
+      firstName: ['First name is required'],
+    })
+  }
+  if (!user.lastName) {
+    throw new CustomValidationError('Last name is required', {
+      lastName: ['Last name is required'],
+    })
+  }
+  if (!user.email) {
+    throw new CustomValidationError('Email is required', {
+      email: ['Email is required'],
+    })
+  }
+  if (!user.affiliation) {
+    throw new CustomValidationError('Affiliation is required', {
+      affiliation: ['Affiliation is required'],
+    })
+  }
+}
+
 export const validateThesisData = (
   req: ServerPostRequest | ServerPutRequest,
   _: Express.Response,
@@ -21,6 +72,14 @@ export const validateThesisData = (
       supervisions: ['At least one supervision is required'],
     })
   }
+
+  thesisData.supervisions.forEach(({ user, isExternal }) => {
+    if (isExternal) {
+      validateExtUser(user)
+    } else {
+      validateUser(user)
+    }
+  })
 
   const thesisPrimarySupervisors = thesisData.supervisions.filter(
     (supervision) => supervision.isPrimarySupervisor
@@ -43,11 +102,23 @@ export const validateThesisData = (
     })
   }
 
+  thesisData.authors.forEach((author) => {
+    validateUser(author)
+  })
+
   if (!thesisData.graders || thesisData.graders.length === 0) {
     throw new CustomValidationError('At least one grader is required', {
       graders: ['At least one grader is required'],
     })
   }
+
+  thesisData.graders.forEach(({ user, isExternal }) => {
+    if (isExternal) {
+      validateExtUser(user)
+    } else {
+      validateUser(user)
+    }
+  })
 
   // primary grader must be set
   if (!thesisData.graders.some((grader) => grader.isPrimaryGrader)) {

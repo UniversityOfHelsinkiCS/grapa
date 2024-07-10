@@ -10,9 +10,35 @@ describe('validateThesisData', () => {
       body: {
         topic: 'Test thesis',
         programId: 'test-program',
-        supervisions: [{ percentage: 100, isPrimarySupervisor: true }],
-        authors: [{}],
-        graders: [{user: {}, isPrimaryGrader: true, isExternal: false}],
+        supervisions: [{ 
+          user: {
+            id: 'test-user',
+            username: 'test-username',
+            firstName: 'Test',
+            lastName: 'User',
+            email: 'test-email@test.fi',
+          }, 
+          percentage: 100, 
+          isPrimarySupervisor: true 
+        }],
+        authors: [{
+            id: 'test-author',
+            username: 'test-authorname',
+            firstName: 'Test',
+            lastName: 'Author',
+            email: 'test-author@test.fi',
+        }],
+        graders: [{
+          user: {
+            id: 'test-user',
+            username: 'test-username',
+            firstName: 'Test',
+            lastName: 'User',
+            email: 'test-email@test.fi',
+          }, 
+          isPrimaryGrader: true, 
+          isExternal: false
+        }],
         researchPlan: {},
         waysOfWorking: {},
         startDate: '2021-01-01',
@@ -59,7 +85,17 @@ describe('validateThesisData', () => {
   it('should return an error if supervisions percentage sum is under 100', () => {
     req.body = {
       ...req.body,
-      supervisions: [{ percentage: 90, isPrimarySupervisor: true }],
+      supervisions: [{ 
+        user: {
+            id: 'test-user',
+            username: 'test-username',
+            firstName: 'Test',
+            lastName: 'User',
+            email: 'test-email@test.fi',
+          }, 
+        percentage: 90, 
+        isPrimarySupervisor: true
+      }],
     }
 
     expect(() => validateThesisData(req, res, next)).toThrow(
@@ -71,7 +107,17 @@ describe('validateThesisData', () => {
   it('should return an error if supervisions percentage sum is over 100', () => {
     req.body = {
       ...req.body,
-      supervisions: [{ percentage: 110, isPrimarySupervisor: true }],
+      supervisions: [{
+        user: {
+          id: 'test-user',
+          username: 'test-username',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test-email@test.fi',
+        }, 
+        percentage: 110, 
+        isPrimarySupervisor: true
+      }],
     }
 
     expect(() => validateThesisData(req, res, next)).toThrow(
@@ -83,7 +129,16 @@ describe('validateThesisData', () => {
   it('should return an error if primary supervisor is missing', () => {
     req.body = {
       ...req.body,
-      supervisions: [{ percentage: 100 }],
+      supervisions: [{ 
+        user: {
+          id: 'test-user',
+          username: 'test-username',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test-email@test.fi',
+        }, 
+        percentage: 100
+      }],
     }
 
     expect(() => validateThesisData(req, res, next)).toThrow(
@@ -95,7 +150,28 @@ describe('validateThesisData', () => {
   it('should return an error if there are more than one primary supervisors', () => {
     req.body = {
       ...req.body,
-      supervisions: [{ percentage: 50, isPrimarySupervisor: true }, { percentage: 50, isPrimarySupervisor: true }],
+      supervisions: [{
+        user: {
+          id: 'test-user',
+          username: 'test-username',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test-email@test.fi',
+        }, 
+        percentage: 50, 
+        isPrimarySupervisor: true
+      }, 
+      { 
+        user: {
+          id: 'test-user-2',
+          username: 'test-username-2',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test-email-2@test.fi',
+        }, 
+        percentage: 50, 
+        isPrimarySupervisor: true
+      }],
     }
 
     expect(() => validateThesisData(req, res, next)).toThrow(
@@ -131,7 +207,15 @@ describe('validateThesisData', () => {
   it('should return an error if primary grader is missing', () => {
     req.body = {
       ...req.body,
-      graders: [{user: {}}]
+      graders: [{
+        user: {
+          id: 'test-user',
+          username: 'test-username',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test-email@test.fi',
+        }, 
+      }]
     }
 
     expect(() => validateThesisData(req, res, next)).toThrow(
@@ -143,7 +227,12 @@ describe('validateThesisData', () => {
   it('should return an error if primary grader is external', () => {
     req.body = {
       ...req.body,
-      graders: [{user: {}, isPrimaryGrader: true, isExternal: true}]
+      graders: [{user: {
+        firstName: 'Test',
+        lastName: 'User',
+        email: 'test-user@test.fi',
+        affiliation: 'Test affiliation',
+      }, isPrimaryGrader: true, isExternal: true}]
     }
 
     expect(() => validateThesisData(req, res, next)).toThrow(
@@ -155,8 +244,28 @@ describe('validateThesisData', () => {
   it('should return an error if there is two primary graders', () => { 
     req.body = {
       ...req.body,
-      graders: [{user: {}, isPrimaryGrader: true, isExternal: false},
-                {user: {}, isPrimaryGrader: true, isExternal: false}]
+      graders: [{
+        user: {
+          id: 'test-user',
+          username: 'test-username',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test-email@test.fi',
+        }, 
+        isPrimaryGrader: true, 
+        isExternal: false
+      },
+      {
+        user: {
+          id: 'test-user-2',
+          username: 'test-username-2',
+          firstName: 'Test-2',
+          lastName: 'User-2',
+          email: 'test-email-2@test.fi',
+        },        
+        isPrimaryGrader: true,
+        isExternal: false
+      }]
     }
 
     expect(() => validateThesisData(req, res, next)).toThrow(
@@ -168,7 +277,16 @@ describe('validateThesisData', () => {
   it('should return an error if the primary grader is external', () => {
     req.body = {
       ...req.body,
-      graders: [{user: {}, isPrimaryGrader: true, isExternal: true}]
+      graders: [{
+        user: {
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test-affiliation@test.fi',
+          affiliation: 'Test affiliation'
+        }, 
+        isPrimaryGrader: true, 
+        isExternal: true
+      }]
     }
 
     expect(() => validateThesisData(req, res, next)).toThrow(
