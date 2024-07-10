@@ -104,7 +104,10 @@ const ThesisEditForm: React.FC<{
       open
       fullWidth
       maxWidth="lg"
-      onClose={onClose}
+      onClose={() => {
+        clearURL()
+        onClose()
+      }}
       PaperProps={{
         component: 'form',
         onSubmit: handleSubmit,
