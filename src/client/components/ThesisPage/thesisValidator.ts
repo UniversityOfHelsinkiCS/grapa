@@ -18,6 +18,9 @@ const extUserSchema = z.object({
   email: z
     .string({ required_error: 'formErrors:email' })
     .email('formErrors:email'),
+  affiliation: z
+    .string({ required_error: 'formErrors:affiliation' })
+    .min(1, 'formErrors:affiliation'),
 })
 
 const supervisionSchema = z

@@ -28,6 +28,7 @@ export interface User {
   iamGroups: string[]
   managedProgramIds?: string[]
   isExternal: boolean
+  affiliation?: string
 }
 
 export interface RequestWithUser extends Request {

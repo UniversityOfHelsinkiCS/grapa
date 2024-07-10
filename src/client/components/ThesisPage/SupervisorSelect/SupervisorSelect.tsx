@@ -177,6 +177,13 @@ const SupervisorSelect: React.FC<{
                       `supervisions-${index}-user-email`
                   )?.message
                 ),
+                affiliation: t(
+                  errors.find(
+                    (error) =>
+                      error.path.join('-') ===
+                      `supervisions-${index}-user-affiliation`
+                  )?.message
+                ),
               }}
               inputProps={{
                 required: true,

@@ -17,6 +17,7 @@ type ExternalPersonInputErrors = {
   firstName?: string | null
   lastName?: string | null
   email?: string | null
+  affiliation?: string | null
 }
 
 type SupervisorSelection = {
@@ -128,25 +129,29 @@ const ExternalPersonInput = ({
           label={t('thesisForm:email')}
           value={selection.user?.email ?? ''}
           onChange={(event) => handleInputChange('email', event.target.value)}
-          fullWidth
+          sx={{ width: '50ch' }}
           variant="outlined"
           error={Boolean(inputErrors?.email)}
           helperText={inputErrors?.email}
           {...inputProps}
         />
 
-        {/* <TextField
+        <TextField
           required
           margin="dense"
-          id={`${inputGroup}-${index}-user-affiliate`}
-          name="affiliate"
-          label={t('affiliate')}
-          value={selection.user.affiliate}
-          onChange={(event) => handleInputChange('affiliate', event.target.value)}
-          fullWidth
+          id={`${inputGroup}-${index}-user-affiliation`}
+          name="affiliation"
+          label={t('thesisForm:affiliation')}
+          value={selection.user?.affiliation ?? ''}
+          onChange={(event) =>
+            handleInputChange('affiliation', event.target.value)
+          }
+          sx={{ width: '50ch' }}
           variant="outlined"
+          error={Boolean(inputErrors?.affiliation)}
+          helperText={inputErrors?.affiliation}
           {...inputProps}
-        /> */}
+        />
 
         {inputGroup === 'supervisions' && (
           <PercentageInput

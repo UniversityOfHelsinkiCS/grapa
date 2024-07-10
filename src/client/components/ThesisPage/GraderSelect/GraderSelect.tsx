@@ -101,6 +101,13 @@ const GraderSelect: React.FC<{
                       error.path.join('-') === `graders-${index}-user-email`
                   )?.message
                 ),
+                affiliation: t(
+                  errors.find(
+                    (error) =>
+                      error.path.join('-') ===
+                      `graders-${index}-user-affiliation`
+                  )?.message
+                ),
               }}
               inputProps={{
                 required: false,
