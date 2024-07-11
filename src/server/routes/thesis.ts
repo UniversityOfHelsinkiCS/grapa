@@ -147,9 +147,14 @@ const getAndCreateExtUsers = async (
     ...thesisData.graders,
   ]
 
+  const nonDuplicateGradersAndSupervisors = uniqBy(
+    gradersAndSupervisors,
+    (x) => x.user?.email
+  )
+
   // Create the external users from the graders and supervisions
   const extUsers = await User.bulkCreate(
-    gradersAndSupervisors
+    nonDuplicateGradersAndSupervisors
       .filter((person) => person.isExternal)
       .map((person) => ({
         username: `ext-${person.user?.email}`,
