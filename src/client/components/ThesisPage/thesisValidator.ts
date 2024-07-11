@@ -153,7 +153,17 @@ export const ThesisSchema = z.object({
         })
       }
     }),
-  graders: z.array(graderSchema),
+  graders: z.array(graderSchema).superRefine((graders, ctx) => {
+    const nonDuplicateGraders = uniqBy(graders, (grader) => grader.user?.email)
+
+    if (nonDuplicateGraders.length !== graders.length) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:duplicateGraderEmails',
+        path: ['general', 'grader', 'error'],
+      })
+    }
+  }),
   researchPlan: z
     .object({
       name: z.string().min(1, 'formErrors:researchPlan'),

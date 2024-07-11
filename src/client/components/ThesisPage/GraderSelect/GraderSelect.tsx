@@ -15,6 +15,10 @@ const GraderSelect: React.FC<{
 }> = ({ errors, setErrors, graderSelections, setGraderSelections }) => {
   const { t } = useTranslation()
 
+  const generalGraderErrors = errors.filter((error) =>
+    error.path.join('-').endsWith('general-grader-error')
+  )
+
   const handleChange = (index: number, grader: Partial<User>) => {
     const updatedSelections = [...graderSelections]
 
@@ -69,6 +73,23 @@ const GraderSelect: React.FC<{
         <AlertTitle>{t('thesisForm:graderInstructions:title')}</AlertTitle>
         {t('thesisForm:graderInstructions:content')}
       </Alert>
+
+      {generalGraderErrors.length > 0 && (
+        <Alert
+          id="graders-general-grader-error"
+          data-testid="graders-general-grader-error"
+          severity="error"
+          aria-live="polite"
+          sx={{ whiteSpace: 'pre-line' }}
+        >
+          <AlertTitle>{t('formErrors:graderGeneralErrorsTitle')}</AlertTitle>
+          {generalGraderErrors.map((error, index) => (
+            <Typography variant="body2" key={error.message}>
+              {`${t(`${error.message}Content`)} ${index < generalGraderErrors.length - 1 ? '\n\n' : ''}`}
+            </Typography>
+          ))}
+        </Alert>
+      )}
 
       {graderSelections.map((selection, index) => {
         const { isExternal } = selection

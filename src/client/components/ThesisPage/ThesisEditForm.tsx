@@ -83,7 +83,6 @@ const ThesisEditForm: React.FC<{
   const handleSubmit = async () => {
     const thesisErrors = getFormErrors(editedThesis)
 
-    console.log(thesisErrors)
     if (thesisErrors.length > 0) {
       setFormErrors(thesisErrors)
       return
