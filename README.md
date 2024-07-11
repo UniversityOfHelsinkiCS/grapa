@@ -18,6 +18,10 @@ $ npm start
 $ docker compose up
 ```
 
+### Running updater locally
+
+In order to run the updater locally you must enable the following [setupCron](./src/server/index.ts#60) for example by changing the `if` statement so that it is _true_.
+
 ### Running static code analysis
 
 We use eslint and Prettier as the static analysis tools. To run these you can use these commands:
