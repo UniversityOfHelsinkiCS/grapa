@@ -11,6 +11,7 @@ import {
   Grader,
   Program,
   ProgramManagement,
+  StudyTrack,
   Supervision,
   Thesis,
   User,
@@ -118,6 +119,24 @@ describe('thesis router', () => {
         level: 'master',
         international: true,
         enabled: true,
+      })
+      await StudyTrack.create({
+        id: 'test-study-track-id',
+        programId: 'Testing program',
+        name: {
+          fi: 'Test study track',
+          en: 'Test study track',
+          sv: 'Test study track',
+        },
+      })
+      await StudyTrack.create({
+        id: 'new-test-study-track-id',
+        programId: 'New program',
+        name: {
+          fi: 'New test study track',
+          en: 'New test study track',
+          sv: 'New test study track',
+        },
       })
 
       await User.create({
