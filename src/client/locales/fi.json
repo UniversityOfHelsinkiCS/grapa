@@ -38,6 +38,8 @@
     "supervisorPercentageContent": "Aseta ohjaajien työosuudet niin, että niiden summa on 100%",
     "primarySupervisor": "Aseta joking ohjaajista pääohjaajaksi",
     "primarySupervisorContent": "Tutkielmalla tulee olla yksi pääohjaaja, aseta jokin ohjaajista pääohjaajan asemaan painamalla tähti-ikonia ohjaajan vieressä. Pääohjaaja ei voi olla ulkopuolinen ohjaaja.",
+    "duplicateSupervisorEmails": "Ohjaajien sähköpostiosoitteiden tulee olla uniikkeja",
+    "duplicateSupervisorEmailsContent": "Tarkista ohjaajien sähköpostiosoitteet. Ohjaajien sähköpostiosoitteet tulee olla uniikkeja",
     "graders": "Anna puuttuvat arvioijatiedot",
     "researchPlan": "Lataa kelvollinen tutkimussuunnitelmatiedosto",
     "waysOfWorking": "Lataa kelvollinen työskentelytavat-tiedosto",

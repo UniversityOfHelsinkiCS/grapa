@@ -1,3 +1,4 @@
+import { uniqBy } from 'lodash-es'
 import { z } from 'zod'
 
 const userSchema = z.object({
@@ -137,7 +138,21 @@ export const ThesisSchema = z.object({
         message: 'formErrors:primarySupervisor',
         path: ['general', 'supervisor', 'error'],
       }
-    ),
+    )
+    .superRefine((supervisions, ctx) => {
+      const nonDuplicateSupervisors = uniqBy(
+        supervisions,
+        (sup) => sup.user?.email
+      )
+
+      if (nonDuplicateSupervisors.length !== supervisions.length) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'formErrors:duplicateSupervisorEmails',
+          path: ['general', 'supervisor', 'error'],
+        })
+      }
+    }),
   graders: z.array(graderSchema),
   researchPlan: z
     .object({

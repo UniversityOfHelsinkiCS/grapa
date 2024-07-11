@@ -38,6 +38,8 @@
     "supervisorPercentageContent": "Set the supervisor percentages so that they add up to 100%",
     "primarySupervisor": "Please select one of the supervisors as the primary supervisor",
     "primarySupervisorContent": "Thesis must have one primary supervisor, set one of the supervisors as the primary supervisor by clicking the star icon next to the supervisor. Primary supervisor cannot be an external supervisor.",
+    "duplicateSupervisorEmails": "Supervisors' emails must be unique",
+    "duplicateSupervisorEmailsContent": "Please check the supervisors' emails. Supervisors must have unique email addresses",
     "graders": "Please provide missing primary grader information",
     "researchPlan": "Please upload a valid research plan file",
     "waysOfWorking": "Please upload a valid ways of working file",
