@@ -67,6 +67,7 @@ export interface ThesisData {
   id?: string
   programId: string
   studyTrackId?: string
+  departmentId?: string
   topic: string
   status: ThesisStatus
   startDate: string

@@ -32,6 +32,7 @@ import {
 } from '../util/helpers'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import { userFields } from './config'
+import { DEPARTMENT_OF_CS_ID } from '../util/config'
 
 const thesisRouter = express.Router()
 const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
@@ -427,7 +428,10 @@ thesisRouter.post(
     const thesisData = req.body
 
     const createdThesis = await sequelize.transaction(async (t) => {
-      const newThesis = await createThesis(thesisData, t)
+      const newThesis = await createThesis(
+        { ...thesisData, departmentId: DEPARTMENT_OF_CS_ID },
+        t
+      )
 
       await handleAttachmentByLabel(req, newThesis.id, 'researchPlan', t)
       await handleAttachmentByLabel(req, newThesis.id, 'waysOfWorking', t)

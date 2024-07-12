@@ -40,3 +40,5 @@ export const LOGOUT_REDIRECT_URL =
     : 'https://login-test.it.helsinki.fi/idp/profile/Logout'
 
 export const adminIams = ['grp-toska', 'hy-ypa-opa-ote']
+
+export const DEPARTMENT_OF_CS_ID = '8fdce98e-2e9e-4cd7-a4c3-6d0176e29d37'
