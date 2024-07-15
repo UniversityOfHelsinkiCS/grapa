@@ -31,3 +31,7 @@ uploads
 *.njsproj
 *.sln
 *.sw?
+
+debug.log
+my_username
+backups
