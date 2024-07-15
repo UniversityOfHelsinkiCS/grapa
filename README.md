@@ -8,6 +8,10 @@ Clone the repo, and install docker to get started!
 
 Before starting the project for the first time run `npm i` to install development dependencies.
 
+### Getting the prod db locally
+
+You can fetch the prod db locally using the [script](./scripts/get_prod_db.sh).
+
 ### Starting application
 
 Start all the services in development mode:
