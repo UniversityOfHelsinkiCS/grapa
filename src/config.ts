@@ -16,7 +16,7 @@ export const UPDATER_CRON_ENABLED = process.env.UPDATER_CRON_ENABLED === 'true'
 
 // eslint-disable-next-line no-nested-ternary
 export const FULL_URL = inProduction
-  ? 'https://grapa.ext.ocp-prod-0.k8s.it.helsinki.fi'
+  ? 'https://prethesis.helsinki.fi'
   : inStaging
     ? 'https://grapa.ext.ocp-test-0.k8s.it.helsinki.fi'
     : 'http://localhost:3000'
