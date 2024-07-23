@@ -24,6 +24,7 @@ initializeSentry()
 router.use(cors())
 router.use(express.json())
 router.use(express.urlencoded({ extended: true }))
+// only use user middleware in development, e2e tests and integration (API) tests
 if (inDevelopment || inE2EMode || inTest) router.use(userMiddleware)
 
 // @ts-expect-error req.user is added to the request
