@@ -1,7 +1,7 @@
 import express from 'express'
 
 import { RequestWithUser } from '../types'
-import { ProgramManagement } from '../db/models'
+import { ProgramManagement, User } from '../db/models'
 
 const userRouter = express.Router()
 
@@ -16,6 +16,15 @@ userRouter.get('/', async (req: RequestWithUser, res: any) => {
   const managedProgramIds = managedPrograms.map((program) => program.programId)
 
   return res.send({ ...user, managedProgramIds })
+})
+
+userRouter.put('/', async (req: RequestWithUser, res: any) => {
+  const { user, body } = req
+  const { departmentId } = body
+
+  await User.update({ departmentId }, { where: { id: user.id } })
+
+  return res.status(200).send({ message: 'User updated' })
 })
 
 export default userRouter
