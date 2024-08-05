@@ -33,6 +33,8 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 
   declare hasStudyRight: boolean | null
 
+  declare departmentId: string | undefined
+
   declare iamGroups: string[]
 }
 
@@ -61,6 +63,14 @@ User.init(
     affiliation: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    departmentId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      references: {
+        model: 'departments',
+        key: 'id',
+      },
     },
     language: {
       type: DataTypes.STRING,
