@@ -12,6 +12,7 @@ import userRouter from './user'
 import usersRouter from './users'
 import attachmentRouter from './attachment'
 import programRouter from './program'
+import departmentRouter from './department'
 import programManagementRouter from './programManagement'
 import { inDevelopment, inE2EMode, inTest } from '../../config'
 import logoutRouter from './logout'
@@ -43,6 +44,7 @@ router.use('/login', loginRouter)
 router.use('/logout', logoutRouter)
 router.use('/attachments', attachmentRouter)
 router.use('/programs', programRouter)
+router.use('/departments', departmentRouter)
 router.use('/program-managements', programManagementRouter)
 
 Sentry.setupExpressErrorHandler(router)
