@@ -10,6 +10,7 @@ import useLoggedInUser from './hooks/useLoggedInUser'
 import Footer from './components/Footer'
 import NavBar from './components/NavBar/NavBar'
 import LoggedInAsBanner from './components/LoginAsBanner'
+import DepartmentSelector from './DepartmentSelector'
 
 const App = () => {
   const theme = useTheme()
@@ -42,7 +43,7 @@ const App = () => {
             alignItems="center"
             minHeight="100vh"
           >
-            <Outlet />
+            {!user?.departmentId ? <DepartmentSelector /> : <Outlet />}
           </Box>
           <Footer />
         </Box>
