@@ -92,9 +92,9 @@ const verifyLogin = async (
 
   const user = getUser(userinfo as unknown as UserInfo)
 
-  await User.upsert(user)
+  const updatedUser = await User.upsert(user)
 
-  done(null, user)
+  done(null, updatedUser)
 }
 
 const setupAuthentication = async () => {
