@@ -36,7 +36,6 @@ const ThesesPage = () => {
   if (!programs || !theses || loggedInUserLoading) return null
 
   const columns: GridColDef<Thesis>[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
     {
       field: 'programId',
       headerName: t('programHeader'),
