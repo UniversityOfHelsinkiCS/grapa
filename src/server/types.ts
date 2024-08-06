@@ -6,6 +6,8 @@ export interface TranslatedName {
   sv: string
 }
 
+export type TranslationLanguage = keyof TranslatedName
+
 export interface UserInfo {
   uid: string
   hyPersonSisuId: string

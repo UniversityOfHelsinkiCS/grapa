@@ -1,4 +1,5 @@
-import { User, ThesisData } from '@backend/types'
+import { sortBy } from 'lodash-es'
+import { User, ThesisData, TranslationLanguage } from '@backend/types'
 import { styled } from '@mui/material/styles'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
@@ -59,7 +60,7 @@ const ThesisEditForm: React.FC<{
   onSubmit: (data: ThesisData) => Promise<void>
 }> = ({ programs, formTitle, initialThesis, onSubmit, onClose }) => {
   const { t, i18n } = useTranslation()
-  const { language } = i18n
+  const { language } = i18n as { language: TranslationLanguage }
 
   const [formErrors, setFormErrors] = useState<ZodIssue[]>([])
   const [editedThesis, setEditedThesis] = useState<ThesisData | null>(
@@ -98,6 +99,15 @@ const ThesisEditForm: React.FC<{
   const selectedProgram = programs.find(
     (program) => program.id === editedThesis.programId
   )
+  const sortedPrograms = sortBy(programs, (program) => program.name[language])
+
+  const sortedStudyTracks =
+    selectedProgram && selectedProgram.studyTracks?.length
+      ? sortBy(
+          selectedProgram.studyTracks,
+          (studyTrack) => studyTrack.name[language]
+        )
+      : []
 
   return (
     <Dialog
@@ -196,9 +206,9 @@ const ThesisEditForm: React.FC<{
                   (error) => error.path[0] === 'programId'
                 )}
               >
-                {programs.map((program) => (
+                {sortedPrograms.map((program) => (
                   <MenuItem key={program.id} value={program.id}>
-                    {program.name.en}
+                    {program.name[language]}
                   </MenuItem>
                 ))}
               </Select>
@@ -240,9 +250,9 @@ const ThesisEditForm: React.FC<{
                     (error) => error.path[0] === 'studyTrackId'
                   )}
                 >
-                  {selectedProgram.studyTracks.map((studyTrack) => (
+                  {sortedStudyTracks.map((studyTrack) => (
                     <MenuItem key={studyTrack.id} value={studyTrack.id}>
-                      {studyTrack.name.en}
+                      {studyTrack.name[language]}
                     </MenuItem>
                   ))}
                 </Select>

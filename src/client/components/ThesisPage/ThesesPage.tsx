@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import { DataGrid, GridActionsCellItem, GridColDef } from '@mui/x-data-grid'
 import { useState } from 'react'
-import { ThesisData as Thesis } from '@backend/types'
+import { ThesisData as Thesis, TranslationLanguage } from '@backend/types'
 import { useTranslation } from 'react-i18next'
 import { Button, Stack } from '@mui/material'
 import useTheses from '../../hooks/useTheses'
@@ -19,7 +19,8 @@ import DeleteConfirmation from '../Common/DeleteConfirmation'
 import usePrograms from '../../hooks/usePrograms'
 
 const ThesesPage = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { language } = i18n as { language: TranslationLanguage }
   const { user, isLoading: loggedInUserLoading } = useLoggedInUser()
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -41,7 +42,9 @@ const ThesesPage = () => {
       headerName: t('programHeader'),
       width: 350,
       valueGetter: (value, row) =>
-        programs.find((program) => program.id === row.programId)?.name.en,
+        programs.find((program) => program.id === row.programId)?.name[
+          language
+        ],
       // editable: true,
     },
     {

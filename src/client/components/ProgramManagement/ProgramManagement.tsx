@@ -18,10 +18,14 @@ import {
 import useUsers from '../../hooks/useUsers'
 import { useDebounce } from '../../hooks/useDebounce'
 import usePrograms from '../../hooks/usePrograms'
-import { ProgramManagementData } from '../../../server/types'
+import {
+  ProgramManagementData,
+  TranslationLanguage,
+} from '../../../server/types'
 
 const ProgramManagement: React.FC = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { language } = i18n as { language: TranslationLanguage }
 
   const [managerCandidate, setManagerCandidate] = useState(null)
   const [programId, setProgramId] = useState(null)
@@ -76,7 +80,7 @@ const ProgramManagement: React.FC = () => {
               {management.user.email ? ` (${management.user.email})` : ''}
             </div>
             <div style={{ alignContent: 'center' }}>
-              {management.program.name.en}
+              {management.program.name[language]}
               <Button
                 onClick={() => handleDeleteProgramManagement(management.id)}
               >
@@ -133,7 +137,7 @@ const ProgramManagement: React.FC = () => {
           >
             {programs.map((program) => (
               <MenuItem key={program.id} value={program.id}>
-                {program.name.en}
+                {program.name[language]}
               </MenuItem>
             ))}
           </Select>

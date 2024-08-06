@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import React, { useState } from 'react'
 import {
   Button,
@@ -13,6 +14,8 @@ import useDepartments from './hooks/useDepartments'
 import useUserDepartmentMutation from './hooks/useUserDepartmentMutation'
 
 const DepartmentSelector: React.FC = () => {
+  const { i18n } = useTranslation()
+  const { language } = i18n
   const [selectedDepartment, setSelectedDepartment] = useState('')
   const { departments } = useDepartments()
   const { mutateAsync: saveDepartment } = useUserDepartmentMutation()
@@ -45,7 +48,7 @@ const DepartmentSelector: React.FC = () => {
         >
           {departments.map((department) => (
             <MenuItem key={department.id} value={department.id}>
-              {department.name.en}
+              {department.name[language]}
             </MenuItem>
           ))}
         </Select>
