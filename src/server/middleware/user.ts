@@ -41,7 +41,9 @@ const userMiddleware = async (req: any, _: any, next: any) => {
     return next({ status: 403, message: 'Forbidden' })
   }
 
-  req.user = (await User.findByPk(getUser(headers).id)).toJSON()
+  const userFromHeaders = getUser(headers)
+  const userFromDb = (await User.findByPk(userFromHeaders.id))?.toJSON()
+  req.user = { ...userFromDb, ...userFromHeaders }
 
   return next()
 }
