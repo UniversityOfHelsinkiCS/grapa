@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "GRAdut Pikaisesti Alkuun",
+    "appName": "Prethesis",
     "author": "Tekijä",
     "grader": "Arvioija {{index}}",
     "loginAsNavItem": "Kirjaudu toisella käyttäjällä",

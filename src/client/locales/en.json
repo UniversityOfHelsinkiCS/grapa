@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Master theses progress tracking",
+    "appName": "Prethesis",
     "author": "Author",
     "grader": "Grader {{index}}",
     "loginAsNavItem": "Login as",
