@@ -342,11 +342,19 @@ const ThesisEditForm: React.FC<{
                 }}
                 error={formErrors.some((error) => error.path[0] === 'status')}
               >
-                <MenuItem value="PLANNING">Planning</MenuItem>
-                <MenuItem value="STARTED">Started</MenuItem>
-                <MenuItem value="IN_PROGRESS">In progress</MenuItem>
-                <MenuItem value="COMPLETED">Completed</MenuItem>
-                <MenuItem value="CANCELLED">Cancelled</MenuItem>
+                <MenuItem value="PLANNING">
+                  {t('thesisStages:planned')}
+                </MenuItem>
+                <MenuItem value="STARTED">{t('thesisStages:started')}</MenuItem>
+                <MenuItem value="IN_PROGRESS">
+                  {t('thesisStages:inProgress')}
+                </MenuItem>
+                <MenuItem value="COMPLETED">
+                  {t('thesisStages:completed')}
+                </MenuItem>
+                <MenuItem value="CANCELLED">
+                  {t('thesisStages:cancelled')}
+                </MenuItem>
               </Select>
               <FormHelperText error>
                 {t(

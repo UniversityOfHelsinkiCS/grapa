@@ -23,6 +23,11 @@
     "removeButton": "Remove",
     "error": "Error"
   },
+  "departmentSelectPage": {
+    "departmentPlaceholder": "Select department",
+    "pageTitle": "Select department",
+    "pageDescription": "Before proceeding, you have to select a department you belong to"
+  },
   "formErrors": {
     "topic": "Please provide a topic for the thesis",
     "program": "Please select a program",
@@ -88,7 +93,16 @@
     "removeSupervisorConfirmationContent": "Are you sure you want to delete the supervisor: {{name}}?",
     "removeSupervisorConfirmationNoName": "Are you sure you want to delete an unnamed supervisor?"
   },
+  "thesisStages": {
+    "planned": "Planned",
+    "started": "Started",
+    "inProgress": "In progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
   "programManagementPage": {
+    "pageTitle": "Program managements",
+    "addProgramManagement": "Add program management",
     "programHeader": "Program",
     "managerHeader": "Manager"
   },

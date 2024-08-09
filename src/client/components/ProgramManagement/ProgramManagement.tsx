@@ -61,7 +61,9 @@ const ProgramManagement: React.FC = () => {
 
   return (
     <div>
-      <Typography variant="h2">Program Managements</Typography>
+      <Typography variant="h2">
+        {t('programManagementPage:pageTitle')}
+      </Typography>
       <ul style={{ padding: 0 }}>
         {programManagements?.map((management: ProgramManagementData) => (
           <li
@@ -84,7 +86,7 @@ const ProgramManagement: React.FC = () => {
               <Button
                 onClick={() => handleDeleteProgramManagement(management.id)}
               >
-                Delete
+                {t('removeButton')}
               </Button>
             </div>
           </li>
@@ -98,7 +100,9 @@ const ProgramManagement: React.FC = () => {
           marginTop: '30px',
         }}
       >
-        <Typography variant="h6">Add Program Management</Typography>
+        <Typography variant="h6">
+          {t('programManagementPage:addProgramManagement')}
+        </Typography>
         <FormControl fullWidth>
           <Autocomplete
             id="program-manager"
@@ -147,7 +151,7 @@ const ProgramManagement: React.FC = () => {
           disabled={!programId || !managerCandidate}
           onClick={handleAddProgramManagement}
         >
-          Add
+          {t('submitButton')}
         </Button>
       </div>
     </div>

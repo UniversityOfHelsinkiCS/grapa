@@ -23,6 +23,11 @@
     "removeThesisConfirmationContent": "Haluatko varmasti poistaa gradun: {{topic}}?",
     "error": "Virhe"
   },
+  "departmentSelectPage": {
+    "departmentPlaceholder": "Valitse osasto",
+    "pageTitle": "Valitse osasto",
+    "pageDescription": "Ennen kuin jatkat, valitse osasto missä työskentelet"
+  },
   "formErrors": {
     "topic": "Anna tutkielman aihe",
     "program": "Valitse ohjelma",
@@ -91,7 +96,16 @@
     "removeGraderConfirmationContent": "Haluatko varmasti poistaa arvioijan: {{name}}?",
     "removeGraderConfirmationNoName": "Haluatko varmasti poistaa nimeämättömän arvioijan?"
   },
+  "thesisStages": {
+    "planned": "Suunniteltu",
+    "started": "Aloitettu",
+    "inProgress": "Käynnissä",
+    "completed": "Valmis",
+    "cancelled": "Keskeytetty"
+  },
   "programManagementPage": {
+    "pageTitle": "Ohjelman vastaavat",
+    "addProgramManagement": "Lisää vastaaava",
     "programHeader": "Ohjelma",
     "managerHeader": "Vastaava"
   },
