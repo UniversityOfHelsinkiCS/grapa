@@ -166,15 +166,6 @@ export const validateThesisData = (
     })
   }
 
-  const waysOfWorkingFile = req.files.waysOfWorking
-    ? req.files.waysOfWorking[0]
-    : thesisData.waysOfWorking
-  if (!waysOfWorkingFile) {
-    throw new CustomValidationError('Ways of working is required', {
-      waysOfWorking: ['Ways of working is required'],
-    })
-  }
-
   if (!thesisData.startDate) {
     throw new CustomValidationError('Start date is required', {
       startDate: ['Start date is required'],

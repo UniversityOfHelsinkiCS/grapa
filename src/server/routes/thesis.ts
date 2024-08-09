@@ -268,7 +268,7 @@ const handleAttachmentByLabel = async (
     transaction,
   })
 
-  if (!newFile && !fileMetadataFromClient) {
+  if (!newFile && !fileMetadataFromClient && existingAttachment) {
     // delete reserachPlan from DB and the disk
     await Attachment.destroy({
       where: { thesisId, label },

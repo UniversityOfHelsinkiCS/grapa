@@ -321,7 +321,7 @@ describe('validateThesisData', () => {
     expect(next).toHaveBeenCalledTimes(1)
   })
 
-  it('should return an error if waysOfWorking is missing', () => {
+  it('should not return an error if waysOfWorking is missing', () => {
     req.body = {
       ...req.body,
       waysOfWorking: undefined
@@ -331,10 +331,8 @@ describe('validateThesisData', () => {
       waysOfWorking: undefined
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Ways of working is required'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    expect(() => validateThesisData(req, res, next)).not.toThrow()
+    expect(next).toHaveBeenCalledTimes(1)
   })
 
   it('should pass if waysOfWorking is missing from files but not from body', () => {

@@ -159,9 +159,10 @@ describe('ThesisEditForm', () => {
       expect(
         screen.getByTestId('errorsummary-researchPlan')
       ).toBeInTheDocument()
+      // ways of working document is optional
       expect(
-        screen.getByTestId('errorsummary-waysOfWorking')
-      ).toBeInTheDocument()
+        screen.queryByTestId('errorsummary-waysOfWorking')
+      ).not.toBeInTheDocument()
     })
 
     describe('when all required fields are filled', () => {

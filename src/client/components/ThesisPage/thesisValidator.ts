@@ -172,14 +172,6 @@ export const ThesisSchema = z.object({
     .refine((value) => value !== undefined, {
       message: 'formErrors:researchPlan',
     }),
-  waysOfWorking: z
-    .object({
-      name: z.string().min(1, 'formErrors:waysOfWorking'),
-    })
-    .optional()
-    .refine((value) => value !== undefined, {
-      message: 'formErrors:waysOfWorking',
-    }),
 })
 
 export type ValidatedThesis = z.infer<typeof ThesisSchema>
