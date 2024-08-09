@@ -94,6 +94,7 @@ const verifyLogin = async (
 
   const updatedUser = await User.upsert(user)
 
+  console.log('updatedUser', updatedUser)
   done(null, updatedUser)
 }
 
@@ -112,6 +113,7 @@ const setupAuthentication = async () => {
     async ({ id, iamGroups }: { id: string; iamGroups: string[] }, done) => {
       const user = await User.findByPk(id)
 
+      console.log(id, iamGroups)
       if (!user) return done(new Error('User not found'))
 
       return done(null, { ...user.dataValues, iamGroups })
