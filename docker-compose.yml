@@ -16,7 +16,7 @@ services:
     container_name: grapa_dev
 
   db:
-    image: postgres:15.7
+    image: postgres:15.8
     environment:
       - PGDATA=/data
       - POSTGRES_PASSWORD=postgres
