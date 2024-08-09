@@ -26,10 +26,7 @@ import {
 } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
-import {
-  getEqualSupervisorSelectionWorkloads,
-  transformThesisData,
-} from '../util/helpers'
+import { transformThesisData } from '../util/helpers'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import { userFields } from './config'
 
@@ -198,13 +195,9 @@ const createThesis = async (thesisData: ThesisData, t: Transaction) => {
     thesisData.supervisions,
     (x: SupervisionData) => x.user?.email
   )
-  const updatedSupervisions = getEqualSupervisorSelectionWorkloads(
-    nonDuplicateSupervisors.length,
-    nonDuplicateSupervisors
-  )
 
   await Supervision.bulkCreate(
-    updatedSupervisions.map((supervision) => ({
+    nonDuplicateSupervisors.map((supervision) => ({
       userId:
         supervision.user?.id ??
         extUsers.find((u) => u.email === supervision.user?.email)?.id,
@@ -344,14 +337,10 @@ const updateThesis = async (
     thesisData.supervisions,
     (x: SupervisionData) => x.user?.email
   )
-  const updatedSupervisions = getEqualSupervisorSelectionWorkloads(
-    nonDuplicateSupervisors.length,
-    nonDuplicateSupervisors
-  )
 
   await Supervision.destroy({ where: { thesisId: id }, transaction })
   await Supervision.bulkCreate(
-    updatedSupervisions.map((supervision) => ({
+    nonDuplicateSupervisors.map((supervision) => ({
       userId:
         supervision.user?.id ??
         extUsers.find((u) => u.email === supervision.user?.email)?.id,
