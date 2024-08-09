@@ -1122,7 +1122,7 @@ describe('thesis router', () => {
             expect.arrayContaining([
               expect.objectContaining({
                 userId: user1.id,
-                percentage: 100,
+                percentage: 50,
                 isPrimarySupervisor: true,
               }),
             ])
@@ -1435,7 +1435,7 @@ describe('thesis router', () => {
               expect.arrayContaining([
                 expect.objectContaining({
                   userId: user1.id,
-                  percentage: 100,
+                  percentage: 50,
                   isPrimarySupervisor: true,
                 }),
               ])
@@ -1687,12 +1687,12 @@ describe('thesis router', () => {
               expect.arrayContaining([
                 expect.objectContaining({
                   userId: user1.id,
-                  percentage: 50,
+                  percentage: 34,
                   isPrimarySupervisor: true,
                 }),
                 expect.objectContaining({
                   userId: extUser.id,
-                  percentage: 50,
+                  percentage: 33,
                   isPrimarySupervisor: false,
                 }),
               ])
