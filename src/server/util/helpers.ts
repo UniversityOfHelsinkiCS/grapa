@@ -14,8 +14,18 @@ export const transformThesisData = (thesisData: ThesisData[]) =>
         isExternal: grader.user.isExternal,
       }))
       .sort((a, b) => (a.isPrimaryGrader ? -1 : b.isPrimaryGrader ? 1 : 0)),
-    supervisions: thesis.supervisions.map((supervision) => ({
-      ...supervision,
-      isExternal: supervision.user.isExternal,
-    })),
+    supervisions: thesis.supervisions
+      .map((supervision) => ({
+        ...supervision,
+        isExternal: supervision.user.isExternal,
+      }))
+      .sort((a, b) =>
+        a.isPrimarySupervisor
+          ? -1
+          : b.isPrimarySupervisor
+            ? 1
+            : a.isExternal
+              ? 1
+              : -1
+      ),
   }))
