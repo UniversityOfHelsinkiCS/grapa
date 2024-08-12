@@ -128,7 +128,7 @@ describe('ProgramManagement', () => {
 
   describe('when an existing program management is deleted', () => {
     it('calls corresponding hook to delete program management', async () => {
-      const deleteButton = screen.getByText('Delete')
+      const deleteButton = screen.getByText('Poista')
       await userEvent.click(deleteButton)
 
       expect(deleteProgramManagementMock).toHaveBeenCalledTimes(1)

@@ -219,7 +219,7 @@ describe('ThesisEditForm', () => {
 
         // Select a status
         await user.click(statusSelect)
-        await user.click(screen.getAllByText('Planning')[0])
+        await user.click(screen.getAllByText('Suunniteltu')[0])
 
         // Add a supervisor
         superVisorSelect1.focus()
