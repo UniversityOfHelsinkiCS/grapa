@@ -217,7 +217,7 @@ describe('thesis router', () => {
       } catch (error) {
         console.log(error)
       }
-      
+
       await Supervision.create({
         userId: user1.id,
         thesisId: thesis1.id,
@@ -672,7 +672,7 @@ describe('thesis router', () => {
             {
               user: user4,
               isPrimaryGrader: true,
-              isExternal: false
+              isExternal: false,
             },
           ],
           authors: [user2],
@@ -753,14 +753,14 @@ describe('thesis router', () => {
           .field('json', JSON.stringify(newThesis))
 
         expect(response.status).toEqual(201)
-        
+
         const extUser = await User.findOne({
           where: { email: extUserData.email },
         })
         expect(extUser).not.toBeNull()
         expect(extUser).toMatchObject(extUserData)
         expect(extUser.isExternal).toBe(true)
-      }) 
+      })
 
       it('should return 400 if the request is missing a required field', async () => {
         const newThesis = {
@@ -1053,7 +1053,8 @@ describe('thesis router', () => {
               .field('json', JSON.stringify(newThesis))
             expect(response.status).toEqual(403)
             expect(response.body).toEqual({
-              error: 'User is not authorized to change the status of the thesis',
+              error:
+                'User is not authorized to change the status of the thesis',
               data: {
                 programId: [
                   'User is not authorized to change the status of the thesis',
@@ -1488,7 +1489,6 @@ describe('thesis router', () => {
           })
         })
 
-
         describe('when the request contains external supervisors', () => {
           it('should return 200 and update the thesis', async () => {
             const extUserData = {
@@ -1644,7 +1644,6 @@ describe('thesis router', () => {
             })
             expect(extUser).toBeNull()
 
-            
             const duplicateExtUser = await User.findOne({
               where: { email: duplicateExtUserData.email, isExternal: true },
             })
@@ -1755,7 +1754,6 @@ describe('thesis router', () => {
                 isExternal: false,
                 isPrimarySupervisor: true,
               },
-  
             ],
             graders: [
               {
@@ -1838,12 +1836,12 @@ describe('thesis router', () => {
               {
                 user: user4,
                 isPrimaryGrader: true,
-                  isExternal: false,
+                isExternal: false,
               },
               {
                 user: user5,
                 isPrimaryGrader: false,
-                  isExternal: false,
+                isExternal: false,
               },
             ],
             authors: [user2],
@@ -2052,7 +2050,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 100,
                   isExternal: false,
-                  isPrimarySupervisor: true, 
+                  isPrimarySupervisor: true,
                 },
               ],
               graders: [
@@ -2111,7 +2109,7 @@ describe('thesis router', () => {
                   user: user1,
                   percentage: 100,
                   isExternal: false,
-                  isPrimarySupervisor: true, 
+                  isPrimarySupervisor: true,
                 },
               ],
               graders: [
@@ -2152,69 +2150,192 @@ describe('thesis router', () => {
         })
 
         describe('when the user is a manager of a different program', () => {
-          it('should return 403 and a correct error message', async () => {
-            await ProgramManagement.create({
-              programId: 'New program',
-              userId: user2.id,
-            })
+          describe('when the thesis has PLANNING status', () => {
+            it('should return 403 and a correct error message', async () => {
+              await ProgramManagement.create({
+                programId: 'New program',
+                userId: user2.id,
+              })
 
-            const updatedThesis = {
-              programId: 'Updated program',
-              studyTrackId: 'new-test-study-track-id',
-              topic: 'Updated topic',
-              status: 'IN_PROGRESS',
-              startDate: '1970-01-01T00:00:00.000Z',
-              targetDate: '2070-01-01T00:00:00.000Z',
-              supervisions: [
-                {
-                  user: user1,
-                  percentage: 100,
-                  isExternal: false,
-                  isPrimarySupervisor: true, 
-                },
-              ],
-              graders: [
-                {
-                  user: user4,
-                  isPrimaryGrader: true,
-                  isExternal: false,
-                },
-                {
-                  user: user5,
-                  isPrimaryGrader: false,
-                  isExternal: false,
-                },
-              ],
-              authors: [user2],
-            }
-            const response = await request
-              .put(`/api/theses/${thesis1.id}`)
-              .set({ uid: user2.id, hygroupcn: 'hy-employees' })
-              .attach(
-                'waysOfWorking',
-                path.resolve(
-                  dirname(fileURLToPath(import.meta.url)),
-                  './index.ts'
-                )
-              )
-              .attach(
-                'researchPlan',
-                path.resolve(
-                  dirname(fileURLToPath(import.meta.url)),
-                  './index.ts'
-                )
-              )
-              .field('json', JSON.stringify(updatedThesis))
-
-            expect(response.status).toEqual(403)
-            expect(response.body).toEqual({
-              error:
-                'User is not authorized to change the status of the thesis',
-              data: {
-                programId: [
-                  'User is not authorized to change the status of the thesis',
+              const updatedThesis = {
+                programId: 'Updated program',
+                studyTrackId: 'new-test-study-track-id',
+                topic: 'Updated topic',
+                status: 'IN_PROGRESS',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: user1,
+                    percentage: 100,
+                    isExternal: false,
+                    isPrimarySupervisor: true,
+                  },
                 ],
-              },
+                graders: [
+                  {
+                    user: user4,
+                    isPrimaryGrader: true,
+                    isExternal: false,
+                  },
+                  {
+                    user: user5,
+                    isPrimaryGrader: false,
+                    isExternal: false,
+                  },
+                ],
+                authors: [user2],
+              }
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+
+              expect(response.status).toEqual(403)
+              expect(response.body).toEqual({
+                error:
+                  'User is not authorized to change the status of the thesis',
+                data: {
+                  programId: [
+                    'User is not authorized to change the status of the thesis',
+                  ],
+                },
+              })
+            })
+          })
+
+          describe('when the thesis already has IN_PROGRESS status', () => {
+            it('should return 200 and update the thesis', async () => {
+              await ProgramManagement.create({
+                programId: 'Testing program',
+                userId: user2.id,
+              })
+
+              const updatedThesis = {
+                programId: 'Testing program',
+                studyTrackId: 'new-test-study-track-id',
+                topic: 'Updated topic',
+                status: 'IN_PROGRESS',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: user1,
+                    percentage: 100,
+                    isExternal: false,
+                    isPrimarySupervisor: true,
+                  },
+                ],
+                graders: [
+                  {
+                    user: user4,
+                    isPrimaryGrader: true,
+                    isExternal: false,
+                  },
+                  {
+                    user: user5,
+                    isPrimaryGrader: false,
+                    isExternal: false,
+                  },
+                ],
+                authors: [user2],
+              }
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+
+              expect(response.status).toEqual(200)
+            })
+          })
+
+          describe('when the thesis has status other than PLANING or IN_PROGRESS', () => {
+            it('should return 200 and update the thesis', async () => {
+              await ProgramManagement.create({
+                programId: 'Testing program',
+                userId: user2.id,
+              })
+
+              thesis1.status = 'CANCELLED'
+              thesis1.save()
+
+              const updatedThesis = {
+                programId: 'Testing program',
+                studyTrackId: 'new-test-study-track-id',
+                topic: 'Updated topic',
+                status: 'IN_PROGRESS',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: user1,
+                    percentage: 100,
+                    isExternal: false,
+                    isPrimarySupervisor: true,
+                  },
+                ],
+                graders: [
+                  {
+                    user: user4,
+                    isPrimaryGrader: true,
+                    isExternal: false,
+                  },
+                  {
+                    user: user5,
+                    isPrimaryGrader: false,
+                    isExternal: false,
+                  },
+                ],
+                authors: [user2],
+              }
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+
+              expect(response.status).toEqual(200)
             })
           })
         })
@@ -2271,7 +2392,8 @@ describe('thesis router', () => {
                 .field('json', JSON.stringify(updatedThesis))
               expect(response.status).toEqual(403)
               expect(response.body).toEqual({
-                error: 'User is not authorized to change the status of the thesis',
+                error:
+                  'User is not authorized to change the status of the thesis',
                 data: {
                   programId: [
                     'User is not authorized to change the status of the thesis',
@@ -2280,10 +2402,68 @@ describe('thesis router', () => {
               })
             })
           })
-          
+
           describe('when the thesis already has IN_PROGRESS status', () => {
             beforeEach(() => {
               thesis1.status = 'IN_PROGRESS'
+              thesis1.save()
+            })
+
+            it('should return 200 and update the thesis', async () => {
+              const updatedThesis = {
+                programId: 'Updated program',
+                studyTrackId: 'new-test-study-track-id',
+                topic: 'Updated topic',
+                status: 'IN_PROGRESS',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: user1,
+                    percentage: 100,
+                    isExternal: false,
+                    isPrimarySupervisor: true,
+                  },
+                ],
+                graders: [
+                  {
+                    user: user4,
+                    isPrimaryGrader: true,
+                    isExternal: false,
+                  },
+                  {
+                    user: user5,
+                    isPrimaryGrader: false,
+                    isExternal: false,
+                  },
+                ],
+                authors: [user2],
+              }
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+              expect(response.status).toEqual(200)
+            })
+          })
+
+          describe('when the thesis has status other than PLANING or IN_PROGRESS', () => {
+            beforeEach(() => {
+              thesis1.status = 'CANCELLED'
               thesis1.save()
             })
 
