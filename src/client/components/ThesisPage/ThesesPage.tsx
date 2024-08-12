@@ -38,6 +38,34 @@ const ThesesPage = () => {
 
   const columns: GridColDef<Thesis>[] = [
     {
+      field: 'actions',
+      type: 'actions',
+      width: 20,
+      getActions: (params) => [
+        <GridActionsCellItem
+          onClick={() => {
+            setEditedThesis(params.row as Thesis)
+          }}
+          label={t('editButton')}
+          key="edit"
+          showInMenu
+          icon={<EditIcon />}
+          closeMenuOnClick
+        />,
+        <GridActionsCellItem
+          onClick={() => {
+            setDeleteDialogOpen(true)
+            setDeletedThesis(params.row as Thesis)
+          }}
+          label={t('deleteButton')}
+          key="delete"
+          showInMenu
+          icon={<DeleteIcon />}
+          closeMenuOnClick
+        />,
+      ],
+    },
+    {
       field: 'programId',
       headerName: t('programHeader'),
       width: 350,
@@ -75,34 +103,6 @@ const ThesesPage = () => {
       width: 140,
       valueGetter: (value, row) => dayjs(row.targetDate).format('YYYY-MM-DD'),
       // valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      width: 20,
-      getActions: (params) => [
-        <GridActionsCellItem
-          onClick={() => {
-            setEditedThesis(params.row as Thesis)
-          }}
-          label={t('editButton')}
-          key="edit"
-          showInMenu
-          icon={<EditIcon />}
-          closeMenuOnClick
-        />,
-        <GridActionsCellItem
-          onClick={() => {
-            setDeleteDialogOpen(true)
-            setDeletedThesis(params.row as Thesis)
-          }}
-          label={t('deleteButton')}
-          key="delete"
-          showInMenu
-          icon={<DeleteIcon />}
-          closeMenuOnClick
-        />,
-      ],
     },
   ]
 
