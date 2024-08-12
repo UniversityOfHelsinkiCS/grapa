@@ -56,14 +56,14 @@ const ThesesPage = () => {
     {
       field: 'status',
       headerName: t('statusHeader'),
-      width: 310,
+      width: 120,
       // editable: true,number
     },
     {
       field: 'startDate',
       headerName: t('startDateHeader'),
       sortable: false,
-      width: 160,
+      width: 140,
       valueGetter: (value, row) => dayjs(row.startDate).format('YYYY-MM-DD'),
       // valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
     },
@@ -72,14 +72,14 @@ const ThesesPage = () => {
       headerName: t('targetDateHeader'),
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
-      width: 160,
+      width: 140,
       valueGetter: (value, row) => dayjs(row.targetDate).format('YYYY-MM-DD'),
       // valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
     },
     {
       field: 'actions',
       type: 'actions',
-      width: 80,
+      width: 20,
       getActions: (params) => [
         <GridActionsCellItem
           onClick={() => {
