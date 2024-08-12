@@ -1,164 +1,190 @@
-import { useRef, useState, useEffect } from 'react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { NavLink } from 'react-router-dom'
+import { AdminPanelSettingsOutlined } from '@mui/icons-material'
+import MenuIcon from '@mui/icons-material/Menu'
 import {
   AppBar,
-  Toolbar,
-  MenuItem,
   Box,
-  Container,
-  MenuList,
   Button,
-  Paper,
-  ClickAwayListener,
-  Grow,
-  Popper,
+  Container,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Theme,
+  Toolbar,
   Typography,
 } from '@mui/material'
-import LogoutIcon from '@mui/icons-material/Logout'
-import Language from '@mui/icons-material/Language'
-import { useTranslation } from 'react-i18next'
 
-import { Link } from 'react-router-dom'
+import hyLogo from '../../assets/hy_logo.svg'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 
-import styles from '../../styles'
-import hyLogo from '../../assets/hy_logo.svg'
-import apiClient from '../../util/apiClient'
+import LanguageSelect from './LanguageSelect'
+import MobileMenu from './MobileMenu'
+import ProfileMenu from './ProfileMenu'
+
+const navStyles = {
+  appbar: {
+    zIndex: (theme: Theme) => theme.zIndex.drawer + 1,
+    backgroundColor: 'rgba(255, 255, 255, 0)',
+    borderRadius: 0,
+    borderBottom: '1px solid black',
+    py: '1rem',
+    height: '100px',
+  },
+  toolbar: {
+    display: 'flex',
+    width: '100%',
+    '@media print': {
+      display: 'none',
+    },
+    justifyContent: 'space-between',
+    padding: '0.2rem 0 0.2rem 0',
+  },
+  appName: {
+    textTransform: 'uppercase',
+    color: 'black',
+    fontWeight: 700,
+    fontSize: 24,
+    userSelect: 'none',
+    textDecoration: 'none',
+  },
+  navBox: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    color: 'inherit',
+    textDecoration: 'none',
+    marginRight: 1,
+    fontWeight: (theme: Theme) => theme.typography.fontWeightMedium,
+    padding: '5px 12px',
+    backgroundColor: 'rgba(255, 255, 255, 0)',
+    transition: 'background-color 0.1s',
+    borderRadius: 3,
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.22)',
+    },
+  },
+  icon: { mr: 1 },
+  link: {
+    color: 'black',
+    textDecoration: 'none',
+    fontWeight: (theme: Theme) => theme.typography.fontWeightMedium,
+    '&.active': {
+      color: 'primary.main',
+    },
+  },
+}
 
 const NavBar = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const { user, isLoading } = useLoggedInUser()
-  const [openLanguageSelect, setOpenLanguageSelect] = useState(false)
-  const anchorRef = useRef<HTMLButtonElement>(null)
 
-  useEffect(() => {
-    if (user?.language === 'en') i18n.changeLanguage('en')
-  }, [user, i18n])
+  const [mobileOpen, setMobileOpen] = useState(false)
 
-  const { language } = i18n
-  const languages = ['fi', 'en']
-
-  const handleLanguageChange = (newLanguage: string) => {
-    i18n.changeLanguage(newLanguage)
-    setOpenLanguageSelect(false)
+  const handleMobileToggle = () => {
+    setMobileOpen((prevState) => !prevState)
   }
-
-  const { navStyles } = styles
 
   if (isLoading) return null
 
   return (
-    <AppBar elevation={0} position="relative" sx={navStyles.appbar}>
-      <Container maxWidth={false}>
-        <Toolbar sx={navStyles.toolbar} disableGutters>
-          <Box sx={navStyles.navBox}>
-            <Link
-              to="/"
-              style={{
-                textDecoration: 'none',
-                color: 'inherit',
-                display: 'flex',
-              }}
-            >
-              <img src={hyLogo} alt="University of Helsinki" width="40" />
+    <>
+      <AppBar elevation={0} position="relative" sx={navStyles.appbar}>
+        <Container maxWidth={false}>
+          <Toolbar sx={navStyles.toolbar} disableGutters>
+            <Box sx={navStyles.navBox}>
+              <img
+                src={hyLogo}
+                alt="University of Helsinki logo"
+                loading="lazy"
+                width="40 px"
+              />
               <Box ml="2rem">
-                <Typography sx={navStyles.appName}>{t('appName')}</Typography>
+                <Typography component="a" href="/" sx={navStyles.appName}>
+                  {t('appName')}
+                </Typography>
               </Box>
-            </Link>
-          </Box>
-          <Box sx={{ display: 'flex' }}>
-            {user.isAdmin || user.managedProgramIds?.length ? (
-              <Button variant="outlined" sx={{ marginRight: '25px' }}>
-                <Link
+            </Box>
+            <Box
+              component="nav"
+              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' } }}
+            >
+              {(user.isAdmin || user.managedProgramIds?.length) && (
+                <Button
+                  component={NavLink}
                   to="/program-managements"
-                  style={{ textDecoration: 'none', color: 'inherit' }}
+                  sx={navStyles.link}
                 >
-                  {t('programManagersNavItem')}
-                </Link>
-              </Button>
-            ) : null}
-            {user.isAdmin ? (
-              <Button variant="outlined" sx={{ marginRight: '25px' }}>
-                <Link
-                  to="/login-as"
-                  style={{ textDecoration: 'none', color: 'inherit' }}
-                >
-                  {t('loginAsNavItem')}
-                </Link>
-              </Button>
-            ) : null}
-            <Button
-              ref={anchorRef}
-              id="composition-button"
-              data-cy="language-select"
-              aria-controls={
-                openLanguageSelect ? 'composition-menu' : undefined
-              }
-              aria-expanded={openLanguageSelect ? 'true' : undefined}
-              aria-haspopup="true"
-              onClick={() => setOpenLanguageSelect(!openLanguageSelect)}
-            >
-              <Language sx={navStyles.language} /> {language}
-            </Button>
-            <Popper
-              open={openLanguageSelect}
-              anchorEl={anchorRef.current}
-              role={undefined}
-              placement="bottom-start"
-              transition
-              disablePortal
-            >
-              {({ TransitionProps, placement }) => (
-                <Grow
-                  {...TransitionProps}
-                  style={{
-                    transformOrigin:
-                      placement === 'bottom-start' ? 'left top' : 'left bottom',
-                  }}
-                >
-                  <Paper>
-                    <ClickAwayListener
-                      onClickAway={() =>
-                        setOpenLanguageSelect(!openLanguageSelect)
-                      }
-                    >
-                      <MenuList
-                        autoFocusItem={openLanguageSelect}
-                        id="composition-menu"
-                        aria-labelledby="composition-button"
-                      >
-                        {languages.map((l) => (
-                          <MenuItem
-                            key={l}
-                            sx={[
-                              navStyles.item,
-                              language === l && navStyles.activeItem,
-                            ]}
-                            onClick={() => {
-                              handleLanguageChange(l)
-                            }}
-                          >
-                            {l.toUpperCase()}
-                          </MenuItem>
-                        ))}
-                      </MenuList>
-                    </ClickAwayListener>
-                  </Paper>
-                </Grow>
+                  {t('navbar:programManager')}
+                </Button>
               )}
-            </Popper>
-            <Button
-              onClick={async () => {
-                const response = await apiClient.post('/logout')
-                const { url } = response.data
-                window.location.href = url
-              }}
+              {user.isAdmin && (
+                <Button component={NavLink} to="/login-as" sx={navStyles.link}>
+                  {t('navbar:loginAs')}
+                </Button>
+              )}
+            </Box>
+
+            <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 2 }}>
+              {user?.isAdmin && (
+                <Button component={NavLink} to="/admin" sx={navStyles.link}>
+                  <AdminPanelSettingsOutlined sx={navStyles.icon} />{' '}
+                  {t('admin')}
+                </Button>
+              )}
+              <ProfileMenu />
+            </Box>
+            <IconButton
+              aria-label={t('navbar:openMobileMenu')}
+              edge="start"
+              onClick={handleMobileToggle}
+              sx={{ display: { xs: 'block', sm: 'none' } }}
             >
-              <LogoutIcon />
-            </Button>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+              <MenuIcon />
+            </IconButton>
+          </Toolbar>
+        </Container>
+      </AppBar>
+      <MobileMenu isOpen={mobileOpen} handleClose={handleMobileToggle}>
+        {user?.isAdmin && (
+          <ListItem disablePadding>
+            <ListItemButton component={NavLink} to="/admin">
+              <ListItemIcon>
+                <AdminPanelSettingsOutlined />
+              </ListItemIcon>
+              <ListItemText primary={t('navbar:admin')} />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {(user.isAdmin || user.managedProgramIds?.length) && (
+          <ListItem disablePadding>
+            <ListItemButton
+              component={NavLink}
+              to="/program-managements"
+              sx={{ justifyContent: 'space-between', px: 4 }}
+            >
+              <ListItemText primary={t('navbar:programManager')} />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {user.isAdmin && (
+          <ListItem disablePadding>
+            <ListItemButton
+              component={NavLink}
+              to="/login-as"
+              sx={{ justifyContent: 'space-between', px: 4 }}
+            >
+              <ListItemText primary={t('navbar:loginAs')} />
+            </ListItemButton>
+          </ListItem>
+        )}
+        <Divider />
+        <LanguageSelect />
+      </MobileMenu>
+    </>
   )
 }
 

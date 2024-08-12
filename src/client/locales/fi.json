@@ -3,10 +3,8 @@
     "appName": "Prethesis",
     "author": "Tekijä",
     "grader": "Arvioija {{index}}",
-    "loginAsNavItem": "Kirjaudu toisella käyttäjällä",
     "supervisor": "Ohjaaja {{index}}",
     "userSearchNoOptions": "Kirjoita vähintään 5 merkkiä etsiäksesi käyttäjiä",
-    "programManagersNavItem": "Vastaavat",
     "programHeader": "Ohjelma",
     "studyTrackHeader": "Opintosuunta",
     "topicHeader": "Aihe",
@@ -22,6 +20,15 @@
     "removeThesisTitle": "Poista gradu",
     "removeThesisConfirmationContent": "Haluatko varmasti poistaa gradun: {{topic}}?",
     "error": "Virhe"
+  },
+  "navbar": {
+    "programManager": "Vastaavat",
+    "loginAs": "Kirjaudu toisella käyttäjällä",
+    "admin": "Admin",
+    "settings": "Profiili asetukset",
+    "openMobileMenu": "Avaa valikko",
+    "languageSubHeader": "Valitse kieli",
+    "userInfoSubHeader": "Omat tietoni"
   },
   "departmentSelectPage": {
     "departmentPlaceholder": "Valitse osasto",

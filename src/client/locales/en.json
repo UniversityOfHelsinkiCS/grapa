@@ -3,10 +3,8 @@
     "appName": "Prethesis",
     "author": "Author",
     "grader": "Grader {{index}}",
-    "loginAsNavItem": "Login as",
     "supervisor": "Supervisor {{index}}",
     "userSearchNoOptions": "Type at least 5 characters to search for users",
-    "programManagersNavItem": "Program managers",
     "programHeader": "Program",
     "studyTrackHeader": "Study track",
     "topicHeader": "Topic",
@@ -22,6 +20,15 @@
     "removeThesisConfirmationContent": "Are you sure you want to delete the thesis: {{topic}}?",
     "removeButton": "Remove",
     "error": "Error"
+  },
+  "navbar": {
+    "programManager": "Program managers",
+    "loginAs": "Login as",
+    "admin": "Admin",
+    "settings": "Profile settings",
+    "openMobileMenu": "Open menu",
+    "languageSubHeader": "Change language",
+    "userInfoSubHeader": "Your information"
   },
   "departmentSelectPage": {
     "departmentPlaceholder": "Select department",
