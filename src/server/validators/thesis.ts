@@ -1,5 +1,6 @@
 import { NextFunction } from 'express'
 import { ServerPostRequest, ServerPutRequest } from '@backend/types'
+import { uniqBy } from 'lodash-es'
 import CustomValidationError from '../errors/ValidationError'
 import { getTotalPercentage } from '../util/helpers'
 
@@ -73,6 +74,16 @@ export const validateThesisData = (
     })
   }
 
+  const uniqueSupervisions = uniqBy(
+    thesisData.supervisions,
+    (sup) => sup.user?.email
+  )
+  if (uniqueSupervisions.length !== thesisData.supervisions.length) {
+    throw new CustomValidationError('Supervisors must be unique', {
+      supervisions: ['Supervisors must be unique'],
+    })
+  }
+
   thesisData.supervisions.forEach(({ user, isExternal }) => {
     if (isExternal) {
       validateExtUser(user)
@@ -109,6 +120,17 @@ export const validateThesisData = (
   if (!thesisData.graders || thesisData.graders.length === 0) {
     throw new CustomValidationError('At least one grader is required', {
       graders: ['At least one grader is required'],
+    })
+  }
+
+  const uniqueGraders = uniqBy(
+    thesisData.graders,
+    (grader) => grader.user?.email
+  )
+
+  if (uniqueGraders.length !== thesisData.graders.length) {
+    throw new CustomValidationError('Graders must be unique', {
+      graders: ['Graders must be unique'],
     })
   }
 
