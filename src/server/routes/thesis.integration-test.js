@@ -17,6 +17,7 @@ import {
   User,
 } from '../db/models'
 import { userFields } from './config'
+import exp from 'constants'
 
 const request = supertest.agent(app)
 
@@ -1065,11 +1066,11 @@ describe('thesis router', () => {
       })
 
       describe('when the request contains duplicate supervisors', () => {
-        it('should return 200 and update the thesis', async () => {
+        it('should return 400 and create the thesis', async () => {
           const newThesis = {
-            programId: 'Updated program',
+            programId: 'Test program',
             studyTrackId: 'new-test-study-track-id',
-            topic: 'Updated topic',
+            topic: 'Test topic',
             status: 'PLANNING',
             startDate: '1970-01-01T00:00:00.000Z',
             targetDate: '2070-01-01T00:00:00.000Z',
@@ -1111,31 +1112,16 @@ describe('thesis router', () => {
             .set('hygroupcn', 'grp-toska')
             .field('json', JSON.stringify(newThesis))
 
-          expect(response.status).toEqual(201)
-
-          const thesisSupervisions = await Supervision.findAll({
-            where: { thesisId: response.body.id },
-          })
-
-          expect(thesisSupervisions).toHaveLength(1)
-          expect(thesisSupervisions).toEqual(
-            expect.arrayContaining([
-              expect.objectContaining({
-                userId: user1.id,
-                percentage: 50,
-                isPrimarySupervisor: true,
-              }),
-            ])
-          )
+          expect(response.status).toEqual(400)
         })
       })
 
       describe('when the request contains duplicate graders', () => {
-        it('should return 200 and update the thesis', async () => {
+        it('should return 400 and not create the thesis', async () => {
           const newThesis = {
-            programId: 'Updated program',
+            programId: 'Test program',
             studyTrackId: 'new-test-study-track-id',
-            topic: 'Updated topic',
+            topic: 'Test topic',
             status: 'PLANNING',
             startDate: '1970-01-01T00:00:00.000Z',
             targetDate: '2070-01-01T00:00:00.000Z',
@@ -1177,21 +1163,7 @@ describe('thesis router', () => {
             .set('hygroupcn', 'grp-toska')
             .field('json', JSON.stringify(newThesis))
 
-          expect(response.status).toEqual(201)
-
-          const thesisGraders = await Grader.findAll({
-            where: { thesisId: response.body.id },
-          })
-
-          expect(thesisGraders).toHaveLength(1)
-          expect(thesisGraders).toEqual(
-            expect.arrayContaining([
-              expect.objectContaining({
-                userId: user4.id,
-                isPrimaryGrader: true,
-              }),
-            ])
-          )
+          expect(response.status).toEqual(400)
         })
       })
     })
@@ -1378,7 +1350,7 @@ describe('thesis router', () => {
         })
 
         describe('when the request contains duplicate supervisors', () => {
-          it('should return 200 and update the thesis', async () => {
+          it('should return 400 and not update the thesis', async () => {
             const updatedThesis = {
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
@@ -1424,13 +1396,13 @@ describe('thesis router', () => {
               .set('hygroupcn', 'grp-toska')
               .field('json', JSON.stringify(updatedThesis))
 
-            expect(response.status).toEqual(200)
+            expect(response.status).toEqual(400)
 
             const thesisSupervisions = await Supervision.findAll({
               where: { thesisId: thesis1.id },
             })
 
-            expect(thesisSupervisions).toHaveLength(1)
+            expect(thesisSupervisions).toHaveLength(2)
             expect(thesisSupervisions).toEqual(
               expect.arrayContaining([
                 expect.objectContaining({
@@ -1438,13 +1410,18 @@ describe('thesis router', () => {
                   percentage: 50,
                   isPrimarySupervisor: true,
                 }),
+                expect.objectContaining({
+                  userId: user3.id,
+                  percentage: 50,
+                  isPrimarySupervisor: false,
+                }),
               ])
             )
           })
         })
 
         describe('when the request contains duplicate graders', () => {
-          it('should return 200 and update the thesis', async () => {
+          it('should return 400 and not update the thesis', async () => {
             const updatedThesis = {
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
@@ -1490,18 +1467,22 @@ describe('thesis router', () => {
               .set('hygroupcn', 'grp-toska')
               .field('json', JSON.stringify(updatedThesis))
 
-            expect(response.status).toEqual(200)
+            expect(response.status).toEqual(400)
 
             const thesisGraders = await Grader.findAll({
               where: { thesisId: thesis1.id },
             })
 
-            expect(thesisGraders).toHaveLength(1)
+            expect(thesisGraders).toHaveLength(2)
             expect(thesisGraders).toEqual(
               expect.arrayContaining([
                 expect.objectContaining({
                   userId: user4.id,
                   isPrimaryGrader: true,
+                }),
+                expect.objectContaining({
+                  userId: user5.id,
+                  isPrimaryGrader: false,
                 }),
               ])
             )
@@ -1591,7 +1572,7 @@ describe('thesis router', () => {
             )
           })
 
-          it('should return 200 and ignore duplicate external supervisors', async () => {
+          it('should return 400 when duplicate external supervisors', async () => {
             const extUserData = {
               firstName: 'External',
               lastName: 'Supervisor',
@@ -1656,25 +1637,28 @@ describe('thesis router', () => {
               .set('hygroupcn', 'grp-toska')
               .field('json', JSON.stringify(updatedThesis))
 
-            expect(response.status).toEqual(200)
+            expect(response.status).toEqual(400)
 
-            // Check that the external user is created
+            // Check that the external users is not created
             const extUser = await User.findOne({
               where: { email: extUserData.email },
             })
-            expect(extUser).not.toBeNull()
-            expect(extUser).toMatchObject(extUserData)
-            expect(extUser.isExternal).toBe(true)
+            expect(extUser).toBeNull()
 
-            // Check that the original user is not updated. Orinal user is user1 declared in the test data
+            
             const duplicateExtUser = await User.findOne({
-              where: { email: duplicateExtUserData.email },
+              where: { email: duplicateExtUserData.email, isExternal: true },
             })
-            expect(duplicateExtUser).not.toBeNull()
-            expect(duplicateExtUser).toMatchObject({ ...duplicateExtUserData, affiliation: null})
-            expect(duplicateExtUser.isExternal).toBe(false)
+            expect(duplicateExtUser).toBeNull()
 
-            // Check that the supervisions are correct
+            // Check that the original supervisor is not updated (user1)
+            const originalSupervisor = await User.findOne({
+              where: { email: user1.email },
+            })
+            expect(originalSupervisor).not.toBeNull()
+            expect(originalSupervisor).toMatchObject(user1)
+
+            // Check that the supervisions are correct (user1 and user3) defined in the thesis1
             const thesisSupervisions = await Supervision.findAll({
               where: { thesisId: thesis1.id },
             })
@@ -1687,12 +1671,12 @@ describe('thesis router', () => {
               expect.arrayContaining([
                 expect.objectContaining({
                   userId: user1.id,
-                  percentage: 34,
+                  percentage: 50,
                   isPrimarySupervisor: true,
                 }),
                 expect.objectContaining({
-                  userId: extUser.id,
-                  percentage: 33,
+                  userId: user3.id,
+                  percentage: 50,
                   isPrimarySupervisor: false,
                 }),
               ])
