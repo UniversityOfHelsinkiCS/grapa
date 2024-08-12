@@ -69,31 +69,27 @@ const ThesesPage = () => {
       field: 'programId',
       headerName: t('programHeader'),
       width: 350,
-      valueGetter: (value, row) =>
+      valueGetter: (_, row) =>
         programs.find((program) => program.id === row.programId)?.name[
           language
         ],
-      // editable: true,
     },
     {
       field: 'topic',
       headerName: t('topicHeader'),
       width: 350,
-      // editable: true,
     },
     {
       field: 'status',
       headerName: t('statusHeader'),
       width: 120,
-      // editable: true,number
     },
     {
       field: 'startDate',
       headerName: t('startDateHeader'),
       sortable: false,
       width: 140,
-      valueGetter: (value, row) => dayjs(row.startDate).format('YYYY-MM-DD'),
-      // valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+      valueGetter: (_, row) => dayjs(row.startDate).format('YYYY-MM-DD'),
     },
     {
       field: 'targetDate',
@@ -101,8 +97,7 @@ const ThesesPage = () => {
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
       width: 140,
-      valueGetter: (value, row) => dayjs(row.targetDate).format('YYYY-MM-DD'),
-      // valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+      valueGetter: (_, row) => dayjs(row.targetDate).format('YYYY-MM-DD'),
     },
   ]
 
