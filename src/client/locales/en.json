@@ -114,7 +114,7 @@
     "managerHeader": "Manager"
   },
   "loginAsPage": {
-    "title": "Choose a user to impersonate",
+    "title": "Choose a user to log in as",
     "userHeader": "User"
   }
 }

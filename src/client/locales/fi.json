@@ -117,7 +117,7 @@
     "managerHeader": "Vastaava"
   },
   "loginAsPage": {
-    "title": "Valitse käyttäjä, jota haluat matkia",
+    "title": "Valitse käyttäjä, jona haluat kirjautua",
     "userHeader": "Käyttäjä"
   }
 }
