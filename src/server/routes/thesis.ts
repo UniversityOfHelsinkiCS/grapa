@@ -4,12 +4,10 @@ import { uniqBy } from 'lodash-es'
 import fs from 'fs'
 
 import {
-  GraderData,
   ServerDeleteRequest,
   ServerGetRequest,
   ServerPostRequest,
   ServerPutRequest,
-  SupervisionData,
   ThesisData,
   User as UserType,
 } from '../types'
@@ -191,13 +189,8 @@ const createThesis = async (thesisData: ThesisData, t: Transaction) => {
 
   const extUsers = await getAndCreateExtUsers(thesisData, t)
 
-  const nonDuplicateSupervisors = uniqBy(
-    thesisData.supervisions,
-    (x: SupervisionData) => x.user?.email
-  )
-
   await Supervision.bulkCreate(
-    nonDuplicateSupervisors.map((supervision) => ({
+    thesisData.supervisions.map((supervision) => ({
       userId:
         supervision.user?.id ??
         extUsers.find((u) => u.email === supervision.user?.email)?.id,
@@ -234,13 +227,8 @@ const createThesis = async (thesisData: ThesisData, t: Transaction) => {
     }
   )
 
-  const nonDuplicateGraders = uniqBy(
-    thesisData.graders.filter((x) => Boolean(x?.user)),
-    (x: GraderData) => x.user?.email
-  )
-
   await Grader.bulkCreate(
-    nonDuplicateGraders
+    thesisData.graders
       .filter((x) => Boolean(x?.user))
       .map((grader) => ({
         userId:
@@ -333,14 +321,9 @@ const updateThesis = async (
 
   const extUsers = await getAndCreateExtUsers(thesisData, transaction)
 
-  const nonDuplicateSupervisors = uniqBy(
-    thesisData.supervisions,
-    (x: SupervisionData) => x.user?.email
-  )
-
   await Supervision.destroy({ where: { thesisId: id }, transaction })
   await Supervision.bulkCreate(
-    nonDuplicateSupervisors.map((supervision) => ({
+    thesisData.supervisions.map((supervision) => ({
       userId:
         supervision.user?.id ??
         extUsers.find((u) => u.email === supervision.user?.email)?.id,
@@ -351,14 +334,9 @@ const updateThesis = async (
     { transaction, validate: true, individualHooks: true }
   )
 
-  const nonDuplicateGraders = uniqBy(
-    thesisData.graders.filter((x) => Boolean(x?.user)),
-    (x: GraderData) => x.user?.email
-  ) as unknown as GraderData[]
-
   await Grader.destroy({ where: { thesisId: id }, transaction })
   await Grader.bulkCreate(
-    nonDuplicateGraders.map((grader) => ({
+    thesisData.graders.map((grader) => ({
       userId:
         grader.user?.id ??
         extUsers.find((u) => u.email === grader.user?.email)?.id,
