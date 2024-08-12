@@ -323,7 +323,7 @@ const ThesisEditForm: React.FC<{
               <Select
                 required
                 disabled={
-                  editedThesis.status !== 'PLANNING' &&
+                  editedThesis.status === 'PLANNING' &&
                   !user.isAdmin &&
                   !user.managedProgramIds?.includes(editedThesis.programId)
                 }
