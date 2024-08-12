@@ -148,6 +148,7 @@ const ThesesPage = () => {
           }}
           pageSizeOptions={[100]}
           disableRowSelectionOnClick
+          autoHeight
         />
       </Box>
       {editedTesis && (
