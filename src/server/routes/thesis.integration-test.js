@@ -17,7 +17,6 @@ import {
   User,
 } from '../db/models'
 import { userFields } from './config'
-import exp from 'constants'
 
 const request = supertest.agent(app)
 
