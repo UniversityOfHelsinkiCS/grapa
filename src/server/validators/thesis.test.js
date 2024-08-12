@@ -126,6 +126,41 @@ describe('validateThesisData', () => {
     expect(next).toHaveBeenCalledTimes(0)
   })
 
+  it('should return an error if there are duplicate supervisors', () => {
+    req.body = {
+      ...req.body,
+      supervisions: [
+        {
+        user: {
+          id: 'test-user',
+          username: 'test-username',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test-email@test.fi',
+        }, 
+        percentage: 50, 
+        isPrimarySupervisor: true
+      },
+      {
+        user: {
+          id: 'test-user-2',
+          username: 'test-username-2',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test-email@test.fi',
+        },
+        percentage: 50,
+        isPrimarySupervisor: false
+      }
+    ],
+    }
+
+    expect(() => validateThesisData(req, res, next)).toThrow(
+      'Supervisors must be unique'
+    )
+    expect(next).toHaveBeenCalledTimes(0)
+  })
+
   it('should return an error if primary supervisor is missing', () => {
     req.body = {
       ...req.body,
@@ -223,6 +258,39 @@ describe('validateThesisData', () => {
     )
     expect(next).toHaveBeenCalledTimes(0)
   })
+
+  it('should return an error if there are duplicate graders', () => {
+    req.body = {
+      ...req.body,
+      graders: [
+        {
+        user: {
+          id: 'test-user',
+          username: 'test-username',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test-email@test.fi',
+        }, 
+      },
+      {
+        user: {
+          id: 'test-user',
+          username: 'test-username',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test-email@test.fi',
+        },
+      }
+    ]
+    }
+
+    expect(() => validateThesisData(req, res, next)).toThrow(
+      'Graders must be unique'
+    )
+    expect(next).toHaveBeenCalledTimes(0)
+  })
+
+  
 
   it('should return an error if primary grader is external', () => {
     req.body = {
