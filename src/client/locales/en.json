@@ -30,6 +30,12 @@
     "languageSubHeader": "Change language",
     "userInfoSubHeader": "Your information"
   },
+  "userInformation": {
+    "username": "Username",
+    "email": "Email",
+    "departmentId": "Department",
+    "affiliation": "Affiliation"
+  },
   "departmentSelectPage": {
     "departmentPlaceholder": "Select department",
     "pageTitle": "Select department",

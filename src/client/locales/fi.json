@@ -30,6 +30,12 @@
     "languageSubHeader": "Valitse kieli",
     "userInfoSubHeader": "Omat tietoni"
   },
+  "userInformation": {
+    "username": "Käyttäjätunnus",
+    "email": "Sähköposti",
+    "departmentId": "Osasto",
+    "affiliation": "Affiliaatio"
+  },
   "departmentSelectPage": {
     "departmentPlaceholder": "Valitse osasto",
     "pageTitle": "Valitse osasto",

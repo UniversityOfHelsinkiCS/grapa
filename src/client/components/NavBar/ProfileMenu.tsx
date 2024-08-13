@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { User } from '@backend/types'
+import { TranslatedName, User } from '@backend/types'
 import {
   Avatar,
   Box,
@@ -15,17 +15,26 @@ import {
 } from '@mui/material'
 
 import useLoggedInUser from '../../hooks/useLoggedInUser'
+import useDepartments from '../../hooks/useDepartments'
 
 import LanguageSelect from './LanguageSelect'
 import { stringToColor } from './util'
 
 const UserInformation = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { user, isLoading } = useLoggedInUser()
+  const { departments, isLoading: departmentsLoading } = useDepartments()
 
-  if (!user || isLoading) return <Skeleton variant="text" width={100} />
+  if (!user || isLoading || departmentsLoading)
+    return <Skeleton variant="text" width={100} />
 
-  const displayedFields: (keyof User)[] = ['username', 'email']
+  const { language } = i18n
+  const displayedFields: (keyof User)[] = [
+    'username',
+    'email',
+    'departmentId',
+    'affiliation',
+  ]
 
   return (
     <>
@@ -34,19 +43,39 @@ const UserInformation = () => {
       </ListSubheader>
       <ListItem sx={{ px: 4, mb: 2 }} disablePadding>
         <dl style={{ margin: 0 }}>
-          {displayedFields.map((field) => (
-            <Box
-              key={field}
-              sx={{ display: 'flex', gap: 2, justifyContent: 'space-between' }}
-            >
-              <dt>{t(`userInformation:${field}`)}:</dt>
-              <dd>
-                <Typography variant="body2" color="text.secondary">
-                  {user[field]}
-                </Typography>
-              </dd>
-            </Box>
-          ))}
+          {displayedFields.map((field) => {
+            let fieldValue = user[field]
+            if (fieldValue === null) return null
+
+            if (field === 'departmentId') {
+              const department = departments.find(
+                (dep) => dep.id === fieldValue
+              )
+              fieldValue = department?.name[language as keyof TranslatedName]
+            }
+
+            return (
+              <Box
+                key={field}
+                sx={{
+                  display: 'flex',
+                  gap: 2,
+                  justifyContent: 'space-between',
+                }}
+              >
+                <dt>{t(`userInformation:${field}`)}:</dt>
+                <dd>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ textAlign: 'right' }}
+                  >
+                    {fieldValue}
+                  </Typography>
+                </dd>
+              </Box>
+            )
+          })}
         </dl>
       </ListItem>
     </>
