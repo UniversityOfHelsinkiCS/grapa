@@ -31,6 +31,7 @@ export interface User {
   managedProgramIds?: string[]
   isExternal: boolean
   affiliation?: string
+  departmentId?: string
 }
 
 export interface RequestWithUser extends Request {
