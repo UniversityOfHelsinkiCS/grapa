@@ -5,20 +5,18 @@ import { ProgramData } from '@backend/types'
 import { getSortedPrograms } from '../components/ThesisPage/util'
 import apiClient from '../util/apiClient'
 
-interface UseProgramsOptions {
+interface UseProgramsParams {
   includeNotManaged?: boolean
 }
 
-const usePrograms = ({ includeNotManaged }: UseProgramsOptions) => {
+const usePrograms = (params: UseProgramsParams) => {
   const { i18n } = useTranslation()
   const { language } = i18n
 
-  const queryKey = ['programs', includeNotManaged]
+  const queryKey = ['programs', params.includeNotManaged]
 
   const queryFn = async (): Promise<ProgramData[]> => {
-    const { data } = await apiClient.get(
-      `/programs${includeNotManaged ? '?includeNotManaged=true' : ''}`
-    )
+    const { data } = await apiClient.get('/programs', { params })
 
     return data
   }
