@@ -73,7 +73,8 @@ const FavoritePrograms = () => {
               <BookmarkIcon fontSize="small" color="primary" />
             </ListItemIcon>
             <ListItemText
-              primary={program.name[language as keyof TranslatedName]}
+              primary={program.id}
+              secondary={program.name[language as keyof TranslatedName]}
             />
           </MenuItem>
         </Tooltip>
@@ -93,7 +94,8 @@ const FavoritePrograms = () => {
           >
             <ListItemText
               inset
-              primary={program.name[language as keyof TranslatedName]}
+              primary={program.id}
+              secondary={program.name[language as keyof TranslatedName]}
             />
           </MenuItem>
         </Tooltip>
