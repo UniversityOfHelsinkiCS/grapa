@@ -36,6 +36,8 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare departmentId: string | undefined
 
   declare iamGroups: string[]
+
+  declare favoriteProgramIds: string[]
 }
 
 User.init(
@@ -100,6 +102,11 @@ User.init(
     hasStudyRight: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
+    },
+    favoriteProgramIds: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
+      defaultValue: [],
     },
   },
   {
