@@ -28,7 +28,10 @@
     "settings": "Profiili asetukset",
     "openMobileMenu": "Avaa valikko",
     "languageSubHeader": "Valitse kieli",
-    "userInfoSubHeader": "Omat tietoni"
+    "favProgramsSubHeader": "Valitse suosikki ohjelmat",
+    "userInfoSubHeader": "Omat tietoni",
+    "addToFavorites": "Lisää ohjelma suosikkeihin",
+    "removeFromFavorites": "Poista ohjelma suosikeista"
   },
   "userInformation": {
     "username": "Käyttäjätunnus",

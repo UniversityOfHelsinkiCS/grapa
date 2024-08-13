@@ -28,7 +28,10 @@
     "settings": "Profile settings",
     "openMobileMenu": "Open menu",
     "languageSubHeader": "Change language",
-    "userInfoSubHeader": "Your information"
+    "favProgramsSubHeader": "Select favorite programs",
+    "userInfoSubHeader": "Your information",
+    "addToFavorites": "Add this program to favorites",
+    "removeFromFavorites": "Remove this program from favorites"
   },
   "userInformation": {
     "username": "Username",
