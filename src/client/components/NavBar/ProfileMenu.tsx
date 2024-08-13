@@ -22,10 +22,10 @@ import { stringToColor } from './util'
 
 const UserInformation = () => {
   const { t, i18n } = useTranslation()
-  const { user, isLoading } = useLoggedInUser()
+  const { user, isLoading: userLoading } = useLoggedInUser()
   const { departments, isLoading: departmentsLoading } = useDepartments()
 
-  if (!user || isLoading || departmentsLoading)
+  if (!user || userLoading || departmentsLoading)
     return <Skeleton variant="text" width={100} />
 
   const { language } = i18n
