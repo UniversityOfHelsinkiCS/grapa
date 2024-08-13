@@ -43,7 +43,7 @@ const UserInformation = () => {
         {t('navbar:userInfoSubHeader')}
       </ListSubheader>
       <ListItem sx={{ px: 4, mb: 2 }} disablePadding>
-        <dl style={{ margin: 0 }}>
+        <dl style={{ margin: 0, width: '100%' }}>
           {displayedFields.map((field) => {
             let fieldValue = user[field]
             if (fieldValue === null) return null
@@ -60,7 +60,7 @@ const UserInformation = () => {
                 key={field}
                 sx={{
                   display: 'flex',
-                  gap: 2,
+                  my: 1,
                   justifyContent: 'space-between',
                 }}
               >
