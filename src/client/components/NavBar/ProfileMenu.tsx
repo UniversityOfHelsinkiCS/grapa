@@ -20,6 +20,7 @@ import useDepartments from '../../hooks/useDepartments'
 import LanguageSelect from './LanguageSelect'
 import { stringToColor } from './util'
 import FavoritePrograms from './FavoritePrograms'
+import Logout from './Logout'
 
 const UserInformation = () => {
   const { t, i18n } = useTranslation()
@@ -168,6 +169,8 @@ const ProfileMenu = () => {
         <FavoritePrograms />
         <Divider />
         <UserInformation />
+        <Divider />
+        <Logout />
       </Menu>
     </>
   )
