@@ -27,4 +27,13 @@ userRouter.put('/', async (req: RequestWithUser, res: any) => {
   return res.status(200).send({ message: 'User updated' })
 })
 
+userRouter.put('/favoritePrograms', async (req: RequestWithUser, res: any) => {
+  const { user, body } = req
+  const { favoriteProgramIds } = body
+
+  await User.update({ favoriteProgramIds }, { where: { id: user.id } })
+
+  return res.status(200).send({ message: 'User favorite programs updated' })
+})
+
 export default userRouter
