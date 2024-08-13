@@ -28,10 +28,12 @@
     "settings": "Profiili asetukset",
     "openMobileMenu": "Avaa valikko",
     "languageSubHeader": "Valitse kieli",
-    "favProgramsSubHeader": "Valitse suosikki ohjelmat",
+    "favProgramsSubHeader": "Valitse suosikki koulutusohjelmat",
     "userInfoSubHeader": "Omat tietoni",
     "addToFavorites": "Lisää ohjelma suosikkeihin",
-    "removeFromFavorites": "Poista ohjelma suosikeista"
+    "removeFromFavorites": "Poista ohjelma suosikeista",
+    "favoriteProgramsUpdated": "Suosikki koulutusohjelmat päivitetty",
+    "favoriteProgramsUpdateFailed": "Suosikki koulutusohjelmien päivitys epäonnistui"
   },
   "userInformation": {
     "username": "Käyttäjätunnus",

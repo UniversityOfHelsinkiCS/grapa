@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from '@mui/material'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
+import { enqueueSnackbar } from 'notistack'
 
 import usePrograms from '../../hooks/usePrograms'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
@@ -48,9 +49,13 @@ const FavoritePrograms = () => {
 
     try {
       mutation.mutateAsync({ favoriteProgramIds: newFavoriteProgramIds })
-      console.log('SUCCESS: updated favorite programs')
+      enqueueSnackbar(t('navbar:favoriteProgramsUpdated'), {
+        variant: 'success',
+      })
     } catch (error) {
-      console.error('ERROR: updating favorite programs', error)
+      enqueueSnackbar(t('navbar:favoriteProgramsUpdateFailed'), {
+        variant: 'error',
+      })
     }
   }
 

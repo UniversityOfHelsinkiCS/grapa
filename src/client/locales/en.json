@@ -31,7 +31,9 @@
     "favProgramsSubHeader": "Select favorite programs",
     "userInfoSubHeader": "Your information",
     "addToFavorites": "Add this program to favorites",
-    "removeFromFavorites": "Remove this program from favorites"
+    "removeFromFavorites": "Remove this program from favorites",
+    "favoriteProgramsUpdated": "Favorite programs updated",
+    "favoriteProgramsUpdateFailed": "Failed to update favorite programs"
   },
   "userInformation": {
     "username": "Username",
