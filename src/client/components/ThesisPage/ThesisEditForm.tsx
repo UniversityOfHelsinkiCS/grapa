@@ -100,7 +100,6 @@ const ThesisEditForm: React.FC<{
   const selectedProgram = programs.find(
     (program) => program.id === editedThesis.programId
   )
-  const sortedPrograms = sortBy(programs, (program) => program.name[language])
 
   const sortedStudyTracks =
     selectedProgram && selectedProgram.studyTracks?.length
@@ -207,7 +206,7 @@ const ThesisEditForm: React.FC<{
                   (error) => error.path[0] === 'programId'
                 )}
               >
-                {sortedPrograms.map((program) => (
+                {programs.map((program) => (
                   <MenuItem key={program.id} value={program.id}>
                     {program.name[language]}
                   </MenuItem>

@@ -1,6 +1,5 @@
-import sortBy from 'lodash-es/sortBy'
 import { useTranslation } from 'react-i18next'
-import { ProgramData, TranslatedName } from '@backend/types'
+import { TranslatedName } from '@backend/types'
 import {
   ListItemIcon,
   ListItemText,
@@ -14,9 +13,7 @@ import { enqueueSnackbar } from 'notistack'
 import usePrograms from '../../hooks/usePrograms'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useUserProgramsMutation from '../../hooks/useUserProgramsMutation'
-
-const getSortedPrograms = (programs: ProgramData[], language: string) =>
-  sortBy(programs, (program) => program.name[language as keyof TranslatedName])
+import { getSortedPrograms } from '../ThesisPage/util'
 
 const FavoritePrograms = () => {
   const { t, i18n } = useTranslation()
