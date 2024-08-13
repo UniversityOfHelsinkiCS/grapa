@@ -99,7 +99,7 @@ const FavoritePrograms = () => {
             sx={{ justifyContent: 'space-between', px: 4 }}
           >
             <ListItemText
-              sx={{ ml: '36px' }}
+              inset
               primary={program.name[language as keyof TranslatedName]}
             />
           </MenuItem>
