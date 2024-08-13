@@ -6,12 +6,13 @@ const programRouter = express.Router()
 
 // @ts-expect-error the user middleware updates the req object with user field
 programRouter.get('/', async (req: RequestWithUser, res: Response) => {
-  const includeDisabled = req.query.includeDisabled === 'true'
-  const includeNotManaged = req.query.includeNotManaged === 'true'
+  const { includeDisabled, includeNotManaged } = req.query
+  const { isAdmin, favoriteProgramIds } = req.user
 
-  const { isAdmin } = req.user
+  const whereClause = {
+    ...(!includeDisabled && { enabled: true }),
+  }
 
-  const whereClause = includeDisabled ? {} : { enabled: true }
   const includes = [
     {
       model: StudyTrack,
@@ -34,7 +35,13 @@ programRouter.get('/', async (req: RequestWithUser, res: Response) => {
     include: includes,
     order: [['name', 'ASC']],
   })
-  res.send(programs)
+
+  const programsWithFavorites = programs.map((program) => ({
+    ...program.toJSON(),
+    isFavorite: favoriteProgramIds.includes(program.id),
+  }))
+
+  res.send(programsWithFavorites)
 })
 
 export default programRouter

@@ -93,6 +93,7 @@ export interface ProgramData {
   id: string
   name: TranslatedName
   studyTracks: StudyTrackData[]
+  isFavorite: boolean
 }
 
 export interface ServerGetRequest extends Request {

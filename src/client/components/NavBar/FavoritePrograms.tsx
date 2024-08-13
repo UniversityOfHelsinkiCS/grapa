@@ -29,12 +29,8 @@ const FavoritePrograms = () => {
 
   if (!user || !programs || userLoading || programsLoading) return null
 
-  const favoritePrograms = programs.filter((program) =>
-    user.favoriteProgramIds.includes(program.id)
-  )
-  const otherPrograms = programs.filter(
-    (program) => !user.favoriteProgramIds.includes(program.id)
-  )
+  const favoritePrograms = programs.filter((program) => program.isFavorite)
+  const otherPrograms = programs.filter((program) => !program.isFavorite)
 
   const sortedFavoritePrograms = getSortedPrograms(favoritePrograms, language)
   const sortedOtherPrograms = getSortedPrograms(otherPrograms, language)
