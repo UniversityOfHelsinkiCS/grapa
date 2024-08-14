@@ -121,11 +121,6 @@ const NavBar = () => {
                   {t('navbar:programManager')}
                 </Button>
               )}
-              {user.isAdmin && (
-                <Button component={NavLink} to="/login-as" sx={navStyles.link}>
-                  {t('navbar:loginAs')}
-                </Button>
-              )}
             </Box>
 
             <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 2 }}>
@@ -167,17 +162,6 @@ const NavBar = () => {
               sx={{ justifyContent: 'space-between', px: 4 }}
             >
               <ListItemText primary={t('navbar:programManager')} />
-            </ListItemButton>
-          </ListItem>
-        )}
-        {user.isAdmin && (
-          <ListItem disablePadding>
-            <ListItemButton
-              component={NavLink}
-              to="/login-as"
-              sx={{ justifyContent: 'space-between', px: 4 }}
-            >
-              <ListItemText primary={t('navbar:loginAs')} />
             </ListItemButton>
           </ListItem>
         )}

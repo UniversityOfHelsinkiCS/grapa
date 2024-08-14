@@ -21,6 +21,9 @@
     "removeThesisConfirmationContent": "Haluatko varmasti poistaa gradun: {{topic}}?",
     "error": "Virhe"
   },
+  "admin": {
+    "indexTab": "Login as"
+  },
   "navbar": {
     "programManager": "Vastaavat",
     "loginAs": "Kirjaudu toisella käyttäjällä",

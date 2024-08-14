@@ -9,6 +9,7 @@ import { BASE_PATH } from '../config'
 import ProgramManagement from './components/ProgramManagement/ProgramManagement'
 import NoAccess from './components/NoAccess'
 import LoginAs from './components/LoginAs'
+import Admin from './components/Admin/Admin'
 
 const router = createBrowserRouter(
   [
@@ -31,8 +32,15 @@ const router = createBrowserRouter(
           element: <ProgramManagement />,
         },
         {
-          path: '/login-as',
-          element: <LoginAs />,
+          path: '/admin',
+          element: <Admin />,
+          errorElement: <RootBoundary />,
+          children: [
+            {
+              index: true,
+              element: <LoginAs />,
+            },
+          ],
         },
         {
           path: '*',

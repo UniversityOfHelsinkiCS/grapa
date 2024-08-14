@@ -21,6 +21,9 @@
     "removeButton": "Remove",
     "error": "Error"
   },
+  "admin": {
+    "indexTab": "Login as"
+  },
   "navbar": {
     "programManager": "Program managers",
     "loginAs": "Login as",

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Autocomplete,
+  Box,
   Button,
   FormControl,
   TextField,
@@ -27,54 +28,61 @@ const LoginAs: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '30px',
-        marginTop: '30px',
-        width: '70%',
-      }}
-    >
-      <Typography variant="h3">{t('loginAsPage:title')}</Typography>
-      <FormControl fullWidth>
-        <Autocomplete
-          id="login-as-user"
-          noOptionsText={t('userSearchNoOptions')}
-          data-testid="login-as-user"
-          disablePortal
-          options={users ?? []}
-          getOptionLabel={(user) =>
-            `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.username ? `(${user.username})` : ''}`
-          }
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={t('loginAsPage:userHeader')}
-              required
-            />
-          )}
-          inputValue={userSearch}
-          filterOptions={(x) => x}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          value={loginAsCandidate}
-          onChange={(_, value) => {
-            setLoginAsCandidate(value)
-          }}
-          onInputChange={(_, value) => {
-            setUserSearch(value)
-          }}
-        />
-      </FormControl>
-      <Button
-        variant="contained"
-        data-testid="login-as-button"
-        disabled={!loginAsCandidate}
-        onClick={handleLoginAs}
+    <>
+      <Typography component="h1" variant="h4">
+        {t('loginAsPage:title')}
+      </Typography>
+      <Box
+        sx={{
+          maxWidth: '480px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1rem',
+          mt: '2rem',
+          mx: 'auto',
+        }}
       >
-        Login As
-      </Button>
-    </div>
+        <FormControl fullWidth>
+          <Autocomplete
+            id="login-as-user"
+            noOptionsText={t('userSearchNoOptions')}
+            data-testid="login-as-user"
+            disablePortal
+            options={users ?? []}
+            getOptionLabel={(user) =>
+              `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.username ? `(${user.username})` : ''}`
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t('loginAsPage:userHeader')}
+                required
+              />
+            )}
+            inputValue={userSearch}
+            filterOptions={(x) => x}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            value={loginAsCandidate}
+            onChange={(_, value) => {
+              setLoginAsCandidate(value)
+            }}
+            onInputChange={(_, value) => {
+              setUserSearch(value)
+            }}
+          />
+        </FormControl>
+        <Button
+          type="submit"
+          variant="contained"
+          data-testid="login-as-button"
+          disabled={!loginAsCandidate}
+          onClick={handleLoginAs}
+          fullWidth
+        >
+          Login As
+        </Button>
+      </Box>
+    </>
   )
 }
 
