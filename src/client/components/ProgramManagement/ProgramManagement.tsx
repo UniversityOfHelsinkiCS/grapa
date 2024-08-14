@@ -87,6 +87,7 @@ const ProgramManagement = () => {
           type="button"
           onClick={() => handleDeleteProgramManagement(params.row.id)}
           color="error"
+          data-testid={`delete-program-management-button-${params.row.userId}`}
         >
           <DeleteIcon fontSize="small" />
         </IconButton>
@@ -157,7 +158,11 @@ const ProgramManagement = () => {
             onChange={(e) => setProgramId(e.target.value as string)}
           >
             {programs.map((program) => (
-              <MenuItem key={program.id} value={program.id}>
+              <MenuItem
+                key={program.id}
+                value={program.id}
+                data-testid={`program-select-item-${program.id}`}
+              >
                 {program.name[language]}
               </MenuItem>
             ))}
