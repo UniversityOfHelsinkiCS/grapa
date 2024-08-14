@@ -78,6 +78,7 @@ const ProgramManagement = () => {
     },
     {
       field: 'actions',
+      type: 'actions',
       headerName: '',
       sortable: false,
       renderCell: (params) => (
