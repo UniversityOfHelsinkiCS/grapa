@@ -128,7 +128,7 @@
   },
   "programManagementPage": {
     "pageTitle": "Ohjelman vastaavat",
-    "addProgramManagement": "Lisää vastaaava",
+    "addProgramManagement": "Vastaavien lisäys",
     "programHeader": "Ohjelma",
     "managerHeader": "Vastaava"
   },
