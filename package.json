@@ -17,7 +17,7 @@
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "format": "prettier --write '**/*.{ts,tsx,json,css,md}'",
     "build": "DISABLE_ESLINT_PLUGIN=true vite build",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "jest": {
     "extensionsToTreatAsEsm": [
