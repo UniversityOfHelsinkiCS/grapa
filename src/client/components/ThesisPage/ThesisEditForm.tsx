@@ -8,6 +8,7 @@ import { User, ThesisData, TranslationLanguage } from '@backend/types'
 import { styled } from '@mui/material/styles'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
+import BookmarkIcon from '@mui/icons-material/Bookmark'
 import {
   Autocomplete,
   Button,
@@ -21,6 +22,8 @@ import {
   Grid,
   InputLabel,
   Link,
+  ListItemIcon,
+  ListItemText,
   MenuItem,
   Select,
   Stack,
@@ -36,7 +39,7 @@ import useUsers from '../../hooks/useUsers'
 import { BASE_PATH } from '../../../config'
 import { useDebounce } from '../../hooks/useDebounce'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
-import { getFormErrors } from './util'
+import { getFormErrors, getSortedPrograms } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
 import ErrorSummary from '../Common/ErrorSummary'
 import { ProgramData as Program } from '../../../server/types'
@@ -100,6 +103,12 @@ const ThesisEditForm: React.FC<{
   const selectedProgram = programs.find(
     (program) => program.id === editedThesis.programId
   )
+
+  const favoritePrograms = programs.filter((program) => program.isFavorite)
+  const otherPrograms = programs.filter((program) => !program.isFavorite)
+
+  const sortedFavoritePrograms = getSortedPrograms(favoritePrograms, language)
+  const sortedOtherPrograms = getSortedPrograms(otherPrograms, language)
 
   const sortedStudyTracks =
     selectedProgram && selectedProgram.studyTracks?.length
@@ -205,10 +214,30 @@ const ThesisEditForm: React.FC<{
                 error={formErrors.some(
                   (error) => error.path[0] === 'programId'
                 )}
+                renderValue={(value) =>
+                  programs.find((program) => program.id === value)?.name[
+                    language
+                  ]
+                }
               >
-                {programs.map((program) => (
+                {sortedFavoritePrograms.map((program) => (
                   <MenuItem key={program.id} value={program.id}>
-                    {program.name[language]}
+                    <ListItemIcon>
+                      <BookmarkIcon fontSize="small" color="primary" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={program.id}
+                      secondary={program.name[language]}
+                    />
+                  </MenuItem>
+                ))}
+                {sortedOtherPrograms.map((program) => (
+                  <MenuItem key={program.id} value={program.id}>
+                    <ListItemText
+                      inset
+                      primary={program.id}
+                      secondary={program.name[language]}
+                    />
                   </MenuItem>
                 ))}
               </Select>
