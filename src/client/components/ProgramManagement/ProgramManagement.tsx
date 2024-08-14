@@ -5,12 +5,14 @@ import {
   Box,
   Button,
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
   TextField,
   Typography,
 } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import useProgramManagements from '../../hooks/useProgramManagements'
 import {
@@ -77,16 +79,16 @@ const ProgramManagement = () => {
     {
       field: 'actions',
       headerName: '',
-      flex: 0.5,
       sortable: false,
       renderCell: (params) => (
-        <Button
+        <IconButton
+          aria-label="delete"
+          type="button"
           onClick={() => handleDeleteProgramManagement(params.row.id)}
-          variant="contained"
-          color="secondary"
+          color="error"
         >
-          {t('removeButton')}
-        </Button>
+          <DeleteIcon fontSize="small" />
+        </IconButton>
       ),
     },
   ]
