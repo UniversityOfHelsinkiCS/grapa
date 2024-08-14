@@ -130,7 +130,9 @@
     "pageTitle": "Ohjelman vastaavat",
     "addProgramManagement": "Vastaavien lisäys",
     "programHeader": "Ohjelma",
-    "managerHeader": "Vastaava"
+    "managerHeader": "Vastaava",
+    "removeProgramManagementTitle": "Poista vastaava",
+    "removeProgramManagementContent": "Haluatko varmasti poistaa henkilön {{name}} ohjelmasta {{program}}?"
   },
   "loginAsPage": {
     "title": "Valitse käyttäjä, jona haluat kirjautua",

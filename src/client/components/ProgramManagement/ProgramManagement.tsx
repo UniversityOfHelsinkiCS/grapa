@@ -26,6 +26,7 @@ import {
   ProgramManagementData,
   TranslationLanguage,
 } from '../../../server/types'
+import DeleteConfirmation from '../Common/DeleteConfirmation'
 
 const ProgramManagement = () => {
   const { t, i18n } = useTranslation()
@@ -33,6 +34,8 @@ const ProgramManagement = () => {
 
   const [programId, setProgramId] = useState(null)
   const [managerCandidate, setManagerCandidate] = useState(null)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [deletedProgramManagement, setDeletedProgramManagement] = useState(null)
 
   const { programs } = usePrograms({ includeNotManaged: false })
   const { programManagements } = useProgramManagements()
@@ -54,10 +57,6 @@ const ProgramManagement = () => {
       setManagerCandidate(null)
       setProgramId(null)
     }
-  }
-
-  const handleDeleteProgramManagement = async (id: string) => {
-    await deleteProgramManagement(id)
   }
 
   if (!programs || !programManagements) return null
@@ -85,7 +84,10 @@ const ProgramManagement = () => {
         <IconButton
           aria-label="delete"
           type="button"
-          onClick={() => handleDeleteProgramManagement(params.row.id)}
+          onClick={() => {
+            setDeleteDialogOpen(true)
+            setDeletedProgramManagement(params.row as ProgramManagementData)
+          }}
           color="error"
           data-testid={`delete-program-management-button-${params.row.userId}`}
         >
@@ -180,6 +182,29 @@ const ProgramManagement = () => {
           {t('submitButton')}
         </Button>
       </Box>
+      {deletedProgramManagement && (
+        <DeleteConfirmation
+          open={deleteDialogOpen}
+          setOpen={setDeleteDialogOpen}
+          onClose={() => {
+            setDeleteDialogOpen(false)
+            setDeletedProgramManagement(null)
+          }}
+          onDelete={async () => {
+            await deleteProgramManagement(deletedProgramManagement.id)
+            setDeleteDialogOpen(false)
+            setDeletedProgramManagement(null)
+          }}
+          title={t('programManagementPage:removeProgramManagementTitle')}
+        >
+          <Box>
+            {t('programManagementPage:removeProgramManagementContent', {
+              name: `${deletedProgramManagement.user.firstName} ${deletedProgramManagement.user.lastName}`,
+              program: deletedProgramManagement.program.name[language],
+            })}
+          </Box>
+        </DeleteConfirmation>
+      )}
     </Box>
   )
 }

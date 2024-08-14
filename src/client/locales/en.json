@@ -127,7 +127,9 @@
     "pageTitle": "Program managements",
     "addProgramManagement": "Add program management",
     "programHeader": "Program",
-    "managerHeader": "Manager"
+    "managerHeader": "Manager",
+    "removeProgramManagementTitle": "Delete program management",
+    "removeProgramManagementContent": "Are you sure you want to delete {{name}} from the {{program}}?"
   },
   "loginAsPage": {
     "title": "Choose a user to log in as",

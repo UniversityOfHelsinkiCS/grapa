@@ -138,7 +138,16 @@ describe('ProgramManagement', () => {
       const deleteButton = screen.getByTestId('delete-program-management-button-1')
       await user.click(deleteButton)
 
-      expect(deleteProgramManagementMock).toHaveBeenCalledTimes(1)
+      await waitFor(() => {
+        expect(screen.getByTestId('delete-confirm-dialog')).toBeInTheDocument()
+      })
+
+      const confirmButton = screen.getByTestId('delete-confirm-button')
+      await user.click(confirmButton)
+
+      await waitFor(() => {
+        expect(deleteProgramManagementMock).toHaveBeenCalledTimes(1)
+      })
     })
   })
 
