@@ -29,8 +29,8 @@ const LoggedInAsBanner = () => {
         display: 'flex',
         alignItems: 'center',
         p: '1rem',
-        zIndex: 10,
-        backgroundColor: 'warning.main',
+        zIndex: 9999,
+        backgroundColor: '#fbbf24',
       }}
     >
       <Typography fontWeight="bold">
@@ -42,8 +42,15 @@ const LoggedInAsBanner = () => {
         sx={{
           ml: 'auto',
           fontWeight: 'bold',
-          backgroundColor: 'primary.light',
-          color: 'black',
+          backgroundColor: '#000',
+          color: '#fff',
+          borderRadius: '2rem',
+          borderColor: '#000',
+          '&:hover': {
+            backgroundColor: '#fff',
+            color: '#000',
+            borderColor: '#000',
+          },
         }}
       >
         Return to yourself
