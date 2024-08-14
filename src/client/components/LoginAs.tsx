@@ -78,6 +78,7 @@ const LoginAs: React.FC = () => {
           disabled={!loginAsCandidate}
           onClick={handleLoginAs}
           fullWidth
+          sx={{ borderRadius: '0.5rem' }}
         >
           Login As
         </Button>
