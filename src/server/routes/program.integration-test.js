@@ -134,6 +134,7 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
+              isFavorite: false,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -159,6 +160,7 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
+              isFavorite: false,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -184,6 +186,7 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
+              isFavorite: false,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -196,6 +199,7 @@ describe('program router', () => {
                 en: 'test2inenglish',
                 sv: 'test2pasvenska',
               },
+              isFavorite: false,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test3' }),
                 expect.objectContaining({ name: 'test4' }),
@@ -273,6 +277,7 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
+              isFavorite: false,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -285,6 +290,7 @@ describe('program router', () => {
                 en: 'test2inenglish',
                 sv: 'test2pasvenska',
               },
+              isFavorite: false,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test3' }),
                 expect.objectContaining({ name: 'test4' }),

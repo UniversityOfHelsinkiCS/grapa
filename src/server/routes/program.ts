@@ -1,3 +1,4 @@
+import { Includeable } from 'sequelize'
 import express, { Response } from 'express'
 import { Program, ProgramManagement, StudyTrack } from '../db/models'
 import { RequestWithUser } from '../types'
@@ -6,20 +7,23 @@ const programRouter = express.Router()
 
 // @ts-expect-error the user middleware updates the req object with user field
 programRouter.get('/', async (req: RequestWithUser, res: Response) => {
-  const { includeDisabled, includeNotManaged } = req.query
+  const includeDisabled = req.query.includeDisabled === 'true'
+  const includeNotManaged = req.query.includeNotManaged === 'true'
+
   const { isAdmin, favoriteProgramIds } = req.user
 
   const whereClause = {
     ...(!includeDisabled && { enabled: true }),
   }
 
-  const includes = [
+  const includes: Includeable[] = [
     {
       model: StudyTrack,
       attributes: ['id', 'name', 'programId'],
       as: 'studyTracks',
     },
   ]
+
   if (!isAdmin && !includeNotManaged) {
     includes.push({
       model: ProgramManagement,
