@@ -142,13 +142,17 @@ describe('ThesisEditForm', () => {
 
     it('renders ThesisEditForm correctly and renders all validation errors', () => {
       expect(screen.getByTestId('thesis-form-title')).toBeInTheDocument()
-      expect(screen.getByText('Aihe')).toBeInTheDocument()
-      expect(screen.getByText('Ohjelma')).toBeInTheDocument()
-      expect(screen.getByText('Tekijä')).toBeInTheDocument()
-      expect(screen.getByText('Vaihe')).toBeInTheDocument()
-      expect(screen.getByText('Lataa tutkimussuunnitelma')).toBeInTheDocument()
-      expect(screen.getByText('Lataa työskentelysopimus (jos se on ohjelmassa pakollinen)')).toBeInTheDocument()
-      expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
+      expect(screen.getByTestId('topic-select-input')).toBeInTheDocument()
+      expect(screen.getByTestId('program-select-input')).toBeInTheDocument()
+      expect(screen.getByTestId('author-select-input')).toBeInTheDocument()
+      expect(screen.getByTestId('status-select-input')).toBeInTheDocument()
+      expect(screen.getByTestId('research-plan-input')).toBeInTheDocument()
+      expect(screen.getByTestId('ways-of-working-input')).toBeInTheDocument()
+      expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
+
+      // We are initializing the thesis with 2 graders, so the add grader button should not be visible
+      const addGraderButton = screen.queryByTestId('add-grader-button')
+      expect(addGraderButton).toBeNull()
 
       const submitButton = screen.getByTestId('submit-button')
       expect(submitButton).toBeEnabled()
@@ -187,17 +191,9 @@ describe('ThesisEditForm', () => {
         const graderSelect1 = screen.getByTestId('grader-select-input-1')
         const graderInput1 = within(graderSelect1).getByRole('combobox')
 
-        const researchPlanInput = screen
-          .getByRole('button', {
-            name: 'CloudUploadIcon Lataa tutkimussuunnitelma',
-          })
-          .querySelector('input')
+        const researchPlanInput = screen.getByTestId('research-plan-input')
 
-        const waysOfWorkingInput = screen
-          .getByRole('button', {
-            name: 'CloudUploadIcon Lataa työskentelysopimus (jos se on ohjelmassa pakollinen)',
-          })
-          .querySelector('input')
+        const waysOfWorkingInput = screen.getByTestId('ways-of-working-input')
 
         // Add a topic
         await user.type(topicInput, 'Test')
@@ -205,9 +201,7 @@ describe('ThesisEditForm', () => {
         // Select a program
         await user.click(programSelect)
         await user.click(
-          screen.getAllByText(
-            "Bachelor's Programme in Mathematical Sciences"
-          )[0]
+          screen.getByTestId('program-select-item-1')
         )
 
         // Add an author
@@ -312,13 +306,13 @@ describe('ThesisEditForm', () => {
 
     it('renders ThesisEditForm correctly, renders no validation error, and submit button is enabled', () => {
       expect(screen.getByTestId('thesis-form-title')).toBeInTheDocument()
-      expect(screen.getByText('Aihe')).toBeInTheDocument()
-      expect(screen.getByText('Ohjelma')).toBeInTheDocument()
-      expect(screen.getByText('Tekijä')).toBeInTheDocument()
-      expect(screen.getByText('Vaihe')).toBeInTheDocument()
-      expect(screen.getByText('Lataa tutkimussuunnitelma')).toBeInTheDocument()
-      expect(screen.getByText('Lataa työskentelysopimus (jos se on ohjelmassa pakollinen)')).toBeInTheDocument()
-      expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
+      expect(screen.getByTestId('topic-select-input')).toBeInTheDocument()
+      expect(screen.getByTestId('program-select-input')).toBeInTheDocument()
+      expect(screen.getByTestId('author-select-input')).toBeInTheDocument()
+      expect(screen.getByTestId('status-select-input')).toBeInTheDocument()
+      expect(screen.getByTestId('research-plan-input')).toBeInTheDocument()
+      expect(screen.getByTestId('ways-of-working-input')).toBeInTheDocument()
+      expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
 
       expect(screen.getByRole('button', { name: 'Tallenna' })).toBeEnabled()
     })
