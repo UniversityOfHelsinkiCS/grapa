@@ -64,7 +64,7 @@
     "supervisorGeneralErrorsTitle": "Ohjaajien lisäykseen liittyvät virheet",
     "supervisorPercentage": "Ohjaajien työosuuksien on oltava yhteensä 100%",
     "supervisorPercentageContent": "Aseta ohjaajien työosuudet niin, että niiden summa on 100%",
-    "primarySupervisor": "Aseta joking ohjaajista pääohjaajaksi",
+    "primarySupervisor": "Aseta jokin ohjaajista pääohjaajaksi",
     "primarySupervisorContent": "Tutkielmalla tulee olla yksi pääohjaaja, aseta jokin ohjaajista pääohjaajan asemaan painamalla tähti-ikonia ohjaajan vieressä. Pääohjaaja ei voi olla ulkopuolinen ohjaaja.",
     "duplicateSupervisorEmails": "Ohjaajien sähköpostiosoitteiden tulee olla uniikkeja",
     "duplicateSupervisorEmailsContent": "Tarkista ohjaajien sähköpostiosoitteet. Ohjaajien sähköpostiosoitteet tulee olla uniikkeja",
@@ -89,8 +89,8 @@
     "graders": "Arvioijat",
     "graderInstructions": {
       "title": "Ohjeita arvioijien täyttämiseen",
-      "content": "Arvioijan 1 tulee olla Helsingin Yliopiston professori.\n\n Arvioijan 2 tulee olla tohtori. Arvioija 2 voi olla Helsingin yliopiston ulkopuolinen henkilö.\n Syöttääksesi ulkopuolisen arvioijan tiedot, valitse 'Lisää ulkopuolinen arvioija'.\n\n",
-      "primaryGrader": "Professori",
+      "content": "Arvioijan 1 tulee olla Helsingin yliopiston professori, 1. tai 2. kauden apulaisprofessori, tutkimusjohtaja, vanhempi yliopistonlehtori tai yliopistonlehtori.\n\n Arvioijan 2 tulee olla tohtori. Arvioija 2 voi olla Helsingin yliopiston ulkopuolinen henkilö.\n Syöttääksesi ulkopuolisen arvioijan tiedot, valitse 'Lisää ulkopuolinen arvioija'.\n\n",
+      "primaryGrader": "Professori tai muu sopiva",
       "secondaryGrader": "Tohtori"
     },
     "addPrimaryGrader": "Lisää arvioija",
@@ -107,7 +107,7 @@
     "lastName": "Sukunimi",
     "email": "Sähköposti",
     "affiliation": "Affiliaatio",
-    "editThesisDialog": "Muokkaa gradu",
+    "editThesisDialog": "Muokkaa tutkielmaa",
     "uploadWaysOfWorkingButton": "Lataa työskentelysopimus (jos se on ohjelmassa pakollinen)",
     "uploadResearchPlanButton": "Lataa tutkimussuunnitelma",
     "selectSupervisorPercentage": "Osuus",
