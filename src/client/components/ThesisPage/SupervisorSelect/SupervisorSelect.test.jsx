@@ -114,7 +114,7 @@ describe('SupervisorSelect', () => {
     )
 
     expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
-    expect(screen.getByText('Osuus')).toBeInTheDocument()
+    expect(screen.getByTestId('percentage-input')).toBeInTheDocument()
     expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe  (12345)')
     expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
   })

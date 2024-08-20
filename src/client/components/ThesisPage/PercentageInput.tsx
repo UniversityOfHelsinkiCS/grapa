@@ -16,6 +16,7 @@ const PercentageInput = ({
   percentageInputProps,
 }: PercentageInputProps) => (
   <TextField
+    data-testid="percentage-input"
     type="number"
     sx={{ minWidth: '10%' }}
     InputProps={{
