@@ -81,6 +81,18 @@ const ThesesPage = () => {
       width: 350,
     },
     {
+      field: 'authors',
+      headerName: t('authorsHeader'),
+      width: 350,
+      valueGetter: (_, row) =>
+        row.authors
+          .map(
+            (author) =>
+              `${author.firstName} ${author.lastName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
+          )
+          .join(', '),
+    },
+    {
       field: 'status',
       headerName: t('statusHeader'),
       width: 120,
