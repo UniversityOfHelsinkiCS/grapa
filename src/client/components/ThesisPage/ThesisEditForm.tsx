@@ -375,7 +375,6 @@ const ThesisEditForm: React.FC<{
                 <MenuItem value="PLANNING">
                   {t('thesisStages:planned')}
                 </MenuItem>
-                <MenuItem value="STARTED">{t('thesisStages:started')}</MenuItem>
                 <MenuItem value="IN_PROGRESS">
                   {t('thesisStages:inProgress')}
                 </MenuItem>

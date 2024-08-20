@@ -118,7 +118,6 @@
   },
   "thesisStages": {
     "planned": "Planned",
-    "started": "Started",
     "inProgress": "In progress",
     "completed": "Completed",
     "cancelled": "Cancelled"

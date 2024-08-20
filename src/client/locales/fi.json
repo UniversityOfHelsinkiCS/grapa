@@ -121,7 +121,6 @@
   },
   "thesisStages": {
     "planned": "Suunniteltu",
-    "started": "Aloitettu",
     "inProgress": "Käynnissä",
     "completed": "Valmis",
     "cancelled": "Keskeytetty"
