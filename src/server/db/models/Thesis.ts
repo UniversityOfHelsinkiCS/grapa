@@ -58,7 +58,7 @@ Thesis.init(
     },
     status: {
       type: DataTypes.ENUM,
-      values: ['PLANNING', 'STARTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'],
+      values: ['PLANNING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'],
       allowNull: false,
     },
     startDate: {

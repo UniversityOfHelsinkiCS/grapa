@@ -42,7 +42,6 @@ export interface RequestWithUser extends Request {
 
 export type ThesisStatus =
   | 'PLANNING'
-  | 'STARTED'
   | 'IN_PROGRESS'
   | 'COMPLETED'
   | 'CANCELLED'
