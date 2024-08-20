@@ -108,7 +108,7 @@
     "email": "Sähköposti",
     "affiliation": "Affiliaatio",
     "editThesisDialog": "Muokkaa gradu",
-    "uploadWaysOfWorkingButton": "Lataa työskentelysopimus",
+    "uploadWaysOfWorkingButton": "Lataa työskentelysopimus (jos se on ohjelmassa pakollinen)",
     "uploadResearchPlanButton": "Lataa tutkimussuunnitelma",
     "selectSupervisorPercentage": "Osuus",
     "totalSupervisionPercentage": "Työjakauma yhteensä: {{totalPercentage}} %",
