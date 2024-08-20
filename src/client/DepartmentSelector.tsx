@@ -39,12 +39,13 @@ const DepartmentSelector: React.FC = () => {
       </Typography>
       <Typography>{t('departmentSelectPage:pageDescription')}</Typography>
       <FormControl fullWidth>
-        <InputLabel id="department-label">
+        <InputLabel id="department-select-label">
           {t('departmentSelectPage:departmentPlaceholder')}
         </InputLabel>
         <Select
-          labelId="department-label"
+          labelId="department-select-label"
           id="department-select"
+          label={t('departmentSelectPage:departmentPlaceholder')}
           value={selectedDepartment}
           onChange={handleDepartmentChange}
         >

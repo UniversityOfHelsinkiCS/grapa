@@ -153,9 +153,13 @@ const ProgramManagement = () => {
           />
         </FormControl>
         <FormControl fullWidth>
-          <InputLabel>{t('programManagementPage:programHeader')}</InputLabel>
+          <InputLabel id="program-select-label">
+            {t('programManagementPage:programHeader')}
+          </InputLabel>
           <Select
             data-testid="program-select-input"
+            labelId="program-select-label"
+            label={t('programManagementPage:programHeader')}
             value={programId ?? ''}
             onChange={(e) => setProgramId(e.target.value as string)}
           >
