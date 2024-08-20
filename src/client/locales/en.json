@@ -89,7 +89,7 @@
     "graders": "Graders",
     "graderInstructions": {
       "title": "Instructions for filling the graders",
-      "content": "Grader 1 must be a professor at the University of Helsinki.\n\n Grader 2 must be a doctor. Grader 2 can be a person outside the University of Helsinki.\n To enter the details of the external assessor, click 'Add external grader'.\n\n",
+      "content": "Grader 1 must be a University of Helsinki professor, assistant or associate professor, research director, senior university lecturer or university lecturer.\n\n Grader 2 must be a doctor. Grader 2 can be a person outside the University of Helsinki.\n To enter the details of the external assessor, click 'Add external grader'.\n\n",
       "primaryGrader": "Professor",
       "secondaryGrader": "PhD"
     },
@@ -108,7 +108,7 @@
     "email": "Email",
     "affiliation": "Affiliation",
     "editThesisDialog": "Edit thesis",
-    "uploadWaysOfWorkingButton": "Upload ways of working",
+    "uploadWaysOfWorkingButton": "Upload ways of working (if required in the programme)",
     "uploadResearchPlanButton": "Upload research plan",
     "selectSupervisorPercentage": "Percentage",
     "totalSupervisionPercentage": "Total supervision percentage: {{totalPercentage}} %",
