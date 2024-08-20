@@ -163,6 +163,7 @@ const ThesisEditForm: React.FC<{
               {t('thesisForm:basicInfo')}
             </Typography>
             <TextField
+              data-testid="topic-select-input"
               autoFocus
               required
               margin="dense"
@@ -193,6 +194,7 @@ const ThesisEditForm: React.FC<{
                 {t('programHeader')}
               </InputLabel>
               <Select
+                data-testid="program-select-input"
                 required
                 value={editedThesis.programId}
                 id="programId"
@@ -221,23 +223,24 @@ const ThesisEditForm: React.FC<{
                 }
               >
                 {sortedFavoritePrograms.map((program) => (
-                  <MenuItem key={program.id} value={program.id}>
+                  <MenuItem
+                    data-testid={`program-select-item-${program.id}`}
+                    key={program.id}
+                    value={program.id}
+                  >
                     <ListItemIcon>
                       <BookmarkIcon fontSize="small" color="primary" />
                     </ListItemIcon>
-                    <ListItemText
-                      primary={program.id}
-                      secondary={program.name[language]}
-                    />
+                    <ListItemText primary={program.name[language]} />
                   </MenuItem>
                 ))}
                 {sortedOtherPrograms.map((program) => (
-                  <MenuItem key={program.id} value={program.id}>
-                    <ListItemText
-                      inset
-                      primary={program.id}
-                      secondary={program.name[language]}
-                    />
+                  <MenuItem
+                    data-testid={`program-select-item-${program.id}`}
+                    key={program.id}
+                    value={program.id}
+                  >
+                    <ListItemText inset primary={program.name[language]} />
                   </MenuItem>
                 ))}
               </Select>
@@ -257,6 +260,7 @@ const ThesisEditForm: React.FC<{
                   {t('studyTrackHeader')}
                 </InputLabel>
                 <Select
+                  data-testid="study-track-select-input"
                   required
                   value={editedThesis.studyTrackId}
                   id="studyTrackId"
@@ -350,6 +354,7 @@ const ThesisEditForm: React.FC<{
                 {t('statusHeader')}
               </InputLabel>
               <Select
+                data-testid="status-select-input"
                 required
                 disabled={
                   editedThesis.status === 'PLANNING' &&
@@ -518,6 +523,7 @@ const ThesisEditForm: React.FC<{
             >
               {t('thesisForm:uploadResearchPlanButton')}
               <VisuallyHiddenInput
+                data-testid="research-plan-input"
                 value=""
                 onChange={(ev) => {
                   setEditedThesis((oldThesis) => ({
@@ -568,6 +574,7 @@ const ThesisEditForm: React.FC<{
             >
               {t('thesisForm:uploadWaysOfWorkingButton')}
               <VisuallyHiddenInput
+                data-testid="ways-of-working-input"
                 value=""
                 onChange={(ev) => {
                   setEditedThesis((oldThesis) => ({
