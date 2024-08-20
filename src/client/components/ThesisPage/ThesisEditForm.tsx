@@ -100,6 +100,16 @@ const ThesisEditForm: React.FC<{
     clearURL()
   }
 
+  const handleClose = (
+    _: object,
+    reason: 'backdropClick' | 'escapeKeyDown'
+  ) => {
+    if (reason === 'backdropClick') return
+
+    clearURL()
+    onClose()
+  }
+
   const selectedProgram = programs.find(
     (program) => program.id === editedThesis.programId
   )
@@ -123,10 +133,7 @@ const ThesisEditForm: React.FC<{
       open
       fullWidth
       maxWidth="lg"
-      onClose={() => {
-        clearURL()
-        onClose()
-      }}
+      onClose={handleClose}
       PaperProps={{
         component: 'form',
         onSubmit: handleSubmit,
