@@ -26,8 +26,10 @@ const DeleteConfirmation = ({
   children,
 }: DeleteConfirmationProps) => (
   <Dialog data-testid="delete-confirm-dialog" open={open} onClose={onClose}>
-    <DialogTitle>{title}</DialogTitle>
-    <DialogContent>{children}</DialogContent>
+    <DialogTitle data-testid="delete-confirm-dialog-title">{title}</DialogTitle>
+    <DialogContent data-testid="delete-confirm-dialog-content">
+      {children}
+    </DialogContent>
     <DialogActions>
       <Button
         data-testid="delete-cancel-button"

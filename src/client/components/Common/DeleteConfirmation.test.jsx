@@ -28,8 +28,8 @@ describe('DeleteConfirmation', () => {
     render(<DeleteConfirmation {...props} />)
     
     expect(screen.getByRole('dialog')).toBeInTheDocument()
-    expect(screen.getByText('Delete Item')).toBeInTheDocument()
-    expect(screen.getByText('Are you sure you want to delete this item?')).toBeInTheDocument()
+    expect(screen.getByTestId('delete-confirm-dialog-title')).toBeInTheDocument()
+    expect(screen.getByTestId('delete-confirm-dialog-content')).toBeInTheDocument()
   })
 
   test('cancel button triggers setOpen with false', () => {
