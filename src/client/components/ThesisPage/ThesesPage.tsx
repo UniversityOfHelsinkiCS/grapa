@@ -17,6 +17,7 @@ import {
 import ThesisEditForm from './ThesisEditForm'
 import DeleteConfirmation from '../Common/DeleteConfirmation'
 import usePrograms from '../../hooks/usePrograms'
+import { getSortedPrograms } from './util'
 
 const ThesesPage = () => {
   const { t, i18n } = useTranslation()
@@ -101,32 +102,42 @@ const ThesesPage = () => {
     },
   ]
 
+  const initializeNewThesis = () => {
+    const favoritePrograms = programs.filter((program) => program.isFavorite)
+    const otherPrograms = programs.filter((program) => !program.isFavorite)
+
+    const sortedFavoritePrograms = getSortedPrograms(favoritePrograms, language)
+    const sortedOtherPrograms = getSortedPrograms(otherPrograms, language)
+
+    const programOptions = [...sortedFavoritePrograms, ...sortedOtherPrograms]
+
+    setNewThesis({
+      programId: programOptions[0].id,
+      studyTrackId: programOptions[0].studyTracks[0]?.id,
+      supervisions: [
+        {
+          user,
+          percentage: 100,
+          isExternal: false,
+          isPrimarySupervisor: true,
+        },
+      ],
+      authors: [],
+      graders: [{ user, isPrimaryGrader: true, isExternal: false }],
+      topic: '',
+      status: 'PLANNING',
+      startDate: dayjs().format('YYYY-MM-DD'),
+      targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
+    })
+  }
+
   return (
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
       <Button
         variant="contained"
         size="large"
         sx={{ width: 200, borderRadius: '0.5rem' }}
-        onClick={() => {
-          setNewThesis({
-            programId: programs[0].id,
-            studyTrackId: programs[0].studyTracks[0]?.id,
-            supervisions: [
-              {
-                user,
-                percentage: 100,
-                isExternal: false,
-                isPrimarySupervisor: true,
-              },
-            ],
-            authors: [],
-            graders: [{ user, isPrimaryGrader: true, isExternal: false }],
-            topic: '',
-            status: 'PLANNING',
-            startDate: dayjs().format('YYYY-MM-DD'),
-            targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
-          })
-        }}
+        onClick={initializeNewThesis}
       >
         {t('newThesisButton')}
       </Button>
