@@ -147,7 +147,7 @@ describe('ThesisEditForm', () => {
       expect(screen.getByText('Tekijä')).toBeInTheDocument()
       expect(screen.getByText('Vaihe')).toBeInTheDocument()
       expect(screen.getByText('Lataa tutkimussuunnitelma')).toBeInTheDocument()
-      expect(screen.getByText('Lataa työskentelysopimus')).toBeInTheDocument()
+      expect(screen.getByText('Lataa työskentelysopimus (jos se on ohjelmassa pakollinen)')).toBeInTheDocument()
       expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
 
       const submitButton = screen.getByTestId('submit-button')
@@ -195,7 +195,7 @@ describe('ThesisEditForm', () => {
 
         const waysOfWorkingInput = screen
           .getByRole('button', {
-            name: 'CloudUploadIcon Lataa työskentelysopimus',
+            name: 'CloudUploadIcon Lataa työskentelysopimus (jos se on ohjelmassa pakollinen)',
           })
           .querySelector('input')
 
@@ -317,7 +317,7 @@ describe('ThesisEditForm', () => {
       expect(screen.getByText('Tekijä')).toBeInTheDocument()
       expect(screen.getByText('Vaihe')).toBeInTheDocument()
       expect(screen.getByText('Lataa tutkimussuunnitelma')).toBeInTheDocument()
-      expect(screen.getByText('Lataa työskentelysopimus')).toBeInTheDocument()
+      expect(screen.getByText('Lataa työskentelysopimus (jos se on ohjelmassa pakollinen)')).toBeInTheDocument()
       expect(screen.getByText('Lisää ohjaaja')).toBeInTheDocument()
 
       expect(screen.getByRole('button', { name: 'Tallenna' })).toBeEnabled()
