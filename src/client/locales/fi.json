@@ -15,10 +15,10 @@
     "deleteButton": "Poista",
     "cancelButton": "Peruuta",
     "submitButton": "Tallenna",
-    "newThesisButton": "Uusi gradu",
+    "newThesisButton": "Uusi tutkielma",
     "removeButton": "Poista",
-    "removeThesisTitle": "Poista gradu",
-    "removeThesisConfirmationContent": "Haluatko varmasti poistaa gradun: {{topic}}?",
+    "removeThesisTitle": "Poista tutkielma",
+    "removeThesisConfirmationContent": "Haluatko varmasti poistaa tutkielman: {{topic}}?",
     "error": "Virhe"
   },
   "admin": {
@@ -29,16 +29,16 @@
     "loginAs": "Kirjaudu toisella käyttäjällä",
     "admin": "Admin",
     "logout": "Kirjaudu ulos",
-    "settings": "Profiili asetukset",
+    "settings": "Profiilin asetukset",
     "openMobileMenu": "Avaa valikko",
     "languageSubHeader": "Valitse kieli",
-    "favProgramsSubHeader": "Valitse suosikki koulutusohjelmat",
+    "favProgramsSubHeader": "Valitse koulutusohjelmat, joissa ohjaat tutkielmia",
     "userInfoSubHeader": "Omat tietoni",
     "logoutSubHeader": "Uloskirjautuminen",
     "addToFavorites": "Lisää ohjelma suosikkeihin",
     "removeFromFavorites": "Poista ohjelma suosikeista",
-    "favoriteProgramsUpdated": "Suosikki koulutusohjelmat päivitetty",
-    "favoriteProgramsUpdateFailed": "Suosikki koulutusohjelmien päivitys epäonnistui"
+    "favoriteProgramsUpdated": "Suosikkikoulutusohjelmat päivitetty",
+    "favoriteProgramsUpdateFailed": "Suosikkikoulutusohjelmien päivitys epäonnistui"
   },
   "userInformation": {
     "username": "Käyttäjätunnus",
@@ -58,7 +58,7 @@
     "firstName": "Anna puuttuva etunimi",
     "lastName": "Anna puuttuva sukunimi",
     "email": "Anna kelvollinen sähköpostiosoite",
-    "affiliation": "Anna puuttuva henkilöaffiliaatio",
+    "affiliation": "Anna puuttuva affiliaatio",
     "authors": "Anna puuttuvat tekijätiedot",
     "supervisors": "Anna puuttuvat ohjaajatiedot",
     "supervisorGeneralErrorsTitle": "Ohjaajien lisäykseen liittyvät virheet",
