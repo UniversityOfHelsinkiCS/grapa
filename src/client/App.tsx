@@ -36,13 +36,7 @@ const App = () => {
           }}
         >
           <NavBar />
-          <Box
-            flexGrow={1}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            minHeight="100vh"
-          >
+          <Box flexGrow={1} display="flex">
             {!user?.departmentId ? <DepartmentSelector /> : <Outlet />}
           </Box>
           <Footer />
