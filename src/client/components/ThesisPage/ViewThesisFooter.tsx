@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -10,21 +11,27 @@ import {
 import {
   Box,
   Grid,
+  Link,
   List,
   ListItem,
   ListItemText,
+  Stack,
   Typography,
 } from '@mui/material'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 
 import {
+  FileData,
   GraderData,
   SupervisionData,
   ThesisData as Thesis,
   TranslatedName,
   User,
 } from '@backend/types'
+
 import usePrograms from '../../hooks/usePrograms'
+
+import { BASE_PATH } from '../../../config'
 
 const HeaderRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
@@ -184,6 +191,39 @@ const Graders = ({ graders }: { graders: GraderData[] }) => (
   </Grid>
 )
 
+const Attachments = ({
+  researchPlan = undefined,
+  waysOfWorking = undefined,
+}: {
+  researchPlan?: FileData | File | undefined
+  waysOfWorking?: FileData | File | undefined
+}) => (
+  <Box>
+    <Typography
+      component="h4"
+      sx={{
+        fontSize: '1rem',
+        fontWeight: 700,
+        textTransform: 'uppercase',
+      }}
+    >
+      Attachments
+    </Typography>
+    <Stack sx={{ mt: 2, gap: 1 }}>
+      {'filename' in researchPlan && (
+        <Link href={`${BASE_PATH}/api/attachments/${researchPlan.filename}`}>
+          {researchPlan.name}
+        </Link>
+      )}
+      {'filename' in waysOfWorking && (
+        <Link href={`${BASE_PATH}/api/attachments/${waysOfWorking.filename}`}>
+          {waysOfWorking.name}
+        </Link>
+      )}
+    </Stack>
+  </Box>
+)
+
 const ViewThesisFooter = () => {
   const apiRef = useGridApiContext()
   const [thesis, setThesis] = useState<Thesis | null>(null)
@@ -260,6 +300,11 @@ const ViewThesisFooter = () => {
               <Supervisors supervisors={thesis.supervisions} />
               <Graders graders={thesis.graders} />
             </Grid>
+
+            <Attachments
+              researchPlan={thesis?.researchPlan}
+              waysOfWorking={thesis?.waysOfWorking}
+            />
           </Box>
         </Box>
       )}
