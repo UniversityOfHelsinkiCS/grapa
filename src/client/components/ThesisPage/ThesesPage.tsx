@@ -169,6 +169,7 @@ const ThesesPage = () => {
           pageSizeOptions={[100]}
           autoHeight
           getRowHeight={() => 44}
+          hideFooterSelectedRowCount
           slots={{
             footer: ViewThesisFooter,
           }}
