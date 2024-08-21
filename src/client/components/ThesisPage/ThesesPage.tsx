@@ -148,8 +148,8 @@ const ThesesPage = () => {
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
       <Button
         variant="contained"
-        size="large"
-        sx={{ width: 200, borderRadius: '0.5rem' }}
+        size="small"
+        sx={{ width: 150, borderRadius: '1rem', fontWeight: 600 }}
         onClick={initializeNewThesis}
       >
         {t('newThesisButton')}
