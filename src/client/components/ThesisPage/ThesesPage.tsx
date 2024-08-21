@@ -18,6 +18,7 @@ import ThesisEditForm from './ThesisEditForm'
 import DeleteConfirmation from '../Common/DeleteConfirmation'
 import usePrograms from '../../hooks/usePrograms'
 import { getSortedPrograms } from './util'
+import ViewThesisFooter from './ViewThesisFooter'
 
 const ThesesPage = () => {
   const { t, i18n } = useTranslation()
@@ -41,7 +42,7 @@ const ThesesPage = () => {
     {
       field: 'actions',
       type: 'actions',
-      width: 20,
+      width: 10,
       getActions: (params) => [
         <GridActionsCellItem
           onClick={() => {
@@ -69,7 +70,7 @@ const ThesesPage = () => {
     {
       field: 'programId',
       headerName: t('programHeader'),
-      width: 350,
+      width: 250,
       valueGetter: (_, row) =>
         programs.find((program) => program.id === row.programId)?.name[
           language
@@ -78,12 +79,12 @@ const ThesesPage = () => {
     {
       field: 'topic',
       headerName: t('topicHeader'),
-      width: 350,
+      width: 300,
     },
     {
       field: 'authors',
       headerName: t('authorsHeader'),
-      width: 350,
+      width: 300,
       valueGetter: (_, row) =>
         row.authors
           .map(
@@ -95,7 +96,7 @@ const ThesesPage = () => {
     {
       field: 'status',
       headerName: t('statusHeader'),
-      width: 120,
+      width: 100,
     },
     {
       field: 'startDate',
@@ -164,9 +165,22 @@ const ThesesPage = () => {
               },
             },
           }}
+          columnHeaderHeight={36}
           pageSizeOptions={[100]}
-          disableRowSelectionOnClick
           autoHeight
+          getRowHeight={() => 44}
+          slots={{
+            footer: ViewThesisFooter,
+          }}
+          sx={{
+            width: '100%',
+            fontSize: '10pt',
+            '& .MuiDataGrid-columnHeader': { backgroundColor: '#E1E4E8' },
+            '& .MuiDataGrid-columnHeaderTitle': {
+              fontWeight: 500,
+              fontFamily: 'Roboto',
+            },
+          }}
         />
       </Box>
       {editedTesis && (
