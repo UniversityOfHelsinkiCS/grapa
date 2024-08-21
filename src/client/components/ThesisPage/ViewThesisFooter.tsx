@@ -157,14 +157,18 @@ const Supervisors = ({ supervisors }: { supervisors: SupervisionData[] }) => {
         {t('thesisForm:supervisors')}
       </Typography>
       <List dense>
-        {supervisors.map((supervisor) => (
-          <ListItem key={supervisor.user.id}>
-            <ListItemText
-              primary={`${supervisor.user.firstName} ${supervisor.user.lastName} (${supervisor.percentage}%)`}
-              secondary={supervisor.user.email}
-            />
-          </ListItem>
-        ))}
+        {supervisors.map((supervisor) => {
+          const primaryText = `${supervisor.user.firstName} ${supervisor.user.lastName} (${supervisor.percentage}%)`
+          const secondaryText = supervisor.user?.affiliation
+            ? `${supervisor.user.email} (${supervisor.user.affiliation})`
+            : `${supervisor.user.email}`
+
+          return (
+            <ListItem key={supervisor.user.id}>
+              <ListItemText primary={primaryText} secondary={secondaryText} />
+            </ListItem>
+          )
+        })}
       </List>
     </Grid>
   )
@@ -186,14 +190,18 @@ const Graders = ({ graders }: { graders: GraderData[] }) => {
         {t('thesisForm:graders')}
       </Typography>
       <List dense>
-        {graders.map((grader) => (
-          <ListItem key={grader.user.id}>
-            <ListItemText
-              primary={`${grader.user.firstName} ${grader.user.lastName}`}
-              secondary={grader.user.email}
-            />
-          </ListItem>
-        ))}
+        {graders.map((grader) => {
+          const primaryText = `${grader.user.firstName} ${grader.user.lastName}`
+          const secondaryText = grader.user?.affiliation
+            ? `${grader.user.email} (${grader.user.affiliation})`
+            : `${grader.user.email}`
+
+          return (
+            <ListItem key={grader.user.id}>
+              <ListItemText primary={primaryText} secondary={secondaryText} />
+            </ListItem>
+          )
+        })}
       </List>
     </Grid>
   )
