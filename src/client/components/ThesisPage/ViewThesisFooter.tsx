@@ -222,14 +222,28 @@ const Attachments = ({
       </Typography>
       <Stack sx={{ mt: 2, gap: 1 }}>
         {researchPlan && 'filename' in researchPlan && (
-          <Link href={`${BASE_PATH}/api/attachments/${researchPlan.filename}`}>
-            {researchPlan.name}
-          </Link>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <Typography variant="body2">
+              {t('thesisForm:researchPlan')}:
+            </Typography>
+            <Link
+              href={`${BASE_PATH}/api/attachments/${researchPlan.filename}`}
+            >
+              {researchPlan.name}
+            </Link>
+          </Box>
         )}
         {waysOfWorking && 'filename' in waysOfWorking && (
-          <Link href={`${BASE_PATH}/api/attachments/${waysOfWorking.filename}`}>
-            {waysOfWorking.name}
-          </Link>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <Typography variant="body2">
+              {t('thesisForm:waysOfWorking')}:
+            </Typography>
+            <Link
+              href={`${BASE_PATH}/api/attachments/${waysOfWorking.filename}`}
+            >
+              {waysOfWorking.name}
+            </Link>
+          </Box>
         )}
       </Stack>
     </Box>

@@ -109,6 +109,8 @@
     "lastName": "Sukunimi",
     "email": "Sähköposti",
     "affiliation": "Affiliaatio",
+    "researchPlan": "Tutkimussuunnitelma",
+    "waysOfWorking": "Työskentelytavat",
     "editThesisDialog": "Muokkaa tutkielmaa",
     "uploadWaysOfWorkingButton": "Lataa työskentelysopimus (jos se on ohjelmassa pakollinen)",
     "uploadResearchPlanButton": "Lataa tutkimussuunnitelma",

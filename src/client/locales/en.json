@@ -109,6 +109,8 @@
     "lastName": "Last name",
     "email": "Email",
     "affiliation": "Affiliation",
+    "researchPlan": "Research plan",
+    "waysOfWorking": "Ways of working",
     "editThesisDialog": "Edit thesis",
     "uploadWaysOfWorkingButton": "Upload ways of working (if required in the programme)",
     "uploadResearchPlanButton": "Upload research plan",
