@@ -221,12 +221,12 @@ const Attachments = ({
         {t('thesisForm:appendices')}
       </Typography>
       <Stack sx={{ mt: 2, gap: 1 }}>
-        {'filename' in researchPlan && (
+        {researchPlan && 'filename' in researchPlan && (
           <Link href={`${BASE_PATH}/api/attachments/${researchPlan.filename}`}>
             {researchPlan.name}
           </Link>
         )}
-        {'filename' in waysOfWorking && (
+        {waysOfWorking && 'filename' in waysOfWorking && (
           <Link href={`${BASE_PATH}/api/attachments/${waysOfWorking.filename}`}>
             {waysOfWorking.name}
           </Link>
