@@ -20,7 +20,8 @@
     "removeThesisTitle": "Delete thesis",
     "removeThesisConfirmationContent": "Are you sure you want to delete the thesis: {{topic}}?",
     "removeButton": "Remove",
-    "error": "Error"
+    "error": "Error",
+    "thesisPreview": "Thesis preview"
   },
   "admin": {
     "indexTab": "Login as"

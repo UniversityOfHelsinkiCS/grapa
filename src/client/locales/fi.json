@@ -20,7 +20,8 @@
     "removeButton": "Poista",
     "removeThesisTitle": "Poista tutkielma",
     "removeThesisConfirmationContent": "Haluatko varmasti poistaa tutkielman: {{topic}}?",
-    "error": "Virhe"
+    "error": "Virhe",
+    "thesisPreview": "Tutkielman esikatselu"
   },
   "admin": {
     "indexTab": "Login as"

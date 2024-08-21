@@ -141,55 +141,63 @@ const ProgramTrack = ({
   )
 }
 
-const Supervisors = ({ supervisors }: { supervisors: SupervisionData[] }) => (
-  <Grid item>
-    <Typography
-      component="h4"
-      sx={{
-        fontSize: '1rem',
-        fontWeight: 700,
-        textTransform: 'uppercase',
-      }}
-    >
-      Supervisors
-    </Typography>
-    <List dense>
-      {supervisors.map((supervisor) => (
-        <ListItem key={supervisor.user.id}>
-          <ListItemText
-            primary={`${supervisor.user.firstName} ${supervisor.user.lastName} (${supervisor.percentage}%)`}
-            secondary={supervisor.user.email}
-          />
-        </ListItem>
-      ))}
-    </List>
-  </Grid>
-)
+const Supervisors = ({ supervisors }: { supervisors: SupervisionData[] }) => {
+  const { t } = useTranslation()
 
-const Graders = ({ graders }: { graders: GraderData[] }) => (
-  <Grid item>
-    <Typography
-      component="h4"
-      sx={{
-        fontSize: '1rem',
-        fontWeight: 700,
-        textTransform: 'uppercase',
-      }}
-    >
-      Graders
-    </Typography>
-    <List dense>
-      {graders.map((grader) => (
-        <ListItem key={grader.user.id}>
-          <ListItemText
-            primary={`${grader.user.firstName} ${grader.user.lastName}`}
-            secondary={grader.user.email}
-          />
-        </ListItem>
-      ))}
-    </List>
-  </Grid>
-)
+  return (
+    <Grid item>
+      <Typography
+        component="h4"
+        sx={{
+          fontSize: '1rem',
+          fontWeight: 700,
+          textTransform: 'uppercase',
+        }}
+      >
+        {t('thesisForm:supervisors')}
+      </Typography>
+      <List dense>
+        {supervisors.map((supervisor) => (
+          <ListItem key={supervisor.user.id}>
+            <ListItemText
+              primary={`${supervisor.user.firstName} ${supervisor.user.lastName} (${supervisor.percentage}%)`}
+              secondary={supervisor.user.email}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </Grid>
+  )
+}
+
+const Graders = ({ graders }: { graders: GraderData[] }) => {
+  const { t } = useTranslation()
+
+  return (
+    <Grid item>
+      <Typography
+        component="h4"
+        sx={{
+          fontSize: '1rem',
+          fontWeight: 700,
+          textTransform: 'uppercase',
+        }}
+      >
+        {t('thesisForm:graders')}
+      </Typography>
+      <List dense>
+        {graders.map((grader) => (
+          <ListItem key={grader.user.id}>
+            <ListItemText
+              primary={`${grader.user.firstName} ${grader.user.lastName}`}
+              secondary={grader.user.email}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </Grid>
+  )
+}
 
 const Attachments = ({
   researchPlan = undefined,
@@ -197,34 +205,39 @@ const Attachments = ({
 }: {
   researchPlan?: FileData | File | undefined
   waysOfWorking?: FileData | File | undefined
-}) => (
-  <Box>
-    <Typography
-      component="h4"
-      sx={{
-        fontSize: '1rem',
-        fontWeight: 700,
-        textTransform: 'uppercase',
-      }}
-    >
-      Attachments
-    </Typography>
-    <Stack sx={{ mt: 2, gap: 1 }}>
-      {'filename' in researchPlan && (
-        <Link href={`${BASE_PATH}/api/attachments/${researchPlan.filename}`}>
-          {researchPlan.name}
-        </Link>
-      )}
-      {'filename' in waysOfWorking && (
-        <Link href={`${BASE_PATH}/api/attachments/${waysOfWorking.filename}`}>
-          {waysOfWorking.name}
-        </Link>
-      )}
-    </Stack>
-  </Box>
-)
+}) => {
+  const { t } = useTranslation()
+
+  return (
+    <Box>
+      <Typography
+        component="h4"
+        sx={{
+          fontSize: '1rem',
+          fontWeight: 700,
+          textTransform: 'uppercase',
+        }}
+      >
+        {t('thesisForm:appendices')}
+      </Typography>
+      <Stack sx={{ mt: 2, gap: 1 }}>
+        {'filename' in researchPlan && (
+          <Link href={`${BASE_PATH}/api/attachments/${researchPlan.filename}`}>
+            {researchPlan.name}
+          </Link>
+        )}
+        {'filename' in waysOfWorking && (
+          <Link href={`${BASE_PATH}/api/attachments/${waysOfWorking.filename}`}>
+            {waysOfWorking.name}
+          </Link>
+        )}
+      </Stack>
+    </Box>
+  )
+}
 
 const ViewThesisFooter = () => {
+  const { t } = useTranslation()
   const apiRef = useGridApiContext()
   const [thesis, setThesis] = useState<Thesis | null>(null)
 
@@ -265,7 +278,7 @@ const ViewThesisFooter = () => {
                 },
               }}
             >
-              Thesis Preview
+              {t('thesisPreview')}
             </Typography>
           </Typography>
 
