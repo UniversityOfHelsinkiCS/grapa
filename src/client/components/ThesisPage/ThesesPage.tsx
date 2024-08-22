@@ -1,6 +1,11 @@
 import dayjs from 'dayjs'
 import Box from '@mui/material/Box'
-import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid'
+import {
+  DataGrid,
+  DataGridProps,
+  GridColDef,
+  GridRowSelectionModel,
+} from '@mui/x-data-grid'
 import { useState } from 'react'
 import { ThesisData as Thesis, TranslationLanguage } from '@backend/types'
 import { useTranslation } from 'react-i18next'
@@ -154,7 +159,7 @@ const ThesesPage = () => {
           }
           slots={{
             toolbar: ThesisToolbar,
-            footer: ViewThesisFooter,
+            footer: ViewThesisFooter as DataGridProps['slots']['footer'],
           }}
           slotProps={{
             toolbar: {
@@ -167,12 +172,17 @@ const ThesesPage = () => {
             },
           }}
           sx={{
+            border: 'none',
             width: '100%',
             fontSize: '10pt',
             '& .MuiDataGrid-columnHeader': { backgroundColor: '#E1E4E8' },
             '& .MuiDataGrid-columnHeaderTitle': {
               fontWeight: 500,
               fontFamily: 'Roboto',
+            },
+            '& .MuiDataGrid-row': {
+              borderLeft: '1px solid #E1E4E8',
+              borderRight: '1px solid #E1E4E8',
             },
           }}
         />
