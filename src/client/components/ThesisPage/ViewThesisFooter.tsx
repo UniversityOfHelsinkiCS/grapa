@@ -157,7 +157,7 @@ const Supervisors = ({ supervisors }: { supervisors: SupervisionData[] }) => {
       <List dense>
         {supervisors.map((supervisor) => {
           const primaryText = `${supervisor.user.firstName} ${supervisor.user.lastName} (${supervisor.percentage}%)`
-          const secondaryText = supervisor.user?.affiliation
+          const secondaryText = supervisor.user.affiliation
             ? `${supervisor.user.email} (${supervisor.user.affiliation})`
             : `${supervisor.user.email}`
 
@@ -189,10 +189,10 @@ const Graders = ({ graders }: { graders: GraderData[] }) => {
       </Typography>
       <List dense>
         {graders.map((grader) => {
-          const primaryText = `${grader.user.firstName} ${grader.user.lastName}`
+          const primaryText = `${grader.user?.firstName} ${grader.user?.lastName}`
           const secondaryText = grader.user?.affiliation
-            ? `${grader.user.email} (${grader.user.affiliation})`
-            : `${grader.user.email}`
+            ? `${grader.user?.email} (${grader.user?.affiliation})`
+            : `${grader.user?.email}`
 
           return (
             <ListItem key={grader.user.id}>
@@ -259,24 +259,14 @@ const Attachments = ({
 const ViewThesisFooter = (
   props: GridSlotProps['footer'] & ThesisFooterProps
 ) => {
-  const { rowSelectionModel, editThesis, deleteThesis } = props
+  const { rowSelectionModel, handleEditThesis, handleDeleteThesis } = props
 
   const { t } = useTranslation()
   const { thesis, isLoading: thesisLoading } = useSingleThesis(
     rowSelectionModel[0]
   )
 
-  const handleEditThesis = () => {
-    if (!thesis) return
-    editThesis(thesis)
-  }
-
-  const handleDeleteThesis = () => {
-    if (!thesis) return
-    deleteThesis(thesis)
-  }
-
-  if (thesisLoading) return null
+  if (!thesis || thesisLoading) return null
 
   return (
     <>

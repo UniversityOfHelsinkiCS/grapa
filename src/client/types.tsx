@@ -1,4 +1,4 @@
-import { ThesisData, User } from '@backend/types'
+import { User } from '@backend/types'
 import { GridRowSelectionModel } from '@mui/x-data-grid/models/gridRowSelectionModel'
 
 export interface SupervisorSelection {
@@ -11,6 +11,6 @@ export interface SupervisorSelection {
 
 export interface ThesisFooterProps {
   rowSelectionModel: GridRowSelectionModel[]
-  editThesis: (thesis: ThesisData) => void
-  deleteThesis: (thesis: ThesisData) => void
+  handleEditThesis: () => void
+  handleDeleteThesis: () => void
 }

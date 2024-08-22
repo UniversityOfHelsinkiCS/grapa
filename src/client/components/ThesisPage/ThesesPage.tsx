@@ -123,13 +123,21 @@ const ThesesPage = () => {
     })
   }
 
-  const initializeThesisDelete = (thesis: Thesis) => {
-    setDeletedThesis(thesis)
+  const initializeThesisDelete = () => {
+    const thesisToDelete = theses.find(
+      (thesis) => thesis.id === rowSelectionModel[0]
+    )
+
+    setDeletedThesis(thesisToDelete)
     setDeleteDialogOpen(true)
   }
 
-  const initializeThesisEdit = (thesis: Thesis) => {
-    setEditedThesis(thesis)
+  const initializeThesisEdit = () => {
+    const thesisToEdit = theses.find(
+      (thesis) => thesis.id === rowSelectionModel[0]
+    )
+
+    setEditedThesis(thesisToEdit)
   }
 
   const clearRowSelection = () => {
@@ -168,8 +176,8 @@ const ThesesPage = () => {
             },
             footer: {
               rowSelectionModel,
-              editThesis: initializeThesisEdit,
-              deleteThesis: initializeThesisDelete,
+              handleEditThesis: initializeThesisEdit,
+              handleDeleteThesis: initializeThesisDelete,
             },
           }}
           sx={{
