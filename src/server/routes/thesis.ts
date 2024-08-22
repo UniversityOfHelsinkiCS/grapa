@@ -379,7 +379,9 @@ thesisRouter.get('/:id', async (req: ServerGetRequest, res: Response) => {
 
   if (!thesis) res.status(404).send('Thesis not found')
 
-  res.send(thesis)
+  const [thesisData] = transformThesisData(JSON.parse(JSON.stringify([thesis])))
+
+  res.send(thesisData)
 })
 
 thesisRouter.post(
