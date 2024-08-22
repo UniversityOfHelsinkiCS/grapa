@@ -175,7 +175,9 @@ const ThesesPage = () => {
             border: 'none',
             width: '100%',
             fontSize: '10pt',
-            '& .MuiDataGrid-columnHeader': { backgroundColor: '#E1E4E8' },
+            '& .MuiDataGrid-columnHeader': {
+              backgroundColor: '#E1E4E8',
+            },
             '& .MuiDataGrid-columnHeaderTitle': {
               fontWeight: 500,
               fontFamily: 'Roboto',
