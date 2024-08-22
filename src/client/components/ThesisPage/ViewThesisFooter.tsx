@@ -1,11 +1,7 @@
 /* eslint-disable react/require-default-props */
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
-import {
-  GridFooter,
-  GridSlotProps,
-  GridRowSelectionModel,
-} from '@mui/x-data-grid'
+import { GridFooter, GridSlotProps } from '@mui/x-data-grid'
 import {
   Box,
   Button,
@@ -28,6 +24,7 @@ import {
   User,
 } from '@backend/types'
 
+import { ThesisFooterProps } from '../../types'
 import usePrograms from '../../hooks/usePrograms'
 import { useSingleThesis } from '../../hooks/useTheses'
 
@@ -259,14 +256,8 @@ const Attachments = ({
   )
 }
 
-interface ViewThesisFooterProps {
-  rowSelectionModel: GridRowSelectionModel[]
-  editThesis: (thesis: Thesis) => void
-  deleteThesis: (thesis: Thesis) => void
-}
-
 const ViewThesisFooter = (
-  props: GridSlotProps['footer'] & ViewThesisFooterProps
+  props: GridSlotProps['footer'] & ThesisFooterProps
 ) => {
   const { rowSelectionModel, editThesis, deleteThesis } = props
 
