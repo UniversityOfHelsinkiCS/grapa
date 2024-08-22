@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import React from 'react'
 import {
   Dialog,
@@ -14,6 +15,7 @@ interface DeleteConfirmationProps {
   setOpen: (open: boolean) => void
   onClose: () => void
   onDelete: () => void
+  deleteDisabled?: boolean
   children: React.ReactNode
 }
 
@@ -23,6 +25,7 @@ const DeleteConfirmation = ({
   setOpen,
   onClose,
   onDelete,
+  deleteDisabled = false,
   children,
 }: DeleteConfirmationProps) => (
   <Dialog data-testid="delete-confirm-dialog" open={open} onClose={onClose}>
@@ -39,6 +42,7 @@ const DeleteConfirmation = ({
         {t('cancelButton')}
       </Button>
       <Button
+        disabled={deleteDisabled}
         data-testid="delete-confirm-button"
         type="button"
         color="error"

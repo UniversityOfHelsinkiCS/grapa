@@ -20,6 +20,7 @@
     "removeButton": "Poista",
     "removeThesisTitle": "Poista tutkielma",
     "removeThesisConfirmationContent": "Haluatko varmasti poistaa tutkielman: {{topic}}?",
+    "removeConfirmation": "Vahvista poisto kirjoittamalla (<strong>{{confirmationText}}</strong>) alla olevaan kenttään:",
     "error": "Virhe",
     "thesisPreview": "Tutkielman esikatselu"
   },

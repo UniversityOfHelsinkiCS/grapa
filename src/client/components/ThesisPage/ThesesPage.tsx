@@ -8,8 +8,8 @@ import {
 } from '@mui/x-data-grid'
 import { useState } from 'react'
 import { ThesisData as Thesis, TranslationLanguage } from '@backend/types'
-import { useTranslation } from 'react-i18next'
-import { Stack } from '@mui/material'
+import { Trans, useTranslation } from 'react-i18next'
+import { Stack, TextField, Typography } from '@mui/material'
 import { useTheses } from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import {
@@ -31,6 +31,7 @@ const ThesesPage = () => {
 
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([])
+  const [deleteConfirmation, setDeleteConfirmation] = useState<string>('')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [editedTesis, setEditedThesis] = useState<Thesis | null>(null)
   const [deletedThesis, setDeletedThesis] = useState<Thesis | null>(null)
@@ -178,6 +179,9 @@ const ThesesPage = () => {
             '& .MuiDataGrid-columnHeader': {
               backgroundColor: '#E1E4E8',
             },
+            '& .MuiDataGrid-filler': {
+              backgroundColor: '#E1E4E8',
+            },
             '& .MuiDataGrid-columnHeaderTitle': {
               fontWeight: 500,
               fontFamily: 'Roboto',
@@ -220,20 +224,49 @@ const ThesesPage = () => {
           onClose={() => {
             setDeleteDialogOpen(false)
             setDeletedThesis(null)
+            setDeleteConfirmation('')
           }}
           onDelete={async () => {
-            await deleteThesis(deletedThesis.id)
             setDeleteDialogOpen(false)
             setDeletedThesis(null)
+            setDeleteConfirmation('')
 
             clearRowSelection()
+
+            await deleteThesis(deletedThesis.id)
           }}
           title={t('removeThesisTitle')}
+          deleteDisabled={
+            deleteConfirmation?.toLowerCase() !==
+            deletedThesis.topic.toLowerCase()
+          }
         >
           <Box>
             {t('removeThesisConfirmationContent', {
               topic: deletedThesis.topic,
             })}
+
+            <Box component="form" noValidate autoComplete="off" sx={{ mt: 4 }}>
+              <Typography variant="body2" color="textSecondary">
+                <Trans
+                  i18nKey="removeConfirmation"
+                  values={{ confirmationText: deletedThesis.topic }}
+                />
+              </Typography>
+              <TextField
+                id="delete-confirm-textfield"
+                size="small"
+                value={deleteConfirmation}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setDeleteConfirmation(event.target.value)
+                }}
+                color="error"
+                sx={{ mt: 2, width: '100%' }}
+                InputProps={{
+                  style: { borderRadius: '0.5rem' },
+                }}
+              />
+            </Box>
           </Box>
         </DeleteConfirmation>
       )}

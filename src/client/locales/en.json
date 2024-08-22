@@ -19,6 +19,7 @@
     "newThesisButton": "New thesis",
     "removeThesisTitle": "Delete thesis",
     "removeThesisConfirmationContent": "Are you sure you want to delete the thesis: {{topic}}?",
+    "removeConfirmation": "To confirm, type ({{confirmationText}}) in the box below:",
     "removeButton": "Remove",
     "error": "Error",
     "thesisPreview": "Thesis preview"
