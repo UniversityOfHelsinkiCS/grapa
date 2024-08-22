@@ -1,8 +1,11 @@
+import { GridRowSelectionModel } from '@mui/x-data-grid'
 import { useQuery } from '@tanstack/react-query'
+
 import { ThesisData } from '@backend/types'
+
 import apiClient from '../util/apiClient'
 
-const useTheses = () => {
+export const useTheses = () => {
   const queryKey = ['theses']
 
   const queryFn = async (): Promise<ThesisData[]> => {
@@ -16,4 +19,20 @@ const useTheses = () => {
   return { theses, ...rest }
 }
 
-export default useTheses
+export const useSingleThesis = (id: string | GridRowSelectionModel) => {
+  const queryKey = ['theses', id]
+
+  const queryFn = async (): Promise<ThesisData> => {
+    const { data } = await apiClient.get(`/theses/${id}`)
+
+    return data
+  }
+
+  const { data: thesis, ...rest } = useQuery({
+    queryKey,
+    queryFn,
+    enabled: Boolean(id),
+  })
+
+  return { thesis, ...rest }
+}
