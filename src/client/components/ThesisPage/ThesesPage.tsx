@@ -1,13 +1,11 @@
 import dayjs from 'dayjs'
 import Box from '@mui/material/Box'
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
-import { DataGrid, GridActionsCellItem, GridColDef } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid'
 import { useState } from 'react'
 import { ThesisData as Thesis, TranslationLanguage } from '@backend/types'
 import { useTranslation } from 'react-i18next'
-import { Button, Stack } from '@mui/material'
-import useTheses from '../../hooks/useTheses'
+import { Stack } from '@mui/material'
+import { useTheses } from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import {
   useCreateThesisMutation,
@@ -19,12 +17,15 @@ import DeleteConfirmation from '../Common/DeleteConfirmation'
 import usePrograms from '../../hooks/usePrograms'
 import { getSortedPrograms } from './util'
 import ViewThesisFooter from './ViewThesisFooter'
+import ThesisToolbar from './ThesisToolbar'
 
 const ThesesPage = () => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
   const { user, isLoading: loggedInUserLoading } = useLoggedInUser()
 
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>([])
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [editedTesis, setEditedThesis] = useState<Thesis | null>(null)
   const [deletedThesis, setDeletedThesis] = useState<Thesis | null>(null)
@@ -39,34 +40,6 @@ const ThesesPage = () => {
   if (!programs || !theses || loggedInUserLoading) return null
 
   const columns: GridColDef<Thesis>[] = [
-    {
-      field: 'actions',
-      type: 'actions',
-      width: 10,
-      getActions: (params) => [
-        <GridActionsCellItem
-          onClick={() => {
-            setEditedThesis(params.row as Thesis)
-          }}
-          label={t('editButton')}
-          key="edit"
-          showInMenu
-          icon={<EditIcon />}
-          closeMenuOnClick
-        />,
-        <GridActionsCellItem
-          onClick={() => {
-            setDeleteDialogOpen(true)
-            setDeletedThesis(params.row as Thesis)
-          }}
-          label={t('deleteButton')}
-          key="delete"
-          showInMenu
-          icon={<DeleteIcon />}
-          closeMenuOnClick
-        />,
-      ],
-    },
     {
       field: 'programId',
       headerName: t('programHeader'),
@@ -144,16 +117,21 @@ const ThesesPage = () => {
     })
   }
 
+  const initializeThesisDelete = (thesis: Thesis) => {
+    setDeletedThesis(thesis)
+    setDeleteDialogOpen(true)
+  }
+
+  const initializeThesisEdit = (thesis: Thesis) => {
+    setEditedThesis(thesis)
+  }
+
+  const clearRowSelection = () => {
+    setRowSelectionModel([])
+  }
+
   return (
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
-      <Button
-        variant="contained"
-        size="small"
-        sx={{ width: 150, borderRadius: '1rem', fontWeight: 600 }}
-        onClick={initializeNewThesis}
-      >
-        {t('newThesisButton')}
-      </Button>
       <Box>
         <DataGrid
           rows={theses}
@@ -165,13 +143,28 @@ const ThesesPage = () => {
               },
             },
           }}
-          columnHeaderHeight={36}
-          pageSizeOptions={[100]}
           autoHeight
-          getRowHeight={() => 44}
           hideFooterSelectedRowCount
+          pageSizeOptions={[100]}
+          getRowHeight={() => 44}
+          columnHeaderHeight={36}
+          rowSelectionModel={rowSelectionModel}
+          onRowSelectionModelChange={(newSelection: GridRowSelectionModel) =>
+            setRowSelectionModel(newSelection)
+          }
           slots={{
+            toolbar: ThesisToolbar,
             footer: ViewThesisFooter,
+          }}
+          slotProps={{
+            toolbar: {
+              createNewThesis: initializeNewThesis,
+            },
+            footer: {
+              rowSelectionModel,
+              editThesis: initializeThesisEdit,
+              deleteThesis: initializeThesisDelete,
+            },
           }}
           sx={{
             width: '100%',
@@ -220,6 +213,8 @@ const ThesesPage = () => {
             await deleteThesis(deletedThesis.id)
             setDeleteDialogOpen(false)
             setDeletedThesis(null)
+
+            clearRowSelection()
           }}
           title={t('removeThesisTitle')}
         >

@@ -1,15 +1,14 @@
 /* eslint-disable react/require-default-props */
 import dayjs from 'dayjs'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  GridEventListener,
   GridFooter,
-  useGridApiEventHandler,
-  useGridApiContext,
+  GridSlotProps,
+  GridRowSelectionModel,
 } from '@mui/x-data-grid'
 import {
   Box,
+  Button,
   Grid,
   Link,
   List,
@@ -30,16 +29,18 @@ import {
 } from '@backend/types'
 
 import usePrograms from '../../hooks/usePrograms'
+import { useSingleThesis } from '../../hooks/useTheses'
 
 import { BASE_PATH } from '../../../config'
 
-const HeaderRow = ({ thesis }: { thesis: Thesis }) => (
+const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
     sx={{
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
       px: 2,
+      mt: 2,
       backgroundColor: '#E1E4E8',
       fontSize: '10pt',
     }}
@@ -258,72 +259,139 @@ const Attachments = ({
   )
 }
 
-const ViewThesisFooter = () => {
-  const { t } = useTranslation()
-  const apiRef = useGridApiContext()
-  const [thesis, setThesis] = useState<Thesis | null>(null)
+interface ViewThesisFooterProps {
+  rowSelectionModel: GridRowSelectionModel[]
+  editThesis: (thesis: Thesis) => void
+  deleteThesis: (thesis: Thesis) => void
+}
 
-  const handleRowClick: GridEventListener<'rowClick'> = (params) => {
-    setThesis(params.row as Thesis)
+const ViewThesisFooter = (
+  props: GridSlotProps['footer'] & ViewThesisFooterProps
+) => {
+  const { rowSelectionModel, editThesis, deleteThesis } = props
+
+  const { t } = useTranslation()
+  const { thesis, isLoading: thesisLoading } = useSingleThesis(
+    rowSelectionModel[0]
+  )
+
+  const handleEditThesis = () => {
+    if (!thesis) return
+    editThesis(thesis)
   }
 
-  useGridApiEventHandler(apiRef, 'rowClick', handleRowClick)
+  const handleDeleteThesis = () => {
+    if (!thesis) return
+    deleteThesis(thesis)
+  }
+
+  if (thesisLoading) return null
 
   return (
     <>
       <GridFooter />
       {thesis && (
         <Box sx={{ m: 2 }}>
-          <Typography
-            component="h2"
+          <Stack
+            direction="row"
+            spacing={2}
             sx={{
-              textTransform: 'uppercase',
-              fontFamily: 'Roboto',
               mb: 2,
+              alignItems: 'center',
+              justifyContent: 'space-between',
             }}
           >
             <Typography
-              component="span"
+              component="h2"
               sx={{
-                fontSize: '12pt',
-                fontWeight: 600,
-                position: 'relative',
-                '&::after': {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: '4px',
-                  left: 0,
-                  height: '6px',
-                  backgroundColor: '#fcd34d',
-                  zIndex: -1,
-                  width: '100%',
-                },
+                textTransform: 'uppercase',
+                fontFamily: 'Roboto',
+                mb: 2,
               }}
             >
-              {t('thesisPreview')}
+              <Typography
+                component="span"
+                sx={{
+                  fontSize: '12pt',
+                  fontWeight: 600,
+                  position: 'relative',
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    bottom: '4px',
+                    left: 0,
+                    height: '6px',
+                    backgroundColor: '#fcd34d',
+                    zIndex: -1,
+                    width: '100%',
+                  },
+                }}
+              >
+                {t('thesisPreview')}
+              </Typography>
             </Typography>
+
+            {thesis && (
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    color: '#fff',
+                    backgroundColor: '#000',
+                    borderColor: '#000',
+                    fontSize: '12px',
+                    height: 24,
+                    px: 2,
+                    borderRadius: '1rem',
+                    fontWeight: 600,
+                    '&:hover': {
+                      backgroundColor: '#fff',
+                      borderColor: '#000',
+                      color: '#000',
+                    },
+                  }}
+                  onClick={handleEditThesis}
+                >
+                  {t('editButton')}
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  sx={{
+                    fontSize: '12px',
+                    height: 24,
+                    px: 2,
+                    borderRadius: '1rem',
+                    fontWeight: 600,
+                  }}
+                  onClick={handleDeleteThesis}
+                >
+                  {t('deleteButton')}
+                </Button>
+              </Box>
+            )}
+          </Stack>
+
+          <Typography
+            component="h3"
+            sx={{
+              fontSize: '1.5rem',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+            }}
+          >
+            {thesis.topic}
           </Typography>
 
-          <HeaderRow thesis={thesis} />
+          <Authors authors={thesis.authors} />
 
-          <Box sx={{ px: 2, py: 2 }}>
+          <StatusRow thesis={thesis} />
+
+          <Box sx={{ p: 2 }}>
             <ProgramTrack
               programId={thesis.programId}
               studyTrackId={thesis.studyTrackId}
             />
-
-            <Typography
-              component="h3"
-              sx={{
-                fontSize: '1.5rem',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-              }}
-            >
-              {thesis.topic}
-            </Typography>
-
-            <Authors authors={thesis.authors} />
 
             <Grid
               container
