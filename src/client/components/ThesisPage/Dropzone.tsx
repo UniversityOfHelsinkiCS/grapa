@@ -124,7 +124,7 @@ const FileDropzone = ({
           color={error ? 'error' : 'action'}
         />
       </Box>
-      {error && (
+      {helperText && (
         <FormHelperText
           id={helperTextId}
           error={error}
