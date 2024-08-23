@@ -198,6 +198,9 @@ const ThesesPage = () => {
               borderLeft: '1px solid #E1E4E8',
               borderRight: '1px solid #E1E4E8',
             },
+            '& .MuiDataGrid-row:hover': {
+              cursor: 'pointer',
+            },
           }}
         />
       </Box>
