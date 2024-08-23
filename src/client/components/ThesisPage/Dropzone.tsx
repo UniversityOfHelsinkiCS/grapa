@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable no-nested-ternary */
 
 import { useDropzone } from 'react-dropzone'
@@ -15,14 +16,24 @@ const getColor = (props: any) => {
   return 'text.secondary'
 }
 
-const FileDropzone = () => {
+interface FileDropzoneProps {
+  id: string
+  handleFileUpload: (files: File[]) => void
+  inputProps?: JSX.IntrinsicElements['input']
+}
+
+const FileDropzone = ({
+  id,
+  handleFileUpload,
+  inputProps = {},
+}: FileDropzoneProps) => {
   const { t } = useTranslation()
 
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
     useDropzone({
       accept: { 'application/pdf': ['.pdf'] },
       multiple: false,
-      onDrop: (acceptedFiles) => console.log(acceptedFiles),
+      onDrop: (acceptedFile) => handleFileUpload(acceptedFile),
     })
 
   const borderColor = getColor({ isFocused, isDragAccept, isDragReject })
@@ -34,6 +45,7 @@ const FileDropzone = () => {
 
   return (
     <Box
+      id={id}
       sx={{
         height: '200px',
         width: { xs: '100%', md: '50%' },
@@ -70,7 +82,7 @@ const FileDropzone = () => {
       }}
       {...getRootProps()}
     >
-      <input {...getInputProps()} />
+      <input {...inputProps} {...getInputProps()} />
       <Typography
         className="dropzone-text"
         variant="body2"
