@@ -5,8 +5,6 @@ import 'dayjs/locale/fi'
 import { sortBy } from 'lodash-es'
 
 import { User, ThesisData, TranslationLanguage } from '@backend/types'
-import { styled } from '@mui/material/styles'
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
 import {
@@ -43,18 +41,7 @@ import { getFormErrors, getSortedPrograms } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
 import ErrorSummary from '../Common/ErrorSummary'
 import { ProgramData as Program } from '../../../server/types'
-
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-})
+import FileDropzone from './Dropzone'
 
 const ThesisEditForm: React.FC<{
   programs: Program[]
@@ -521,33 +508,35 @@ const ThesisEditForm: React.FC<{
             <Typography component="legend" sx={{ px: '1rem' }}>
               {t('thesisForm:appendices')}
             </Typography>
-            <Button
-              id="researchPlan"
-              component="label"
-              variant="contained"
-              tabIndex={-1}
-              startIcon={<CloudUploadIcon />}
-            >
-              {t('thesisForm:uploadResearchPlanButton')}
-              <VisuallyHiddenInput
-                data-testid="research-plan-input"
-                value=""
-                onChange={(ev) => {
-                  setEditedThesis((oldThesis) => ({
-                    ...oldThesis,
-                    researchPlan: ev.target.files[0],
-                  }))
 
-                  setFormErrors(
-                    formErrors.filter(
-                      (error) => error.path[0] !== 'researchPlan'
-                    )
-                  )
-                }}
-                type="file"
-                accept=".pdf"
-              />
-            </Button>
+            <FileDropzone
+              id="researchPlan"
+              label={t('thesisForm:uploadResearchPlan')}
+              required
+              error={formErrors.some(
+                (error) => error.path[0] === 'researchPlan'
+              )}
+              helperText={t(
+                formErrors.find((error) => error.path[0] === 'researchPlan')
+                  ?.message
+              )}
+              handleFileUpload={(files) => {
+                setEditedThesis((oldThesis) => ({
+                  ...oldThesis,
+                  researchPlan: files[0],
+                }))
+
+                setFormErrors(
+                  formErrors.filter((error) => error.path[0] !== 'researchPlan')
+                )
+              }}
+              inputProps={{
+                'data-testid': 'research-plan-input',
+                accept: '.pdf',
+                type: 'file',
+              }}
+            />
+
             {editedThesis.researchPlan && (
               <Chip
                 label={
@@ -572,33 +561,35 @@ const ThesisEditForm: React.FC<{
                 }
               />
             )}
-            <Button
-              id="waysOfWorking"
-              component="label"
-              variant="contained"
-              tabIndex={-1}
-              startIcon={<CloudUploadIcon />}
-            >
-              {t('thesisForm:uploadWaysOfWorkingButton')}
-              <VisuallyHiddenInput
-                data-testid="ways-of-working-input"
-                value=""
-                onChange={(ev) => {
-                  setEditedThesis((oldThesis) => ({
-                    ...oldThesis,
-                    waysOfWorking: ev.target.files[0],
-                  }))
 
-                  setFormErrors(
-                    formErrors.filter(
-                      (error) => error.path[0] !== 'waysOfWorking'
-                    )
+            <FileDropzone
+              id="waysOfWorking"
+              label={t('thesisForm:uploadWaysOfWorking')}
+              error={formErrors.some(
+                (error) => error.path[0] === 'waysOfWorking'
+              )}
+              helperText={t(
+                formErrors.find((error) => error.path[0] === 'waysOfWorking')
+                  ?.message
+              )}
+              handleFileUpload={(files) => {
+                setEditedThesis((oldThesis) => ({
+                  ...oldThesis,
+                  waysOfWorking: files[0],
+                }))
+
+                setFormErrors(
+                  formErrors.filter(
+                    (error) => error.path[0] !== 'waysOfWorking'
                   )
-                }}
-                type="file"
-                accept=".pdf"
-              />
-            </Button>
+                )
+              }}
+              inputProps={{
+                'data-testid': 'ways-of-working-input',
+                accept: '.pdf',
+                type: 'file',
+              }}
+            />
             {editedThesis.waysOfWorking && (
               <Chip
                 label={
