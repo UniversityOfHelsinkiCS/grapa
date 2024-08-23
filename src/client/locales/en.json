@@ -54,6 +54,9 @@
     "pageTitle": "Select department",
     "pageDescription": "Before proceeding, you have to select a department you belong to"
   },
+  "dropzone": {
+    "uploadText": "Drag and drop a file here or click to upload"
+  },
   "formErrors": {
     "topic": "Please provide a topic for the thesis",
     "program": "Please select a program",
