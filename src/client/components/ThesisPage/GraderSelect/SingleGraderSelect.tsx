@@ -19,7 +19,7 @@ import DeleteConfirmation from '../../Common/DeleteConfirmation'
 interface SingleGraderSelectProps {
   index: number
   selection: GraderData
-  handleGraderChange: (value: User | null) => void
+  handleGraderChange: (value: Partial<User> | null) => void
   handleRemoveGrader: () => void
   inputProps: TextFieldProps
   iconButtonProps: ButtonProps
@@ -42,7 +42,7 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
   return (
     <Stack spacing={1} direction="row">
       <FormControl fullWidth>
-        <Autocomplete<User>
+        <Autocomplete<Partial<User>>
           id={`graders-${index}-user`}
           noOptionsText={t('userSearchNoOptions')}
           data-testid={`grader-select-input-${index + 1}`}
