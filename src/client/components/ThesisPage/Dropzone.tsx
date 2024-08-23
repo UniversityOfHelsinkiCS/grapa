@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable no-nested-ternary */
-
-import { useDropzone } from 'react-dropzone'
+import * as React from 'react'
+import { useDropzone } from 'react-dropzone-esm'
 import { useTranslation } from 'react-i18next'
 import { Box, FormHelperText, InputLabel, Typography } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
