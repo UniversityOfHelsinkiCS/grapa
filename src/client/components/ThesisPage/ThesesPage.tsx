@@ -257,7 +257,7 @@ const ThesesPage = () => {
               topic: deletedThesis.topic,
             })}
 
-            <Box component="form" noValidate autoComplete="off" sx={{ mt: 4 }}>
+            <Box sx={{ mt: 4 }}>
               <Typography variant="body2" color="textSecondary">
                 <Trans
                   i18nKey="removeConfirmation"
