@@ -1,20 +1,46 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable no-nested-ternary */
-import * as React from 'react'
+import { useId } from 'react'
 import { useDropzone } from 'react-dropzone-esm'
 import { useTranslation } from 'react-i18next'
-import { Box, FormHelperText, InputLabel, Typography } from '@mui/material'
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import { useId } from 'react'
 
-const getColor = (props: any) => {
-  if (props.error || props.isDragReject) {
+import { Box, FormHelperText, InputLabel, Typography } from '@mui/material'
+import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded'
+
+interface ColorProps {
+  error?: boolean
+  isDragReject: boolean
+  isDragAccept: boolean
+  defaultColor?: string
+}
+
+const getColor = ({
+  error = false,
+  isDragReject,
+  isDragAccept,
+  defaultColor = 'primary.main',
+}: ColorProps) => {
+  if (error || isDragReject) {
     return 'error.main'
   }
-  if (props.isDragAccept) {
-    return 'primary.main'
+  if (isDragAccept) {
+    return 'success.main'
   }
-  return 'text.secondary'
+  return defaultColor
+}
+
+const getBgColor = ({
+  error = false,
+  isDragReject,
+  isDragAccept,
+}: ColorProps) => {
+  if (error || isDragReject) {
+    return '#fee2e2'
+  }
+  if (isDragAccept) {
+    return '#dcfce7'
+  }
+  return '#e9f3ff'
 }
 
 interface FileDropzoneProps {
@@ -39,7 +65,7 @@ const FileDropzone = ({
   const { t } = useTranslation()
   const helperTextId = useId()
 
-  const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
+  const { getRootProps, getInputProps, isDragAccept, isDragReject } =
     useDropzone({
       accept: { 'application/pdf': ['.pdf'] },
       multiple: false,
@@ -48,12 +74,8 @@ const FileDropzone = ({
       },
     })
 
-  const borderColor = getColor({ error, isFocused, isDragAccept, isDragReject })
-  const backgroundColor = isDragAccept
-    ? '#dbeafe'
-    : isDragReject
-      ? '#fee2e2'
-      : 'background.paper'
+  const borderColor = getColor({ error, isDragAccept, isDragReject })
+  const backgroundColor = getBgColor({ error, isDragAccept, isDragReject })
 
   return (
     <Box sx={{ display: 'relative' }}>
@@ -75,16 +97,15 @@ const FileDropzone = ({
       <Box
         id={id}
         sx={{
-          height: '200px',
-          width: { xs: '100%', md: '50%' },
+          minHeight: 'auto',
+          width: '100%',
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'row',
           gap: '1rem',
-          padding: '1rem',
-          justifyContent: 'center',
+          padding: '1.5rem 1.75rem',
           alignItems: 'center',
-          textAlign: 'center',
-          border: '2px dashed',
+          border: '1px dashed',
+          borderRadius: '0.45rem',
           borderColor,
           backgroundColor,
           transition: 'border .24s ease-in-out',
@@ -111,18 +132,18 @@ const FileDropzone = ({
             },
           })}
         />
+        <UploadFileRoundedIcon
+          className="dropzone-icon"
+          fontSize="large"
+          sx={{ color: borderColor }}
+        />
         <Typography
           className="dropzone-text"
           variant="body2"
-          color={error ? 'error' : 'text.secondary'}
+          sx={{ fontWeight: '600', fontSize: '10pt', color: 'text.primary' }}
         >
           {t('dropzone:uploadText')}
         </Typography>
-        <CloudUploadIcon
-          className="dropzone-icon"
-          fontSize="medium"
-          color={error ? 'error' : 'action'}
-        />
       </Box>
       {helperText && (
         <FormHelperText
