@@ -1,13 +1,22 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable no-nested-ternary */
-import { useId } from 'react'
+import { useId, useState } from 'react'
 import { useDropzone } from 'react-dropzone-esm'
 import { useTranslation } from 'react-i18next'
 
-import { Box, FormHelperText, InputLabel, Typography } from '@mui/material'
-import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded'
+import {
+  Box,
+  CircularProgress,
+  FormHelperText,
+  InputLabel,
+  Typography,
+} from '@mui/material'
+import FileUploadIcon from '@mui/icons-material/FileUpload'
+import CheckIcon from '@mui/icons-material/Check'
+import { FileData } from '@backend/types'
 
 interface ColorProps {
+  uploadSuccess?: boolean
   error?: boolean
   isDragReject: boolean
   isDragAccept: boolean
@@ -15,6 +24,7 @@ interface ColorProps {
 }
 
 const getColor = ({
+  uploadSuccess = false,
   error = false,
   isDragReject,
   isDragAccept,
@@ -23,13 +33,14 @@ const getColor = ({
   if (error || isDragReject) {
     return 'error.main'
   }
-  if (isDragAccept) {
+  if (uploadSuccess || isDragAccept) {
     return 'success.main'
   }
   return defaultColor
 }
 
 const getBgColor = ({
+  uploadSuccess = false,
   error = false,
   isDragReject,
   isDragAccept,
@@ -37,7 +48,7 @@ const getBgColor = ({
   if (error || isDragReject) {
     return '#fee2e2'
   }
-  if (isDragAccept) {
+  if (uploadSuccess || isDragAccept) {
     return '#dcfce7'
   }
   return '#e9f3ff'
@@ -49,6 +60,7 @@ interface FileDropzoneProps {
   error: boolean
   required?: boolean
   helperText?: string
+  uploadedFile?: File | FileData
   handleFileUpload: (files: File[]) => void
   inputProps?: JSX.IntrinsicElements['input'] & { 'data-testid'?: string }
 }
@@ -59,23 +71,45 @@ const FileDropzone = ({
   error,
   required = false,
   helperText = null,
+  uploadedFile,
   handleFileUpload,
   inputProps = {},
 }: FileDropzoneProps) => {
   const { t } = useTranslation()
   const helperTextId = useId()
 
+  const [uploading, setUploading] = useState(false)
+
+  const uploadSuccess = Boolean(uploadedFile)
+
   const { getRootProps, getInputProps, isDragAccept, isDragReject } =
     useDropzone({
       accept: { 'application/pdf': ['.pdf'] },
       multiple: false,
-      onDrop: (acceptedFile) => {
-        handleFileUpload(acceptedFile)
+      disabled: uploading || uploadSuccess,
+      onDrop: (acceptedFiles) => {
+        if (acceptedFiles.length > 0) {
+          setUploading(true)
+
+          handleFileUpload(acceptedFiles)
+        }
+
+        setUploading(false)
       },
     })
 
-  const borderColor = getColor({ error, isDragAccept, isDragReject })
-  const backgroundColor = getBgColor({ error, isDragAccept, isDragReject })
+  const borderColor = getColor({
+    uploadSuccess,
+    error,
+    isDragAccept,
+    isDragReject,
+  })
+  const backgroundColor = getBgColor({
+    uploadSuccess,
+    error,
+    isDragAccept,
+    isDragReject,
+  })
 
   return (
     <Box>
@@ -108,7 +142,7 @@ const FileDropzone = ({
           borderColor,
           backgroundColor,
           transition: 'border .24s ease-in-out',
-          cursor: 'pointer',
+          cursor: uploadSuccess ? 'default' : 'pointer',
         }}
         {...getRootProps()}
       >
@@ -131,17 +165,49 @@ const FileDropzone = ({
             },
           })}
         />
-        <UploadFileRoundedIcon
-          className="dropzone-icon"
-          fontSize="large"
-          sx={{ color: borderColor }}
-        />
+        <Box sx={{ position: 'relative' }}>
+          <Box
+            sx={{
+              backgroundColor: borderColor,
+              borderRadius: '100%',
+              width: '40px',
+              height: '40px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            {uploadedFile ? (
+              <CheckIcon sx={{ color: 'background.paper' }} />
+            ) : (
+              <FileUploadIcon
+                className="dropzone-icon"
+                fontSize="small"
+                sx={{ color: 'background.paper' }}
+              />
+            )}
+          </Box>
+          {uploading && (
+            <CircularProgress
+              size={48}
+              sx={{
+                color: 'success.main',
+                position: 'absolute',
+                zIndex: 1,
+                left: -4,
+                top: -4,
+              }}
+            />
+          )}
+        </Box>
         <Typography
           className="dropzone-text"
           variant="body2"
           sx={{ fontWeight: '600', fontSize: '10pt', color: 'text.primary' }}
         >
-          {t('dropzone:uploadText')}
+          {uploadSuccess
+            ? t('dropzone:uploadSuccessText')
+            : t('dropzone:uploadText')}
         </Typography>
       </Box>
       {helperText && (

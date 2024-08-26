@@ -520,6 +520,7 @@ const ThesisEditForm: React.FC<{
                 formErrors.find((error) => error.path[0] === 'researchPlan')
                   ?.message
               )}
+              uploadedFile={editedThesis?.researchPlan}
               handleFileUpload={(files) => {
                 setEditedThesis((oldThesis) => ({
                   ...oldThesis,
@@ -569,6 +570,7 @@ const ThesisEditForm: React.FC<{
                 (error) => error.path[0] === 'waysOfWorking'
               )}
               helperText={t('thesisForm:waysOfWorkingHelperText')}
+              uploadedFile={editedThesis?.waysOfWorking}
               handleFileUpload={(files) => {
                 setEditedThesis((oldThesis) => ({
                   ...oldThesis,

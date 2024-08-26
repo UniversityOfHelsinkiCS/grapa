@@ -55,7 +55,8 @@
     "pageDescription": "Ennen kuin jatkat, valitse osasto missä työskentelet"
   },
   "dropzone": {
-    "uploadText": "Pudota tiedosto tähän tai klikkaa ladataksesi"
+    "uploadText": "Pudota tiedosto tähän tai klikkaa ladataksesi",
+    "uploadSuccessText": "Tiedosto ladattu onnistuneesti"
   },
   "formErrors": {
     "topic": "Anna tutkielman aihe",
