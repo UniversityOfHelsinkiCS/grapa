@@ -104,6 +104,8 @@
     "addSecondaryGrader": "Add external grader",
     "supervisors": "Supervisors",
     "appendices": "Appendices",
+    "removeAppendixConfirmationTitle": "Delete appendix",
+    "removeAppendixConfirmationContent": "Are you sure you want to delete the appendix: {{name}}?",
     "supervisorButtonGroupAriaLabel": "Supervisor actions",
     "addSupervisor": "Add supervisor",
     "addExternalSupervisor": "Add external supervisor",

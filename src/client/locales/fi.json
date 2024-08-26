@@ -104,6 +104,8 @@
     "addSecondaryGrader": "Lisää ulkopuolinen arvioija",
     "supervisors": "Ohjaajat",
     "appendices": "Liitteet",
+    "removeAppendixConfirmationTitle": "Poista liite",
+    "removeAppendixConfirmationContent": "Haluatko varmasti poistaa liitteen: {{name}}?",
     "supervisorButtonGroupAriaLabel": "Ohjaajien lisäys",
     "addSupervisor": "Lisää ohjaaja",
     "addExternalSupervisor": "Lisää ulkopuolinen ohjaaja",
