@@ -41,7 +41,7 @@ import { getFormErrors, getSortedPrograms } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
 import ErrorSummary from '../Common/ErrorSummary'
 import { ProgramData as Program } from '../../../server/types'
-import FileDropzone from './Dropzone'
+import FileDropzone from './Dropzone/Dropzone'
 
 const ThesisEditForm: React.FC<{
   programs: Program[]
