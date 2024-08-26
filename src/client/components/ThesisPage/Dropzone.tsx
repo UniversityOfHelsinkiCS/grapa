@@ -78,18 +78,17 @@ const FileDropzone = ({
   const backgroundColor = getBgColor({ error, isDragAccept, isDragReject })
 
   return (
-    <Box sx={{ display: 'relative' }}>
+    <Box>
       <InputLabel
         htmlFor={`${id}-input`}
         error={error}
         required={required}
         sx={{
-          display: 'absolute',
-          top: '0.75rem',
-          backgroundColor: 'background.paper',
           width: 'fit-content',
           px: '0.5rem',
-          ml: 1,
+          color: 'text.primary',
+          fontSize: '11pt',
+          mb: '0.5rem',
         }}
       >
         {label}
