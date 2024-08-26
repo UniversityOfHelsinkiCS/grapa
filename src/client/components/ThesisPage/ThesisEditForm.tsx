@@ -5,12 +5,10 @@ import 'dayjs/locale/fi'
 import { sortBy } from 'lodash-es'
 
 import { User, ThesisData, TranslationLanguage } from '@backend/types'
-import UploadFileIcon from '@mui/icons-material/UploadFile'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
 import {
   Autocomplete,
   Button,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -19,7 +17,6 @@ import {
   FormHelperText,
   Grid,
   InputLabel,
-  Link,
   ListItemIcon,
   ListItemText,
   MenuItem,
@@ -34,7 +31,6 @@ import { useTranslation } from 'react-i18next'
 import { ZodIssue } from 'zod'
 import SupervisorSelect from './SupervisorSelect/SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
-import { BASE_PATH } from '../../../config'
 import { useDebounce } from '../../hooks/useDebounce'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { getFormErrors, getSortedPrograms } from './util'
@@ -42,6 +38,7 @@ import GraderSelect from './GraderSelect/GraderSelect'
 import ErrorSummary from '../Common/ErrorSummary'
 import { ProgramData as Program } from '../../../server/types'
 import FileDropzone from './Dropzone/Dropzone'
+import FilePreview from './Dropzone/FilePreview'
 
 const ThesisEditForm: React.FC<{
   programs: Program[]
@@ -539,27 +536,14 @@ const ThesisEditForm: React.FC<{
             />
 
             {editedThesis.researchPlan && (
-              <Chip
-                label={
-                  'filename' in editedThesis.researchPlan ? (
-                    <Link
-                      href={`${BASE_PATH}/api/attachments/${editedThesis.researchPlan.filename}`}
-                    >
-                      {editedThesis.researchPlan.name}
-                    </Link>
-                  ) : (
-                    editedThesis.researchPlan.name
-                  )
-                }
-                icon={<UploadFileIcon />}
-                variant="outlined"
-                sx={{ maxWidth: 200 }}
-                onDelete={() =>
+              <FilePreview
+                file={editedThesis.researchPlan}
+                onDelete={() => {
                   setEditedThesis((oldThesis) => ({
                     ...oldThesis,
                     researchPlan: undefined,
                   }))
-                }
+                }}
               />
             )}
 
@@ -590,21 +574,8 @@ const ThesisEditForm: React.FC<{
               }}
             />
             {editedThesis.waysOfWorking && (
-              <Chip
-                label={
-                  'filename' in editedThesis.waysOfWorking ? (
-                    <Link
-                      href={`${BASE_PATH}/api/attachments/${editedThesis.waysOfWorking.filename}`}
-                    >
-                      {editedThesis.waysOfWorking.name}
-                    </Link>
-                  ) : (
-                    editedThesis.waysOfWorking.name
-                  )
-                }
-                icon={<UploadFileIcon />}
-                variant="outlined"
-                sx={{ maxWidth: 200 }}
+              <FilePreview
+                file={editedThesis.waysOfWorking}
                 onDelete={() =>
                   setEditedThesis((oldThesis) => ({
                     ...oldThesis,
