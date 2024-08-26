@@ -1,6 +1,6 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable no-nested-ternary */
-import { useId, useState } from 'react'
+import React, { useId, useState } from 'react'
 import { useDropzone } from 'react-dropzone-esm'
 import { useTranslation } from 'react-i18next'
 
