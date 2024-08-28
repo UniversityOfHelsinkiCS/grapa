@@ -1,8 +1,10 @@
 import * as React from 'react'
 import { useState } from 'react'
-import dayjs from 'dayjs'
+import { ZodIssue } from 'zod'
 import 'dayjs/locale/fi'
+import dayjs from 'dayjs'
 import { sortBy } from 'lodash-es'
+import { useTranslation } from 'react-i18next'
 
 import { User, ThesisData, TranslationLanguage } from '@backend/types'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
@@ -27,8 +29,6 @@ import {
 } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { useTranslation } from 'react-i18next'
-import { ZodIssue } from 'zod'
 import SupervisorSelect from './SupervisorSelect/SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
 import { useDebounce } from '../../hooks/useDebounce'
@@ -37,6 +37,7 @@ import { getFormErrors, getSortedPrograms } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
 import ErrorSummary from '../Common/ErrorSummary'
 import { ProgramData as Program } from '../../../server/types'
+import { StatusLocale } from '../../types'
 import FileDropzone from './Dropzone/Dropzone'
 import FilePreview from './Dropzone/FilePreview'
 
@@ -368,17 +369,15 @@ const ThesisEditForm: React.FC<{
                 }}
                 error={formErrors.some((error) => error.path[0] === 'status')}
               >
-                <MenuItem value="PLANNING">
-                  {t('thesisStages:planned')}
-                </MenuItem>
+                <MenuItem value="PLANNING">{t(StatusLocale.PLANNING)}</MenuItem>
                 <MenuItem value="IN_PROGRESS">
-                  {t('thesisStages:inProgress')}
+                  {t(StatusLocale.IN_PROGRESS)}
                 </MenuItem>
                 <MenuItem value="COMPLETED">
-                  {t('thesisStages:completed')}
+                  {t(StatusLocale.COMPLETED)}
                 </MenuItem>
                 <MenuItem value="CANCELLED">
-                  {t('thesisStages:cancelled')}
+                  {t(StatusLocale.CANCELLED)}
                 </MenuItem>
               </Select>
               <FormHelperText error>

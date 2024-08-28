@@ -1,6 +1,13 @@
 import { User } from '@backend/types'
 import { GridRowSelectionModel } from '@mui/x-data-grid/models/gridRowSelectionModel'
 
+export enum StatusLocale {
+  PLANNING = 'thesisStages:planned',
+  IN_PROGRESS = 'thesisStages:inProgress',
+  COMPLETED = 'thesisStages:completed',
+  CANCELLED = 'thesisStages:cancelled',
+}
+
 export interface SupervisorSelection {
   user: Partial<User> | null
   percentage: number

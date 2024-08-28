@@ -23,6 +23,7 @@ import usePrograms from '../../hooks/usePrograms'
 import { getSortedPrograms } from './util'
 import ViewThesisFooter from './ViewThesisFooter'
 import ThesisToolbar from './ThesisToolbar'
+import { StatusLocale } from '../../types'
 
 const ThesesPage = () => {
   const { t, i18n } = useTranslation()
@@ -76,6 +77,7 @@ const ThesesPage = () => {
       field: 'status',
       headerName: t('statusHeader'),
       width: 100,
+      valueGetter: (_, row) => t(StatusLocale[row.status]),
     },
     {
       field: 'startDate',
