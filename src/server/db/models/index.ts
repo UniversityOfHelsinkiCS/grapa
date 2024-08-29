@@ -8,6 +8,7 @@ import StudyTrack from './StudyTrack'
 import Grader from './Grader'
 import ProgramManagement from './ProgramManagement'
 import Department from './Department'
+import DepartmentAdmin from './DepartmentAdmin'
 
 User.belongsToMany(Thesis, {
   through: Supervision,
@@ -33,6 +34,10 @@ Supervision.belongsTo(Thesis, { as: 'thesis' })
 ProgramManagement.belongsTo(User, { as: 'user' })
 ProgramManagement.belongsTo(Program, { as: 'program' })
 Program.hasMany(ProgramManagement)
+
+DepartmentAdmin.belongsTo(User, { as: 'user' })
+DepartmentAdmin.belongsTo(Department, { as: 'department' })
+Department.hasMany(DepartmentAdmin)
 
 Grader.belongsTo(User, { as: 'user' })
 
