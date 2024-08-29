@@ -364,13 +364,10 @@ const ViewThesisFooter = (
     rowSelectionModel[0]
   )
 
-  if (!thesis) return <GridFooter />
-  if (thesisLoading) return <PreviewSkeleton />
-
   return (
     <>
       <GridFooter />
-      {thesis && (
+      {thesis ? (
         <Box sx={{ m: 2 }}>
           <Stack
             direction="row"
@@ -490,6 +487,8 @@ const ViewThesisFooter = (
             />
           </Box>
         </Box>
+      ) : (
+        thesisLoading && <PreviewSkeleton />
       )}
     </>
   )
