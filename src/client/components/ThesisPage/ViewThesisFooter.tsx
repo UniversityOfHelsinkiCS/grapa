@@ -364,7 +364,8 @@ const ViewThesisFooter = (
     rowSelectionModel[0]
   )
 
-  if (!thesis || thesisLoading) return <PreviewSkeleton />
+  if (!thesis) return <GridFooter />
+  if (thesisLoading) return <PreviewSkeleton />
 
   return (
     <>
