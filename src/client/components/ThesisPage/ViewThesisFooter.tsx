@@ -10,6 +10,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Skeleton,
   Stack,
   Typography,
 } from '@mui/material'
@@ -256,6 +257,103 @@ const Attachments = ({
   )
 }
 
+const PreviewSkeleton = () => (
+  <Box sx={{ m: 2 }}>
+    <Stack
+      direction="row"
+      spacing={2}
+      sx={{
+        mb: 2,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}
+    >
+      <Skeleton variant="text" width={200} height={24} />
+    </Stack>
+    <Skeleton variant="text" width="70%" height={36} />
+    <Skeleton variant="text" width={320} height={24} />
+
+    <Box sx={{ mt: 2 }}>
+      <Skeleton variant="rectangular" width="100%" height={20} />
+    </Box>
+
+    <Box sx={{ p: 2 }}>
+      <Skeleton variant="rectangular" width="40%" height={16} />
+
+      <Grid
+        container
+        sx={{
+          mt: 4,
+          gap: 4,
+        }}
+      >
+        <Grid item>
+          <Skeleton variant="rectangular" width={240} height={24} />
+          <Box sx={{ mt: 2 }}>
+            <Skeleton variant="rectangular" width={240} height={16} />
+            <Skeleton
+              variant="rectangular"
+              sx={{ mt: 1 }}
+              width={240}
+              height={14}
+            />
+          </Box>
+          <Box sx={{ mt: 2 }}>
+            <Skeleton variant="rectangular" width={240} height={16} />
+            <Skeleton
+              variant="rectangular"
+              sx={{ mt: 1 }}
+              width={240}
+              height={14}
+            />
+          </Box>
+        </Grid>
+        <Grid item>
+          <Skeleton variant="rectangular" width={240} height={24} />
+          <Box sx={{ mt: 2 }}>
+            <Skeleton variant="rectangular" width={240} height={16} />
+            <Skeleton
+              variant="rectangular"
+              sx={{ mt: 1 }}
+              width={240}
+              height={14}
+            />
+          </Box>
+          <Box sx={{ mt: 2 }}>
+            <Skeleton variant="rectangular" width={240} height={16} />
+            <Skeleton
+              variant="rectangular"
+              sx={{ mt: 1 }}
+              width={240}
+              height={14}
+            />
+          </Box>
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        sx={{
+          mt: 4,
+          gap: 4,
+        }}
+      >
+        <Grid item>
+          <Skeleton variant="rectangular" width={240} height={24} />
+          <Box sx={{ mt: 2 }}>
+            <Skeleton variant="rectangular" width={380} height={16} />
+            <Skeleton
+              variant="rectangular"
+              sx={{ mt: 1 }}
+              width={380}
+              height={16}
+            />
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
+  </Box>
+)
+
 const ViewThesisFooter = (
   props: GridSlotProps['footer'] & ThesisFooterProps
 ) => {
@@ -266,7 +364,7 @@ const ViewThesisFooter = (
     rowSelectionModel[0]
   )
 
-  if (!thesis || thesisLoading) return null
+  if (!thesis || thesisLoading) return <PreviewSkeleton />
 
   return (
     <>
