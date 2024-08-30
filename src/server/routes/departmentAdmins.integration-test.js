@@ -74,7 +74,10 @@ describe('department-admins router', () => {
 
     describe('DELETE /api/department-admins/:id', () => {
       it('should return 403', async () => {
-        const res = await request.delete(`/api/department-admins/${departmentAdmin1.id}`)
+        const res = await request.delete(`/api/department-admins/${departmentAdmin1.id}`).send({
+          departmentId: department1.id,
+          userId: user3.id,
+        })
         expect(res.status).toBe(403)
       })
     })
@@ -165,5 +168,85 @@ describe('department-admins router', () => {
         expect(res.status).toBe(204)
       })
     })
+  })
+
+  describe('when the user is a department admin', () => {
+    let departmentAdmin3
+    beforeEach(async () => {
+      departmentAdmin3 = await DepartmentAdmin.create({
+        departmentId: department1.id,
+        userId: user3.id,
+      })
+    })
+
+    describe('GET /api/department-admins', () => {
+      it('should return 200 and the department admins that the teacher is also part of', async () => {
+        const res = await request
+          .get('/api/department-admins')
+          .set({ uid: user3.id, hygroupcn: 'hy-employees' })
+        expect(res.status).toBe(200)
+        expect(res.body).toIncludeSameMembers([
+          {
+            id: departmentAdmin1.id,
+            departmentId: department1.id,
+            userId: user1.id,
+            user: expect.any(Object),
+            department: expect.any(Object),
+          },
+          {
+            id: departmentAdmin3.id,
+            departmentId: department1.id,
+            userId: user3.id,
+            user: expect.any(Object),
+            department: expect.any(Object),
+          },
+        ])
+      })
+    })
+
+    describe('POST /api/department-admins', () => {
+      it('should return 200 when adding a department admin to the same department', async () => {
+        const res = await request
+          .post('/api/department-admins')
+          .set({ uid: user3.id, hygroupcn: 'hy-employees' })
+          .send({
+            departmentId: department1.id,
+            userId: user2.id,
+          })
+        expect(res.status).toBe(201)
+        expect(res.body).toMatchObject({
+          departmentId: department1.id,
+          userId: user2.id,
+        })
+      })
+
+      it('should return 403 when trying to add a department admin to another department', async () => {
+        const res = await request
+          .post('/api/department-admins')
+          .set({ uid: user3.id, hygroupcn: 'hy-employees' })
+          .send({
+            departmentId: department2.id,
+            userId: user2.id,
+          })
+        expect(res.status).toBe(403)
+      })
+    })
+
+    describe('DELETE /api/department-admins/:id', () => {
+      it('should return 204 when deleting self from the department admins', async () => {
+        const res = await request
+          .delete(`/api/department-admins/${departmentAdmin3.id}`)
+          .set({ uid: user3.id, hygroupcn: 'hy-employees' })
+        expect(res.status).toBe(204)
+      })
+
+      it('should return 404 when trying to delete a department admin from another department', async () => {
+        const res = await request
+          .delete(`/api/department-admins/${departmentAdmin2.id}`)
+          .set({ uid: user3.id, hygroupcn: 'hy-employees' })
+        expect(res.status).toBe(404)
+      })
+    })
+  
   })
 })

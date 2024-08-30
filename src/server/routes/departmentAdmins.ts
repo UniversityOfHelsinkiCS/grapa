@@ -59,7 +59,12 @@ departmentAdminRouter.post(
       })
 
       if (!userHasAccessToDepartment) {
-        res.status(403).send({ error: 'Forbidden' })
+        res
+          .status(403)
+          .send({
+            error:
+              'Forbidden, only department admins can create new department admins',
+          })
         return
       }
     }
@@ -92,12 +97,10 @@ departmentAdminRouter.delete(
       })
 
       if (departmentsUserHasAccessTo.length === 0) {
-        res
-          .status(403)
-          .send({
-            error:
-              'Forbidden, only departmend admins can remove other department admins',
-          })
+        res.status(403).send({
+          error:
+            'Forbidden, only departmend admins can remove other department admins',
+        })
         return
       }
 
