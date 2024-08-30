@@ -5,11 +5,13 @@ import ThesesPage from './components/ThesisPage/ThesesPage'
 import RootBoundary from './components/Errors/RootBoundary'
 import NotFound from './components/Errors/NotFound'
 
-import { BASE_PATH } from '../config'
-import ProgramManagement from './components/ProgramManagement/ProgramManagement'
 import NoAccess from './components/NoAccess'
 import LoginAs from './components/LoginAs'
 import Admin from './components/Admin/Admin'
+import ProgramManagement from './components/ProgramManagement/ProgramManagement'
+import DepartmentAdmin from './components/DepartmentAdmin/DepartmentAdmin'
+
+import { BASE_PATH } from '../config'
 
 const router = createBrowserRouter(
   [
@@ -30,6 +32,10 @@ const router = createBrowserRouter(
         {
           path: '/program-managements',
           element: <ProgramManagement />,
+        },
+        {
+          path: '/department-admins',
+          element: <DepartmentAdmin />,
         },
         {
           path: '/admin',

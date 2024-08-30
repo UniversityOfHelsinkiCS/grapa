@@ -134,3 +134,10 @@ export interface ProgramManagementData {
   user?: User
   id?: string
 }
+
+export interface DepartmentAdminData {
+  userId: string
+  departmentId: string
+  user?: User
+  id?: string
+}
