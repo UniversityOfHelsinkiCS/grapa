@@ -112,3 +112,5 @@ departmentAdminRouter.delete(
     res.status(204).send(departmentAdmin)
   }
 )
+
+export default departmentAdminRouter

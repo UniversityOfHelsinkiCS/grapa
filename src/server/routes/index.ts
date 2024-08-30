@@ -2,21 +2,25 @@ import express from 'express'
 import cors from 'cors'
 import * as Sentry from '@sentry/node'
 
-import userMiddleware from '../middleware/user'
-import initializeSentry from '../util/sentry'
 import errorHandler from '../middleware/error'
+import userMiddleware from '../middleware/user'
 import accessLogger from '../middleware/access'
-import thesisRouter from './thesis'
-import loginRouter from './login'
+import loginAsMiddleware from '../middleware/loginAs'
+
 import userRouter from './user'
 import usersRouter from './users'
+import loginRouter from './login'
+import thesisRouter from './thesis'
 import attachmentRouter from './attachment'
 import programRouter from './program'
-import departmentRouter from './department'
 import programManagementRouter from './programManagement'
-import { inDevelopment, inE2EMode, inTest } from '../../config'
+import departmentRouter from './department'
+import departmentAdminRouter from './departmentAdmins'
+
 import logoutRouter from './logout'
-import loginAsMiddleware from '../middleware/loginAs'
+
+import { inDevelopment, inE2EMode, inTest } from '../../config'
+import initializeSentry from '../util/sentry'
 
 const router = express()
 
@@ -44,8 +48,9 @@ router.use('/login', loginRouter)
 router.use('/logout', logoutRouter)
 router.use('/attachments', attachmentRouter)
 router.use('/programs', programRouter)
-router.use('/departments', departmentRouter)
 router.use('/program-managements', programManagementRouter)
+router.use('/departments', departmentRouter)
+router.use('/department-admins', departmentAdminRouter)
 
 Sentry.setupExpressErrorHandler(router)
 
