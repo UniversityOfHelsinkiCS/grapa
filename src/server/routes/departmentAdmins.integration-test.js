@@ -112,5 +112,58 @@ describe('department-admins router', () => {
         expect(res.status).toBe(403)
       })
     })
-  })  
+  })
+  
+  describe('when the user is an admin', () => {
+    describe('GET /api/department-admins', () => {
+      it('should return 200', async () => {
+        const res = await request
+          .get('/api/department-admins')
+          .set({ uid: user1.id, hygroupcn: 'grp-toska' })
+        expect(res.status).toBe(200)
+        expect(res.body).toIncludeSameMembers([
+          {
+            id: departmentAdmin1.id,
+            departmentId: department1.id,
+            userId: user1.id,
+            user: expect.any(Object),
+            department: expect.any(Object),
+          },
+          {
+            id: departmentAdmin2.id,
+            departmentId: department2.id,
+            userId: user2.id,
+            user: expect.any(Object),
+            department: expect.any(Object),
+          },
+        ])
+      })
+    })
+
+    describe('POST /api/department-admins', () => {
+      it('should return 200', async () => {
+        const res = await request
+          .post('/api/department-admins')
+          .set({ uid: user1.id, hygroupcn: 'grp-toska' })
+          .send({
+            departmentId: department2.id,
+            userId: user3.id,
+          })
+        expect(res.status).toBe(201)
+        expect(res.body).toMatchObject({
+          departmentId: department2.id,
+          userId: user3.id,
+        })
+      })
+    })
+
+    describe('DELETE /api/department-admins/:id', () => {
+      it('should return 204', async () => {
+        const res = await request
+          .delete(`/api/department-admins/${departmentAdmin1.id}`)
+          .set({ uid: user1.id, hygroupcn: 'grp-toska' })
+        expect(res.status).toBe(204)
+      })
+    })
+  })
 })
