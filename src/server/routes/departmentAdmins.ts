@@ -91,6 +91,16 @@ departmentAdminRouter.delete(
         },
       })
 
+      if (departmentsUserHasAccessTo.length === 0) {
+        res
+          .status(403)
+          .send({
+            error:
+              'Forbidden, only departmend admins can remove other department admins',
+          })
+        return
+      }
+
       whereClause = {
         ...whereClause,
         departmentId: {
