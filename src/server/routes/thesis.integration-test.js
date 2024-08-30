@@ -205,18 +205,14 @@ describe('thesis router', () => {
         })
       ).toJSON()
 
-      try {
-        thesis1 = await Thesis.create({
-          programId: 'Testing program',
-          studyTrackId: 'test-study-track-id',
-          topic: 'test topic',
-          status: 'PLANNING',
-          startDate: '1970-01-01',
-          targetDate: '2070-01-01',
-        })
-      } catch (error) {
-        console.log(error)
-      }
+      thesis1 = await Thesis.create({
+        programId: 'Testing program',
+        studyTrackId: 'test-study-track-id',
+        topic: 'test topic',
+        status: 'PLANNING',
+        startDate: '1970-01-01',
+        targetDate: '2070-01-01',
+      })
 
       await Supervision.create({
         userId: user1.id,

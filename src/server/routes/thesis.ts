@@ -34,10 +34,12 @@ const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
 interface FetchThesisProps {
   thesisId?: string
   actionUser: UserType
+  onlySupervised?: boolean
 }
-const getFindThesesOptions = async ({
+export const getFindThesesOptions = async ({
   thesisId,
   actionUser,
+  onlySupervised,
 }: FetchThesisProps) => {
   let includes: Includeable[] = [
     {
@@ -86,11 +88,13 @@ const getFindThesesOptions = async ({
   ]
 
   let whereClause: Record<any, any> = thesisId ? { id: thesisId } : {}
-  if (!actionUser.isAdmin) {
-    const programManagement = await ProgramManagement.findAll({
-      attributes: ['programId'],
-      where: { userId: actionUser.id },
-    })
+  if (!actionUser.isAdmin || onlySupervised) {
+    const programManagement = onlySupervised
+      ? []
+      : await ProgramManagement.findAll({
+          attributes: ['programId'],
+          where: { userId: actionUser.id },
+        })
 
     // We want to include theses where current user is a supervisor
     // but for the returned theses, we still want to include all
@@ -106,10 +110,11 @@ const getFindThesesOptions = async ({
     includes = [...includes, teacherClause]
 
     const programIds = programManagement.map((pm) => pm.programId)
+
     whereClause = {
       [Op.or]: [
-        // if a user is only a teacher, they should only see
-        // theses they supervise
+        // if a user is only a teacher (not admin nor supervisor),
+        // they should only see theses they supervise
         { '$supervisionsForFiltering.user_id$': actionUser.id },
         // but we also want to show all theses within programs
         // managed by the user
