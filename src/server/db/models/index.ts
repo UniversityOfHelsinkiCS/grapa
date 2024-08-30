@@ -72,4 +72,5 @@ export {
   Grader,
   ProgramManagement,
   Department,
+  DepartmentAdmin,
 }
