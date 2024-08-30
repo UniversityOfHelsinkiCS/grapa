@@ -10,7 +10,7 @@ import useLoggedInUser from './hooks/useLoggedInUser'
 import Footer from './components/Footer'
 import NavBar from './components/NavBar/NavBar'
 import LoggedInAsBanner from './components/LoginAsBanner'
-import DepartmentSelector from './DepartmentSelector'
+import DepartmentSelector from './components/DepartmentSelector'
 
 const App = () => {
   const theme = useTheme()

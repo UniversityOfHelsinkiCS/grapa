@@ -11,9 +11,9 @@ import {
   Typography,
 } from '@mui/material'
 import { TranslationLanguage } from '@backend/types'
-import useDepartments from './hooks/useDepartments'
+import useDepartments from '../hooks/useDepartments'
 // eslint-disable-next-line import/no-named-as-default
-import useUserDepartmentMutation from './hooks/useUserDepartmentMutation'
+import useUserDepartmentMutation from '../hooks/useUserDepartmentMutation'
 
 const DepartmentSelector: React.FC = () => {
   const { i18n, t } = useTranslation()
