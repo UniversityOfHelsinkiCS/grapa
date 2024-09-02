@@ -96,6 +96,11 @@ export interface ProgramData {
   isFavorite: boolean
 }
 
+export interface DepartmentData {
+  id: string
+  name: TranslatedName
+}
+
 export interface ServerGetRequest extends Request {
   user: User
 }

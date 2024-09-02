@@ -1,5 +1,6 @@
 import sortBy from 'lodash-es/sortBy'
 import {
+  DepartmentData,
   ProgramData,
   SupervisionData,
   ThesisData,
@@ -8,7 +9,12 @@ import {
 import { SupervisorSelection } from '@frontend/types'
 import { ThesisSchema, ThesisDateSchema } from './thesisValidator'
 
-export const getSortedPrograms = (programs: ProgramData[], language: string) =>
+type ProgramOrDepartment = DepartmentData | ProgramData
+
+export const getSortedPrograms = (
+  programs: ProgramOrDepartment[],
+  language: string
+) =>
   sortBy(programs, (program) => program.name[language as keyof TranslatedName])
 
 export const getTotalPercentage = (supervisions: SupervisionData[]) =>

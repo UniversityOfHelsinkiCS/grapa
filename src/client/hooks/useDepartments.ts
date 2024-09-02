@@ -5,7 +5,7 @@ import { getSortedPrograms } from '../components/ThesisPage/util'
 
 import apiClient from '../util/apiClient'
 
-import { ProgramData as Program } from '../../server/types'
+import { DepartmentData as Department } from '../../server/types'
 
 const useDepartments = () => {
   const { i18n } = useTranslation()
@@ -13,7 +13,7 @@ const useDepartments = () => {
 
   const queryKey = ['departments']
 
-  const queryFn = async (): Promise<Program[]> => {
+  const queryFn = async (): Promise<Department[]> => {
     const { data } = await apiClient.get(`/departments`)
 
     return data
