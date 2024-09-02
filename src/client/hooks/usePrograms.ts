@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { ProgramData } from '@backend/types'
 
-import { getSortedPrograms } from '../components/ThesisPage/util'
+import { getSortedByName } from '../components/ThesisPage/util'
 import apiClient from '../util/apiClient'
 
 interface UseProgramsParams {
@@ -23,7 +23,9 @@ const usePrograms = (params: UseProgramsParams) => {
 
   const { data: programs, ...rest } = useQuery({ queryKey, queryFn })
 
-  return { programs: getSortedPrograms(programs, language), ...rest }
+  const sortedPrograms = getSortedByName(programs, language) as ProgramData[]
+
+  return { programs: sortedPrograms, ...rest }
 }
 
 export default usePrograms

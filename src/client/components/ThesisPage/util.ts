@@ -11,11 +11,14 @@ import { ThesisSchema, ThesisDateSchema } from './thesisValidator'
 
 type ProgramOrDepartment = DepartmentData | ProgramData
 
-export const getSortedPrograms = (
-  programs: ProgramOrDepartment[],
+export const getSortedByName = (
+  data: ProgramOrDepartment[],
   language: string
 ) =>
-  sortBy(programs, (program) => program.name[language as keyof TranslatedName])
+  sortBy(
+    data,
+    (entity) => entity.name[language as keyof TranslatedName]
+  ) as unknown
 
 export const getTotalPercentage = (supervisions: SupervisionData[]) =>
   supervisions.reduce((total, selection) => total + selection.percentage, 0)

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
-import { getSortedPrograms } from '../components/ThesisPage/util'
+import { getSortedByName } from '../components/ThesisPage/util'
 
 import apiClient from '../util/apiClient'
 
@@ -25,7 +25,12 @@ const useDepartments = (params: UseDepartmentsParams) => {
 
   const { data: departments, ...rest } = useQuery({ queryKey, queryFn })
 
-  return { departments: getSortedPrograms(departments, language), ...rest }
+  const sortedDepartments = getSortedByName(
+    departments,
+    language
+  ) as Department[]
+
+  return { departments: sortedDepartments, ...rest }
 }
 
 export default useDepartments

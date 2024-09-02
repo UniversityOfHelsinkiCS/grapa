@@ -7,7 +7,11 @@ import {
   GridRowSelectionModel,
 } from '@mui/x-data-grid'
 import { useState } from 'react'
-import { ThesisData as Thesis, TranslationLanguage } from '@backend/types'
+import {
+  ProgramData,
+  ThesisData as Thesis,
+  TranslationLanguage,
+} from '@backend/types'
 import { Trans, useTranslation } from 'react-i18next'
 import { Stack, TextField, Typography } from '@mui/material'
 import { useTheses } from '../../hooks/useTheses'
@@ -20,7 +24,7 @@ import {
 import ThesisEditForm from './ThesisEditForm'
 import DeleteConfirmation from '../Common/DeleteConfirmation'
 import usePrograms from '../../hooks/usePrograms'
-import { getSortedPrograms } from './util'
+import { getSortedByName } from './util'
 import ViewThesisFooter from './ViewThesisFooter'
 import ThesisToolbar from './ThesisToolbar'
 import { StatusLocale } from '../../types'
@@ -100,8 +104,14 @@ const ThesesPage = () => {
     const favoritePrograms = programs.filter((program) => program.isFavorite)
     const otherPrograms = programs.filter((program) => !program.isFavorite)
 
-    const sortedFavoritePrograms = getSortedPrograms(favoritePrograms, language)
-    const sortedOtherPrograms = getSortedPrograms(otherPrograms, language)
+    const sortedFavoritePrograms = getSortedByName(
+      favoritePrograms,
+      language
+    ) as ProgramData[]
+    const sortedOtherPrograms = getSortedByName(
+      otherPrograms,
+      language
+    ) as ProgramData[]
 
     const programOptions = [...sortedFavoritePrograms, ...sortedOtherPrograms]
 

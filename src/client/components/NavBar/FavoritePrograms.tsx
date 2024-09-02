@@ -13,7 +13,7 @@ import { enqueueSnackbar } from 'notistack'
 import usePrograms from '../../hooks/usePrograms'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useUserProgramsMutation from '../../hooks/useUserProgramsMutation'
-import { getSortedPrograms } from '../ThesisPage/util'
+import { getSortedByName } from '../ThesisPage/util'
 
 const FavoritePrograms = () => {
   const { t, i18n } = useTranslation()
@@ -32,8 +32,8 @@ const FavoritePrograms = () => {
   const favoritePrograms = programs.filter((program) => program.isFavorite)
   const otherPrograms = programs.filter((program) => !program.isFavorite)
 
-  const sortedFavoritePrograms = getSortedPrograms(favoritePrograms, language)
-  const sortedOtherPrograms = getSortedPrograms(otherPrograms, language)
+  const sortedFavoritePrograms = getSortedByName(favoritePrograms, language)
+  const sortedOtherPrograms = getSortedByName(otherPrograms, language)
 
   const handleUpdateFavoritePrograms = (programId: string) => {
     const newFavoriteProgramIds = user.favoriteProgramIds.includes(programId)

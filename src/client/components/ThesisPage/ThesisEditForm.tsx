@@ -33,7 +33,7 @@ import SupervisorSelect from './SupervisorSelect/SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
 import { useDebounce } from '../../hooks/useDebounce'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
-import { getFormErrors, getSortedPrograms } from './util'
+import { getFormErrors, getSortedByName } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
 import ErrorSummary from '../Common/ErrorSummary'
 import { ProgramData as Program } from '../../../server/types'
@@ -102,8 +102,8 @@ const ThesisEditForm: React.FC<{
   const favoritePrograms = programs.filter((program) => program.isFavorite)
   const otherPrograms = programs.filter((program) => !program.isFavorite)
 
-  const sortedFavoritePrograms = getSortedPrograms(favoritePrograms, language)
-  const sortedOtherPrograms = getSortedPrograms(otherPrograms, language)
+  const sortedFavoritePrograms = getSortedByName(favoritePrograms, language)
+  const sortedOtherPrograms = getSortedByName(otherPrograms, language)
 
   const sortedStudyTracks =
     selectedProgram && selectedProgram.studyTracks?.length
