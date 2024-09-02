@@ -17,8 +17,10 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 import { TranslationLanguage, DepartmentAdminData } from '@backend/types'
 
+import { Navigate } from 'react-router-dom'
 import useUsers from '../../hooks/useUsers'
 import { useDebounce } from '../../hooks/useDebounce'
+import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useDepartments from '../../hooks/useDepartments'
 import useDepartmentAdmins from '../../hooks/useDepartmentAdmins'
 import {
@@ -29,6 +31,7 @@ import {
 import DeleteConfirmation from '../Common/DeleteConfirmation'
 
 const DepartmentAdmin = () => {
+  const { user, isLoading: userLoading } = useLoggedInUser()
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
 
@@ -61,7 +64,9 @@ const DepartmentAdmin = () => {
     }
   }
 
-  if (departments.length === 0 || !departmentAdmins) return null
+  if (userLoading || departments.length === 0 || !departmentAdmins) return null
+  if (!user.isAdmin && !user.managedDepartmentIds?.length)
+    return <Navigate to="/" />
 
   const columns: GridColDef<DepartmentAdminData>[] = [
     {
