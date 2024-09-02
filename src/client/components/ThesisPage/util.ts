@@ -1,20 +1,13 @@
 import sortBy from 'lodash-es/sortBy'
-import {
-  DepartmentData,
-  ProgramData,
-  SupervisionData,
-  ThesisData,
-  TranslatedName,
-} from '@backend/types'
+import { SupervisionData, ThesisData, TranslatedName } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { ThesisSchema, ThesisDateSchema } from './thesisValidator'
 
-type ProgramOrDepartment = DepartmentData | ProgramData
+type SortableData = {
+  name: TranslatedName
+}
 
-export const getSortedByName = (
-  data: ProgramOrDepartment[],
-  language: string
-) =>
+export const getSortedByName = (data: SortableData[], language: string) =>
   sortBy(
     data,
     (entity) => entity.name[language as keyof TranslatedName]
