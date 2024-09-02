@@ -1,7 +1,7 @@
 import express from 'express'
 
 import { RequestWithUser } from '../types'
-import { ProgramManagement, Thesis, User } from '../db/models'
+import { DepartmentAdmin, ProgramManagement, Thesis, User } from '../db/models'
 import { transformThesisData } from '../util/helpers'
 import { getFindThesesOptions } from './thesis'
 
@@ -17,7 +17,14 @@ userRouter.get('/', async (req: RequestWithUser, res: any) => {
   })
   const managedProgramIds = managedPrograms.map((program) => program.programId)
 
-  return res.send({ ...user, managedProgramIds })
+  const managedDepartments = await DepartmentAdmin.findAll({
+    where: { userId: user.id },
+  })
+  const managedDepartmentIds = managedDepartments.map(
+    (department) => department.departmentId
+  )
+
+  return res.send({ ...user, managedProgramIds, managedDepartmentIds })
 })
 
 userRouter.put('/', async (req: RequestWithUser, res: any) => {

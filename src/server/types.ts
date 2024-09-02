@@ -29,6 +29,7 @@ export interface User {
   studentNumber?: string
   iamGroups: string[]
   managedProgramIds?: string[]
+  managedDepartmentIds?: string[]
   favoriteProgramIds?: string[]
   isExternal: boolean
   affiliation?: string

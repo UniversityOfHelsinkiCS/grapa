@@ -121,6 +121,15 @@ const NavBar = () => {
                   {t('navbar:programManager')}
                 </Button>
               )}
+              {(user.isAdmin || user.managedDepartmentIds?.length) && (
+                <Button
+                  component={NavLink}
+                  to="/department-admins"
+                  sx={navStyles.link}
+                >
+                  {t('navbar:departmentAdmin')}
+                </Button>
+              )}
             </Box>
 
             <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 2 }}>
