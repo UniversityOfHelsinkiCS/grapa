@@ -25,7 +25,9 @@ import Logout from './Logout'
 const UserInformation = () => {
   const { t, i18n } = useTranslation()
   const { user, isLoading: userLoading } = useLoggedInUser()
-  const { departments, isLoading: departmentsLoading } = useDepartments()
+  const { departments, isLoading: departmentsLoading } = useDepartments({
+    includeNotManaged: true,
+  })
 
   if (!user || userLoading || departmentsLoading)
     return <Skeleton variant="text" width={100} />

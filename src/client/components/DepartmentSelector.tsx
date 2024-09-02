@@ -19,7 +19,7 @@ const DepartmentSelector: React.FC = () => {
   const { i18n, t } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
   const [selectedDepartment, setSelectedDepartment] = useState('')
-  const { departments } = useDepartments()
+  const { departments } = useDepartments({ includeNotManaged: true })
   const { mutateAsync: saveDepartment } = useUserDepartmentMutation()
 
   const handleDepartmentChange = (event: SelectChangeEvent<string>) => {

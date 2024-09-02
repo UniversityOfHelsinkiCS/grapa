@@ -7,14 +7,18 @@ import apiClient from '../util/apiClient'
 
 import { DepartmentData as Department } from '../../server/types'
 
-const useDepartments = () => {
+interface UseDepartmentsParams {
+  includeNotManaged?: boolean
+}
+
+const useDepartments = (params: UseDepartmentsParams) => {
   const { i18n } = useTranslation()
   const { language } = i18n
 
-  const queryKey = ['departments']
+  const queryKey = ['departments', params?.includeNotManaged]
 
   const queryFn = async (): Promise<Department[]> => {
-    const { data } = await apiClient.get(`/departments`)
+    const { data } = await apiClient.get(`/departments`, { params })
 
     return data
   }

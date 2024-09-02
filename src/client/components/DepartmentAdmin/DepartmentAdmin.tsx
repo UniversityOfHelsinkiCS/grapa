@@ -40,7 +40,7 @@ const DepartmentAdmin = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deletedDepartmentAdmin, setDeletedDepartmentAdmin] = useState(null)
 
-  const { departments } = useDepartments()
+  const { departments } = useDepartments({ includeNotManaged: false })
   const { departmentAdmins } = useDepartmentAdmins()
 
   const { mutateAsync: createDepartmentAdmin } =
@@ -166,7 +166,7 @@ const DepartmentAdmin = () => {
             data-testid="department-select-input"
             labelId="department-select-label"
             label={t('departmentAdminPage:departmentHeader')}
-            value={departments ?? ''}
+            value={departmentId ?? ''}
             onChange={(e) => setDepartmendId(e.target.value as string)}
           >
             {departments.map((department) => (

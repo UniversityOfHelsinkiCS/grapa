@@ -13,7 +13,7 @@ const usePrograms = (params: UseProgramsParams) => {
   const { i18n } = useTranslation()
   const { language } = i18n
 
-  const queryKey = ['programs', params.includeNotManaged]
+  const queryKey = ['programs', params?.includeNotManaged]
 
   const queryFn = async (): Promise<ProgramData[]> => {
     const { data } = await apiClient.get('/programs', { params })
