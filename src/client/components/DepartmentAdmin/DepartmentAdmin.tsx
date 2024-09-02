@@ -113,7 +113,7 @@ const DepartmentAdmin = () => {
         sx={{ mt: '2rem' }}
         rows={departmentAdmins}
         columns={columns}
-        rowsPerPageOptions={[5]}
+        pageSizeOptions={[100]}
         autoHeight
       />
       <Box

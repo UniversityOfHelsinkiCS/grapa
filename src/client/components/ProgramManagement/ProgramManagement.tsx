@@ -106,8 +106,7 @@ const ProgramManagement = () => {
         sx={{ mt: '2rem' }}
         rows={programManagements}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
+        pageSizeOptions={[100]}
         autoHeight
       />
       <Box
