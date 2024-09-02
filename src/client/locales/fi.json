@@ -28,7 +28,8 @@
     "indexTab": "Login as"
   },
   "navbar": {
-    "programManager": "Vastaavat",
+    "programManager": "Ohjelmavastaavat",
+    "departmentAdmin": "Osastovastaavat",
     "loginAs": "Kirjaudu toisella käyttäjällä",
     "admin": "Admin",
     "logout": "Kirjaudu ulos",

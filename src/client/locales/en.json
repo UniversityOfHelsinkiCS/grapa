@@ -29,6 +29,7 @@
   },
   "navbar": {
     "programManager": "Program managers",
+    "departmentAdmins": "Department admin",
     "loginAs": "Login as",
     "admin": "Admin",
     "logout": "Logout",
