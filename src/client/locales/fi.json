@@ -146,6 +146,14 @@
     "removeProgramManagementTitle": "Poista vastaava",
     "removeProgramManagementContent": "Haluatko varmasti poistaa henkilön {{name}} ohjelmasta {{program}}?"
   },
+  "departmentAdminPage": {
+    "pageTitle": "Osastovastaavat",
+    "addDepartmentAdmin": "Lisää osastovastaava",
+    "departmentHeader": "Osasto",
+    "adminHeader": "Vastaava",
+    "removeDepartmentAdminTitle": "Poista osastovastaava",
+    "removeDepartmentAdminContent": "Haluatko varmasti poistaa henkilön {{name}} osastolta {{department}}?"
+  },
   "loginAsPage": {
     "title": "Valitse käyttäjä, jona haluat kirjautua",
     "userHeader": "Käyttäjä"

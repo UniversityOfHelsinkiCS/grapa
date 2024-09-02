@@ -29,7 +29,7 @@
   },
   "navbar": {
     "programManager": "Program managers",
-    "departmentAdmins": "Department admin",
+    "departmentAdmin": "Department admins",
     "loginAs": "Login as",
     "admin": "Admin",
     "logout": "Logout",
@@ -142,6 +142,14 @@
     "managerHeader": "Manager",
     "removeProgramManagementTitle": "Delete program management",
     "removeProgramManagementContent": "Are you sure you want to delete {{name}} from the {{program}}?"
+  },
+  "departmentAdminPage": {
+    "pageTitle": "Department admins",
+    "addDepartmentAdmin": "Add department admin",
+    "departmentHeader": "Department",
+    "adminHeader": "Admin",
+    "removeDepartmentAdminTitle": "Delete department admin",
+    "removeDepartmentAdminContent": "Are you sure you want to delete {{name}} from the {{department}}?"
   },
   "loginAsPage": {
     "title": "Choose a user to log in as",

@@ -210,7 +210,7 @@ const DepartmentAdmin = () => {
           <Box>
             {t('departmentAdminPage:removeDepartmentAdminContent', {
               name: `${deletedDepartmentAdmin.user.firstName} ${deletedDepartmentAdmin.user.lastName}`,
-              program: deletedDepartmentAdmin.department.name[language],
+              department: deletedDepartmentAdmin.department.name[language],
             })}
           </Box>
         </DeleteConfirmation>
