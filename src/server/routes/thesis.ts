@@ -366,7 +366,10 @@ const deleteThesis = async (id: string, transaction: Transaction) => {
 
 // @ts-expect-error the user middleware updates the req object with user field
 thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
-  const options = await getFindThesesOptions({ actionUser: req.user })
+  const options = await getFindThesesOptions({
+    actionUser: req.user,
+    onlySupervised: Boolean(req.query.onlySupervised),
+  })
   const theses = await Thesis.findAll({
     ...options,
     order: [['targetDate', 'ASC']],
