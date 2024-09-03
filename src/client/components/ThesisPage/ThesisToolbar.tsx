@@ -1,18 +1,21 @@
 import { useTranslation } from 'react-i18next'
-import { Button, Box } from '@mui/material'
+import { Button, Box, FormControlLabel, Switch } from '@mui/material'
 import { GridSlotProps } from '@mui/x-data-grid'
+
+import useLoggedInUser from '../../hooks/useLoggedInUser'
 
 const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
   const { t } = useTranslation()
+  const { user } = useLoggedInUser()
 
-  const { createNewThesis } = props
+  const { createNewThesis, toggleShowOnlyOwnTheses, showOnlyOwnTheses } = props
 
   const handleNewThesis = () => {
     createNewThesis()
   }
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ p: 2, display: 'flex', gap: 5, alignItems: 'center' }}>
       <Button
         variant="contained"
         size="small"
@@ -25,8 +28,30 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
         }}
         onClick={handleNewThesis}
       >
-        {t('newThesisButton')}
+        {t('thesesTableToolbar:newThesisButton')}
       </Button>
+      {user?.isAdmin && (
+        <FormControlLabel
+          control={
+            <Switch
+              checked={showOnlyOwnTheses}
+              onChange={toggleShowOnlyOwnTheses}
+            />
+          }
+          label={t('thesesTableToolbar:showAllThesesSwitch')}
+        />
+      )}
+      {!user?.isAdmin && user?.managedProgramIds?.length && (
+        <FormControlLabel
+          control={
+            <Switch
+              checked={showOnlyOwnTheses}
+              onChange={toggleShowOnlyOwnTheses}
+            />
+          }
+          label={t('thesesTableToolbar:showManagedProgramsThesesSwitch')}
+        />
+      )}
     </Box>
   )
 }

@@ -41,8 +41,9 @@ const ThesesPage = () => {
   const [editedTesis, setEditedThesis] = useState<Thesis | null>(null)
   const [deletedThesis, setDeletedThesis] = useState<Thesis | null>(null)
   const [newThesis, setNewThesis] = useState<Thesis | null>(null)
+  const [showOnlyOwnTheses, setShowOnlyOwnTheses] = useState(true)
 
-  const { theses } = useTheses()
+  const { theses } = useTheses({ onlySupervised: showOnlyOwnTheses })
   const { programs } = usePrograms({ includeNotManaged: true })
   const { mutateAsync: editThesis } = useEditThesisMutation()
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
@@ -185,6 +186,9 @@ const ThesesPage = () => {
           slotProps={{
             toolbar: {
               createNewThesis: initializeNewThesis,
+              toggleShowOnlyOwnTheses: () =>
+                setShowOnlyOwnTheses((prev) => !prev),
+              showOnlyOwnTheses,
             },
             footer: {
               rowSelectionModel,

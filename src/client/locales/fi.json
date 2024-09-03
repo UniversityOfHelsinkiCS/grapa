@@ -18,7 +18,6 @@
     "deleteButton": "Poista",
     "cancelButton": "Peruuta",
     "submitButton": "Tallenna",
-    "newThesisButton": "Uusi tutkielma",
     "removeButton": "Poista",
     "removeThesisTitle": "Poista tutkielma",
     "removeThesisConfirmationContent": "Haluatko varmasti poistaa tutkielman: {{topic}}?",
@@ -100,13 +99,13 @@
     "graderInstructions": {
       "title": "Ohjeita arvioijien täyttämiseen",
       "content": "Arvioijan 1 tulee olla Helsingin yliopiston professori, 1. tai 2. kauden apulaisprofessori, tutkimusjohtaja, vanhempi yliopistonlehtori tai yliopistonlehtori.\n\n Arvioijan 2 tulee olla tohtori. Arvioija 2 voi olla Helsingin yliopiston ulkopuolinen henkilö.\n Syöttääksesi ulkopuolisen arvioijan tiedot, valitse 'Lisää ulkopuolinen arvioija'.\n\n",
-      "primaryGrader": "Professori tai muu sopiva",
+      "primaryG showrader": "Professori tai muu sopiva",
       "secondaryGrader": "Tohtori"
     },
     "addPrimaryGrader": "Lisää arvioija",
     "addSecondaryGrader": "Lisää ulkopuolinen arvioija",
     "supervisors": "Ohjaajat",
-    "appendices": "Liitteet",
+    "appendices show": "Liitteet",
     "removeAppendixConfirmationTitle": "Poista liite",
     "removeAppendixConfirmationContent": "Haluatko varmasti poistaa liitteen: {{name}}?",
     "supervisorButtonGroupAriaLabel": "Ohjaajien lisäys",
@@ -139,6 +138,11 @@
     "inProgress": "Käynnissä",
     "completed": "Valmis",
     "cancelled": "Keskeytetty"
+  },
+  "thesesTableToolbar": {
+    "newThesisButton": "Uusi tutkielma",
+    "showAllThesesSwitch": "Kaikki tutkielmat",
+    "showManagedProgramsThesesSwitch": "Tutkielmat ohjelmissani"
   },
   "programManagementPage": {
     "pageTitle": "Ohjelman vastaavat",
