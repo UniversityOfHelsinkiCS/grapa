@@ -43,13 +43,15 @@ const ThesesPage = () => {
   const [newThesis, setNewThesis] = useState<Thesis | null>(null)
   const [showOnlyOwnTheses, setShowOnlyOwnTheses] = useState(true)
 
-  const { theses } = useTheses({ onlySupervised: showOnlyOwnTheses })
-  const { programs } = usePrograms({ includeNotManaged: true })
+  const { theses, isLoading: isThesesLoading } = useTheses({
+    onlySupervised: showOnlyOwnTheses,
+  })
+  const { programs, isLoading: isProgramLoading } = usePrograms({
+    includeNotManaged: true,
+  })
   const { mutateAsync: editThesis } = useEditThesisMutation()
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
   const { mutateAsync: createThesis } = useCreateThesisMutation()
-
-  if (!programs || !theses || loggedInUserLoading) return null
 
   const columns: GridColDef<Thesis>[] = [
     {
@@ -100,6 +102,17 @@ const ThesesPage = () => {
       valueGetter: (_, row) => dayjs(row.targetDate).format('YYYY-MM-DD'),
     },
   ]
+  const skeletonRows: Thesis[] = Array.from({ length: 7 }).map((_, index) => ({
+    programId: '',
+    topic: '',
+    authors: [],
+    status: 'PLANNING',
+    startDate: '',
+    targetDate: '',
+    supervisions: [],
+    graders: [],
+    id: index.toString(),
+  }))
 
   const initializeNewThesis = () => {
     const favoritePrograms = programs.filter((program) => program.isFavorite)
@@ -157,11 +170,13 @@ const ThesesPage = () => {
     setRowSelectionModel([])
   }
 
+  const isLoading = loggedInUserLoading || isThesesLoading || isProgramLoading
   return (
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
       <Box>
         <DataGrid
-          rows={theses}
+          loading={isLoading}
+          rows={isLoading ? skeletonRows : theses}
           columns={columns}
           initialState={{
             pagination: {
@@ -194,6 +209,10 @@ const ThesesPage = () => {
               rowSelectionModel,
               handleEditThesis: initializeThesisEdit,
               handleDeleteThesis: initializeThesisDelete,
+            },
+            loadingOverlay: {
+              variant: 'skeleton',
+              noRowsVariant: 'skeleton',
             },
           }}
           sx={{
