@@ -71,14 +71,14 @@ const DepartmentAdmin = () => {
   const columns: GridColDef<DepartmentAdminData>[] = [
     {
       field: 'user',
-      headerName: 'User',
+      headerName: t('userHeader'),
       flex: 1,
       valueGetter: ({ firstName, lastName, email }) =>
         `${firstName} ${lastName}${email ? ` (${email})` : ''}`,
     },
     {
       field: 'department',
-      headerName: 'Department',
+      headerName: t('departmentHeader'),
       flex: 1,
       valueGetter: ({ name }) => name[language],
     },
