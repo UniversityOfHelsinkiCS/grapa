@@ -64,14 +64,14 @@ const ProgramManagement = () => {
   const columns: GridColDef<ProgramManagementData>[] = [
     {
       field: 'user',
-      headerName: 'User',
+      headerName: t('userHeader'),
       flex: 1,
       valueGetter: ({ firstName, lastName, email }) =>
         `${firstName} ${lastName}${email ? ` (${email})` : ''}`,
     },
     {
       field: 'program',
-      headerName: 'Program',
+      headerName: t('programHeader'),
       flex: 1,
       valueGetter: ({ name }) => name[language],
     },

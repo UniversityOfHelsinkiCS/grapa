@@ -5,6 +5,7 @@
     "grader": "Grader {{index}}",
     "supervisor": "Supervisor {{index}}",
     "userSearchNoOptions": "Type at least 5 characters to search for users",
+    "userHeader": "User",
     "programHeader": "Program",
     "studyTrackHeader": "Study track",
     "topicHeader": "Topic",
