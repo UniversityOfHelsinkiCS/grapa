@@ -68,6 +68,14 @@ departmentAdminRouter.get(
       return
     }
 
+    const departments = await Department.findAll({
+      attributes: ['id', 'name'],
+      where: {
+        id: {
+          [Op.in]: managedDepartmentIds,
+        },
+      },
+    })
     const departmentSupervisions = (await Supervision.findAll({
       attributes: [
         'id',
@@ -121,7 +129,10 @@ departmentAdminRouter.get(
         supervisor.statusCounts[status] =
           (supervisor.statusCounts[status] || 0) + 1
       } else {
+        const department = departments.find((d) => d.id === user.departmentId)
+
         statistics.push({
+          department,
           supervisor: {
             id: user.id,
             username: user.username,
