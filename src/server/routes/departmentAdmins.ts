@@ -1,8 +1,14 @@
 import express, { Response } from 'express'
 import { literal, Op } from 'sequelize'
 
-import { Department, DepartmentAdmin, User } from '../db/models'
-import { RequestWithUser } from '../types'
+import {
+  Department,
+  DepartmentAdmin,
+  Supervision,
+  Thesis,
+  User,
+} from '../db/models'
+import { RequestWithUser, ThesisStatistics } from '../types'
 
 const departmentAdminRouter = express.Router()
 
@@ -41,6 +47,103 @@ departmentAdminRouter.get(
   }
 )
 
+departmentAdminRouter.get(
+  '/statistics',
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: RequestWithUser, res: Response) => {
+    const { id: userId, isAdmin } = req.user
+
+    const managedDepartments = await DepartmentAdmin.findAll({
+      where: { userId },
+    })
+    const managedDepartmentIds = managedDepartments.map(
+      (department) => department.departmentId
+    )
+
+    if (!isAdmin && managedDepartmentIds.length === 0) {
+      res.status(403).send({
+        error:
+          'Forbidden, only department admins can view department statistics',
+      })
+      return
+    }
+
+    const departmentSupervisions = (await Supervision.findAll({
+      attributes: [
+        'id',
+        'thesisId',
+        'userId',
+        'percentage',
+        'isPrimarySupervisor',
+      ],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: [
+            'id',
+            'username',
+            'firstName',
+            'lastName',
+            'email',
+            'departmentId',
+          ],
+          where: {
+            departmentId: {
+              [Op.in]: managedDepartmentIds,
+            },
+            isExternal: false,
+          },
+        },
+        {
+          model: Thesis,
+          as: 'thesis',
+        },
+      ],
+    })) as unknown as {
+      id: string
+      thesisId: string
+      userId: string
+      percentage: number
+      isPrimarySupervisor: boolean
+      user: User
+      thesis: Thesis
+    }[]
+
+    const statistics: ThesisStatistics[] = []
+
+    departmentSupervisions.forEach((supervision) => {
+      const { user, thesis } = supervision
+      const { status } = thesis
+
+      const supervisor = statistics.find((s) => s.supervisor.id === user.id)
+      if (supervisor) {
+        supervisor.statusCounts[status] =
+          (supervisor.statusCounts[status] || 0) + 1
+      } else {
+        statistics.push({
+          supervisor: {
+            id: user.id,
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            departmentId: user.departmentId,
+          },
+          statusCounts: {
+            PLANNING: status === 'PLANNING' ? 1 : 0,
+            IN_PROGRESS: status === 'IN_PROGRESS' ? 1 : 0,
+            COMPLETED: status === 'COMPLETED' ? 1 : 0,
+            CANCELLED: status === 'CANCELLED' ? 1 : 0,
+          },
+        })
+      }
+    })
+
+    res.status(200).send(statistics)
+  }
+)
+
 departmentAdminRouter.post(
   '/',
   // @ts-expect-error the user middleware updates the req object with user field
@@ -59,12 +162,10 @@ departmentAdminRouter.post(
       })
 
       if (!userHasAccessToDepartment) {
-        res
-          .status(403)
-          .send({
-            error:
-              'Forbidden, only department admins can create new department admins',
-          })
+        res.status(403).send({
+          error:
+            'Forbidden, only department admins can create new department admins',
+        })
         return
       }
     }

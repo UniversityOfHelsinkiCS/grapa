@@ -83,6 +83,11 @@ export interface ThesisData {
   waysOfWorking?: FileData | File
 }
 
+export interface ThesisStatistics {
+  supervisor: Partial<User>
+  statusCounts: Record<ThesisStatus, number>
+}
+
 export interface StudyTrackData {
   id: string
   name: TranslatedName
