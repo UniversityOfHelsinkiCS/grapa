@@ -152,33 +152,27 @@ describe('ProgramManagement', () => {
   })
 
   describe('when a new program management is created', () => {
-    it.skip('calls corresponding hook to create program management', async () => {
+    it('calls corresponding hook to create program management', async () => {
       render(<ProgramManagement />)
-
-      const user = userEvent.setup()
-
+      
       const managerSelect = screen.getByTestId('program-manager-select-input')
       const managerInput = within(managerSelect).getByRole('combobox')
+      const programSelectInput = screen.getAllByRole('combobox')[1]
 
       managerSelect.focus()
-
       fireEvent.change(managerInput, { target: { value: 'John Doe' } })
       fireEvent.keyDown(managerInput, { key: 'ArrowDown' })
       fireEvent.keyDown(managerInput, { key: 'Enter' })
-
-      const programSelectInput = screen.getByTestId('program-select-input')
-      await user.click(programSelectInput)
-      await user.click(screen.getByText("Bachelor's Programme in Mathematical Sciences"))
-
+      
+      await userEvent.click(programSelectInput)
+      await userEvent.click(screen.getAllByText("Bachelor's Programme in Mathematical Sciences")[1])
+      
       const createButton = screen.getByTestId('add-program-management-button')
-
-      // Wait for the button to become enabled, if it's asynchronous
-      await waitFor(() => expect(createButton).toBeEnabled())
-
-      await user.click(createButton)
+      expect(createButton).toBeInTheDocument()
+      expect(createButton).toBeEnabled()
+      await userEvent.click(createButton)
 
       expect(createProgramManagementMock).toHaveBeenCalledTimes(1)
     })
-
   })
 })
