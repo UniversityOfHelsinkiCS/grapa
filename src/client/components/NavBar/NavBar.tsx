@@ -122,13 +122,22 @@ const NavBar = () => {
                 </Button>
               )}
               {(user.isAdmin || user.managedDepartmentIds?.length) && (
-                <Button
-                  component={NavLink}
-                  to="/department-admins"
-                  sx={navStyles.link}
-                >
-                  {t('navbar:departmentAdmin')}
-                </Button>
+                <>
+                  <Button
+                    component={NavLink}
+                    to="/department-admins"
+                    sx={navStyles.link}
+                  >
+                    {t('navbar:departmentAdmin')}
+                  </Button>
+                  <Button
+                    component={NavLink}
+                    to="/department-statistics"
+                    sx={navStyles.link}
+                  >
+                    {t('navbar:departmentStatistics')}
+                  </Button>
+                </>
               )}
             </Box>
 

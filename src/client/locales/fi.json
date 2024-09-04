@@ -31,6 +31,7 @@
   "navbar": {
     "programManager": "Ohjelmavastaavat",
     "departmentAdmin": "Osastovastaavat",
+    "departmentStatistics": "Osastojen tilastot",
     "loginAs": "Kirjaudu toisella käyttäjällä",
     "admin": "Admin",
     "logout": "Kirjaudu ulos",

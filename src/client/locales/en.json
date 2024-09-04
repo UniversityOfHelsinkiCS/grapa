@@ -31,6 +31,7 @@
   "navbar": {
     "programManager": "Program managers",
     "departmentAdmin": "Department admins",
+    "departmentStatistics": "Departmental statistics",
     "loginAs": "Login as",
     "admin": "Admin",
     "logout": "Logout",
