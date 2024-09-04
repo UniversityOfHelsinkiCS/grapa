@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Box, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
-import { ThesisStatistics } from '@backend/types'
+import { ThesisStatistics, TranslationLanguage } from '@backend/types'
 
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useDepartments from '../../hooks/useDepartments'
@@ -12,7 +12,8 @@ import { useDepartmentStatistics } from '../../hooks/useDepartmentAdmins'
 
 const DepartmentStatistics = () => {
   const { user, isLoading: userLoading } = useLoggedInUser()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { language } = i18n as { language: TranslationLanguage }
 
   const { departments } = useDepartments({ includeNotManaged: false })
   const { departmentStatistics, isLoading: departmentStatisticsLoading } =
@@ -28,8 +29,6 @@ const DepartmentStatistics = () => {
   if (!user.isAdmin && !user.managedDepartmentIds?.length)
     return <Navigate to="/" />
 
-  console.log(departmentStatistics)
-
   const columns: GridColDef<ThesisStatistics>[] = [
     {
       field: 'supervisor',
@@ -38,6 +37,13 @@ const DepartmentStatistics = () => {
       flex: 1,
       valueGetter: ({ firstName, lastName, email }) =>
         `${firstName} ${lastName}${email ? ` (${email})` : ''}`,
+    },
+    {
+      field: 'department',
+      headerName: t('departmentStatisticsPage:departmentHeader'),
+      headerAlign: 'left',
+      flex: 1,
+      valueGetter: ({ name }) => name[language],
     },
     {
       field: 'thesisCount.PLANNING',

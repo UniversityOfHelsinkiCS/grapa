@@ -163,6 +163,7 @@
   "departmentStatisticsPage": {
     "pageTitle": "Osastojen tilastot",
     "supervisorHeader": "Ohjaaja",
+    "departmentHeader": "Osasto",
     "thesisCountHeader": "Tutkielmien määrä"
   },
   "loginAsPage": {

@@ -160,6 +160,7 @@
   "departmentStatisticsPage": {
     "pageTitle": "Departmental statistics",
     "supervisorHeader": "Supervisor",
+    "departmentHeader": "Department",
     "thesisCountHeader": "Count of theses"
   },
   "loginAsPage": {
