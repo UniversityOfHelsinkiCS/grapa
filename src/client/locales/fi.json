@@ -30,7 +30,7 @@
   },
   "navbar": {
     "programManager": "Ohjelmavastaavat",
-    "departmentAdmin": "Osastovastaavat",
+    "departmentAdmin": "Osastojen ylläpitäjät",
     "departmentStatistics": "Osastojen tilastot",
     "loginAs": "Kirjaudu toisella käyttäjällä",
     "admin": "Admin",
@@ -146,7 +146,7 @@
     "showManagedProgramsThesesSwitch": "Tutkielmat ohjelmissani"
   },
   "programManagementPage": {
-    "pageTitle": "Ohjelman vastaavat",
+    "pageTitle": "Ohjelmavastaavat",
     "addProgramManagement": "Vastaavien lisäys",
     "programHeader": "Ohjelma",
     "managerHeader": "Vastaava",
@@ -154,11 +154,11 @@
     "removeProgramManagementContent": "Haluatko varmasti poistaa henkilön {{name}} ohjelmasta {{program}}?"
   },
   "departmentAdminPage": {
-    "pageTitle": "Osastovastaavat",
-    "addDepartmentAdmin": "Lisää osastovastaava",
+    "pageTitle": "Osastojen ylläpitäjät",
+    "addDepartmentAdmin": "Lisää osaston ylläpitäjä",
     "departmentHeader": "Osasto",
     "adminHeader": "Vastaava",
-    "removeDepartmentAdminTitle": "Poista osastovastaava",
+    "removeDepartmentAdminTitle": "Poista osaston ylläpitäjä",
     "removeDepartmentAdminContent": "Haluatko varmasti poistaa henkilön {{name}} osastolta {{department}}?"
   },
   "departmentStatisticsPage": {
