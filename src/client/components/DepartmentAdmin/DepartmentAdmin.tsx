@@ -96,7 +96,7 @@ const DepartmentAdmin = () => {
             setDeletedDepartmentAdmin(params.row as DepartmentAdminData)
           }}
           color="error"
-          data-testid={`delete-program-admin-button-${params.row.userId}`}
+          data-testid={`delete-department-admin-button-${params.row.userId}`}
         >
           <DeleteIcon fontSize="small" />
         </IconButton>
@@ -106,7 +106,11 @@ const DepartmentAdmin = () => {
 
   return (
     <Box component="section" sx={{ px: '3rem', py: '2rem', width: '100%' }}>
-      <Typography component="h1" variant="h4">
+      <Typography
+        data-testid="department-admin-page-title"
+        component="h1"
+        variant="h4"
+      >
         {t('departmentAdminPage:pageTitle')}
       </Typography>
       <DataGrid
