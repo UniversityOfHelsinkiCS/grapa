@@ -157,6 +157,11 @@
     "removeDepartmentAdminTitle": "Delete department admin",
     "removeDepartmentAdminContent": "Are you sure you want to delete {{name}} from the {{department}}?"
   },
+  "departmentStatisticsPage": {
+    "pageTitle": "Departmental statistics",
+    "supervisorHeader": "Supervisor",
+    "thesisCountHeader": "Count of theses"
+  },
   "loginAsPage": {
     "title": "Choose a user to log in as",
     "userHeader": "User"

@@ -160,6 +160,11 @@
     "removeDepartmentAdminTitle": "Poista osastovastaava",
     "removeDepartmentAdminContent": "Haluatko varmasti poistaa henkilön {{name}} osastolta {{department}}?"
   },
+  "departmentStatisticsPage": {
+    "pageTitle": "Osastojen tilastot",
+    "supervisorHeader": "Ohjaaja",
+    "thesisCountHeader": "Tutkielmien määrä"
+  },
   "loginAsPage": {
     "title": "Valitse käyttäjä, jona haluat kirjautua",
     "userHeader": "Käyttäjä"
