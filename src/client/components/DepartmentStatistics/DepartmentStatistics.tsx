@@ -28,10 +28,13 @@ const DepartmentStatistics = () => {
   if (!user.isAdmin && !user.managedDepartmentIds?.length)
     return <Navigate to="/" />
 
+  console.log(departmentStatistics)
+
   const columns: GridColDef<ThesisStatistics>[] = [
     {
       field: 'supervisor',
       headerName: t('departmentStatisticsPage:supervisorHeader'),
+      headerAlign: 'left',
       flex: 1,
       valueGetter: ({ firstName, lastName, email }) =>
         `${firstName} ${lastName}${email ? ` (${email})` : ''}`,
@@ -78,6 +81,18 @@ const DepartmentStatistics = () => {
         pageSizeOptions={[100]}
         autoHeight
         getRowId={(row) => row.supervisor.id}
+        columnGroupingModel={[
+          {
+            groupId: t('departmentStatisticsPage:thesisCountHeader'),
+            headerAlign: 'center',
+            children: [
+              { field: 'thesisCount.PLANNING' },
+              { field: 'thesisCount.IN_PROGRESS' },
+              { field: 'thesisCount.COMPLETED' },
+              { field: 'thesisCount.CANCELLED' },
+            ],
+          },
+        ]}
       />
     </Box>
   )
