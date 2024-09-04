@@ -41,7 +41,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
           label={t('thesesTableToolbar:showAllThesesSwitch')}
         />
       )}
-      {!user?.isAdmin && user?.managedProgramIds?.length && (
+      {Boolean(!user?.isAdmin && user?.managedProgramIds?.length) && (
         <FormControlLabel
           control={
             <Switch
