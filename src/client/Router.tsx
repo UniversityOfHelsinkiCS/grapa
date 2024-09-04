@@ -10,6 +10,7 @@ import LoginAs from './components/LoginAs'
 import Admin from './components/Admin/Admin'
 import ProgramManagement from './components/ProgramManagement/ProgramManagement'
 import DepartmentAdmin from './components/DepartmentAdmin/DepartmentAdmin'
+import DepartmentStatistics from './components/DepartmentStatistics/DepartmentStatistics'
 
 import { BASE_PATH } from '../config'
 
@@ -36,6 +37,10 @@ const router = createBrowserRouter(
         {
           path: '/department-admins',
           element: <DepartmentAdmin />,
+        },
+        {
+          path: '/department-statistics',
+          element: <DepartmentStatistics />,
         },
         {
           path: '/admin',
