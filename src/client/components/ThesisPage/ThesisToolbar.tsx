@@ -34,7 +34,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
         <FormControlLabel
           control={
             <Switch
-              checked={showOnlyOwnTheses}
+              checked={!showOnlyOwnTheses}
               onChange={toggleShowOnlyOwnTheses}
             />
           }
@@ -45,7 +45,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
         <FormControlLabel
           control={
             <Switch
-              checked={showOnlyOwnTheses}
+              checked={!showOnlyOwnTheses}
               onChange={toggleShowOnlyOwnTheses}
             />
           }
