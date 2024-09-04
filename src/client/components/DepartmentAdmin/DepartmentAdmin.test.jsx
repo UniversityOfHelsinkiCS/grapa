@@ -3,7 +3,7 @@
  */
 import * as React from 'react'
 import userEvent from '@testing-library/user-event'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
 
@@ -152,6 +152,31 @@ describe('DepartmentAdmin', () => {
       await waitFor(() => {
         expect(deleteDepartmentAdminMock).toHaveBeenCalledTimes(1)
       })
+    })
+  })
+
+  describe('when a new program management is created', () => {
+    it('calls corresponding hook to create program management', async () => {
+      render(<DepartmentAdmin />)
+
+      const adminSelect = screen.getByTestId('department-admin-select-input')
+      const adminInput = within(adminSelect).getByRole('combobox')
+      const adminSelectInput = screen.getAllByRole('combobox')[1]
+
+      adminSelect.focus()
+      fireEvent.change(adminInput, { target: { value: 'John Doe' } })
+      fireEvent.keyDown(adminInput, { key: 'ArrowDown' })
+      fireEvent.keyDown(adminInput, { key: 'Enter' })
+      
+      await userEvent.click(adminSelectInput)
+      await userEvent.click(screen.getAllByText("Tietojenkäsittelytieteen laitos")[1])
+      
+      const createButton = screen.getByTestId('add-department-admin-button')
+      expect(createButton).toBeInTheDocument()
+      expect(createButton).toBeEnabled()
+      await userEvent.click(createButton)
+
+      expect(createDepartmentAdminMock).toHaveBeenCalledTimes(1)
     })
   })
 })

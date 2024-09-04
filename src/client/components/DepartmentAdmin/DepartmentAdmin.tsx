@@ -177,7 +177,7 @@ const DepartmentAdmin = () => {
               <MenuItem
                 key={department.id}
                 value={department.id}
-                data-testid={`program-select-item-${department.id}`}
+                data-testid={`department-select-item-${department.id}`}
               >
                 {department.name[language]}
               </MenuItem>
