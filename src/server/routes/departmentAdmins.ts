@@ -8,6 +8,9 @@ import {
   Thesis,
   User,
 } from '../db/models'
+
+import { validateDepartmentAdminData } from '../validators/departmentAdmin'
+
 import { RequestWithUser, ThesisStatistics } from '../types'
 
 const departmentAdminRouter = express.Router()
@@ -158,6 +161,7 @@ departmentAdminRouter.get(
 departmentAdminRouter.post(
   '/',
   // @ts-expect-error the user middleware updates the req object with user field
+  validateDepartmentAdminData,
   async (req: RequestWithUser, res: Response) => {
     const { user: editorUser } = req
     const { departmentId, userId: targetUserId } = req.body
