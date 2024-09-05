@@ -175,6 +175,48 @@ describe('department-admins router', () => {
           userId: user3.id,
         })
       })
+
+      it('should return 400 when there is no departmentId', async () => {
+        const res = await request
+          .post('/api/department-admins')
+          .set({ uid: user1.id, hygroupcn: 'grp-toska' })
+          .send({
+            userId: user3.id,
+          })
+        expect(res.status).toBe(400)
+      })
+
+      it('should return 400 when there is no userId', async () => {
+        const res = await request
+          .post('/api/department-admins')
+          .set({ uid: user1.id, hygroupcn: 'grp-toska' })
+          .send({
+            departmentId: department2.id,
+          })
+        expect(res.status).toBe(400)
+      })
+
+      it('should return 400 when the departmentId is not a valid UUID', async () => {
+        const res = await request
+          .post('/api/department-admins')
+          .set({ uid: user1.id, hygroupcn: 'grp-toska' })
+          .send({
+            departmentId: 'invalid-uuid',
+            userId: user3.id,
+          })
+        expect(res.status).toBe(400)
+      })
+
+      it('should return 400 when the user is already a specified department admin', async () => {
+        const res = await request
+          .post('/api/department-admins')
+          .set({ uid: user1.id, hygroupcn: 'grp-toska' })
+          .send({
+            departmentId: department1.id,
+            userId: user1.id,
+          })
+        expect(res.status).toBe(400)
+      })
     })
 
     describe('DELETE /api/department-admins/:id', () => {
@@ -312,6 +354,48 @@ describe('department-admins router', () => {
           departmentId: department1.id,
           userId: user2.id,
         })
+      })
+
+      it('should return 400 when there is no departmentId', async () => {
+        const res = await request
+          .post('/api/department-admins')
+          .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+          .send({
+            userId: user3.id,
+          })
+        expect(res.status).toBe(400)
+      })
+
+      it('should return 400 when there is no userId', async () => {
+        const res = await request
+          .post('/api/department-admins')
+          .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+          .send({
+            departmentId: department2.id,
+          })
+        expect(res.status).toBe(400)
+      })
+
+      it('should return 400 when the departmentId is not a valid UUID', async () => {
+        const res = await request
+          .post('/api/department-admins')
+          .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+          .send({
+            departmentId: 'invalid-uuid',
+            userId: user3.id,
+          })
+        expect(res.status).toBe(400)
+      })
+
+      it('should return 400 when the user is already a specified department admin', async () => {
+        const res = await request
+          .post('/api/department-admins')
+          .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+          .send({
+            departmentId: department1.id,
+            userId: user1.id,
+          })
+        expect(res.status).toBe(400)
       })
 
       it('should return 403 when trying to add a department admin to another department', async () => {
