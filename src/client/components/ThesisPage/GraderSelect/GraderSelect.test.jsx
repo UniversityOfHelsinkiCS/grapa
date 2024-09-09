@@ -105,7 +105,7 @@ describe('GraderSelect', () => {
     expect(screen.getByTestId('grader-select-input-1')).toBeInTheDocument()
     expect(screen.getByTestId('grader-select-input-2')).toBeInTheDocument()
 
-    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe  (12345)')
+    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe ')
   })
 
   it('renders the GraderSelect component with multiple graders', () => {
@@ -139,8 +139,8 @@ describe('GraderSelect', () => {
         setGraderSelections={setGraderSelections}
       />
     )
-    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe  (12345)')
-    expect(screen.getAllByRole('combobox')[1].value).toBe('Jane Smith  ')
+    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe ')
+    expect(screen.getAllByRole('combobox')[1].value).toBe('Jane Smith ')
   })
 
   it('renders the GraderSelect component with an error', () => {

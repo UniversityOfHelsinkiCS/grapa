@@ -115,7 +115,7 @@ describe('SupervisorSelect', () => {
 
     expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
     expect(screen.getByTestId('percentage-input')).toBeInTheDocument()
-    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe  (12345)')
+    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe ')
     expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
   })
 
@@ -152,8 +152,8 @@ describe('SupervisorSelect', () => {
         setSupervisorSelections={setSupervisorSelections}
       />
     )
-    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe  (12345)')
-    expect(screen.getAllByRole('combobox')[1].value).toBe('Jane Smith  ')
+    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe ')
+    expect(screen.getAllByRole('combobox')[1].value).toBe('Jane Smith ')
 
     expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
   })
