@@ -49,7 +49,7 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
           disablePortal
           options={users ?? []}
           getOptionLabel={(user) =>
-            `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''} ${user.studentNumber ? `(${user.studentNumber})` : ''}`
+            `${user.firstName} ${user.lastName} ${user.email && `(${user.email})`}`
           }
           renderInput={(params) => (
             <TextField
