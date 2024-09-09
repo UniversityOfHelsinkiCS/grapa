@@ -16,15 +16,20 @@ usersRouter.get('/', async (req, res) => {
     req.query as UserSearchQuery
 
   if (!search) {
-    res.send(400, 'Search string must be provided as a query parameter')
+    res.status(400).send('Search string must be provided as a query parameter')
   }
   if (search.trim().length < 5) {
-    res.send(400, 'Search string must be at least 5 characters long')
+    res.status(400).send('Search string must be at least 5 characters long')
   }
 
   const trimmedSearch = search.trim()
 
-  let whereClauses: Record<string, any> = {}
+  let whereClauses: Record<string, any> = {
+    email: {
+      [Op.not]: null,
+    },
+  }
+
   if (onlyWithStudyRight) {
     whereClauses = {
       ...whereClauses,
