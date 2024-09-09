@@ -15,10 +15,11 @@ import {
 } from '@backend/types'
 import { Trans, useTranslation } from 'react-i18next'
 import {
+  Checkbox,
   FormControl,
   InputLabel,
+  ListItemText,
   MenuItem,
-  OutlinedInput,
   Select,
   SelectChangeEvent,
   Stack,
@@ -66,27 +67,33 @@ const StatusFilter = (props: GridFilterInputValueProps) => {
         pl: '20px',
       }}
     >
-      <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="status-filter-label">Name</InputLabel>
+      <FormControl variant="standard" sx={{ m: 1, width: 300 }}>
+        <InputLabel id="status-filter-label">Value(s)</InputLabel>
         <Select
           labelId="status-filter-label"
           id="status-filter"
           multiple
           value={itemValue}
           onChange={handleFilterChange}
-          input={<OutlinedInput label="Name" />}
+          renderValue={(selected) => (selected as string[]).join(', ')}
         >
-          <MenuItem value={t(StatusLocale.PLANNING)}>
-            {t(StatusLocale.PLANNING)}
+          <MenuItem sx={{ m: 0, p: 0 }} value={t(StatusLocale.PLANNING)}>
+            <Checkbox checked={itemValue.includes(t(StatusLocale.PLANNING))} />
+            <ListItemText primary={t(StatusLocale.PLANNING)} />
           </MenuItem>
-          <MenuItem value={t(StatusLocale.IN_PROGRESS)}>
-            {t(StatusLocale.IN_PROGRESS)}
+          <MenuItem sx={{ m: 0, p: 0 }} value={t(StatusLocale.IN_PROGRESS)}>
+            <Checkbox
+              checked={itemValue.includes(t(StatusLocale.IN_PROGRESS))}
+            />
+            <ListItemText primary={t(StatusLocale.IN_PROGRESS)} />
           </MenuItem>
-          <MenuItem value={t(StatusLocale.COMPLETED)}>
-            {t(StatusLocale.COMPLETED)}
+          <MenuItem sx={{ m: 0, p: 0 }} value={t(StatusLocale.COMPLETED)}>
+            <Checkbox checked={itemValue.includes(t(StatusLocale.COMPLETED))} />
+            <ListItemText primary={t(StatusLocale.COMPLETED)} />
           </MenuItem>
-          <MenuItem value={t(StatusLocale.CANCELLED)}>
-            {t(StatusLocale.CANCELLED)}
+          <MenuItem sx={{ m: 0, p: 0 }} value={t(StatusLocale.CANCELLED)}>
+            <Checkbox checked={itemValue.includes(t(StatusLocale.CANCELLED))} />
+            <ListItemText primary={t(StatusLocale.CANCELLED)} />
           </MenuItem>
         </Select>
       </FormControl>
@@ -155,8 +162,6 @@ const ThesesPage = () => {
         {
           value: 'contains',
           getApplyFilterFn: (filterItem) => {
-            console.log(filterItem)
-
             if (filterItem.value == null || filterItem.value.length === 0) {
               return null
             }
