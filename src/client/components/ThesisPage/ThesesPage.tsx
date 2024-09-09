@@ -4,6 +4,7 @@ import {
   DataGrid,
   DataGridProps,
   GridColDef,
+  GridFilterInputValueProps,
   GridRowSelectionModel,
 } from '@mui/x-data-grid'
 import { useState } from 'react'
@@ -13,7 +14,17 @@ import {
   TranslationLanguage,
 } from '@backend/types'
 import { Trans, useTranslation } from 'react-i18next'
-import { Stack, TextField, Typography } from '@mui/material'
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material'
 import { useTheses } from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import {
@@ -28,6 +39,52 @@ import { getSortedByName } from './util'
 import ViewThesisFooter from './ViewThesisFooter'
 import ThesisToolbar from './ThesisToolbar'
 import { StatusLocale } from '../../types'
+
+const StatusFilter = (props: GridFilterInputValueProps) => {
+  const { item, applyValue } = props
+
+  const itemValue = item?.value ?? []
+
+  const handleFilterChange = (event: SelectChangeEvent<any>) => {
+    const eventValue = event.target.value
+    const newValue =
+      typeof eventValue === 'string'
+        ? eventValue.split(',')
+        : eventValue.flat().filter(Boolean)
+
+    applyValue({ ...item, value: newValue })
+  }
+
+  return (
+    <Box
+      sx={{
+        display: 'inline-flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 48,
+        pl: '20px',
+      }}
+    >
+      <FormControl sx={{ m: 1, width: 300 }}>
+        <InputLabel id="status-filter-label">Name</InputLabel>
+        <Select
+          labelId="status-filter-label"
+          id="status-filter"
+          multiple
+          value={itemValue}
+          onChange={handleFilterChange}
+          input={<OutlinedInput label="Name" />}
+        >
+          {['Käynnissä', 'Valmis', 'Suunniteltu', 'Keskeytetty'].map((name) => (
+            <MenuItem key={name} value={name}>
+              {name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
+  )
+}
 
 const ThesesPage = () => {
   const { t, i18n } = useTranslation()
@@ -84,7 +141,26 @@ const ThesesPage = () => {
       field: 'status',
       headerName: t('statusHeader'),
       width: 100,
+      type: 'string',
       valueGetter: (_, row) => t(StatusLocale[row.status]),
+      filterOperators: [
+        {
+          value: 'contains',
+          getApplyFilterFn: (filterItem) => {
+            console.log(filterItem)
+
+            if (filterItem.value == null || filterItem.value.length === 0) {
+              return null
+            }
+
+            return (cellValue) =>
+              filterItem.value.some(
+                (filterValue: any) => cellValue === filterValue
+              )
+          },
+          InputComponent: StatusFilter,
+        },
+      ],
     },
     {
       field: 'startDate',
