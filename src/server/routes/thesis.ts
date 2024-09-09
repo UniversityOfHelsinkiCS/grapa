@@ -185,8 +185,10 @@ const fetchThesisById = async (id: string, user: UserType) => {
   // We need to use findAll here because we need to include
   // Supervision model twice (see the explanation twice above).
   // For some reason. findOne does not support that
-  const thesis = await Thesis.findAll({ ...options })
-  return thesis[0]
+  const theses = await Thesis.findAll({ ...options })
+  const thesis = theses.find((t) => t.id === id)
+
+  return thesis
 }
 
 const createThesis = async (thesisData: ThesisData, t: Transaction) => {
