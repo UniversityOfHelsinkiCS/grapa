@@ -102,8 +102,14 @@ const ThesisEditForm: React.FC<{
   const favoritePrograms = programs.filter((program) => program.isFavorite)
   const otherPrograms = programs.filter((program) => !program.isFavorite)
 
-  const sortedFavoritePrograms = getSortedByName(favoritePrograms, language)
-  const sortedOtherPrograms = getSortedByName(otherPrograms, language)
+  const sortedFavoritePrograms = getSortedByName(
+    favoritePrograms,
+    language
+  ) as Program[]
+  const sortedOtherPrograms = getSortedByName(
+    otherPrograms,
+    language
+  ) as Program[]
 
   const sortedStudyTracks =
     selectedProgram && selectedProgram.studyTracks?.length
