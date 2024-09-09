@@ -29,6 +29,9 @@ const DepartmentStatistics = () => {
   if (!user.isAdmin && !user.managedDepartmentIds?.length)
     return <Navigate to="/" />
 
+  console.log(departmentStatistics)
+  console.log(departments)
+
   const columns: GridColDef<ThesisStatistics>[] = [
     {
       field: 'supervisor',

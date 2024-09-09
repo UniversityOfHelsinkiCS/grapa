@@ -15,7 +15,7 @@ import attachmentRouter from './attachment'
 import programRouter from './program'
 import programManagementRouter from './programManagement'
 import departmentRouter from './department'
-import departmentAdminRouter from './departmentAdmins'
+import departmentAdminRouter from './departmentAdmin'
 
 import logoutRouter from './logout'
 
