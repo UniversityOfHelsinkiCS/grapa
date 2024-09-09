@@ -29,9 +29,6 @@ const DepartmentStatistics = () => {
   if (!user.isAdmin && !user.managedDepartmentIds?.length)
     return <Navigate to="/" />
 
-  console.log(departmentStatistics)
-  console.log(departments)
-
   const columns: GridColDef<ThesisStatistics>[] = [
     {
       field: 'supervisor',
@@ -80,7 +77,11 @@ const DepartmentStatistics = () => {
 
   return (
     <Box component="section" sx={{ px: '3rem', py: '2rem', width: '100%' }}>
-      <Typography component="h1" variant="h4">
+      <Typography
+        data-testid="department-statistics-page-title"
+        component="h1"
+        variant="h4"
+      >
         {t('departmentStatisticsPage:pageTitle')}
       </Typography>
       <DataGrid
