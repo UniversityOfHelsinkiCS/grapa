@@ -41,6 +41,7 @@ import ThesisToolbar from './ThesisToolbar'
 import { StatusLocale } from '../../types'
 
 const StatusFilter = (props: GridFilterInputValueProps) => {
+  const { t } = useTranslation()
   const { item, applyValue } = props
 
   const itemValue = item?.value ?? []
@@ -75,11 +76,18 @@ const StatusFilter = (props: GridFilterInputValueProps) => {
           onChange={handleFilterChange}
           input={<OutlinedInput label="Name" />}
         >
-          {['Käynnissä', 'Valmis', 'Suunniteltu', 'Keskeytetty'].map((name) => (
-            <MenuItem key={name} value={name}>
-              {name}
-            </MenuItem>
-          ))}
+          <MenuItem value={t(StatusLocale.PLANNING)}>
+            {t(StatusLocale.PLANNING)}
+          </MenuItem>
+          <MenuItem value={t(StatusLocale.IN_PROGRESS)}>
+            {t(StatusLocale.IN_PROGRESS)}
+          </MenuItem>
+          <MenuItem value={t(StatusLocale.COMPLETED)}>
+            {t(StatusLocale.COMPLETED)}
+          </MenuItem>
+          <MenuItem value={t(StatusLocale.CANCELLED)}>
+            {t(StatusLocale.CANCELLED)}
+          </MenuItem>
         </Select>
       </FormControl>
     </Box>
