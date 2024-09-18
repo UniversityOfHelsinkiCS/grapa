@@ -370,7 +370,7 @@ const deleteThesis = async (id: string, transaction: Transaction) => {
 thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
   const options = await getFindThesesOptions({
     actionUser: req.user,
-    onlySupervised: Boolean(req.query.onlySupervised),
+    onlySupervised: req.query.onlySupervised === 'true',
   })
   const theses = await Thesis.findAll({
     ...options,
