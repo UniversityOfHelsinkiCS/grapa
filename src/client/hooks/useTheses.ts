@@ -18,17 +18,18 @@ export const useTheses = (params: UseThesesParams) => {
     params.limit,
   ]
 
-  const queryFn = async (): Promise<ThesisData[]> => {
+  const queryFn = async (): Promise<{
+    theses: ThesisData[]
+    totalCount: number
+  }> => {
     const { data } = await apiClient.get('/theses', { params })
-
-    console.log(params)
 
     return data
   }
 
-  const { data: theses, ...rest } = useQuery({ queryKey, queryFn })
+  const { data, ...rest } = useQuery({ queryKey, queryFn })
 
-  return { theses, ...rest }
+  return { ...data, ...rest }
 }
 
 export const useSingleThesis = (id: string | GridRowSelectionModel) => {

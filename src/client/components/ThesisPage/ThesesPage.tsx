@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 
 import {
@@ -55,7 +55,11 @@ const ThesesPage = () => {
   const [newThesis, setNewThesis] = useState<Thesis | null>(null)
   const [showOnlyOwnTheses, setShowOnlyOwnTheses] = useState(true)
 
-  const { theses, isLoading: isThesesLoading } = useTheses({
+  const {
+    theses,
+    totalCount,
+    isLoading: isThesesLoading,
+  } = useTheses({
     onlySupervised: showOnlyOwnTheses,
     offset: paginationModel.page * paginationModel.pageSize,
     limit: paginationModel.pageSize,
@@ -67,7 +71,14 @@ const ThesesPage = () => {
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
   const { mutateAsync: createThesis } = useCreateThesisMutation()
 
-  const rowCount = isThesesLoading ? 0 : theses.length
+  const rowCountRef = useRef(totalCount || 0)
+
+  const rowCount = useMemo(() => {
+    if (totalCount !== undefined) {
+      rowCountRef.current = totalCount
+    }
+    return rowCountRef.current
+  }, [totalCount])
 
   const columns: GridColDef<Thesis>[] = [
     {
