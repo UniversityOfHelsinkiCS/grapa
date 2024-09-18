@@ -46,6 +46,7 @@ export const getFindThesesOptions = async ({
       model: Supervision,
       as: 'supervisions',
       attributes: ['percentage', 'isPrimarySupervisor'],
+      separate: true,
       include: [
         {
           model: User,
@@ -58,6 +59,7 @@ export const getFindThesesOptions = async ({
       model: Grader,
       as: 'graders',
       attributes: ['isPrimaryGrader'],
+      separate: true,
       include: [
         {
           model: User,
@@ -368,18 +370,24 @@ const deleteThesis = async (id: string, transaction: Transaction) => {
 
 // @ts-expect-error the user middleware updates the req object with user field
 thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
+  const { onlySupervised, limit, offset } = req.query
+
   const options = await getFindThesesOptions({
     actionUser: req.user,
-    onlySupervised: req.query.onlySupervised === 'true',
+    onlySupervised: onlySupervised === 'true',
   })
-  const theses = await Thesis.findAll({
+
+  const { count, rows } = await Thesis.findAndCountAll({
     ...options,
+    subQuery: false,
+    offset: Number(offset),
+    limit: Number(limit),
     order: [['targetDate', 'ASC']],
   })
 
-  const thesisData = transformThesisData(JSON.parse(JSON.stringify(theses)))
+  const theses = transformThesisData(JSON.parse(JSON.stringify(rows)))
 
-  res.send(thesisData)
+  res.send({ theses, totalCount: count })
 })
 
 // @ts-expect-error the user middleware updates the req object with user field
