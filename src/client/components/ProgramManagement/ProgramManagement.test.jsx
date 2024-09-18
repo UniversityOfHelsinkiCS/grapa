@@ -7,6 +7,19 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 
 import initializeI18n from '../../util/il18n'
 
+jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
+  default: jest.fn().mockReturnValue({
+    user: {
+      id: 1,
+      firstName: 'John',
+      lastName: 'Doe',
+      username: 'johndoe',
+      managedProgramIds: ["1"],
+      departmentId: "1",
+    },
+  }),
+}))
+
 jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   default: jest.fn().mockReturnValue({
     users: [
