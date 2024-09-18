@@ -22,7 +22,7 @@ export const useTheses = (params: UseThesesParams) => {
     theses: ThesisData[]
     totalCount: number
   }> => {
-    const { data } = await apiClient.get('/theses', { params })
+    const { data } = await apiClient.get('/theses/paginate', { params })
 
     return data
   }
