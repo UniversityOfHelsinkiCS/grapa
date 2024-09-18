@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   Autocomplete,
@@ -14,22 +15,27 @@ import {
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
+
+import useUsers from '../../hooks/useUsers'
+import usePrograms from '../../hooks/usePrograms'
+import { useDebounce } from '../../hooks/useDebounce'
+import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useProgramManagements from '../../hooks/useProgramManagements'
 import {
   useCreateProgramManagementMutation,
   useDeleteProgramManagementMutation,
 } from '../../hooks/useProgramManagementMutation'
-import useUsers from '../../hooks/useUsers'
-import { useDebounce } from '../../hooks/useDebounce'
-import usePrograms from '../../hooks/usePrograms'
+
+import DeleteConfirmation from '../Common/DeleteConfirmation'
+
 import {
   ProgramManagementData,
   TranslationLanguage,
 } from '../../../server/types'
-import DeleteConfirmation from '../Common/DeleteConfirmation'
 
 const ProgramManagement = () => {
   const { t, i18n } = useTranslation()
+  const { user, isLoading: userLoading } = useLoggedInUser()
   const { language } = i18n as { language: TranslationLanguage }
 
   const [programId, setProgramId] = useState(null)
@@ -59,7 +65,9 @@ const ProgramManagement = () => {
     }
   }
 
-  if (!programs || !programManagements) return null
+  if (!user || userLoading || !programs || !programManagements) return null
+  if (!user.isAdmin && !user.managedProgramIds?.length)
+    return <Navigate to="/" />
 
   const columns: GridColDef<ProgramManagementData>[] = [
     {
