@@ -5,16 +5,23 @@ import { ThesisData } from '@backend/types'
 
 import apiClient from '../util/apiClient'
 
-interface UseThesesOptions {
+interface UseThesesParams {
   onlySupervised: boolean
+  offset: number
+  limit: number
 }
-export const useTheses = ({ onlySupervised }: UseThesesOptions) => {
-  const queryKey = ['theses', onlySupervised]
+export const useTheses = (params: UseThesesParams) => {
+  const queryKey = [
+    'theses',
+    params.onlySupervised,
+    params.offset,
+    params.limit,
+  ]
 
   const queryFn = async (): Promise<ThesisData[]> => {
-    const { data } = await apiClient.get(
-      `/theses${onlySupervised ? '?onlySupervised=true' : ''}`
-    )
+    const { data } = await apiClient.get('/theses', { params })
+
+    console.log(params)
 
     return data
   }
