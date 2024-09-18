@@ -81,7 +81,7 @@ const ThesesPage = () => {
         row.authors
           .map(
             (author) =>
-              `${author.firstName} ${author.lastName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
+              `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
           )
           .join(', '),
     },
