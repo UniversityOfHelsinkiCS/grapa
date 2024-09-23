@@ -96,7 +96,9 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
                 ? t('thesisForm:removeGraderConfirmationContent', {
                     name: `${selection.user.firstName} ${selection.user.lastName}`,
                   })
-                : t('thesisForm:removeGraderConfirmationNoName')}
+                : t('thesisForm:removeGraderConfirmationNoName', {
+                    index: index + 1,
+                  })}
             </Box>
           </DeleteConfirmation>
         </>

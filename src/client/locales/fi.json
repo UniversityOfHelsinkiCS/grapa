@@ -132,7 +132,7 @@
     "removeSupervisorConfirmationNoName": "Haluatko varmasti poistaa ohjaajan {{index}}?",
     "removeGraderConfirmationTitle": "Poista arvioija",
     "removeGraderConfirmationContent": "Haluatko varmasti poistaa arvioijan: {{name}}?",
-    "removeGraderConfirmationNoName": "Haluatko varmasti poistaa nimeämättömän arvioijan?"
+    "removeGraderConfirmationNoName": "Haluatko varmasti poistaa arvioijan {{index}}?"
   },
   "thesisStages": {
     "planned": "Suunniteltu",
