@@ -141,7 +141,7 @@
     "cancelled": "Cancelled"
   },
   "thesesTableToolbar": {
-    "newThesisButton": "Uusi tutkielma",
+    "newThesisButton": "New thesis",
     "showAllThesesSwitch": "Show all theses",
     "showManagedProgramsThesesSwitch": "Also show theses of my programs"
   },
