@@ -5,6 +5,7 @@
     "grader": "Grader {{index}}",
     "supervisor": "Supervisor {{index}}",
     "userSearchNoOptions": "Type at least 5 characters to search for users",
+    "userSearchExtPersonHint": "Could not find the person you were looking for? Add them as an external person",
     "userHeader": "User",
     "programHeader": "Program",
     "studyTrackHeader": "Study track",
