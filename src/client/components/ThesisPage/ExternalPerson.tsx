@@ -76,6 +76,8 @@ const ExternalPersonInput = ({
 
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
 
+  const legendLocKey = inputGroup === 'supervisions' ? 'supervisor' : 'grader'
+
   const handleInputChange = (key: string, value: string) => {
     handlePersonChange({
       ...selection.user,
@@ -102,7 +104,7 @@ const ExternalPersonInput = ({
           color="text.secondary"
           sx={{ mx: '2rem' }}
         >
-          {t('supervisor', { index: index + 1 })} *
+          {t(legendLocKey, { index: index + 1 })} *
         </Typography>
         <Stack spacing={1} direction="row">
           <TextField
