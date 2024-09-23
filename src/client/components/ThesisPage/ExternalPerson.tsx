@@ -77,6 +77,18 @@ const ExternalPersonInput = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
 
   const legendLocKey = inputGroup === 'supervisions' ? 'supervisor' : 'grader'
+  const deleteConfirmationTitleLocKey =
+    inputGroup === 'supervisions'
+      ? 'removeSupervisorConfirmationTitle'
+      : 'removeGraderConfirmationTitle'
+  const deleteConfirmationContentLocKey =
+    inputGroup === 'supervisions'
+      ? 'removeSupervisorConfirmationContent'
+      : 'removeGraderConfirmationContent'
+  const deleteConfirmationNoNameLocKey =
+    inputGroup === 'supervisions'
+      ? 'removeSupervisorConfirmationNoName'
+      : 'removeGraderConfirmationNoName'
 
   const handleInputChange = (key: string, value: string) => {
     handlePersonChange({
@@ -202,14 +214,14 @@ const ExternalPersonInput = ({
         setOpen={setDeleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         onDelete={handleRemovePerson}
-        title={t('thesisForm:removeSupervisorConfirmationTitle')}
+        title={t(`thesisForm:${deleteConfirmationTitleLocKey}`)}
       >
         <Box>
           {selection.user
-            ? t('thesisForm:removeSupervisorConfirmationContent', {
+            ? t(`thesisForm:${deleteConfirmationContentLocKey}`, {
                 name: `${selection.user.firstName} ${selection.user.lastName}`,
               })
-            : t('thesisForm:removeSupervisorConfirmationNoName', {
+            : t(`thesisForm:${deleteConfirmationNoNameLocKey}`, {
                 index: index + 1,
               })}
         </Box>
