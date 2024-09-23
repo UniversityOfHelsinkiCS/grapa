@@ -129,7 +129,7 @@
     "totalSupervisionPercentage": "Total supervision percentage: {{totalPercentage}} %",
     "removeSupervisorConfirmationTitle": "Delete supervisor",
     "removeSupervisorConfirmationContent": "Are you sure you want to delete the supervisor: {{name}}?",
-    "removeSupervisorConfirmationNoName": "Are you sure you want to delete an unnamed supervisor?"
+    "removeSupervisorConfirmationNoName": "Are you sure you want to delete the supervisor {{index}}?"
   },
   "thesisStages": {
     "planned": "Planned",

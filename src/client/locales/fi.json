@@ -129,7 +129,7 @@
     "totalSupervisionPercentage": "Työjakauma yhteensä: {{totalPercentage}} %",
     "removeSupervisorConfirmationTitle": "Poista ohjaaja",
     "removeSupervisorConfirmationContent": "Haluatko varmasti poistaa ohjaajan: {{name}}?",
-    "removeSupervisorConfirmationNoName": "Haluatko varmasti poistaa nimeämättömän ohjaajan?",
+    "removeSupervisorConfirmationNoName": "Haluatko varmasti poistaa ohjaajan {{index}}?",
     "removeGraderConfirmationTitle": "Poista arvioija",
     "removeGraderConfirmationContent": "Haluatko varmasti poistaa arvioijan: {{name}}?",
     "removeGraderConfirmationNoName": "Haluatko varmasti poistaa nimeämättömän arvioijan?"

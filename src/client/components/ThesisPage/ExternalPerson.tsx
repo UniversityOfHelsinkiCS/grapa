@@ -209,7 +209,9 @@ const ExternalPersonInput = ({
             ? t('thesisForm:removeSupervisorConfirmationContent', {
                 name: `${selection.user.firstName} ${selection.user.lastName}`,
               })
-            : t('thesisForm:removeSupervisorConfirmationNoName')}
+            : t('thesisForm:removeSupervisorConfirmationNoName', {
+                index: index + 1,
+              })}
         </Box>
       </DeleteConfirmation>
     </Stack>
