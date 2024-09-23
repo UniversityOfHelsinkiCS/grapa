@@ -84,114 +84,116 @@ const ExternalPersonInput = ({
   }
 
   return (
-    <Stack
-      spacing={1}
-      direction="column"
-      component="fieldset"
-      sx={{
-        borderColor: 'secondary',
-        borderWidth: '1px',
-        borderStyle: 'solid', // Add this line to ensure the border shows up
-      }}
-    >
-      <Typography
-        component="legend"
-        variant="caption"
-        color="text.secondary"
-        sx={{ mx: '2rem' }}
+    <Stack spacing={1} direction="row">
+      <Stack
+        spacing={1}
+        direction="column"
+        component="fieldset"
+        sx={{
+          borderColor: 'secondary',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          flexGrow: 1,
+        }}
       >
-        {t('supervisor', { index: index + 1 })} *
-      </Typography>
-      <Stack spacing={1} direction="row">
-        <TextField
-          autoFocus
-          required
-          margin="dense"
-          id={`${inputGroup}-${index}-user-firstName`}
-          name="firstName"
-          label={t('thesisForm:firstName')}
-          value={selection.user?.firstName ?? ''}
-          onChange={(event) =>
-            handleInputChange('firstName', event.target.value)
-          }
-          fullWidth
-          variant="outlined"
-          error={Boolean(inputErrors?.firstName)}
-          helperText={inputErrors?.firstName}
-          {...inputProps}
-        />
-
-        <TextField
-          required
-          margin="dense"
-          id={`${inputGroup}-${index}-user-lastName`}
-          name="lastName"
-          label={t('thesisForm:lastName')}
-          value={selection.user?.lastName ?? ''}
-          onChange={(event) =>
-            handleInputChange('lastName', event.target.value)
-          }
-          fullWidth
-          variant="outlined"
-          error={Boolean(inputErrors?.lastName)}
-          helperText={inputErrors?.lastName}
-          {...inputProps}
-        />
-      </Stack>
-      <Stack spacing={1} direction="row">
-        <TextField
-          required
-          margin="dense"
-          id={`${inputGroup}-${index}-user-email`}
-          name="email"
-          label={t('thesisForm:email')}
-          value={selection.user?.email ?? ''}
-          onChange={(event) => handleInputChange('email', event.target.value)}
-          sx={{ width: '40%' }}
-          variant="outlined"
-          error={Boolean(inputErrors?.email)}
-          helperText={inputErrors?.email}
-          {...inputProps}
-        />
-
-        <TextField
-          required
-          margin="dense"
-          id={`${inputGroup}-${index}-user-affiliation`}
-          name="affiliation"
-          label={t('thesisForm:affiliation')}
-          value={selection.user?.affiliation ?? ''}
-          onChange={(event) =>
-            handleInputChange('affiliation', event.target.value)
-          }
-          sx={{ width: '40%' }}
-          variant="outlined"
-          error={Boolean(inputErrors?.affiliation)}
-          helperText={inputErrors?.affiliation}
-          {...inputProps}
-        />
-
-        {inputGroup === 'supervisions' && (
-          <PercentageInput
-            label={t('thesisForm:selectSupervisorPercentage')}
-            value={(selection as SupervisorSelection).percentage}
-            onChange={handlePercentageChange}
-            percentageInputProps={percentageInputProps}
-          />
-        )}
-
-        <IconButton
-          data-testid="remove-supervisor-button"
-          type="button"
-          onClick={() => setDeleteDialogOpen(true)}
-          color="error"
-          size="small"
-          aria-label={`${t('removeButton')} ${selection.user?.firstName} ${selection.user?.lastName}`}
-          {...iconButtonProps}
+        <Typography
+          component="legend"
+          variant="caption"
+          color="text.secondary"
+          sx={{ mx: '2rem' }}
         >
-          <DeleteIcon />
-        </IconButton>
+          {t('supervisor', { index: index + 1 })} *
+        </Typography>
+        <Stack spacing={1} direction="row">
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id={`${inputGroup}-${index}-user-firstName`}
+            name="firstName"
+            label={t('thesisForm:firstName')}
+            value={selection.user?.firstName ?? ''}
+            onChange={(event) =>
+              handleInputChange('firstName', event.target.value)
+            }
+            fullWidth
+            variant="outlined"
+            error={Boolean(inputErrors?.firstName)}
+            helperText={inputErrors?.firstName}
+            {...inputProps}
+          />
+
+          <TextField
+            required
+            margin="dense"
+            id={`${inputGroup}-${index}-user-lastName`}
+            name="lastName"
+            label={t('thesisForm:lastName')}
+            value={selection.user?.lastName ?? ''}
+            onChange={(event) =>
+              handleInputChange('lastName', event.target.value)
+            }
+            fullWidth
+            variant="outlined"
+            error={Boolean(inputErrors?.lastName)}
+            helperText={inputErrors?.lastName}
+            {...inputProps}
+          />
+        </Stack>
+        <Stack spacing={1} direction="row">
+          <TextField
+            required
+            margin="dense"
+            id={`${inputGroup}-${index}-user-email`}
+            name="email"
+            label={t('thesisForm:email')}
+            value={selection.user?.email ?? ''}
+            onChange={(event) => handleInputChange('email', event.target.value)}
+            fullWidth
+            variant="outlined"
+            error={Boolean(inputErrors?.email)}
+            helperText={inputErrors?.email}
+            {...inputProps}
+          />
+
+          <TextField
+            required
+            margin="dense"
+            id={`${inputGroup}-${index}-user-affiliation`}
+            name="affiliation"
+            label={t('thesisForm:affiliation')}
+            value={selection.user?.affiliation ?? ''}
+            onChange={(event) =>
+              handleInputChange('affiliation', event.target.value)
+            }
+            fullWidth
+            variant="outlined"
+            error={Boolean(inputErrors?.affiliation)}
+            helperText={inputErrors?.affiliation}
+            {...inputProps}
+          />
+
+          {inputGroup === 'supervisions' && (
+            <PercentageInput
+              label={t('thesisForm:selectSupervisorPercentage')}
+              value={(selection as SupervisorSelection).percentage}
+              onChange={handlePercentageChange}
+              percentageInputProps={percentageInputProps}
+            />
+          )}
+        </Stack>
       </Stack>
+      <IconButton
+        data-testid="remove-supervisor-button"
+        type="button"
+        onClick={() => setDeleteDialogOpen(true)}
+        color="error"
+        size="small"
+        aria-label={`${t('removeButton')} ${selection.user?.firstName} ${selection.user?.lastName}`}
+        {...iconButtonProps}
+      >
+        <DeleteIcon />
+      </IconButton>
 
       <DeleteConfirmation
         open={deleteDialogOpen}
