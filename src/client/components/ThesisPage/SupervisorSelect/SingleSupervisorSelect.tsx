@@ -38,6 +38,7 @@ interface SingleSupervisorSelectProps {
   percentageInputProps: TextFieldProps
   primarySupervisorProps: FormControlProps
 }
+
 const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
   index,
   selection,

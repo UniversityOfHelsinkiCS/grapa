@@ -6,6 +6,7 @@ import {
   Box,
   ButtonProps,
   TextFieldProps,
+  Typography,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import React from 'react'
@@ -83,7 +84,24 @@ const ExternalPersonInput = ({
   }
 
   return (
-    <Stack spacing={1} direction="column">
+    <Stack
+      spacing={1}
+      direction="column"
+      component="fieldset"
+      sx={{
+        borderColor: 'secondary',
+        borderWidth: '1px',
+        borderStyle: 'solid', // Add this line to ensure the border shows up
+      }}
+    >
+      <Typography
+        component="legend"
+        variant="caption"
+        color="text.secondary"
+        sx={{ mx: '2rem' }}
+      >
+        {t('supervisor', { index: index + 1 })} *
+      </Typography>
       <Stack spacing={1} direction="row">
         <TextField
           autoFocus
