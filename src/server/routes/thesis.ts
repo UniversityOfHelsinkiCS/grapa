@@ -382,7 +382,8 @@ thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
     order: [['targetDate', 'ASC']],
   })
 
-  const thesesData = transformThesisData(JSON.parse(JSON.stringify(theses)))
+  const thesesRows = theses.map((t) => t.toJSON()) as ThesisData[]
+  const thesesData = transformThesisData(thesesRows)
 
   res.send(thesesData)
 })
@@ -404,7 +405,8 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
     order: [['targetDate', 'ASC']],
   })
 
-  const theses = transformThesisData(JSON.parse(JSON.stringify(rows)))
+  const thesesRows = rows.map((t) => t.toJSON()) as ThesisData[]
+  const theses = transformThesisData(thesesRows)
 
   res.send({ theses, totalCount: count })
 })
