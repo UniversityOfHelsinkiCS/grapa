@@ -1,4 +1,4 @@
-name: Test and deploy to staging
+name: Static Analysis and Tests on PR
 
 on:
   pull_request:
@@ -33,6 +33,6 @@ jobs:
 
       - name: Run integration tests
         run: npm run test:integration
-        
+
       - name: Run frontend tests
         run: npm run test:front
