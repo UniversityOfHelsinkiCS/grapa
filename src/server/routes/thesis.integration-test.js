@@ -611,6 +611,83 @@ describe('thesis router', () => {
           })
         })
 
+        describe('when the teacher user fetches paginated own theses', () => {
+          let thesis5
+
+          beforeEach(async () => {
+            thesis5 = await Thesis.create({
+              programId: 'Testing program',
+              studyTrackId: 'test-study-track-id',
+              topic: 'test topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01',
+              targetDate: '2070-01-01',
+            })
+
+            await Supervision.create({
+              userId: teacherUser.id,
+              thesisId: thesis5.id,
+              percentage: 100,
+              isPrimarySupervisor: true,
+            })
+          })
+
+          it('should return the first page of theses', async () => {
+            const response = await request
+              .get('/api/theses/paginate?onlySupervised=true&&offset=0&limit=1')
+              .set({ uid: teacherUser.id, hygroupcn: 'hy-employees' })
+
+            expect(response.status).toEqual(200)
+            expect(response.body.totalCount).toBe(2)
+            expect(response.body.theses).toMatchObject([
+              {
+                id: thesis2.id,
+                programId: 'Testing program',
+                studyTrackId: 'test-study-track-id',
+                topic: 'test topic',
+                status: 'PLANNING',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: teacherUser,
+                    percentage: 100,
+                    isPrimarySupervisor: true,
+                  },
+                ],
+              },
+            ])
+          })
+
+          it('should return the second page of theses', async () => {
+            const response = await request
+              .get('/api/theses/paginate?onlySupervised=true&&offset=1&limit=1')
+              .set({ uid: teacherUser.id, hygroupcn: 'hy-employees' })
+
+            expect(response.status).toEqual(200)
+            expect(response.body.totalCount).toBe(2)
+            expect(response.body.theses).toMatchObject([
+              {
+                id: thesis5.id,
+                programId: 'Testing program',
+                studyTrackId: 'test-study-track-id',
+                topic: 'test topic',
+                status: 'PLANNING',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: teacherUser,
+                    percentage: 100,
+                    isPrimarySupervisor: true,
+                  },
+                ],
+              },
+            ])
+          })
+        })
+
+
         describe('when the program manager user fetches own theses', () => {
           it('should return all theses supervised by the user, but not the others in the managed program', async () => {
             const response = await request
@@ -638,6 +715,84 @@ describe('thesis router', () => {
           })
         })
 
+        describe('when the program manager user fetches paginated own theses', () => {
+          let thesis6
+
+          beforeEach(async () => {
+            thesis6 = await Thesis.create({
+              programId: 'Testing program',
+              studyTrackId: 'test-study-track-id',
+              topic: 'test topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01',
+              targetDate: '2070-01-01',
+            })
+
+            await Supervision.create({
+              userId: programManagerUser.id,
+              thesisId: thesis6.id,
+              percentage: 100,
+              isPrimarySupervisor: true,
+            })
+          })
+
+          it('should return the first page of theses', async () => {
+            const response = await request
+              .get('/api/theses/paginate?onlySupervised=true&&offset=0&limit=1')
+              .set({ uid: programManagerUser.id, hygroupcn: 'hy-employees' })
+
+            expect(response.status).toEqual(200)
+            expect(response.body.totalCount).toBe(2)
+            expect(response.body.theses).toMatchObject([
+              {
+                id: thesis3.id,
+                programId: 'Testing program',
+                studyTrackId: 'test-study-track-id',
+                topic: 'test topic',
+                status: 'PLANNING',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: programManagerUser,
+                    percentage: 100,
+                    isPrimarySupervisor: true,
+                  },
+                ],
+              },
+            ])
+          })
+
+          it('should return the second page of theses', async () => {
+            const response = await request
+              .get('/api/theses/paginate?onlySupervised=true&&offset=1&limit=1')
+              .set({ uid: programManagerUser.id, hygroupcn: 'hy-employees' })
+
+            expect(response.status).toEqual(200)
+            expect(response.body.totalCount).toBe(2)
+            expect(response.body.theses).toMatchObject([
+              {
+                id: thesis6.id,
+                programId: 'Testing program',
+                studyTrackId: 'test-study-track-id',
+                topic: 'test topic',
+                status: 'PLANNING',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: programManagerUser,
+                    percentage: 100,
+                    isPrimarySupervisor: true,
+                  },
+                ],
+              },
+            ])
+          })
+        })
+
+
+
         describe('when an admin user fetches own theses', () => {
           it('should return all theses supervised by the user and only those', async () => {
             const response = await request
@@ -664,6 +819,84 @@ describe('thesis router', () => {
             ])
           })
         })
+
+        describe('when the admin user fetches paginated own theses', () => {
+          let thesis7
+
+          beforeEach(async () => {
+            thesis7 = await Thesis.create({
+              programId: 'Testing program',
+              studyTrackId: 'test-study-track-id',
+              topic: 'test topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01',
+              targetDate: '2070-01-01',
+            })
+
+            await Supervision.create({
+              userId: adminUser.id,
+              thesisId: thesis7.id,
+              percentage: 100,
+              isPrimarySupervisor: true,
+            })
+          })
+
+          it('should return the first page of theses', async () => {
+            const response = await request
+              .get('/api/theses/paginate?onlySupervised=true&&offset=0&limit=1')
+              .set({ uid: adminUser.id, hygroupcn: 'grp-toska' })
+
+            expect(response.status).toEqual(200)
+            expect(response.body.totalCount).toBe(2)
+            expect(response.body.theses).toMatchObject([
+              {
+                id: thesis4.id,
+                programId: 'Testing program',
+                studyTrackId: 'test-study-track-id',
+                topic: 'test topic',
+                status: 'PLANNING',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: adminUser,
+                    percentage: 100,
+                    isPrimarySupervisor: true,
+                  },
+                ],
+              },
+            ])
+          })
+
+          it('should return the second page of theses', async () => {
+            const response = await request
+              .get('/api/theses/paginate?onlySupervised=true&&offset=1&limit=1')
+              .set({ uid: adminUser.id, hygroupcn: 'grp-toska' })
+
+            expect(response.status).toEqual(200)
+            expect(response.body.totalCount).toBe(2)
+            expect(response.body.theses).toMatchObject([
+              {
+                id: thesis7.id,
+                programId: 'Testing program',
+                studyTrackId: 'test-study-track-id',
+                topic: 'test topic',
+                status: 'PLANNING',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: adminUser,
+                    percentage: 100,
+                    isPrimarySupervisor: true,
+                  },
+                ],
+              },
+            ])
+          })
+        })
+
+
       })
     })
 
