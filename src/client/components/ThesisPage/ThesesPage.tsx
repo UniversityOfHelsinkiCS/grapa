@@ -15,7 +15,7 @@ import {
 } from '@backend/types'
 import { Box, Stack, TextField, Typography } from '@mui/material'
 
-import { useTheses } from '../../hooks/useTheses'
+import { usePaginatedTheses } from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import {
   useCreateThesisMutation,
@@ -59,7 +59,7 @@ const ThesesPage = () => {
     theses,
     totalCount,
     isLoading: isThesesLoading,
-  } = useTheses({
+  } = usePaginatedTheses({
     onlySupervised: showOnlyOwnTheses,
     offset: paginationModel.page * paginationModel.pageSize,
     limit: paginationModel.pageSize,

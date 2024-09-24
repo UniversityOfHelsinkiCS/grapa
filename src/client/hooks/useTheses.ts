@@ -7,10 +7,31 @@ import apiClient from '../util/apiClient'
 
 interface UseThesesParams {
   onlySupervised: boolean
+}
+
+export const useTheses = ({ onlySupervised }: UseThesesParams) => {
+  const queryKey = ['theses', onlySupervised]
+
+  const queryFn = async (): Promise<ThesisData[]> => {
+    const { data } = await apiClient.get(
+      `/theses${onlySupervised ? '?onlySupervised=true' : ''}`
+    )
+
+    return data
+  }
+
+  const { data: theses, ...rest } = useQuery({ queryKey, queryFn })
+
+  return { theses, ...rest }
+}
+
+interface UsePaginatedThesesParams {
+  onlySupervised: boolean
   offset: number
   limit: number
 }
-export const useTheses = (params: UseThesesParams) => {
+
+export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
   const queryKey = [
     'theses',
     params.onlySupervised,
@@ -29,7 +50,7 @@ export const useTheses = (params: UseThesesParams) => {
 
   const { data, ...rest } = useQuery({ queryKey, queryFn })
 
-  return { ...data, ...rest }
+  return { theses: data?.theses, totalCount: data?.totalCount, ...rest }
 }
 
 export const useSingleThesis = (id: string | GridRowSelectionModel) => {
