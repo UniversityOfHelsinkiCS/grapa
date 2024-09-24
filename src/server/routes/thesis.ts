@@ -46,6 +46,7 @@ export const getFindThesesOptions = async ({
       model: Supervision,
       as: 'supervisions',
       attributes: ['percentage', 'isPrimarySupervisor'],
+      separate: true,
       include: [
         {
           model: User,
@@ -58,6 +59,7 @@ export const getFindThesesOptions = async ({
       model: Grader,
       as: 'graders',
       attributes: ['isPrimaryGrader'],
+      separate: true,
       include: [
         {
           model: User,
@@ -368,18 +370,45 @@ const deleteThesis = async (id: string, transaction: Transaction) => {
 
 // @ts-expect-error the user middleware updates the req object with user field
 thesisRouter.get('/', async (req: ServerGetRequest, res: Response) => {
+  const { onlySupervised } = req.query
+
   const options = await getFindThesesOptions({
     actionUser: req.user,
-    onlySupervised: Boolean(req.query.onlySupervised),
+    onlySupervised: onlySupervised === 'true',
   })
+
   const theses = await Thesis.findAll({
     ...options,
     order: [['targetDate', 'ASC']],
   })
 
-  const thesisData = transformThesisData(JSON.parse(JSON.stringify(theses)))
+  const thesesRows = theses.map((t) => t.toJSON()) as ThesisData[]
+  const thesesData = transformThesisData(thesesRows)
 
-  res.send(thesisData)
+  res.send(thesesData)
+})
+
+// @ts-expect-error the user middleware updates the req object with user field
+thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
+  const { onlySupervised, limit, offset } = req.query
+
+  const options = await getFindThesesOptions({
+    actionUser: req.user,
+    onlySupervised: onlySupervised === 'true',
+  })
+
+  const { count, rows } = await Thesis.findAndCountAll({
+    ...options,
+    subQuery: false,
+    offset: Number(offset),
+    limit: Number(limit),
+    order: [['targetDate', 'ASC']],
+  })
+
+  const thesesRows = rows.map((t) => t.toJSON()) as ThesisData[]
+  const theses = transformThesisData(thesesRows)
+
+  res.send({ theses, totalCount: count })
 })
 
 // @ts-expect-error the user middleware updates the req object with user field

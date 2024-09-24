@@ -5,10 +5,11 @@ import { ThesisData } from '@backend/types'
 
 import apiClient from '../util/apiClient'
 
-interface UseThesesOptions {
+interface UseThesesParams {
   onlySupervised: boolean
 }
-export const useTheses = ({ onlySupervised }: UseThesesOptions) => {
+
+export const useTheses = ({ onlySupervised }: UseThesesParams) => {
   const queryKey = ['theses', onlySupervised]
 
   const queryFn = async (): Promise<ThesisData[]> => {
@@ -22,6 +23,34 @@ export const useTheses = ({ onlySupervised }: UseThesesOptions) => {
   const { data: theses, ...rest } = useQuery({ queryKey, queryFn })
 
   return { theses, ...rest }
+}
+
+interface UsePaginatedThesesParams {
+  onlySupervised: boolean
+  offset: number
+  limit: number
+}
+
+export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
+  const queryKey = [
+    'theses',
+    params.onlySupervised,
+    params.offset,
+    params.limit,
+  ]
+
+  const queryFn = async (): Promise<{
+    theses: ThesisData[]
+    totalCount: number
+  }> => {
+    const { data } = await apiClient.get('/theses/paginate', { params })
+
+    return data
+  }
+
+  const { data, ...rest } = useQuery({ queryKey, queryFn })
+
+  return { theses: data?.theses, totalCount: data?.totalCount, ...rest }
 }
 
 export const useSingleThesis = (id: string | GridRowSelectionModel) => {

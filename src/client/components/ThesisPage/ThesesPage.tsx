@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 
 import {
@@ -15,7 +15,7 @@ import {
 } from '@backend/types'
 import { Box, Stack, TextField, Typography } from '@mui/material'
 
-import { useTheses } from '../../hooks/useTheses'
+import { usePaginatedTheses } from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import {
   useCreateThesisMutation,
@@ -34,10 +34,17 @@ import { getSortedByName } from './util'
 
 import { StatusLocale } from '../../types'
 
+const PAGE_SIZE = 25
+
 const ThesesPage = () => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
   const { user, isLoading: loggedInUserLoading } = useLoggedInUser()
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: PAGE_SIZE,
+  })
 
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([])
@@ -48,8 +55,14 @@ const ThesesPage = () => {
   const [newThesis, setNewThesis] = useState<Thesis | null>(null)
   const [showOnlyOwnTheses, setShowOnlyOwnTheses] = useState(true)
 
-  const { theses, isLoading: isThesesLoading } = useTheses({
+  const {
+    theses,
+    totalCount,
+    isLoading: isThesesLoading,
+  } = usePaginatedTheses({
     onlySupervised: showOnlyOwnTheses,
+    offset: paginationModel.page * paginationModel.pageSize,
+    limit: paginationModel.pageSize,
   })
   const { programs, isLoading: isProgramLoading } = usePrograms({
     includeNotManaged: true,
@@ -57,6 +70,15 @@ const ThesesPage = () => {
   const { mutateAsync: editThesis } = useEditThesisMutation()
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
   const { mutateAsync: createThesis } = useCreateThesisMutation()
+
+  const rowCountRef = useRef(totalCount || 0)
+
+  const rowCount = useMemo(() => {
+    if (totalCount !== undefined) {
+      rowCountRef.current = totalCount
+    }
+    return rowCountRef.current
+  }, [totalCount])
 
   const columns: GridColDef<Thesis>[] = [
     {
@@ -200,16 +222,13 @@ const ThesesPage = () => {
           loading={isLoading}
           rows={isLoading ? skeletonRows : theses}
           columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 100,
-              },
-            },
-          }}
           autoHeight
           hideFooterSelectedRowCount
-          pageSizeOptions={[100]}
+          pageSizeOptions={[PAGE_SIZE]}
+          paginationMode="server"
+          paginationModel={paginationModel}
+          onPaginationModelChange={(newModel) => setPaginationModel(newModel)}
+          rowCount={rowCount}
           getRowHeight={() => 44}
           columnHeaderHeight={36}
           rowSelectionModel={rowSelectionModel}
