@@ -34,7 +34,7 @@ import { getSortedByName } from './util'
 
 import { StatusLocale } from '../../types'
 
-const PAGE_SIZE = 5
+const PAGE_SIZE = 25
 
 const ThesesPage = () => {
   const { t, i18n } = useTranslation()
