@@ -1,0 +1,38 @@
+name: Test and deploy to staging
+
+on:
+  pull_request:
+
+jobs:
+  static-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build project for eslint
+        run: npm install
+
+      - name: Run Eslint
+        run: npm run lint
+
+      - name: Run Prettier
+        run: npm run format
+    
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build project for testing
+        run: npm install
+
+      - name: Run validation tests
+        run: npm run test
+
+      - name: Run integration tests
+        run: npm run test:integration
+        
+      - name: Run frontend tests
+        run: npm run test:front
