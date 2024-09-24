@@ -24,7 +24,7 @@ import {
 } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
-import { transformThesisData } from '../util/helpers'
+import { transformSingleThesis, transformThesisData } from '../util/helpers'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import { userFields } from './config'
 
@@ -418,7 +418,7 @@ thesisRouter.get('/:id', async (req: ServerGetRequest, res: Response) => {
 
   if (!thesis) res.status(404).send('Thesis not found')
 
-  const [thesisData] = transformThesisData(JSON.parse(JSON.stringify([thesis])))
+  const thesisData = transformSingleThesis(thesis.toJSON() as ThesisData)
 
   res.send(thesisData)
 })
