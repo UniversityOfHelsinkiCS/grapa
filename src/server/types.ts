@@ -139,6 +139,13 @@ export interface ServerPutRequest extends Request {
   user: User
 }
 
+export interface ServerThesesFiltersPutRequest extends Request {
+  body: {
+    thesesTableFilters: Record<string, unknown>[]
+  }
+  user: User
+}
+
 export interface ProgramManagementData {
   userId: string
   programId: string
