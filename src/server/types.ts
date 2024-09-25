@@ -1,3 +1,4 @@
+import { GridFilterModel } from '@mui/x-data-grid'
 import { Request } from 'express'
 
 export interface TranslatedName {
@@ -34,6 +35,7 @@ export interface User {
   isExternal: boolean
   affiliation?: string
   departmentId?: string
+  thesesTableFilters?: GridFilterModel
 }
 
 export interface RequestWithUser extends Request {

@@ -111,9 +111,14 @@ User.init(
       defaultValue: [],
     },
     thesesTableFilters: {
-      type: DataTypes.ARRAY(DataTypes.JSONB),
+      type: DataTypes.JSONB,
       allowNull: false,
-      defaultValue: [],
+      defaultValue: {
+        items: [],
+        logicOperator: 'and',
+        quickFilterValues: [],
+        quickFilterLogicOperator: 'and',
+      },
     },
   },
   {

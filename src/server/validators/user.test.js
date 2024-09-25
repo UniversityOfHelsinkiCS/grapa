@@ -8,17 +8,21 @@ describe('validateUserThesesTableFiltersData', () => {
   beforeEach(() => {
     req = {
       body: {
-        thesesTableFilters: [
-          {
-              "field": "status",
-              "operator": "contains",
-              "id": 32027,
-              "value": [
-                "Suunniteltu",
-                "Käynnissä"
-              ]
-          }
-        ]
+        thesesTableFilters: {
+          items: [
+              {
+                  field: "status",
+                  operator: "contains",
+                  id: 44812,
+                  value: [
+                      "Suunniteltu"
+                  ]
+              }
+          ],
+          logicOperator: "and",
+          quickFilterValues: [],
+          quickFilterLogicOperator: "and"
+        }
       },
     }
     res = {}
@@ -31,7 +35,7 @@ describe('validateUserThesesTableFiltersData', () => {
   })
 
   it('should return an error if id is missing', () => {
-    req.body.thesesTableFilters[0].id = undefined
+    req.body.thesesTableFilters.items[0].id = undefined
 
     expect(() => validateUserThesesTableFiltersData(req, res, next)).toThrow(
       'Invalid theses table filters'
@@ -40,7 +44,7 @@ describe('validateUserThesesTableFiltersData', () => {
   })
 
   it('should return an error if id is not a number', () => {
-    req.body.thesesTableFilters[0].id = '32027'
+    req.body.thesesTableFilters.items[0].id = '32027'
 
     expect(() => validateUserThesesTableFiltersData(req, res, next)).toThrow(
       'Invalid theses table filters'
@@ -49,7 +53,7 @@ describe('validateUserThesesTableFiltersData', () => {
   })
 
   it('should return an error if field is missing', () => {
-    req.body.thesesTableFilters[0].field = undefined
+    req.body.thesesTableFilters.items[0].field = undefined
 
     expect(() => validateUserThesesTableFiltersData(req, res, next)).toThrow(
       'Invalid theses table filters'
@@ -58,7 +62,7 @@ describe('validateUserThesesTableFiltersData', () => {
   })
 
   it('should return an error if field is not a string', () => {
-    req.body.thesesTableFilters[0].field = 32027
+    req.body.thesesTableFilters.items[0].field = 32027
 
     expect(() => validateUserThesesTableFiltersData(req, res, next)).toThrow(
       'Invalid theses table filters'
@@ -67,7 +71,7 @@ describe('validateUserThesesTableFiltersData', () => {
   })
 
   it('should return an error if operator is missing', () => {
-    req.body.thesesTableFilters[0].operator = undefined
+    req.body.thesesTableFilters.items[0].operator = undefined
 
     expect(() => validateUserThesesTableFiltersData(req, res, next)).toThrow(
       'Invalid theses table filters'
@@ -76,7 +80,7 @@ describe('validateUserThesesTableFiltersData', () => {
   })
 
   it('should return an error if operator is not a string', () => {
-    req.body.thesesTableFilters[0].operator = 32027
+    req.body.thesesTableFilters.items[0].operator = 32027
 
     expect(() => validateUserThesesTableFiltersData(req, res, next)).toThrow(
       'Invalid theses table filters'

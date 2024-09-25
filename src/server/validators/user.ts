@@ -4,7 +4,7 @@ import { ServerThesesFiltersPutRequest } from '@backend/types'
 import CustomValidationError from '../errors/ValidationError'
 
 // Filter schema based on the MUI docs: https://mui.com/x/react-data-grid/filtering/#structure-of-the-model
-const MUIfilterSchema = z.object({
+const filterItemsSchema = z.object({
   id: z.number({ message: 'Filter id must be non-empty and a number' }), // Unique ID for the filter
   field: z.string().min(1, 'Filter column name must be non-empty'), // Column name (e.g., 'name', 'age')
   operator: z.string().min(1, 'Filter operator value must be non-empty'), // Operator (e.g., 'contains', 'equals')
@@ -18,7 +18,12 @@ const MUIfilterSchema = z.object({
   ]),
 })
 
-const ThesesTableFiltersSchema = z.array(MUIfilterSchema)
+const ThesesTableFiltersSchema = z.object({
+  items: z.array(filterItemsSchema),
+  logicOperator: z.string(),
+  quickFilterValues: z.array(z.string()),
+  quickFilterLogicOperator: z.string(),
+})
 
 export const validateUserThesesTableFiltersData = (
   req: ServerThesesFiltersPutRequest,
