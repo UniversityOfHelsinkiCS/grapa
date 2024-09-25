@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 
 import {
@@ -7,6 +7,7 @@ import {
   DataGridProps,
   GridColDef,
   GridRowSelectionModel,
+  useGridApiRef,
 } from '@mui/x-data-grid'
 import {
   ProgramData,
@@ -37,6 +38,7 @@ import { StatusLocale } from '../../types'
 const PAGE_SIZE = 25
 
 const ThesesPage = () => {
+  const apiRef = useGridApiRef()
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
   const { user, isLoading: loggedInUserLoading } = useLoggedInUser()
@@ -64,9 +66,11 @@ const ThesesPage = () => {
     offset: paginationModel.page * paginationModel.pageSize,
     limit: paginationModel.pageSize,
   })
+
   const { programs, isLoading: isProgramLoading } = usePrograms({
     includeNotManaged: true,
   })
+
   const { mutateAsync: editThesis } = useEditThesisMutation()
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
   const { mutateAsync: createThesis } = useCreateThesisMutation()
@@ -79,6 +83,17 @@ const ThesesPage = () => {
     }
     return rowCountRef.current
   }, [totalCount])
+
+  // Restore filters from user settings
+  useEffect(() => {
+    if (user.thesesTableFilters) {
+      apiRef.current.restoreState({
+        filter: {
+          filterModel: user.thesesTableFilters,
+        },
+      })
+    }
+  }, [user.thesesTableFilters])
 
   const columns: GridColDef<Thesis>[] = [
     {
@@ -146,6 +161,7 @@ const ThesesPage = () => {
       valueGetter: (_, row) => dayjs(row.targetDate).format('YYYY-MM-DD'),
     },
   ]
+
   const skeletonRows: Thesis[] = Array.from({ length: 7 }).map((_, index) => ({
     programId: '',
     topic: '',
@@ -219,18 +235,19 @@ const ThesesPage = () => {
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
       <Box>
         <DataGrid
+          autoHeight
+          apiRef={apiRef}
           loading={isLoading}
           rows={isLoading ? skeletonRows : theses}
+          rowCount={rowCount}
+          getRowHeight={() => 44}
           columns={columns}
-          autoHeight
+          columnHeaderHeight={36}
           hideFooterSelectedRowCount
           pageSizeOptions={[PAGE_SIZE]}
           paginationMode="server"
           paginationModel={paginationModel}
           onPaginationModelChange={(newModel) => setPaginationModel(newModel)}
-          rowCount={rowCount}
-          getRowHeight={() => 44}
-          columnHeaderHeight={36}
           rowSelectionModel={rowSelectionModel}
           onRowSelectionModelChange={(newSelection: GridRowSelectionModel) =>
             setRowSelectionModel(newSelection)
