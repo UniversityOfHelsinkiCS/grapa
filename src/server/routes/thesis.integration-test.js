@@ -8,6 +8,7 @@ import app from '../index'
 import {
   Attachment,
   Author,
+  EventLog,
   Grader,
   Program,
   ProgramManagement,
@@ -687,7 +688,6 @@ describe('thesis router', () => {
           })
         })
 
-
         describe('when the program manager user fetches own theses', () => {
           it('should return all theses supervised by the user, but not the others in the managed program', async () => {
             const response = await request
@@ -791,8 +791,6 @@ describe('thesis router', () => {
           })
         })
 
-
-
         describe('when an admin user fetches own theses', () => {
           it('should return all theses supervised by the user and only those', async () => {
             const response = await request
@@ -895,14 +893,12 @@ describe('thesis router', () => {
             ])
           })
         })
-
-
       })
     })
 
     describe('DELETE /api/theses/:id', () => {
       describe('when the user is an admin', () => {
-        it('should return 204 and delete the thesis', async () => {
+        it('should return 204, delete the thesis and write to event log', async () => {
           const response = await request
             .delete(`/api/theses/${thesis1.id}`)
             .set('hygroupcn', 'grp-toska')
@@ -917,19 +913,28 @@ describe('thesis router', () => {
           expect(fs.unlinkSync).toHaveBeenCalledWith(
             '/opt/app-root/src/uploads/testfile.pdf2'
           )
+
+          const eventLog = await EventLog.findOne({
+            where: { 'data.id': thesis1.id, type: 'THESIS_DELETED' },
+          })
+          expect(eventLog).not.toBeNull()
         })
 
-        it('should return 404 if the thesis does not exist', async () => {
+        it('should return 404 and not log if the thesis does not exist', async () => {
           const response = await request
             .delete('/api/theses/999')
             .set('hygroupcn', 'grp-toska')
           expect(response.status).toEqual(404)
+          const eventLog = await EventLog.findOne({
+            where: { type: 'THESIS_DELETED' },
+          })
+          expect(eventLog).toBeNull()
         })
       })
 
       describe('when the user is a teacher', () => {
         describe('when the user is a supervisor of the thesis being deleted', () => {
-          it('should return 204 and delete the thesis', async () => {
+          it('should return 204, delete the thesis and log the event', async () => {
             const response = await request
               .delete(`/api/theses/${thesis1.id}`)
               .set({ uid: user1.id, hygroupcn: 'hy-employees' })
@@ -944,15 +949,23 @@ describe('thesis router', () => {
             expect(fs.unlinkSync).toHaveBeenCalledWith(
               '/opt/app-root/src/uploads/testfile.pdf2'
             )
+            const eventLog = await EventLog.findOne({
+              where: { 'data.id': thesis1.id, type: 'THESIS_DELETED' },
+            })
+            expect(eventLog).not.toBeNull()
           })
         })
 
         describe('when the user is not a supervisor of the thesis deleted', () => {
-          it('should return 404', async () => {
+          it('should return 404 and not log to eventLog', async () => {
             const response = await request
               .delete(`/api/theses/${thesis1.id}`)
               .set({ uid: user2.id, hygroupcn: 'hy-employees' })
             expect(response.status).toEqual(404)
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_DELETED' },
+            })
+            expect(eventLog).toBeNull()
           })
         })
       })
@@ -966,7 +979,7 @@ describe('thesis router', () => {
             })
           })
 
-          it('should return 204 and delete the thesis', async () => {
+          it('should return 204, delete the thesis and log the event', async () => {
             const response = await request
               .delete(`/api/theses/${thesis1.id}`)
               .set({ uid: user2.id, hygroupcn: 'hy-employees' })
@@ -981,6 +994,11 @@ describe('thesis router', () => {
             expect(fs.unlinkSync).toHaveBeenCalledWith(
               '/opt/app-root/src/uploads/testfile.pdf2'
             )
+
+            const eventLog = await EventLog.findOne({
+              where: { 'data.id': thesis1.id, type: 'THESIS_DELETED' },
+            })
+            expect(eventLog).not.toBeNull()
           })
         })
 
@@ -992,11 +1010,16 @@ describe('thesis router', () => {
             })
           })
 
-          it('should return 404', async () => {
+          it('should return 404 and not log the event', async () => {
             const response = await request
               .delete(`/api/theses/${thesis1.id}`)
               .set({ uid: user2.id, hygroupcn: 'hy-employees' })
             expect(response.status).toEqual(404)
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_DELETED' },
+            })
+            expect(eventLog).toBeNull()
           })
         })
       })

@@ -3,7 +3,10 @@ import { jest } from '@jest/globals'
 import {
   Attachment,
   Author,
+  EventLog,
+  Grader,
   Program,
+  ProgramManagement,
   StudyTrack,
   Supervision,
   Thesis,
@@ -22,4 +25,11 @@ global.afterEach(async () => {
   await User.destroy({ where: {} })
   await StudyTrack.destroy({ where: {} })
   await Program.destroy({ where: {} })
+  await Grader.destroy({ where: {} })
+  await ProgramManagement.destroy({ where: {} })
+  await EventLog.destroy({ where: {} })
+  // TODO: Departments should be cleaned up here too,
+  // but integration tests are failing atm if I do it here.
+  // We need to fix department / department admin integration tests
+  // and add the cleanup here.
 })
