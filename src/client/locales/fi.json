@@ -144,7 +144,9 @@
   "thesesTableToolbar": {
     "newThesisButton": "Uusi tutkielma",
     "showAllThesesSwitch": "Kaikki tutkielmat",
-    "showManagedProgramsThesesSwitch": "Tutkielmat ohjelmissani"
+    "showManagedProgramsThesesSwitch": "Tutkielmat ohjelmissani",
+    "filterButton": "Suodattimet",
+    "saveFiltersButton": "Tallenna suodattimet"
   },
   "programManagementPage": {
     "pageTitle": "Ohjelmavastaavat",

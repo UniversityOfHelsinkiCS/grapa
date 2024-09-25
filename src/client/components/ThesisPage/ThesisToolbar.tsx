@@ -1,6 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { Button, Box, FormControlLabel, Switch, Stack } from '@mui/material'
-import { GridSlotProps, useGridApiContext } from '@mui/x-data-grid'
+import { Button, Box, FormControlLabel, Switch } from '@mui/material'
+import {
+  GridSlotProps,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  useGridApiContext,
+} from '@mui/x-data-grid'
 
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useUserThesesTableFilterMutation from '../../hooks/useUserThesesTableFilterMutation'
@@ -25,11 +30,10 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
   }
 
   return (
-    <Stack
-      direction="row"
+    <GridToolbarContainer
       sx={{ p: 2, alignItems: 'center', justifyContent: 'space-between' }}
     >
-      <Box sx={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
         <Button
           variant="contained"
           size="small"
@@ -67,22 +71,19 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
           />
         )}
       </Box>
-
-      <Button
-        variant="outlined"
-        size="small"
-        sx={{
-          fontSize: '12px',
-          height: 24,
-          px: 2,
-          borderRadius: '1rem',
-          fontWeight: 700,
-        }}
-        onClick={handleSaveFilters}
-      >
-        {t('thesesTableToolbar:saveFiltersButton')}
-      </Button>
-    </Stack>
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+        <GridToolbarFilterButton />
+        <Button
+          size="small"
+          sx={{
+            fontSize: '12px',
+          }}
+          onClick={handleSaveFilters}
+        >
+          {t('thesesTableToolbar:saveFiltersButton')}
+        </Button>
+      </Box>
+    </GridToolbarContainer>
   )
 }
 
