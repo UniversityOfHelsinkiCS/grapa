@@ -1,4 +1,5 @@
 import { Request } from 'express'
+import { VALID_EVENT_LOG_TYPES } from 'src/config'
 
 export interface TranslatedName {
   fi: string
@@ -153,3 +154,5 @@ export interface DepartmentAdminData {
   user?: User
   id?: string
 }
+
+export type EventLogType = (typeof VALID_EVENT_LOG_TYPES)[number]

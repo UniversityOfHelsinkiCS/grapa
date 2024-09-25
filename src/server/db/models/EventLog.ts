@@ -7,6 +7,7 @@ import {
 } from 'sequelize'
 
 import { sequelize } from '../connection'
+import { EventLogType } from '../../../config'
 
 class EventLog extends Model<
   InferAttributes<EventLog>,
@@ -17,6 +18,10 @@ class EventLog extends Model<
   declare thesisId: string | null
 
   declare userId: string | null
+
+  declare type: EventLogType | null
+
+  declare data: Record<string, unknown> | null // jsonb
 }
 
 EventLog.init(
@@ -44,6 +49,14 @@ EventLog.init(
         key: 'id',
       },
       onDelete: 'CASCADE',
+    },
+    type: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    data: {
+      type: DataTypes.JSONB,
+      allowNull: true,
     },
   },
   {

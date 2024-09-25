@@ -25,3 +25,11 @@ export const FORM_DATA_KEY = 'grapa_local_save'
 
 export const LOGIN_AS_LOCAL_STORAGE_KEY = 'grapa-admin-logged-in-as'
 export const LOGIN_AS_HEADER_KEY = 'x-admin-logged-in-as'
+
+export const VALID_EVENT_LOG_TYPES = [
+  'THESIS_CREATED',
+  'THESIS_DELETED',
+  'THESIS_SUPERVISIONS_CHANGED',
+  'THESIS_GRADERs_CHANGED',
+  'THESIS_STATUS_CHANGED',
+] as const
