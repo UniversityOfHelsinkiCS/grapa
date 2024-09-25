@@ -78,4 +78,5 @@ export {
   ProgramManagement,
   Department,
   DepartmentAdmin,
+  EventLog,
 }

@@ -7,7 +7,7 @@ import {
 } from 'sequelize'
 
 import { sequelize } from '../connection'
-import { EventLogType } from '../../../config'
+import type { EventLogType } from '../../types'
 
 class EventLog extends Model<
   InferAttributes<EventLog>,
@@ -39,7 +39,7 @@ EventLog.init(
         model: 'theses',
         key: 'id',
       },
-      onDelete: 'CASCADE',
+      onDelete: 'SET NULL',
     },
     userId: {
       type: DataTypes.STRING,
@@ -48,7 +48,7 @@ EventLog.init(
         model: 'users',
         key: 'id',
       },
-      onDelete: 'CASCADE',
+      onDelete: 'SET NULL',
     },
     type: {
       type: DataTypes.STRING,

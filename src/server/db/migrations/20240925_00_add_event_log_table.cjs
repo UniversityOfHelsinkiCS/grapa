@@ -16,7 +16,7 @@ module.exports = {
           model: 'theses',
           key: 'id'
         },
-        onDelete: 'CASCADE'
+        onDelete: 'SET NULL'
       },
       user_id: {
         type: DataTypes.STRING,
@@ -25,7 +25,7 @@ module.exports = {
           model: 'users',
           key: 'id'
         },
-        onDelete: 'CASCADE'
+        onDelete: 'SET NULL'
       },
       created_at: {
         type: DataTypes.DATE,
