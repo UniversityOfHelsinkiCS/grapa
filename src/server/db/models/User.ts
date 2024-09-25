@@ -38,6 +38,8 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare iamGroups: string[]
 
   declare favoriteProgramIds: string[]
+
+  declare thesesTableFilters: Record<string, unknown>
 }
 
 User.init(
@@ -107,6 +109,11 @@ User.init(
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
       defaultValue: [],
+    },
+    thesesTableFilters: {
+      type: DataTypes.JSONB,
+      allowNull: false,
+      defaultValue: {},
     },
   },
   {
