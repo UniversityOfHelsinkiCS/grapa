@@ -1026,7 +1026,7 @@ describe('thesis router', () => {
     })
 
     describe('POST /api/theses', () => {
-      it('should return 201 and create a new thesis', async () => {
+      it('should return 201, create a new thesis and log the event', async () => {
         const newThesis = {
           programId: 'New program',
           studyTrackId: 'new-test-study-track-id',
@@ -1074,9 +1074,14 @@ describe('thesis router', () => {
 
         const thesis = await Thesis.findByPk(response.body.id)
         expect(thesis).not.toBeNull()
+
+        const eventLog = await EventLog.findOne({
+          where: { type: 'THESIS_CREATED', thesisId: thesis.id },
+        })
+        expect(eventLog).not.toBeNull()
       })
 
-      it('should return 201 with external supervisors', async () => {
+      it('should return 201 with external supervisors and log the event', async () => {
         const extUserData = {
           firstName: 'External',
           lastName: 'Supervisor',
@@ -1136,9 +1141,14 @@ describe('thesis router', () => {
         expect(extUser).not.toBeNull()
         expect(extUser).toMatchObject(extUserData)
         expect(extUser.isExternal).toBe(true)
+
+        const eventLog = await EventLog.findOne({
+          where: { type: 'THESIS_CREATED', thesisId: response.body.id },
+        })
+        expect(eventLog).not.toBeNull()
       })
 
-      it('should return 201 with external graders', async () => {
+      it('should return 201 with external graders and log the event', async () => {
         const extUserData = {
           firstName: 'External',
           lastName: 'Grader',
@@ -1197,9 +1207,14 @@ describe('thesis router', () => {
         expect(extUser).not.toBeNull()
         expect(extUser).toMatchObject(extUserData)
         expect(extUser.isExternal).toBe(true)
+
+        const eventLog = await EventLog.findOne({
+          where: { type: 'THESIS_CREATED', thesisId: response.body.id },
+        })
+        expect(eventLog).not.toBeNull()
       })
 
-      it('should return 400 if the request is missing a required field', async () => {
+      it('should return 400 and not log the event if the request is missing a required field', async () => {
         const newThesis = {
           programId: 'New program',
           studyTrackId: 'new-test-study-track-id',
@@ -1235,9 +1250,14 @@ describe('thesis router', () => {
 
         // We expect the response to be 400 because the request is missing the researchPlan attachment
         expect(response.status).toEqual(400)
+
+        const eventLog = await EventLog.findOne({
+          where: { type: 'THESIS_CREATED' },
+        })
+        expect(eventLog).toBeNull()
       })
 
-      it('should return 400 if the request is missing the primary supervisor', async () => {
+      it('should return 400 and not log the event if the request is missing the primary supervisor', async () => {
         const newThesis = {
           programId: 'New program',
           studyTrackId: 'new-test-study-track-id',
@@ -1277,11 +1297,16 @@ describe('thesis router', () => {
           .field('json', JSON.stringify(newThesis))
 
         expect(response.status).toEqual(400)
+
+        const eventLog = await EventLog.findOne({
+          where: { type: 'THESIS_CREATED' },
+        })
+        expect(eventLog).toBeNull()
       })
 
       describe('when trying to create a thesis with status other than PLANNING', () => {
         describe('when the user is an admin', () => {
-          it('should return 201 and create the thesis', async () => {
+          it('should return 201, create the thesis and log the event', async () => {
             const newThesis = {
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
@@ -1325,11 +1350,16 @@ describe('thesis router', () => {
               )
               .field('json', JSON.stringify(newThesis))
             expect(response.status).toEqual(201)
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_CREATED', thesisId: response.body.id },
+            })
+            expect(eventLog).not.toBeNull()
           })
         })
 
         describe("when the user is a manager of the thesis' program", () => {
-          it('should return 201 and create the thesis', async () => {
+          it('should return 201, create the thesis and log the event', async () => {
             await ProgramManagement.create({
               programId: 'New program',
               userId: user2.id,
@@ -1378,11 +1408,16 @@ describe('thesis router', () => {
               )
               .field('json', JSON.stringify(newThesis))
             expect(response.status).toEqual(201)
+            
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_CREATED', thesisId: response.body.id },
+            })
+            expect(eventLog).not.toBeNull()
           })
         })
 
         describe('when the user is a manager of a different program', () => {
-          it('should return 403 and a correct error message', async () => {
+          it('should return 403 and a correct error message, and not log the event', async () => {
             await ProgramManagement.create({
               programId: 'Updated program',
               userId: user2.id,
@@ -1441,11 +1476,16 @@ describe('thesis router', () => {
                 ],
               },
             })
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_CREATED' },
+            })
+            expect(eventLog).toBeNull()
           })
         })
 
         describe('when the user is a teacher and is a supervisor of the thesis', () => {
-          it('should return 403 and a correct error message', async () => {
+          it('should return 403 and a correct error message, and not log the event', async () => {
             const newThesis = {
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
@@ -1498,12 +1538,17 @@ describe('thesis router', () => {
                 ],
               },
             })
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_CREATED' },
+            })
+            expect(eventLog).toBeNull()
           })
         })
       })
 
       describe('when the request contains duplicate supervisors', () => {
-        it('should return 400 and create the thesis', async () => {
+        it('should return 400 and not log the event', async () => {
           const newThesis = {
             programId: 'Test program',
             studyTrackId: 'new-test-study-track-id',
@@ -1550,11 +1595,16 @@ describe('thesis router', () => {
             .field('json', JSON.stringify(newThesis))
 
           expect(response.status).toEqual(400)
+
+          const eventLog = await EventLog.findOne({
+            where: { type: 'THESIS_CREATED' },
+          })
+          expect(eventLog).toBeNull()
         })
       })
 
       describe('when the request contains duplicate graders', () => {
-        it('should return 400 and not create the thesis', async () => {
+        it('should return 400 and not log the event', async () => {
           const newThesis = {
             programId: 'Test program',
             studyTrackId: 'new-test-study-track-id',
@@ -1601,6 +1651,11 @@ describe('thesis router', () => {
             .field('json', JSON.stringify(newThesis))
 
           expect(response.status).toEqual(400)
+
+          const eventLog = await EventLog.findOne({
+            where: { type: 'THESIS_CREATED' },
+          })
+          expect(eventLog).toBeNull()
         })
       })
     })
