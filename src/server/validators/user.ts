@@ -5,7 +5,7 @@ import CustomValidationError from '../errors/ValidationError'
 
 // Filter schema based on the MUI docs: https://mui.com/x/react-data-grid/filtering/#structure-of-the-model
 const MUIfilterSchema = z.object({
-  id: z.number(), // Unique ID for the filter
+  id: z.number({ message: 'Filter id must be non-empty and a number' }), // Unique ID for the filter
   field: z.string().min(1, 'Filter column name must be non-empty'), // Column name (e.g., 'name', 'age')
   operator: z.string().min(1, 'Filter operator value must be non-empty'), // Operator (e.g., 'contains', 'equals')
   value: z.union([

@@ -45,7 +45,7 @@ userRouter.put('/favoritePrograms', async (req: RequestWithUser, res: any) => {
 })
 
 userRouter.put(
-  '/filters',
+  '/theses-table-filters',
   // @ts-expect-error the user middleware updates the req object with user field
   validateUserThesesTableFiltersData,
   async (req: RequestWithUser, res: any) => {
