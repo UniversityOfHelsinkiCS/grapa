@@ -39,7 +39,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 
   declare favoriteProgramIds: string[]
 
-  declare thesesTableFilters: Record<string, unknown>
+  declare thesesTableFilters: Record<string, unknown>[]
 }
 
 User.init(
@@ -111,9 +111,9 @@ User.init(
       defaultValue: [],
     },
     thesesTableFilters: {
-      type: DataTypes.JSONB,
+      type: DataTypes.ARRAY(DataTypes.JSONB),
       allowNull: false,
-      defaultValue: {},
+      defaultValue: [],
     },
   },
   {

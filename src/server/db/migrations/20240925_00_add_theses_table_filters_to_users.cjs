@@ -3,9 +3,9 @@ const { DataTypes } = require('sequelize')
 module.exports = {
   up: async queryInterface => {
     await queryInterface.addColumn('users', 'theses_table_filters', {
-      type: DataTypes.JSONB,
+      type: DataTypes.ARRAY(DataTypes.JSONB),
       allowNull: false,
-      defaultValue: {}
+      defaultValue: []
     })
   },
   down: async queryInterface => {
