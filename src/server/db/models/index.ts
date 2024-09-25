@@ -9,6 +9,7 @@ import Grader from './Grader'
 import ProgramManagement from './ProgramManagement'
 import Department from './Department'
 import DepartmentAdmin from './DepartmentAdmin'
+import EventLog from './EventLog'
 
 User.belongsToMany(Thesis, {
   through: Supervision,
@@ -60,6 +61,10 @@ Thesis.hasOne(Attachment, { as: 'waysOfWorking', foreignKey: 'thesisId' })
 
 Program.hasMany(StudyTrack, { as: 'studyTracks' })
 StudyTrack.belongsTo(Program, { as: 'program' })
+
+EventLog.belongsTo(User, { as: 'user' })
+EventLog.belongsTo(Thesis, { as: 'thesis' })
+Thesis.hasMany(EventLog)
 
 export {
   User,
