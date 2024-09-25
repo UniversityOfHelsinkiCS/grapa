@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 
+import { Box, Stack, TextField, Typography } from '@mui/material'
 import {
   DataGrid,
   DataGridProps,
@@ -9,12 +10,13 @@ import {
   GridRowSelectionModel,
   useGridApiRef,
 } from '@mui/x-data-grid'
+import { fiFI } from '@mui/x-data-grid/locales'
+
 import {
   ProgramData,
   ThesisData as Thesis,
   TranslationLanguage,
 } from '@backend/types'
-import { Box, Stack, TextField, Typography } from '@mui/material'
 
 import { usePaginatedTheses } from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
@@ -254,6 +256,7 @@ const ThesesPage = () => {
           onRowSelectionModelChange={(newSelection: GridRowSelectionModel) =>
             setRowSelectionModel(newSelection)
           }
+          localeText={fiFI.components.MuiDataGrid.defaultProps.localeText}
           slots={{
             toolbar: ThesisToolbar,
             footer: ViewThesisFooter as DataGridProps['slots']['footer'],
