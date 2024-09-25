@@ -23,7 +23,11 @@ import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
 import { transformSingleThesis, transformThesisData } from '../util/helpers'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
-import { getAndCreateExtUsers, getFindThesesOptions } from './thesisHelpers'
+import {
+  getAndCreateExtUsers,
+  getFindThesesOptions,
+  handleStatusChangeEventLog,
+} from './thesisHelpers'
 import {
   deleteThesisAttachments,
   handleAttachmentByLabel,
@@ -254,6 +258,8 @@ thesisRouter.put(
 
       await handleAttachmentByLabel(req, id, 'researchPlan', t)
       await handleAttachmentByLabel(req, id, 'waysOfWorking', t)
+
+      await handleStatusChangeEventLog(originalThesis, thesisData, req.user, t)
     })
 
     const updatedThesis = await fetchThesisById(id, req.user)

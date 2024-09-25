@@ -7,6 +7,8 @@ import {
   User,
   Attachment,
   ProgramManagement,
+  EventLog,
+  Thesis,
 } from '../db/models'
 import { ThesisData, User as UserType } from '../types'
 
@@ -159,4 +161,26 @@ export const getAndCreateExtUsers = async (
   )
 
   return extUsers
+}
+
+export const handleStatusChangeEventLog = async (
+  originalThesis: Thesis,
+  updatedThesis: ThesisData,
+  actionUser: UserType,
+  transaction: Transaction
+) => {
+  if (originalThesis.status !== updatedThesis.status) {
+    await EventLog.create(
+      {
+        userId: actionUser.id,
+        thesisId: originalThesis.id,
+        type: 'THESIS_STATUS_CHANGED',
+        data: {
+          from: originalThesis.status,
+          to: updatedThesis.status,
+        },
+      },
+      { transaction }
+    )
+  }
 }
