@@ -2770,7 +2770,7 @@ describe('thesis router', () => {
           })
 
           describe('when the thesis has status other than PLANING or IN_PROGRESS', () => {
-            it('should return 200 and update the thesis', async () => {
+            it('should return 200, update the thesis and log the status update event', async () => {
               await ProgramManagement.create({
                 programId: 'Testing program',
                 userId: user2.id,
@@ -2828,13 +2828,18 @@ describe('thesis router', () => {
                 .field('json', JSON.stringify(updatedThesis))
 
               expect(response.status).toEqual(200)
+
+              const eventLog = await EventLog.findOne({
+                where: { thesisId: thesis1.id, type: 'THESIS_STATUS_CHANGED' },
+              })
+              expect(eventLog).not.toBeNull()
             })
           })
         })
 
         describe('when the user is a teacher and is a supervisor of the thesis', () => {
           describe('when the thesis has PLANNING status', () => {
-            it('should return 403 and a correct error message', async () => {
+            it('should return 403 and a correct error message, and not log status change event', async () => {
               const updatedThesis = {
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
@@ -2892,6 +2897,11 @@ describe('thesis router', () => {
                   ],
                 },
               })
+
+              const eventLog = await EventLog.findOne({
+                where: { type: 'THESIS_STATUS_CHANGED' },
+              })
+              expect(eventLog).toBeNull()
             })
           })
 
@@ -2901,7 +2911,7 @@ describe('thesis router', () => {
               thesis1.save()
             })
 
-            it('should return 200 and update the thesis', async () => {
+            it('should return 200, update the thesis and not log status change event', async () => {
               const updatedThesis = {
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
@@ -2950,6 +2960,11 @@ describe('thesis router', () => {
                 )
                 .field('json', JSON.stringify(updatedThesis))
               expect(response.status).toEqual(200)
+
+              const eventLog = await EventLog.findOne({
+                where: { type: 'THESIS_STATUS_CHANGED' },
+              })
+              expect(eventLog).toBeNull()
             })
           })
 
@@ -2959,7 +2974,7 @@ describe('thesis router', () => {
               thesis1.save()
             })
 
-            it('should return 200 and update the thesis', async () => {
+            it('should return 200, update the thesis and log status change event', async () => {
               const updatedThesis = {
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
@@ -3008,6 +3023,11 @@ describe('thesis router', () => {
                 )
                 .field('json', JSON.stringify(updatedThesis))
               expect(response.status).toEqual(200)
+
+              const eventLog = await EventLog.findOne({
+                where: { type: 'THESIS_STATUS_CHANGED', thesisId: thesis1.id },
+              })
+              expect(eventLog).not.toBeNull()
             })
           })
         })
