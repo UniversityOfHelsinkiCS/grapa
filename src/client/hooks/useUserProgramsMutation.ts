@@ -8,7 +8,7 @@ const useUserProgramsMutation = () => {
   }: {
     favoriteProgramIds: string[]
   }) => {
-    await apiClient.put(`/user/favoritePrograms`, { favoriteProgramIds })
+    await apiClient.put(`/user/favorite-programs`, { favoriteProgramIds })
   }
 
   const mutation = useMutation({
