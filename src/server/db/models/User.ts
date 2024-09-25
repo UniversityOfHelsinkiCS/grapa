@@ -6,6 +6,7 @@ import {
   UUIDV4,
 } from 'sequelize'
 
+import { GridFilterModel } from '@mui/x-data-grid'
 import { sequelize } from '../connection'
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
@@ -39,7 +40,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 
   declare favoriteProgramIds: string[]
 
-  declare thesesTableFilters: Record<string, unknown>[]
+  declare thesesTableFilters: GridFilterModel
 }
 
 User.init(
