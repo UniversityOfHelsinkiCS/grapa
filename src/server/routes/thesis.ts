@@ -282,7 +282,7 @@ thesisRouter.delete('/:id', async (req: ServerDeleteRequest, res) => {
       {
         userId: req.user.id,
         type: 'THESIS_DELETED',
-        data: { thesisId: id },
+        data: thesis.toJSON(),
       },
       { transaction: t }
     )
