@@ -1,6 +1,7 @@
 import express from 'express'
 
 import { RequestWithUser } from '../types'
+import { validateUserThesesTableFiltersData } from '../validators/user'
 import { DepartmentAdmin, ProgramManagement, User } from '../db/models'
 
 const userRouter = express.Router()
@@ -43,13 +44,20 @@ userRouter.put('/favoritePrograms', async (req: RequestWithUser, res: any) => {
   return res.status(200).send({ message: 'User favorite programs updated' })
 })
 
-userRouter.put('/filters', async (req: RequestWithUser, res: any) => {
-  const { user, body } = req
-  const { thesesTableFilters } = body
+userRouter.put(
+  '/filters',
+  // @ts-expect-error the user middleware updates the req object with user field
+  validateUserThesesTableFiltersData,
+  async (req: RequestWithUser, res: any) => {
+    const { user, body } = req
+    const { thesesTableFilters } = body
 
-  await User.update({ thesesTableFilters }, { where: { id: user.id } })
+    await User.update({ thesesTableFilters }, { where: { id: user.id } })
 
-  return res.status(200).send({ message: 'User thesis table filters updated' })
-})
+    return res
+      .status(200)
+      .send({ message: 'User thesis table filters updated' })
+  }
+)
 
 export default userRouter

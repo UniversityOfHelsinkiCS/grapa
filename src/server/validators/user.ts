@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { NextFunction } from 'express'
-import { ServerPostRequest } from '@backend/types'
+import { ServerThesesFiltersPutRequest } from '@backend/types'
 import CustomValidationError from '../errors/ValidationError'
 
 // Filter schema based on the MUI docs: https://mui.com/x/react-data-grid/filtering/#structure-of-the-model
@@ -21,11 +21,20 @@ const MUIfilterSchema = z.object({
 const ThesesTableFiltersSchema = z.array(MUIfilterSchema)
 
 export const validateUserThesesTableFiltersData = (
-  req: ServerPostRequest,
+  req: ServerThesesFiltersPutRequest,
   _: Express.Response,
   next: NextFunction
 ) => {
-  const thesesTableFilters = req.body
+  const thesesTableFilters = req.body?.thesesTableFilters
+
+  if (!thesesTableFilters) {
+    throw new CustomValidationError('Theses table filters are missing', {
+      errors: {
+        thesesTableFilters:
+          'Request payload must contain thesesTableFilters field',
+      },
+    })
+  }
 
   const parsedBody = ThesesTableFiltersSchema.safeParse(thesesTableFilters)
 
