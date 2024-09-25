@@ -1,7 +1,5 @@
 import express, { Response } from 'express'
-import { Includeable, Op, type Transaction } from 'sequelize'
-import { uniqBy } from 'lodash-es'
-import fs from 'fs'
+import { type Transaction } from 'sequelize'
 
 import {
   ServerDeleteRequest,
@@ -18,169 +16,20 @@ import {
   Thesis,
   Supervision,
   Author,
-  Attachment,
   User,
-  ProgramManagement,
+  EventLog,
 } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
 import { transformSingleThesis, transformThesisData } from '../util/helpers'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
-import { userFields } from './config'
+import { getAndCreateExtUsers, getFindThesesOptions } from './thesisHelpers'
+import {
+  deleteThesisAttachments,
+  handleAttachmentByLabel,
+} from './thesisAttachmentHelpers'
 
 const thesisRouter = express.Router()
-const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
-
-interface FetchThesisProps {
-  thesisId?: string
-  actionUser: UserType
-  onlySupervised?: boolean
-}
-export const getFindThesesOptions = async ({
-  thesisId,
-  actionUser,
-  onlySupervised,
-}: FetchThesisProps) => {
-  let includes: Includeable[] = [
-    {
-      model: Supervision,
-      as: 'supervisions',
-      attributes: ['percentage', 'isPrimarySupervisor'],
-      separate: true,
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: userFields,
-        },
-      ],
-    },
-    {
-      model: Grader,
-      as: 'graders',
-      attributes: ['isPrimaryGrader'],
-      separate: true,
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: userFields,
-        },
-      ],
-    },
-    {
-      model: User,
-      as: 'authors',
-      attributes: userFields,
-    },
-    {
-      model: Attachment,
-      as: 'researchPlan',
-      attributes: ['filename', ['original_name', 'name'], 'mimetype'],
-      where: { label: 'researchPlan' },
-      required: false,
-    },
-    {
-      model: Attachment,
-      as: 'waysOfWorking',
-      attributes: ['filename', ['original_name', 'name'], 'mimetype'],
-      where: { label: 'waysOfWorking' },
-      required: false,
-    },
-  ]
-
-  let whereClause: Record<any, any> = thesisId ? { id: thesisId } : {}
-  if (!actionUser.isAdmin || onlySupervised) {
-    const programManagement = onlySupervised
-      ? []
-      : await ProgramManagement.findAll({
-          attributes: ['programId'],
-          where: { userId: actionUser.id },
-        })
-
-    // We want to include theses where current user is a supervisor
-    // but for the returned theses, we still want to include all
-    // supervisions.
-    // To achieve this, we use 2 Supervision includes, one above
-    // with attribute listed and one below with no attributes.
-    // The only purpose of this include is to be used in filtering.
-    const teacherClause: Includeable = {
-      model: Supervision,
-      as: 'supervisionsForFiltering',
-      attributes: [] as const,
-    }
-    includes = [...includes, teacherClause]
-
-    const programIds = programManagement.map((pm) => pm.programId)
-
-    whereClause = {
-      [Op.or]: [
-        // if a user is only a teacher (not admin nor supervisor),
-        // they should only see theses they supervise
-        { '$supervisionsForFiltering.user_id$': actionUser.id },
-        // but we also want to show all theses within programs
-        // managed by the user
-        programIds?.length ? { programId: programIds } : {},
-      ],
-    }
-  }
-
-  return {
-    where: whereClause,
-    attributes: [
-      'id',
-      'topic',
-      'status',
-      'startDate',
-      'targetDate',
-      'programId',
-      'studyTrackId',
-    ],
-    include: includes,
-  }
-}
-
-const getAndCreateExtUsers = async (
-  thesisData: ThesisData,
-  transaction: Transaction
-) => {
-  const gradersAndSupervisors = [
-    ...thesisData.supervisions,
-    ...thesisData.graders,
-  ]
-
-  const nonDuplicateGradersAndSupervisors = uniqBy(
-    gradersAndSupervisors,
-    (x) => x.user?.email
-  )
-
-  // Create the external users from the graders and supervisions
-  const extUsers = await User.bulkCreate(
-    nonDuplicateGradersAndSupervisors
-      .filter((person) => person.isExternal)
-      .map((person) => ({
-        username: `ext-${person.user?.email}`,
-        firstName: person.user?.firstName,
-        lastName: person.user?.lastName,
-        email: person.user?.email,
-        affiliation: person.user?.affiliation,
-        isExternal: true,
-      })),
-    {
-      transaction,
-      updateOnDuplicate: [
-        'username',
-        'firstName',
-        'lastName',
-        'email',
-        'affiliation',
-      ],
-      validate: true,
-    }
-  )
-
-  return extUsers
-}
 
 const fetchThesisById = async (id: string, user: UserType) => {
   const options = await getFindThesesOptions({ thesisId: id, actionUser: user })
@@ -249,76 +98,6 @@ const createThesis = async (thesisData: ThesisData, t: Transaction) => {
     { transaction: t, validate: true, individualHooks: true }
   )
   return createdThesis
-}
-
-const handleAttachmentByLabel = async (
-  req: ServerPostRequest | ServerPutRequest,
-  thesisId: string,
-  label: 'researchPlan' | 'waysOfWorking',
-  transaction: Transaction
-) => {
-  const newFile = req.files[label] ? req.files[label][0] : null
-  const fileMetadataFromClient = req.body[label]
-
-  const existingAttachment = await Attachment.findOne({
-    where: { thesisId, label },
-    transaction,
-  })
-
-  if (!newFile && !fileMetadataFromClient && existingAttachment) {
-    // delete reserachPlan from DB and the disk
-    await Attachment.destroy({
-      where: { thesisId, label },
-      transaction,
-    })
-
-    fs.unlinkSync(`${PATH_TO_FOLDER}${existingAttachment.filename}`)
-  } else if (newFile && existingAttachment) {
-    // update existing attachment
-    await Attachment.update(
-      {
-        filename: newFile.filename,
-        originalname: newFile.originalname,
-        mimetype: newFile.mimetype,
-      },
-      {
-        where: { thesisId, label },
-        transaction,
-      }
-    )
-    // delete existing files from disk
-    fs.unlinkSync(`${PATH_TO_FOLDER}${existingAttachment.filename}`)
-  } else if (newFile && !existingAttachment) {
-    // create new attachment
-    await Attachment.create(
-      {
-        thesisId,
-        filename: newFile.filename,
-        originalname: newFile.originalname,
-        mimetype: newFile.mimetype,
-        label,
-      },
-      { transaction }
-    )
-  }
-
-  // NOTE: Do nothing if no new file and but fileMetadataFromClient is present.
-  // This means that the file was not changed
-}
-
-const deleteThesisAttachments = async (thesisId: string, t: Transaction) => {
-  const existingAttachments = await Attachment.findAll({
-    where: { thesisId },
-  })
-
-  await Attachment.destroy({
-    where: { thesisId },
-    transaction: t,
-  })
-
-  existingAttachments.forEach((attachment) => {
-    fs.unlinkSync(`${PATH_TO_FOLDER}${attachment.filename}`)
-  })
 }
 
 const updateThesis = async (
@@ -439,6 +218,15 @@ thesisRouter.post(
       await handleAttachmentByLabel(req, newThesis.id, 'researchPlan', t)
       await handleAttachmentByLabel(req, newThesis.id, 'waysOfWorking', t)
 
+      await EventLog.create(
+        {
+          thesisId: newThesis.id,
+          userId: req.user.id,
+          type: 'THESIS_CREATED',
+        },
+        { transaction: t }
+      )
+
       return newThesis.toJSON()
     })
 
@@ -457,9 +245,9 @@ thesisRouter.put(
     const { id } = req.params
     const thesisData = req.body
 
-    const thesis = await fetchThesisById(id, req.user)
+    const originalThesis = await fetchThesisById(id, req.user)
 
-    if (!thesis) res.status(404).send('Thesis not found')
+    if (!originalThesis) res.status(404).send('Thesis not found')
 
     await sequelize.transaction(async (t) => {
       await updateThesis(id, thesisData, t)
@@ -483,6 +271,15 @@ thesisRouter.delete('/:id', async (req: ServerDeleteRequest, res) => {
   await sequelize.transaction(async (t) => {
     await deleteThesisAttachments(id, t)
     await deleteThesis(id, t)
+
+    await EventLog.create(
+      {
+        userId: req.user.id,
+        type: 'THESIS_DELETED',
+        data: { thesisId: id },
+      },
+      { transaction: t }
+    )
   })
 
   res.status(204).send(`Deleted thesis with id ${id}`)
