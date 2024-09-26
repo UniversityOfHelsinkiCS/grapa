@@ -152,7 +152,6 @@ const ThesesPage = () => {
     {
       field: 'startDate',
       headerName: t('startDateHeader'),
-      sortable: false,
       filterable: false,
       width: 140,
       valueGetter: (_, row) => dayjs(row.startDate).format('YYYY-MM-DD'),
@@ -161,7 +160,6 @@ const ThesesPage = () => {
       field: 'targetDate',
       headerName: t('targetDateHeader'),
       description: 'This column has a value getter and is not sortable.',
-      sortable: false,
       filterable: false,
       width: 140,
       valueGetter: (_, row) => dayjs(row.targetDate).format('YYYY-MM-DD'),
