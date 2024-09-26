@@ -10,7 +10,7 @@ import {
   GridRowSelectionModel,
   useGridApiRef,
 } from '@mui/x-data-grid'
-import { fiFI } from '@mui/x-data-grid/locales'
+import { fiFI, enUS } from '@mui/x-data-grid/locales'
 
 import {
   ProgramData,
@@ -76,6 +76,8 @@ const ThesesPage = () => {
   const { mutateAsync: editThesis } = useEditThesisMutation()
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
   const { mutateAsync: createThesis } = useCreateThesisMutation()
+
+  const dataGridLocale = language === 'fi' ? fiFI : enUS
 
   const rowCountRef = useRef(totalCount || 0)
 
@@ -256,7 +258,9 @@ const ThesesPage = () => {
           onRowSelectionModelChange={(newSelection: GridRowSelectionModel) =>
             setRowSelectionModel(newSelection)
           }
-          localeText={fiFI.components.MuiDataGrid.defaultProps.localeText}
+          localeText={
+            dataGridLocale.components.MuiDataGrid.defaultProps.localeText
+          }
           slots={{
             toolbar: ThesisToolbar,
             footer: ViewThesisFooter as DataGridProps['slots']['footer'],
