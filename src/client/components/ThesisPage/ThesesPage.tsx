@@ -142,7 +142,7 @@ const ThesesPage = () => {
 
             return (cellValue) =>
               filterItem.value.some(
-                (filterValue: any) => cellValue === filterValue
+                (filterValue: StatusLocale) => cellValue === t(filterValue) // the filterValue is a locale key
               )
           },
           InputComponent: StatusFilter,

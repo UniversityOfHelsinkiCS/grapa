@@ -50,24 +50,28 @@ const StatusFilter = (props: GridFilterInputValueProps) => {
           multiple
           value={itemValue}
           onChange={handleFilterChange}
-          renderValue={(selected) => (selected as string[]).join(', ')}
+          renderValue={(rawSelectedValues) => {
+            const selectedValues = rawSelectedValues.map(
+              (value: StatusLocale) => t(value)
+            )
+
+            return selectedValues.join(', ')
+          }}
         >
-          <MenuItem sx={{ m: 0, p: 0 }} value={t(StatusLocale.PLANNING)}>
-            <Checkbox checked={itemValue.includes(t(StatusLocale.PLANNING))} />
+          <MenuItem sx={{ m: 0, p: 0 }} value={StatusLocale.PLANNING}>
+            <Checkbox checked={itemValue.includes(StatusLocale.PLANNING)} />
             <ListItemText primary={t(StatusLocale.PLANNING)} />
           </MenuItem>
-          <MenuItem sx={{ m: 0, p: 0 }} value={t(StatusLocale.IN_PROGRESS)}>
-            <Checkbox
-              checked={itemValue.includes(t(StatusLocale.IN_PROGRESS))}
-            />
+          <MenuItem sx={{ m: 0, p: 0 }} value={StatusLocale.IN_PROGRESS}>
+            <Checkbox checked={itemValue.includes(StatusLocale.IN_PROGRESS)} />
             <ListItemText primary={t(StatusLocale.IN_PROGRESS)} />
           </MenuItem>
-          <MenuItem sx={{ m: 0, p: 0 }} value={t(StatusLocale.COMPLETED)}>
-            <Checkbox checked={itemValue.includes(t(StatusLocale.COMPLETED))} />
+          <MenuItem sx={{ m: 0, p: 0 }} value={StatusLocale.COMPLETED}>
+            <Checkbox checked={itemValue.includes(StatusLocale.COMPLETED)} />
             <ListItemText primary={t(StatusLocale.COMPLETED)} />
           </MenuItem>
-          <MenuItem sx={{ m: 0, p: 0 }} value={t(StatusLocale.CANCELLED)}>
-            <Checkbox checked={itemValue.includes(t(StatusLocale.CANCELLED))} />
+          <MenuItem sx={{ m: 0, p: 0 }} value={StatusLocale.CANCELLED}>
+            <Checkbox checked={itemValue.includes(StatusLocale.CANCELLED)} />
             <ListItemText primary={t(StatusLocale.CANCELLED)} />
           </MenuItem>
         </Select>
