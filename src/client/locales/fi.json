@@ -148,6 +148,9 @@
     "filterButton": "Suodattimet",
     "saveFiltersButton": "Tallenna suodattimet"
   },
+  "customFilters": {
+    "valuesLabel": "Arvot"
+  },
   "programManagementPage": {
     "pageTitle": "Ohjelmavastaavat",
     "addProgramManagement": "Vastaavien lisäys",

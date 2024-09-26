@@ -148,6 +148,9 @@
     "filterButton": "Filters",
     "saveFiltersButton": "Save filters"
   },
+  "customFilters": {
+    "valuesLabel": "Values"
+  },
   "programManagementPage": {
     "pageTitle": "Program managements",
     "addProgramManagement": "Add program management",

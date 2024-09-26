@@ -41,7 +41,9 @@ const StatusFilter = (props: GridFilterInputValueProps) => {
       }}
     >
       <FormControl variant="standard" sx={{ m: 1, width: 300 }}>
-        <InputLabel id="status-filter-label">Value(s)</InputLabel>
+        <InputLabel id="status-filter-label">
+          {t('customFilters:valuesLabel')}
+        </InputLabel>
         <Select
           labelId="status-filter-label"
           id="status-filter"
