@@ -6,6 +6,7 @@ import {
   UUIDV4,
 } from 'sequelize'
 
+import { GridFilterModel } from '@mui/x-data-grid'
 import { sequelize } from '../connection'
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
@@ -38,6 +39,8 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare iamGroups: string[]
 
   declare favoriteProgramIds: string[]
+
+  declare thesesTableFilters: GridFilterModel
 }
 
 User.init(
@@ -107,6 +110,16 @@ User.init(
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
       defaultValue: [],
+    },
+    thesesTableFilters: {
+      type: DataTypes.JSONB,
+      allowNull: false,
+      defaultValue: {
+        items: [],
+        logicOperator: 'and',
+        quickFilterValues: [],
+        quickFilterLogicOperator: 'and',
+      },
     },
   },
   {

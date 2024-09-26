@@ -144,7 +144,9 @@
   "thesesTableToolbar": {
     "newThesisButton": "New thesis",
     "showAllThesesSwitch": "Show all theses",
-    "showManagedProgramsThesesSwitch": "Also show theses of my programs"
+    "showManagedProgramsThesesSwitch": "Also show theses of my programs",
+    "filterButton": "Filters",
+    "saveFiltersButton": "Save filters"
   },
   "programManagementPage": {
     "pageTitle": "Program managements",

@@ -1,3 +1,4 @@
+import { GridFilterModel } from '@mui/x-data-grid'
 import { Request } from 'express'
 import { VALID_EVENT_LOG_TYPES } from 'src/config'
 
@@ -35,6 +36,7 @@ export interface User {
   isExternal: boolean
   affiliation?: string
   departmentId?: string
+  thesesTableFilters: GridFilterModel
 }
 
 export interface RequestWithUser extends Request {
@@ -136,6 +138,13 @@ export interface ServerPutRequest extends Request {
   files: {
     researchPlan?: Express.Multer.File[]
     waysOfWorking?: Express.Multer.File[]
+  }
+  user: User
+}
+
+export interface ServerThesesFiltersPutRequest extends Request {
+  body: {
+    thesesTableFilters: Record<string, unknown>[]
   }
   user: User
 }
