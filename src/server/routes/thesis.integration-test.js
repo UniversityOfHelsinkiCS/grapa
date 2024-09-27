@@ -3173,7 +3173,7 @@ describe('thesis router', () => {
           })
         })
 
-        describe('when a primary grader changes when', () => {
+        describe('when a primary grader changes', () => {
           beforeEach(async () => {
             await Grader.destroy({ where: { thesisId: thesis1.id } })
             await Grader.bulkCreate([
@@ -3309,6 +3309,361 @@ describe('thesis router', () => {
 
             const eventLog = await EventLog.findOne({
               where: { type: 'THESIS_GRADERS_CHANGED' },
+            })
+            expect(eventLog).toBeNull()
+          })
+        })
+      })
+
+      describe('logic for adding THESIS_SUPERVISIONS_CHANGED event to the event_log table', () => {
+        describe('when a new supervision is added to the thesis', () => {
+          beforeEach(async () => {
+            await Supervision.destroy({ where: { thesisId: thesis1.id } })
+            await Supervision.create({
+              userId: user1.id,
+              thesisId: thesis1.id,
+              isPrimaryGrader: true,
+              percentage: 100,
+            })
+          })
+
+          it('adds THESIS_SUPERVISIONS_CHANGED event to the event_log table', async () => {
+            const updatedThesis = {
+              programId: 'Updated program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 50,
+                  isPrimarySupervisor: true,
+                },
+                {
+                  user: user2,
+                  percentage: 50,
+                  isPrimarySupervisor: false,
+                },
+              ],
+              graders: [
+                {
+                  user: user1,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+            expect(response.status).toEqual(200)
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_SUPERVISIONS_CHANGED', thesisId: thesis1.id },
+            })
+            expect(eventLog).not.toBeNull()
+          })
+        })
+
+        describe('when a supervisor is removed from the thesis', () => {
+          beforeEach(async () => {
+            await Supervision.destroy({ where: { thesisId: thesis1.id } })
+            await Supervision.bulkCreate([
+              {
+                userId: user1.id,
+                thesisId: thesis1.id,
+                isPrimarySupervisor: true,
+                percentage: 50,
+              },
+              {
+                userId: user2.id,
+                thesisId: thesis1.id,
+                isPrimarySupervisor: false,
+                percentage: 50,
+              },
+            ])
+          })
+
+          it('adds THESIS_SUPERVISIONS_CHANGED event to the event_log table', async () => {
+            const updatedThesis = {
+              programId: 'Updated program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isExternal: false,
+                  isPrimarySupervisor: true,
+                },
+              ],
+              graders: [
+                {
+                  user: user1,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+            expect(response.status).toEqual(200)
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_SUPERVISIONS_CHANGED', thesisId: thesis1.id },
+            })
+            expect(eventLog).not.toBeNull()
+          })
+        })
+
+        describe('when a primary supervisor changes', () => {
+          beforeEach(async () => {
+            await Supervision.destroy({ where: { thesisId: thesis1.id } })
+            await Supervision.bulkCreate([
+              {
+                userId: user1.id,
+                thesisId: thesis1.id,
+                isPrimarySupervisor: true,
+                percentage: 50,
+              },
+              {
+                userId: user2.id,
+                thesisId: thesis1.id,
+                isPrimarySupervisor: false,
+                percentage: 50,
+              },
+            ])
+          })
+
+          it('adds THESIS_SUPERVISIONS_CHANGED event to the event_log table', async () => {
+            const updatedThesis = {
+              programId: 'Updated program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  isPrimarySupervisor: false,
+                  percentage: 50,
+                },
+                {
+                  user: user2,
+                  isPrimarySupervisor: true,
+                  percentage: 50,
+                },
+              ],
+              graders: [
+                {
+                  user: user1,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+            expect(response.status).toEqual(200)
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_SUPERVISIONS_CHANGED', thesisId: thesis1.id },
+            })
+            expect(eventLog).not.toBeNull()
+          })
+        })
+
+        describe('when the percentages of the supervisions change', () => {
+          beforeEach(async () => {
+            await Supervision.destroy({ where: { thesisId: thesis1.id } })
+            await Supervision.bulkCreate([
+              {
+                userId: user1.id,
+                thesisId: thesis1.id,
+                isPrimarySupervisor: true,
+                percentage: 50,
+              },
+              {
+                userId: user2.id,
+                thesisId: thesis1.id,
+                isPrimarySupervisor: false,
+                percentage: 50,
+              },
+            ])
+          })
+
+          it('adds THESIS_SUPERVISIONS_CHANGED event to the event_log table', async () => {
+            const updatedThesis = {
+              programId: 'Updated program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  isPrimarySupervisor: true,
+                  percentage: 80,
+                },
+                {
+                  user: user2,
+                  isPrimarySupervisor: false,
+                  percentage: 20,
+                },
+              ],
+              graders: [
+                {
+                  user: user1,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+            expect(response.status).toEqual(200)
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_SUPERVISIONS_CHANGED', thesisId: thesis1.id },
+            })
+            expect(eventLog).not.toBeNull()
+          })
+        })
+
+        describe('when supervisions are unchanged', () => {
+          beforeEach(async () => {
+            await Supervision.destroy({ where: { thesisId: thesis1.id } })
+            await Supervision.bulkCreate([
+              {
+                userId: user1.id,
+                thesisId: thesis1.id,
+                isPrimarySupervisor: true,
+                percentage: 100,
+              },
+            ])
+          })
+
+          it('does not add THESIS_SUPERVISIONS_CHANGED event to the event_log table', async () => {
+            const updatedThesis = {
+              programId: 'Updated program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isExternal: false,
+                  isPrimarySupervisor: true,
+                },
+              ],
+              graders: [
+                {
+                  user: user1,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+            expect(response.status).toEqual(200)
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_SUPERVISIONS_CHANGED' },
             })
             expect(eventLog).toBeNull()
           })

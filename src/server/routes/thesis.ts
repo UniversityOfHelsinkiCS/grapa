@@ -28,6 +28,7 @@ import {
   getFindThesesOptions,
   handleGradersChangeEventLog,
   handleStatusChangeEventLog,
+  handleSupervisionsChangeEventLog,
 } from './thesisHelpers'
 import {
   deleteThesisAttachments,
@@ -262,6 +263,12 @@ thesisRouter.put(
 
       await handleStatusChangeEventLog(originalThesis, thesisData, req.user, t)
       await handleGradersChangeEventLog(originalThesis, thesisData, req.user, t)
+      await handleSupervisionsChangeEventLog(
+        originalThesis,
+        thesisData,
+        req.user,
+        t
+      )
     })
 
     const updatedThesis = await fetchThesisById(id, req.user)

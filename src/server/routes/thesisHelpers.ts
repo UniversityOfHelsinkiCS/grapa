@@ -232,3 +232,62 @@ export const handleGradersChangeEventLog = async (
     )
   }
 }
+
+export const handleSupervisionsChangeEventLog = async (
+  originalThesis: Thesis,
+  updatedThesis: ThesisData,
+  actionUser: UserType,
+  transaction: Transaction
+) => {
+  const originalSupervisions = originalThesis.supervisions
+  const updatedSupervisions = updatedThesis.supervisions
+
+  const removedSupervisions = originalSupervisions.filter(
+    (originalSupervision) =>
+      !updatedSupervisions.some(
+        (updatedSupervision) =>
+          updatedSupervision.user?.email === originalSupervision.user.email
+      )
+  )
+
+  const addedSupervisions = updatedSupervisions.filter(
+    (updatedSupervision) =>
+      !originalSupervisions.some(
+        (originalSupervision) =>
+          originalSupervision.user.email === updatedSupervision.user?.email
+      )
+  )
+
+  const changedSupervisions = originalSupervisions.filter(
+    (originalSupervision) => {
+      const updatedSupervision = updatedSupervisions.find(
+        (supervision) =>
+          supervision.user?.email === originalSupervision.user.email
+      )
+      return (
+        updatedSupervision?.isPrimarySupervisor !==
+          originalSupervision.isPrimarySupervisor ||
+        updatedSupervision?.percentage !== originalSupervision.percentage
+      )
+    }
+  )
+
+  if (
+    removedSupervisions.length ||
+    addedSupervisions.length ||
+    changedSupervisions.length
+  ) {
+    await EventLog.create(
+      {
+        userId: actionUser.id,
+        thesisId: originalThesis.id,
+        type: 'THESIS_SUPERVISIONS_CHANGED',
+        data: {
+          originalGraders: originalThesis.supervisions,
+          updatedGraders: updatedThesis.supervisions,
+        },
+      },
+      { transaction }
+    )
+  }
+}

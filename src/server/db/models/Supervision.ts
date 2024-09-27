@@ -4,9 +4,11 @@ import {
   InferCreationAttributes,
   DataTypes,
   UUIDV4,
+  NonAttribute,
 } from 'sequelize'
 
 import { sequelize } from '../connection'
+import User from './User'
 
 class Supervision extends Model<
   InferAttributes<Supervision>,
@@ -21,6 +23,8 @@ class Supervision extends Model<
   declare percentage: number
 
   declare isPrimarySupervisor: boolean
+
+  declare user: NonAttribute<User>
 }
 
 Supervision.init(
