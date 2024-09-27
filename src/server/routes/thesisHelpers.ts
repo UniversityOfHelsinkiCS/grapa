@@ -184,3 +184,51 @@ export const handleStatusChangeEventLog = async (
     )
   }
 }
+
+export const handleGradersChangeEventLog = async (
+  originalThesis: Thesis,
+  updatedThesis: ThesisData,
+  actionUser: UserType,
+  transaction: Transaction
+) => {
+  const originalGraders = originalThesis.graders
+  const updatedGraders = updatedThesis.graders
+
+  const removedGraders = originalGraders.filter(
+    (originalGrader) =>
+      !updatedGraders.some(
+        (updatedGrader) =>
+          updatedGrader.user?.email === originalGrader.user.email
+      )
+  )
+
+  const addedGraders = updatedGraders.filter(
+    (updatedGrader) =>
+      !originalGraders.some(
+        (originalGrader) =>
+          originalGrader.user.email === updatedGrader.user?.email
+      )
+  )
+
+  const changedGraders = originalGraders.filter((originalGrader) => {
+    const updatedGrader = updatedGraders.find(
+      (grader) => grader.user?.email === originalGrader.user.email
+    )
+    return updatedGrader?.isPrimaryGrader !== originalGrader.isPrimaryGrader
+  })
+
+  if (removedGraders.length || addedGraders.length || changedGraders.length) {
+    await EventLog.create(
+      {
+        userId: actionUser.id,
+        thesisId: originalThesis.id,
+        type: 'THESIS_GRADERS_CHANGED',
+        data: {
+          originalGraders: originalThesis.graders,
+          updatedGraders: updatedThesis.graders,
+        },
+      },
+      { transaction }
+    )
+  }
+}

@@ -4,9 +4,11 @@ import {
   InferCreationAttributes,
   DataTypes,
   UUIDV4,
+  NonAttribute,
 } from 'sequelize'
 
 import { sequelize } from '../connection'
+import User from './User'
 
 class Grader extends Model<
   InferAttributes<Grader>,
@@ -19,6 +21,8 @@ class Grader extends Model<
   declare userId: string
 
   declare isPrimaryGrader: boolean
+
+  declare user: NonAttribute<User>
 }
 
 Grader.init(

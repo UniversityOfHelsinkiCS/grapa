@@ -1408,7 +1408,7 @@ describe('thesis router', () => {
               )
               .field('json', JSON.stringify(newThesis))
             expect(response.status).toEqual(201)
-            
+
             const eventLog = await EventLog.findOne({
               where: { type: 'THESIS_CREATED', thesisId: response.body.id },
             })
@@ -2777,7 +2777,7 @@ describe('thesis router', () => {
               })
 
               thesis1.status = 'CANCELLED'
-              thesis1.save()
+              await thesis1.save()
 
               const updatedThesis = {
                 programId: 'Testing program',
@@ -2906,9 +2906,9 @@ describe('thesis router', () => {
           })
 
           describe('when the thesis already has IN_PROGRESS status', () => {
-            beforeEach(() => {
+            beforeEach(async () => {
               thesis1.status = 'IN_PROGRESS'
-              thesis1.save()
+              await thesis1.save()
             })
 
             it('should return 200, update the thesis and not log status change event', async () => {
@@ -2969,9 +2969,9 @@ describe('thesis router', () => {
           })
 
           describe('when the thesis has status other than PLANING or IN_PROGRESS', () => {
-            beforeEach(() => {
+            beforeEach(async () => {
               thesis1.status = 'CANCELLED'
-              thesis1.save()
+              await thesis1.save()
             })
 
             it('should return 200, update the thesis and log status change event', async () => {
@@ -3029,6 +3029,288 @@ describe('thesis router', () => {
               })
               expect(eventLog).not.toBeNull()
             })
+          })
+        })
+      })
+
+      describe('logic for adding THESIS_GRADERS_CHANGED event to the event_log table', () => {
+        describe('when a new grader is added to the thesis', () => {
+          beforeEach(async () => {
+            await Grader.destroy({ where: { thesisId: thesis1.id } })
+            await Grader.create({
+              userId: user4.id,
+              thesisId: thesis1.id,
+              isPrimaryGrader: true,
+              isExternal: false,
+            })
+          })
+
+          it('adds THESIS_GRADERS_CHANGED event to the event_log table', async () => {
+            const updatedThesis = {
+              programId: 'Updated program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isExternal: false,
+                  isPrimarySupervisor: true,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+                {
+                  user: user5,
+                  isPrimaryGrader: false,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+            expect(response.status).toEqual(200)
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_GRADERS_CHANGED', thesisId: thesis1.id },
+            })
+            expect(eventLog).not.toBeNull()
+          })
+        })
+
+        describe('when a grader is removed from the thesis', () => {
+          beforeEach(async () => {
+            await Grader.destroy({ where: { thesisId: thesis1.id } })
+            await Grader.bulkCreate([
+              {
+                userId: user4.id,
+                thesisId: thesis1.id,
+                isPrimaryGrader: true,
+                isExternal: false,
+              },
+              {
+                userId: user5.id,
+                thesisId: thesis1.id,
+                isPrimaryGrader: false,
+                isExternal: false,
+              },
+            ])
+          })
+
+          it('adds THESIS_GRADERS_CHANGED event to the event_log table', async () => {
+            const updatedThesis = {
+              programId: 'Updated program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isExternal: false,
+                  isPrimarySupervisor: true,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+            expect(response.status).toEqual(200)
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_GRADERS_CHANGED', thesisId: thesis1.id },
+            })
+            expect(eventLog).not.toBeNull()
+          })
+        })
+
+        describe('when a primary grader changes when', () => {
+          beforeEach(async () => {
+            await Grader.destroy({ where: { thesisId: thesis1.id } })
+            await Grader.bulkCreate([
+              {
+                userId: user4.id,
+                thesisId: thesis1.id,
+                isPrimaryGrader: true,
+                isExternal: false,
+              },
+              {
+                userId: user5.id,
+                thesisId: thesis1.id,
+                isPrimaryGrader: false,
+                isExternal: false,
+              },
+            ])
+          })
+
+          it('adds THESIS_GRADERS_CHANGED event to the event_log table', async () => {
+            const updatedThesis = {
+              programId: 'Updated program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isExternal: false,
+                  isPrimarySupervisor: true,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: false,
+                  isExternal: false,
+                },
+                {
+                  user: user5,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+            expect(response.status).toEqual(200)
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_GRADERS_CHANGED', thesisId: thesis1.id },
+            })
+            expect(eventLog).not.toBeNull()
+          })
+        })
+
+        describe('when graders are unchanged', () => {
+          beforeEach(async () => {
+            await Grader.destroy({ where: { thesisId: thesis1.id } })
+            await Grader.bulkCreate([
+              {
+                userId: user4.id,
+                thesisId: thesis1.id,
+                isPrimaryGrader: true,
+                isExternal: false,
+              },
+            ])
+          })
+
+          it('does not add THESIS_GRADERS_CHANGED event to the event_log table', async () => {
+            const updatedThesis = {
+              programId: 'Updated program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'PLANNING',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isExternal: false,
+                  isPrimarySupervisor: true,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+            expect(response.status).toEqual(200)
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_GRADERS_CHANGED' },
+            })
+            expect(eventLog).toBeNull()
           })
         })
       })

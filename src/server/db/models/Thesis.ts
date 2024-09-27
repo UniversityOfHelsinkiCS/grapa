@@ -4,10 +4,12 @@ import {
   InferCreationAttributes,
   DataTypes,
   UUIDV4,
+  NonAttribute,
 } from 'sequelize'
 import type { ThesisStatus } from '@backend/types'
 
 import { sequelize } from '../connection'
+import Grader from './Grader'
 
 class Thesis extends Model<
   InferAttributes<Thesis>,
@@ -26,6 +28,8 @@ class Thesis extends Model<
   declare startDate: string
 
   declare targetDate: string | undefined
+
+  declare graders: NonAttribute<Grader[]>
 }
 
 Thesis.init(

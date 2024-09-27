@@ -26,6 +26,7 @@ import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import {
   getAndCreateExtUsers,
   getFindThesesOptions,
+  handleGradersChangeEventLog,
   handleStatusChangeEventLog,
 } from './thesisHelpers'
 import {
@@ -260,6 +261,7 @@ thesisRouter.put(
       await handleAttachmentByLabel(req, id, 'waysOfWorking', t)
 
       await handleStatusChangeEventLog(originalThesis, thesisData, req.user, t)
+      await handleGradersChangeEventLog(originalThesis, thesisData, req.user, t)
     })
 
     const updatedThesis = await fetchThesisById(id, req.user)
