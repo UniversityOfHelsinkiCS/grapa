@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { cloneDeep } from 'lodash-es'
 
 import { Box, Stack, TextField, Typography } from '@mui/material'
 import {
@@ -227,7 +228,9 @@ const ThesesPage = () => {
       (thesis) => thesis.id === rowSelectionModel[0]
     )
 
-    setEditedThesis(thesisToEdit)
+    // NOTE: We need to clone the object to
+    // prevent the form from updating the original object
+    setEditedThesis(cloneDeep(thesisToEdit))
   }
 
   const clearRowSelection = () => {
