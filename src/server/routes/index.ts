@@ -21,6 +21,7 @@ import logoutRouter from './logout'
 
 import { inDevelopment, inE2EMode, inTest } from '../../config'
 import initializeSentry from '../util/sentry'
+import eventLogRoute from './eventLogRouter'
 
 const router = express()
 
@@ -51,6 +52,7 @@ router.use('/programs', programRouter)
 router.use('/program-managements', programManagementRouter)
 router.use('/departments', departmentRouter)
 router.use('/department-admins', departmentAdminRouter)
+router.use('/event-log', eventLogRoute)
 
 Sentry.setupExpressErrorHandler(router)
 
