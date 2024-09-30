@@ -1,3 +1,4 @@
+import { MutableRefObject } from 'react'
 import { User } from '@backend/types'
 import { GridRowSelectionModel } from '@mui/x-data-grid/models/gridRowSelectionModel'
 
@@ -17,6 +18,7 @@ export interface SupervisorSelection {
 }
 
 export interface ThesisFooterProps {
+  footerRef: MutableRefObject<HTMLDivElement>
   rowSelectionModel: GridRowSelectionModel[]
   handleEditThesis: () => void
   handleDeleteThesis: () => void

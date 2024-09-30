@@ -357,7 +357,8 @@ const PreviewSkeleton = () => (
 const ViewThesisFooter = (
   props: GridSlotProps['footer'] & ThesisFooterProps
 ) => {
-  const { rowSelectionModel, handleEditThesis, handleDeleteThesis } = props
+  const { rowSelectionModel, footerRef, handleEditThesis, handleDeleteThesis } =
+    props
 
   const { t } = useTranslation()
   const { thesis, isLoading: thesisLoading } = useSingleThesis(
@@ -366,7 +367,7 @@ const ViewThesisFooter = (
 
   return (
     <>
-      <GridFooter />
+      <GridFooter ref={footerRef} />
       {thesis ? (
         <Box sx={{ m: 2 }}>
           <Stack

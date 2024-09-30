@@ -42,6 +42,7 @@ const PAGE_SIZE = 25
 
 const ThesesPage = () => {
   const apiRef = useGridApiRef()
+  const footerRef = useRef<HTMLDivElement>(null)
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
   const { user, isLoading: loggedInUserLoading } = useLoggedInUser()
@@ -99,6 +100,12 @@ const ThesesPage = () => {
       })
     }
   }, [user.thesesTableFilters])
+
+  useEffect(() => {
+    if (rowSelectionModel.length > 0) {
+      footerRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [rowSelectionModel])
 
   const columns: GridColDef<Thesis>[] = [
     {
@@ -256,9 +263,9 @@ const ThesesPage = () => {
           paginationModel={paginationModel}
           onPaginationModelChange={(newModel) => setPaginationModel(newModel)}
           rowSelectionModel={rowSelectionModel}
-          onRowSelectionModelChange={(newSelection: GridRowSelectionModel) =>
+          onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
             setRowSelectionModel(newSelection)
-          }
+          }}
           localeText={
             dataGridLocale.components.MuiDataGrid.defaultProps.localeText
           }
@@ -274,6 +281,7 @@ const ThesesPage = () => {
               showOnlyOwnTheses,
             },
             footer: {
+              footerRef,
               rowSelectionModel,
               handleEditThesis: initializeThesisEdit,
               handleDeleteThesis: initializeThesisDelete,
