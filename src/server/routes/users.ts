@@ -52,12 +52,35 @@ usersRouter.get('/', async (req, res) => {
     const users = await User.findAll({
       attributes: userFields,
       where: {
-        firstName: {
-          [Op.iLike]: `${firstName}%`,
-        },
-        lastName: {
-          [Op.iLike]: `${lastName}%`,
-        },
+        [Op.or]: [
+          // assume that the first word is the first name and the second word is the last name
+          {
+            firstName: {
+              [Op.iLike]: `${firstName}%`,
+            },
+            lastName: {
+              [Op.iLike]: `${lastName}%`,
+            },
+          },
+          // assume that both words are the "first name", this is because
+          // first name includes middle names as well. Thus this allows
+          // for searching with first and middle names
+          {
+            firstName: {
+              [Op.iLike]: `${trimmedSearch}%`,
+            },
+          },
+          // sometimes, users might first type in last name and then first name
+          // so we need to account for that as well
+          {
+            firstName: {
+              [Op.iLike]: `${lastName}%`,
+            },
+            lastName: {
+              [Op.iLike]: `${firstName}%`,
+            },
+          },
+        ],
         ...whereClauses,
       },
       limit: 100,
