@@ -1,11 +1,8 @@
-import { useId, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 import { AdminPanelSettingsOutlined } from '@mui/icons-material'
 import MenuIcon from '@mui/icons-material/Menu'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'
-import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import {
   AppBar,
   Box,
@@ -17,8 +14,6 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Menu,
-  MenuItem,
   Theme,
   Toolbar,
   Typography,
@@ -30,8 +25,9 @@ import useLoggedInUser from '../../hooks/useLoggedInUser'
 import LanguageSelect from './LanguageSelect'
 import MobileMenu from './MobileMenu'
 import ProfileMenu from './ProfileMenu'
+import { PositionedMenu, PositionedMenuLinkItem } from './PositionedMenu'
 
-const navStyles = {
+export const navStyles = {
   appbar: {
     zIndex: (theme: Theme) => theme.zIndex.drawer + 1,
     backgroundColor: 'rgba(255, 255, 255, 0)',
@@ -82,81 +78,6 @@ const navStyles = {
     },
   },
 }
-
-interface PositionedMenuProps {
-  open: boolean
-  anchorEl: HTMLElement | null
-  handleClick: (event: React.MouseEvent<HTMLElement>) => void
-  handleClose: () => void
-  label: string
-  children: React.ReactNode
-}
-
-const PositionedMenu = ({
-  open,
-  anchorEl,
-  handleClick,
-  handleClose,
-  label,
-  children,
-}: PositionedMenuProps) => {
-  const buttonId = useId()
-  const menuId = useId()
-
-  return (
-    <Box>
-      <Button
-        id={buttonId}
-        aria-controls={open ? menuId : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
-        sx={{ color: 'text.primary' }}
-      >
-        {label} {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-      </Button>
-      <Menu
-        id={menuId}
-        aria-labelledby={buttonId}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        elevation={0}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        {children}
-      </Menu>
-    </Box>
-  )
-}
-
-interface PositionedMenuLinkItemProps {
-  to: string
-  onClick: () => void
-  children: React.ReactNode
-}
-
-const PositionedMenuLinkItem = ({
-  to,
-  onClick,
-  children,
-}: PositionedMenuLinkItemProps) => (
-  <MenuItem component={NavLink} to={to} sx={navStyles.link} onClick={onClick}>
-    <Typography
-      sx={{ display: 'flex', gap: 2, textTransform: 'uppercase' }}
-      variant="body2"
-    >
-      <NavigateNextIcon /> {children}
-    </Typography>
-  </MenuItem>
-)
 
 const ProgramMenu = () => {
   const { t } = useTranslation()
