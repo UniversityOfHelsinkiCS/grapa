@@ -46,7 +46,9 @@
     "indexTab": "Login as"
   },
   "navbar": {
+    "program": "Ohjelma",
     "programManager": "Ohjelmavastaavat",
+    "programLogs": "Ohjelman lokit",
     "departmentAdmin": "Osastojen ylläpitäjät",
     "departmentStatistics": "Osastojen tilastot",
     "loginAs": "Kirjaudu toisella käyttäjällä",

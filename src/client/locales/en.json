@@ -46,7 +46,9 @@
     "indexTab": "Login as"
   },
   "navbar": {
+    "program": "Program",
     "programManager": "Program managers",
+    "programLogs": "Program logs",
     "departmentAdmin": "Department admins",
     "departmentStatistics": "Departmental statistics",
     "loginAs": "Login as",
