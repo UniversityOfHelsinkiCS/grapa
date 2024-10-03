@@ -74,7 +74,7 @@ const DepartmentAdmin = () => {
       headerName: t('userHeader'),
       flex: 1,
       valueGetter: ({ firstName, lastName, email }) =>
-        `${firstName} ${lastName}${email ? ` (${email})` : ''}`,
+        `${lastName} ${firstName} ${email ? ` (${email})` : ''}`,
     },
     {
       field: 'department',
