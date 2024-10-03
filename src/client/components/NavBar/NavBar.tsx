@@ -104,7 +104,7 @@ const ProgramMenu = () => {
       <PositionedMenuLinkItem to="/program-managements" onClick={handleClose}>
         {t('navbar:programManager')}
       </PositionedMenuLinkItem>
-      <PositionedMenuLinkItem to="/program-statistics" onClick={handleClose}>
+      <PositionedMenuLinkItem to="/program-logs" onClick={handleClose}>
         {t('navbar:programLogs')}
       </PositionedMenuLinkItem>
     </PositionedMenu>
