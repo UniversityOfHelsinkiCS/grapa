@@ -138,7 +138,7 @@ describe('ProgramManagement', () => {
     render(<ProgramManagement />)
 
     expect(screen.getByTestId('program-manager-select-input')).toBeInTheDocument()
-    expect(screen.getByText('John Doe')).toBeInTheDocument()
+    expect(screen.getByText('Doe John')).toBeInTheDocument()
     expect(screen.getByText("Bachelor's Programme in Mathematical Sciences")).toBeInTheDocument()
   })
 

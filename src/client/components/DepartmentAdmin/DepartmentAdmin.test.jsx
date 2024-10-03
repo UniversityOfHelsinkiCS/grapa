@@ -129,7 +129,7 @@ describe('DepartmentAdmin', () => {
     render(<DepartmentAdmin />)
 
     expect(screen.getByTestId('department-admin-page-title')).toBeInTheDocument()
-    expect(screen.getByText('John Doe')).toBeInTheDocument()
+    expect(screen.getByText('Doe John')).toBeInTheDocument()
     expect(screen.getByText("Tietojenkäsittelytieteen laitos")).toBeInTheDocument()
   })
 
