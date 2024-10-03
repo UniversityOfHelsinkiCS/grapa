@@ -8,6 +8,7 @@ import NotFound from './components/Errors/NotFound'
 import NoAccess from './components/NoAccess'
 import LoginAs from './components/LoginAs'
 import Admin from './components/Admin/Admin'
+import ProgramLogs from './components/ProgramLogs/ProgramLogs'
 import ProgramManagement from './components/ProgramManagement/ProgramManagement'
 import DepartmentAdmin from './components/DepartmentAdmin/DepartmentAdmin'
 import DepartmentStatistics from './components/DepartmentStatistics/DepartmentStatistics'
@@ -33,6 +34,10 @@ const router = createBrowserRouter(
         {
           path: '/program-managements',
           element: <ProgramManagement />,
+        },
+        {
+          path: '/program-logs',
+          element: <ProgramLogs />,
         },
         {
           path: '/department-admins',
