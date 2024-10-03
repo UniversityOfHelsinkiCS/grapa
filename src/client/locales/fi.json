@@ -184,6 +184,9 @@
     "removeProgramManagementTitle": "Poista vastaava",
     "removeProgramManagementContent": "Haluatko varmasti poistaa henkilön {{name}} ohjelmasta {{program}}?"
   },
+  "programLogsPage": {
+    "pageTitle": "Ohjelman lokit"
+  },
   "departmentAdminPage": {
     "pageTitle": "Osastojen ylläpitäjät",
     "addDepartmentAdmin": "Lisää osaston ylläpitäjä",

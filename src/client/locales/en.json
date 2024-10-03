@@ -184,6 +184,9 @@
     "removeProgramManagementTitle": "Delete program management",
     "removeProgramManagementContent": "Are you sure you want to delete {{name}} from the {{program}}?"
   },
+  "programLogsPage": {
+    "pageTitle": "Program logs"
+  },
   "departmentAdminPage": {
     "pageTitle": "Department admins",
     "addDepartmentAdmin": "Add department admin",
