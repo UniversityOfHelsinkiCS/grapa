@@ -7,16 +7,20 @@ interface UseEventsParams {
   thesisId: string
 }
 
-const useEvents = (params: UseEventsParams) => {
-  const queryKey = ['event-log', params.thesisId]
+const useEvents = ({ thesisId }: UseEventsParams) => {
+  const queryKey = ['event-log', thesisId]
 
   const queryFn = async (): Promise<EventLog> => {
-    const { data } = await apiClient.get(`/event-log/${params.thesisId}`)
+    const { data } = await apiClient.get(`/event-log/${thesisId}`)
 
     return data
   }
 
-  const { data: events, ...rest } = useQuery({ queryKey, queryFn })
+  const { data: events, ...rest } = useQuery({
+    queryKey,
+    queryFn,
+    enabled: !!thesisId,
+  })
 
   return { events, ...rest }
 }
