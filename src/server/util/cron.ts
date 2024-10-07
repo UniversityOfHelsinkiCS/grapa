@@ -7,7 +7,7 @@ import { UPDATER_CRON_ENABLED, inDevelopment } from '../../config'
 const setupCron = async () => {
   logger.info('Starting cron jobs')
 
-  if (inDevelopment) {
+  if (true || inDevelopment) {
     await runUpdater()
   } else if (UPDATER_CRON_ENABLED) {
     cron.schedule('45 0,12 * * *', runUpdater) // Run updater every 12 hours
