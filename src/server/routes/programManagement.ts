@@ -46,31 +46,34 @@ programManagementRouter.delete(
   async (req: RequestWithUser, res: Response) => {
     const { user: editorUser } = req
     const { isAdmin } = editorUser
-    let whereClause: any = { id: req.params.id }
-    if (!isAdmin) {
-      // if not admin, check if user has access to the program
-      const programsUserHasAccessTo = await ProgramManagement.findAll({
-        attributes: ['programId'],
-        where: {
-          userId: editorUser.id,
-        },
-      })
+    const { id: programManagementId } = req.params
 
-      whereClause = {
-        ...whereClause,
-        programId: programsUserHasAccessTo.map((program) => program.programId),
-      }
-    }
+    const targetProgramManagement =
+      await ProgramManagement.findByPk(programManagementId)
 
-    const programManagement = await ProgramManagement.findOne({
-      where: whereClause,
-    })
-    if (!programManagement) {
+    if (!targetProgramManagement) {
       res.status(404).send({ error: 'Program management not found' })
       return
     }
-    await programManagement.destroy()
-    res.status(204).send(programManagement)
+
+    if (!isAdmin) {
+      // if not admin, check if user has access to the program
+      const userHasAccessToProgram = await ProgramManagement.findOne({
+        attributes: ['programId'],
+        where: {
+          userId: editorUser.id,
+          programId: targetProgramManagement.programId,
+        },
+      })
+
+      if (!userHasAccessToProgram) {
+        res.status(404).send({ error: 'Program management not found' })
+        return
+      }
+    }
+
+    await targetProgramManagement.destroy()
+    res.status(204).send(targetProgramManagement)
   }
 )
 
@@ -117,18 +120,23 @@ programManagementRouter.put(
     const targetProgramManagement =
       await ProgramManagement.findByPk(programManagementId)
 
+    if (!targetProgramManagement) {
+      res.status(404).send({ error: 'Program management not found' })
+      return
+    }
+
     if (!isAdmin) {
       // if not admin, check if user has access to the program
       const userHasAccessToProgram = await ProgramManagement.findOne({
         attributes: ['programId'],
         where: {
           userId: editorUser.id,
-          programId: targetProgramManagement.id,
+          programId: targetProgramManagement.programId,
         },
       })
 
       if (!userHasAccessToProgram) {
-        res.status(403).send({ error: 'Forbidden' })
+        res.status(404).send({ error: 'Program management not found' })
         return
       }
     }

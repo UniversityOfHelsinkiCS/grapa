@@ -89,6 +89,15 @@ describe('program-managements router', () => {
         expect(response.status).toEqual(403)
       })
     })
+
+    describe('PUT /api/program-managements', () => {
+      it('should return 403', async () => {
+        const response = await request.put(
+          `/api/program-managements/${programManagement1.id}`
+        )
+        expect(response.status).toEqual(403)
+      })
+    })
   })
 
   describe('when the user is a teacher', () => {
@@ -119,6 +128,15 @@ describe('program-managements router', () => {
       it('should return 404', async () => {
         const response = await request
           .delete(`/api/program-managements/${programManagement1.id}`)
+          .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+        expect(response.status).toEqual(404)
+      })
+    })
+
+    describe('PUT /api/program-managements', () => {
+      it('should return 404', async () => {
+        const response = await request
+          .put(`/api/program-managements/${programManagement1.id}`)
           .set({ uid: user1.id, hygroupcn: 'hy-employees' })
         expect(response.status).toEqual(404)
       })
@@ -178,7 +196,7 @@ describe('program-managements router', () => {
     })
 
     describe('DELETE /api/program-managements', () => {
-      it('should return 404', async () => {
+      it('should return 204 and delete the row', async () => {
         const response = await request
           .delete(`/api/program-managements/${programManagement1.id}`)
           .set({ uid: user1.id, hygroupcn: 'grp-toska' })
@@ -188,6 +206,22 @@ describe('program-managements router', () => {
             where: { id: programManagement1.id },
           })
         ).toBeNull()
+      })
+    })
+
+    describe('PUT /api/program-managements', () => {
+      it('should return 200 and delete the row', async () => {
+        const response = await request
+          .put(`/api/program-managements/${programManagement1.id}`)
+          .set({ uid: user1.id, hygroupcn: 'grp-toska' })
+          .send({
+            isThesisApprover: true,
+          })
+        expect(response.status).toEqual(200)
+        expect(
+          (await ProgramManagement.findByPk(programManagement1.id))
+            .isThesisApprover
+        ).toEqual(true)
       })
     })
   })
@@ -284,7 +318,7 @@ describe('program-managements router', () => {
         ).toBeNull()
       })
 
-      it('should return 403 when deleting ProgramManagement for a program the user can manage', async () => {
+      it('should return 404 when trying to delete ProgramManagement for a program the user does not manage', async () => {
         const response = await request
           .delete(`/api/program-managements/${programManagement1.id}`)
           .set({ uid: user1.id, hygroupcn: 'hy-employees' })
@@ -292,6 +326,30 @@ describe('program-managements router', () => {
         expect(
           await ProgramManagement.findByPk(programManagement1.id)
         ).not.toBeNull()
+      })
+    })
+
+    describe('PUT /api/program-managements', () => {
+      it('should return 200 when updating ProgramManagement for a program the user can manage', async () => {
+        const response = await request
+          .put(`/api/program-managements/${programThatTheUserCanManage.id}`)
+          .send({ isThesisApprover: true })
+          .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+        expect(response.status).toEqual(200)
+        expect(
+          (await ProgramManagement.findByPk(programThatTheUserCanManage.id)).isThesisApprover
+        ).toEqual(true)
+      })
+
+      it('should return 404 when trying to update ProgramManagement for a program the user does not manage', async () => {
+        const response = await request
+          .delete(`/api/program-managements/${programManagement1.id}`)
+          .send({ isThesisApprover: true })
+          .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+        expect(response.status).toEqual(404)
+        expect(
+          (await ProgramManagement.findByPk(programThatTheUserCanManage.id)).isThesisApprover
+        ).toEqual(false)
       })
     })
   })
