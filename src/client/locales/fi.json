@@ -156,6 +156,8 @@
     "addProgramManagement": "Vastaavien lisäys",
     "programHeader": "Ohjelma",
     "managerHeader": "Vastaava",
+    "allowThesisApprovalButton": "Salli tutkielman hyväksyminen",
+    "disallowThesisApprovalButton": "Estä tutkielman hyväksyminen",
     "removeProgramManagementTitle": "Poista vastaava",
     "removeProgramManagementContent": "Haluatko varmasti poistaa henkilön {{name}} ohjelmasta {{program}}?"
   },

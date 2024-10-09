@@ -11,6 +11,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -65,6 +66,7 @@ const ProgramManagement = () => {
       await createProgramManagement({
         userId: managerCandidate.id,
         programId,
+        isThesisApprover: false,
       })
       setManagerCandidate(null)
       setProgramId(null)
@@ -82,24 +84,32 @@ const ProgramManagement = () => {
       headerName: '',
       sortable: false,
       renderCell: (params) => (
-        <IconButton
-          aria-label="toggle-thesis-approver"
-          type="button"
-          onClick={() =>
-            updateProgramManagement({
-              programManagementId: params.row.id,
-              isThesisApprover: !params.row.isThesisApprover,
-            })
+        <Tooltip
+          title={
+            params.row.isThesisApprover
+              ? t('programManagementPage:disallowThesisApprovalButton')
+              : t('programManagementPage:allowThesisApprovalButton')
           }
-          color="primary"
-          data-testid={`toggle-thesis-approver-button-${params.row.userId}`}
         >
-          {params.row.isThesisApprover ? (
-            <HowToRegIcon fontSize="small" />
-          ) : (
-            <HowToRegOutlinedIcon fontSize="small" />
-          )}
-        </IconButton>
+          <IconButton
+            aria-label="toggle-thesis-approver"
+            type="button"
+            onClick={() =>
+              updateProgramManagement({
+                programManagementId: params.row.id,
+                isThesisApprover: !params.row.isThesisApprover,
+              })
+            }
+            color="primary"
+            data-testid={`toggle-thesis-approver-button-${params.row.userId}`}
+          >
+            {params.row.isThesisApprover ? (
+              <HowToRegIcon fontSize="small" />
+            ) : (
+              <HowToRegOutlinedIcon fontSize="small" />
+            )}
+          </IconButton>
+        </Tooltip>
       ),
     },
     {

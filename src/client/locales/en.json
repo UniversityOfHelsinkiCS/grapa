@@ -156,6 +156,8 @@
     "addProgramManagement": "Add program management",
     "programHeader": "Program",
     "managerHeader": "Manager",
+    "allowThesisApprovalButton": "Allow thesis approval",
+    "disallowThesisApprovalButton": "Disallow thesis approval",
     "removeProgramManagementTitle": "Delete program management",
     "removeProgramManagementContent": "Are you sure you want to delete {{name}} from the {{program}}?"
   },
