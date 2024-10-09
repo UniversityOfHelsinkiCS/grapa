@@ -3,7 +3,13 @@
  */
 import * as React from 'react'
 import userEvent from '@testing-library/user-event'
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
 
@@ -14,8 +20,8 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
       firstName: 'John',
       lastName: 'Doe',
       username: 'johndoe',
-      managedProgramIds: ["1"],
-      departmentId: "1",
+      managedProgramIds: ['1'],
+      departmentId: '1',
     },
   }),
 }))
@@ -67,7 +73,7 @@ jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
           },
         ],
       },
-    ]
+    ],
   }),
 }))
 
@@ -78,6 +84,7 @@ jest.unstable_mockModule('./src/client/hooks/useProgramManagements', () => ({
         id: 1,
         programId: 1,
         userId: 1,
+        isThesisApprover: false,
         program: {
           id: 1,
           name: {
@@ -92,54 +99,75 @@ jest.unstable_mockModule('./src/client/hooks/useProgramManagements', () => ({
           username: 'johndoe',
         },
       },
-    ]
+    ],
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useProgramManagementMutation', () => ({
-  useCreateProgramManagementMutation: jest.fn().mockReturnValue({
-    mutateAsync: jest.fn(),
-  }),
-  useDeleteProgramManagementMutation: jest.fn().mockReturnValue({
-    mutateAsync: jest.fn(),
+jest.unstable_mockModule(
+  './src/client/hooks/useProgramManagementMutation',
+  () => ({
+    useCreateProgramManagementMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+    useDeleteProgramManagementMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+    useUpdateProgramManagementMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
   })
-}))
+)
 
 jest.unstable_mockModule('@mui/icons-material/Delete', () => ({
   default: jest.fn().mockReturnValue('DeleteIcon'),
+}))
+jest.unstable_mockModule('@mui/icons-material/HowToReg', () => ({
+  default: jest.fn().mockReturnValue('HowToRegIcon'),
+}))
+jest.unstable_mockModule('@mui/icons-material/HowToRegOutlined', () => ({
+  default: jest.fn().mockReturnValue('HowToRegOutlinedIcon'),
 }))
 
 const {
   useCreateProgramManagementMutation,
   useDeleteProgramManagementMutation,
-} = (await import('../../hooks/useProgramManagementMutation'))
+  useUpdateProgramManagementMutation,
+} = await import('../../hooks/useProgramManagementMutation')
 const ProgramManagement = (await import('./ProgramManagement')).default
 
 describe('ProgramManagement', () => {
   let createProgramManagementMock
   let deleteProgramManagementMock
+  let updateProgramManagementMock
 
   beforeEach(() => {
     initializeI18n()
 
     createProgramManagementMock = jest.fn()
     deleteProgramManagementMock = jest.fn()
+    updateProgramManagementMock = jest.fn()
 
     useCreateProgramManagementMutation.mockReturnValue({
       mutateAsync: createProgramManagementMock,
     })
     useDeleteProgramManagementMutation.mockReturnValue({
       mutateAsync: deleteProgramManagementMock,
-    })   
-
+    })
+    useUpdateProgramManagementMutation.mockReturnValue({
+      mutateAsync: updateProgramManagementMock,
+    })
   })
 
   it('renders all existing program managements', () => {
     render(<ProgramManagement />)
 
-    expect(screen.getByTestId('program-manager-select-input')).toBeInTheDocument()
+    expect(
+      screen.getByTestId('program-manager-select-input')
+    ).toBeInTheDocument()
     expect(screen.getByText('Doe John')).toBeInTheDocument()
-    expect(screen.getByText("Bachelor's Programme in Mathematical Sciences")).toBeInTheDocument()
+    expect(
+      screen.getByText("Bachelor's Programme in Mathematical Sciences")
+    ).toBeInTheDocument()
   })
 
   describe('when an existing program management is deleted', () => {
@@ -148,7 +176,9 @@ describe('ProgramManagement', () => {
 
       const user = userEvent.setup()
 
-      const deleteButton = screen.getByTestId('delete-program-management-button-1')
+      const deleteButton = screen.getByTestId(
+        'delete-program-management-button-1'
+      )
       await user.click(deleteButton)
 
       await waitFor(() => {
@@ -167,7 +197,7 @@ describe('ProgramManagement', () => {
   describe('when a new program management is created', () => {
     it('calls corresponding hook to create program management', async () => {
       render(<ProgramManagement />)
-      
+
       const managerSelect = screen.getByTestId('program-manager-select-input')
       const managerInput = within(managerSelect).getByRole('combobox')
       const programSelectInput = screen.getAllByRole('combobox')[1]
@@ -176,16 +206,37 @@ describe('ProgramManagement', () => {
       fireEvent.change(managerInput, { target: { value: 'John Doe' } })
       fireEvent.keyDown(managerInput, { key: 'ArrowDown' })
       fireEvent.keyDown(managerInput, { key: 'Enter' })
-      
+
       await userEvent.click(programSelectInput)
-      await userEvent.click(screen.getAllByText("Bachelor's Programme in Mathematical Sciences")[1])
-      
+      await userEvent.click(
+        screen.getAllByText("Bachelor's Programme in Mathematical Sciences")[1]
+      )
+
       const createButton = screen.getByTestId('add-program-management-button')
       expect(createButton).toBeInTheDocument()
       expect(createButton).toBeEnabled()
       await userEvent.click(createButton)
 
       expect(createProgramManagementMock).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('when an existing program management is updated', () => {
+    it('calls corresponding hook to update program management', async () => {
+      render(<ProgramManagement />)
+
+      const toggleThesisApproverButton = screen.getByTestId(
+        'toggle-thesis-approver-button-1'
+      )
+      expect(toggleThesisApproverButton).toBeInTheDocument()
+      expect(toggleThesisApproverButton).toBeEnabled()
+      await userEvent.click(toggleThesisApproverButton)
+
+      expect(updateProgramManagementMock).toHaveBeenCalledTimes(1)
+      expect(updateProgramManagementMock).toHaveBeenCalledWith({
+        programManagementId: 1,
+        isThesisApprover: true,
+      })
     })
   })
 })
