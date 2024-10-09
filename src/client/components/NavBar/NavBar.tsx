@@ -112,7 +112,7 @@ const NavBar = () => {
               component="nav"
               sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' } }}
             >
-              {(user.isAdmin || user.managedProgramIds?.length) && (
+              {Boolean(user.isAdmin || user.managedProgramIds?.length) && (
                 <Button
                   component={NavLink}
                   to="/program-managements"
@@ -121,7 +121,7 @@ const NavBar = () => {
                   {t('navbar:programManager')}
                 </Button>
               )}
-              {(user.isAdmin || user.managedDepartmentIds?.length) && (
+              {Boolean(user.isAdmin || user.managedDepartmentIds?.length) && (
                 <Button
                   component={NavLink}
                   to="/department-admins"
@@ -130,7 +130,7 @@ const NavBar = () => {
                   {t('navbar:departmentAdmin')}
                 </Button>
               )}
-              {user.managedDepartmentIds?.length && (
+              {Boolean(user.managedDepartmentIds?.length) && (
                 <Button
                   component={NavLink}
                   to="/department-statistics"
