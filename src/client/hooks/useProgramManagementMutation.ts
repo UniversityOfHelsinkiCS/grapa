@@ -34,3 +34,41 @@ export const useDeleteProgramManagementMutation = () => {
 
   return mutation
 }
+
+interface UpdateProgramManagementData {
+  programManagementId: string
+  isThesisApprover: boolean
+}
+export const useUpdateProgramManagementMutation = () => {
+  const mutationFn = async ({
+    programManagementId,
+    isThesisApprover,
+  }: UpdateProgramManagementData) => {
+    await apiClient.put(`/program-managements/${programManagementId}`, {
+      isThesisApprover,
+    })
+  }
+
+  const mutation = useMutation({
+    mutationFn,
+    onSuccess: (_, { programManagementId, isThesisApprover }) => {
+      queryClient.setQueryData(
+        ['program-managements'],
+        (oldData: ProgramManagementData[]) =>
+          oldData.map((programManagement) =>
+            programManagement.id === programManagementId
+              ? {
+                  ...programManagement,
+                  isThesisApprover,
+                }
+              : programManagement
+          )
+      )
+      queryClient.invalidateQueries({
+        queryKey: ['program-managements'],
+      })
+    },
+  })
+
+  return mutation
+}
