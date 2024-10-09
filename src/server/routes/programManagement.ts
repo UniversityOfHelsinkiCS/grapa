@@ -105,4 +105,48 @@ programManagementRouter.post(
   }
 )
 
+programManagementRouter.put(
+  '/:id',
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: RequestWithUser, res: Response) => {
+    const { user: editorUser } = req
+    const { isThesisApprover } = req.body
+    const { id: programManagementId } = req.params
+    const { isAdmin } = req.user
+
+    const targetProgramManagement =
+      await ProgramManagement.findByPk(programManagementId)
+
+    if (!isAdmin) {
+      // if not admin, check if user has access to the program
+      const userHasAccessToProgram = await ProgramManagement.findOne({
+        attributes: ['programId'],
+        where: {
+          userId: editorUser.id,
+          programId: targetProgramManagement.id,
+        },
+      })
+
+      if (!userHasAccessToProgram) {
+        res.status(403).send({ error: 'Forbidden' })
+        return
+      }
+    }
+
+    const [, updatedProgramManagement] = await ProgramManagement.update(
+      {
+        isThesisApprover,
+      },
+      {
+        where: {
+          id: programManagementId,
+        },
+        returning: true,
+      }
+    )
+
+    res.status(200).send(updatedProgramManagement)
+  }
+)
+
 export default programManagementRouter
