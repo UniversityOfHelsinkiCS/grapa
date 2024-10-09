@@ -17,6 +17,8 @@ class ProgramManagement extends Model<
   declare programId: string
 
   declare userId: string
+
+  declare isThesisApprover: boolean
 }
 
 ProgramManagement.init(
@@ -44,6 +46,11 @@ ProgramManagement.init(
         key: 'id',
       },
       onDelete: 'CASCADE',
+    },
+    isThesisApprover: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {
