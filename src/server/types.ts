@@ -152,6 +152,7 @@ export interface ServerThesesFiltersPutRequest extends Request {
 export interface ProgramManagementData {
   userId: string
   programId: string
+  isThesisApprover: boolean
   program?: ProgramData
   user?: User
   id?: string

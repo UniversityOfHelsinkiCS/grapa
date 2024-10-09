@@ -154,6 +154,7 @@ describe('program-managements router', () => {
           {
             id: programManagement1.id,
             programId: programManagement1.programId,
+            isThesisApprover: programManagement1.isThesisApprover,
             userId: programManagement1.userId,
             user: expect.any(Object),
             program: expect.any(Object),
@@ -161,6 +162,7 @@ describe('program-managements router', () => {
           {
             id: programManagement2.id,
             programId: programManagement2.programId,
+            isThesisApprover: programManagement2.isThesisApprover,
             userId: programManagement2.userId,
             user: expect.any(Object),
             program: expect.any(Object),
@@ -246,6 +248,7 @@ describe('program-managements router', () => {
             id: programThatTheUserCanManage.id,
             programId: programThatTheUserCanManage.programId,
             userId: programThatTheUserCanManage.userId,
+            isThesisApprover: programThatTheUserCanManage.isThesisApprover,
             user: expect.any(Object),
             program: expect.any(Object),
           },
@@ -253,6 +256,7 @@ describe('program-managements router', () => {
             id: programManagement2.id,
             programId: programManagement2.programId,
             userId: programManagement2.userId,
+            isThesisApprover: programManagement2.isThesisApprover,
             user: expect.any(Object),
             program: expect.any(Object),
           },
