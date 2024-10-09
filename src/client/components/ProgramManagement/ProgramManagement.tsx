@@ -14,6 +14,8 @@ import {
   Typography,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
+import HowToRegIcon from '@mui/icons-material/HowToReg'
+import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 import useUsers from '../../hooks/useUsers'
@@ -24,6 +26,7 @@ import useProgramManagements from '../../hooks/useProgramManagements'
 import {
   useCreateProgramManagementMutation,
   useDeleteProgramManagementMutation,
+  useUpdateProgramManagementMutation,
 } from '../../hooks/useProgramManagementMutation'
 
 import DeleteConfirmation from '../Common/DeleteConfirmation'
@@ -40,6 +43,7 @@ const ProgramManagement = () => {
 
   const [programId, setProgramId] = useState(null)
   const [managerCandidate, setManagerCandidate] = useState(null)
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deletedProgramManagement, setDeletedProgramManagement] = useState(null)
 
@@ -49,6 +53,8 @@ const ProgramManagement = () => {
     useCreateProgramManagementMutation()
   const { mutateAsync: deleteProgramManagement } =
     useDeleteProgramManagementMutation()
+  const { mutateAsync: updateProgramManagement } =
+    useUpdateProgramManagementMutation()
 
   const [userSearch, setUserSearch] = useState('')
   const debouncedSearch = useDebounce(userSearch, 700)
@@ -70,6 +76,32 @@ const ProgramManagement = () => {
     return <Navigate to="/" />
 
   const columns: GridColDef<ProgramManagementData>[] = [
+    {
+      field: 'more-actions',
+      type: 'actions',
+      headerName: '',
+      sortable: false,
+      renderCell: (params) => (
+        <IconButton
+          aria-label="toggle-thesis-approver"
+          type="button"
+          onClick={() =>
+            updateProgramManagement({
+              programManagementId: params.row.id,
+              isThesisApprover: !params.row.isThesisApprover,
+            })
+          }
+          color="primary"
+          data-testid={`toggle-thesis-approver-button-${params.row.userId}`}
+        >
+          {params.row.isThesisApprover ? (
+            <HowToRegIcon fontSize="small" />
+          ) : (
+            <HowToRegOutlinedIcon fontSize="small" />
+          )}
+        </IconButton>
+      ),
+    },
     {
       field: 'user',
       headerName: t('userHeader'),
