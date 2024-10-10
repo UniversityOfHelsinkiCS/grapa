@@ -6,22 +6,55 @@ import { RequestWithUser } from '../types'
 
 const programManagementRouter = express.Router()
 
+const getProgramIdFilter = (
+  isAdmin: boolean,
+  programId: string | undefined
+) => {
+  const programIdFilter = []
+  if (!isAdmin) {
+    programIdFilter.push({
+      [Op.in]: literal(
+        `(SELECT program_id FROM program_managements WHERE user_id = $editorUserId)`
+      ),
+    })
+  }
+  if (programId) {
+    programIdFilter.push({
+      [Op.eq]: programId,
+    })
+  }
+  return programIdFilter
+}
 programManagementRouter.get(
   '/',
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
     const { isAdmin } = req.user
+    const { programId, onlyThesisApprovers } = req.query
+
+    const programIdFilter = getProgramIdFilter(
+      isAdmin,
+      programId as string | undefined
+    )
+    let whereClause = {}
+    if (programIdFilter.length) {
+      whereClause = {
+        ...whereClause,
+        programId: {
+          [Op.and]: programIdFilter,
+        },
+      }
+    }
+    if (onlyThesisApprovers) {
+      whereClause = {
+        ...whereClause,
+        isThesisApprover: true,
+      }
+    }
+
     const programs = await ProgramManagement.findAll({
       attributes: ['id', 'programId', 'userId', 'isThesisApprover'],
-      where: isAdmin
-        ? {}
-        : {
-            programId: {
-              [Op.in]: literal(
-                `(SELECT program_id FROM program_managements WHERE user_id = $editorUserId)`
-              ),
-            },
-          },
+      where: whereClause,
       include: [
         {
           model: User,

@@ -60,6 +60,7 @@ describe('program-managements router', () => {
     programManagement2 = await ProgramManagement.create({
       programId: program1.id,
       userId: user3.id,
+      isThesisApprover: true,
     })
   })
 
@@ -145,29 +146,81 @@ describe('program-managements router', () => {
 
   describe('when the user is an admin', () => {
     describe('GET /api/program-managements', () => {
-      it('should return 200', async () => {
-        const response = await request
-          .get('/api/program-managements')
-          .set({ uid: user1.id, hygroupcn: 'grp-toska' })
-        expect(response.status).toEqual(200)
-        expect(response.body).toIncludeSameMembers([
-          {
-            id: programManagement1.id,
-            programId: programManagement1.programId,
-            isThesisApprover: programManagement1.isThesisApprover,
-            userId: programManagement1.userId,
-            user: expect.any(Object),
-            program: expect.any(Object),
-          },
-          {
-            id: programManagement2.id,
-            programId: programManagement2.programId,
-            isThesisApprover: programManagement2.isThesisApprover,
-            userId: programManagement2.userId,
-            user: expect.any(Object),
-            program: expect.any(Object),
-          },
-        ])
+      describe('when no query params are passed', () => {
+        it('should return 200 and the correct response', async () => {
+          const response = await request
+            .get('/api/program-managements')
+            .set({ uid: user1.id, hygroupcn: 'grp-toska' })
+          expect(response.status).toEqual(200)
+          expect(response.body).toIncludeSameMembers([
+            {
+              id: programManagement1.id,
+              programId: programManagement1.programId,
+              isThesisApprover: programManagement1.isThesisApprover,
+              userId: programManagement1.userId,
+              user: expect.any(Object),
+              program: expect.any(Object),
+            },
+            {
+              id: programManagement2.id,
+              programId: programManagement2.programId,
+              isThesisApprover: programManagement2.isThesisApprover,
+              userId: programManagement2.userId,
+              user: expect.any(Object),
+              program: expect.any(Object),
+            },
+          ])
+        })
+      })
+
+      describe('when programId query param is passed', () => {
+        it('should return 200 and the correct response', async () => {
+          const response = await request
+            .get(
+              `/api/program-managements?programId=${programManagement1.programId}`
+            )
+            .set({ uid: user1.id, hygroupcn: 'grp-toska' })
+          expect(response.status).toEqual(200)
+          expect(response.body).toIncludeSameMembers([
+            {
+              id: programManagement1.id,
+              programId: programManagement1.programId,
+              isThesisApprover: programManagement1.isThesisApprover,
+              userId: programManagement1.userId,
+              user: expect.any(Object),
+              program: expect.any(Object),
+            },
+          ])
+        })
+      })
+
+      describe('when onlyThesisApprovers query param is passed', () => {
+        it('should return 200 and the correct response', async () => {
+          const response = await request
+            .get(`/api/program-managements?onlyThesisApprovers=true`)
+            .set({ uid: user1.id, hygroupcn: 'grp-toska' })
+          expect(response.status).toEqual(200)
+          expect(response.body).toIncludeSameMembers([
+            {
+              id: programManagement2.id,
+              programId: programManagement2.programId,
+              isThesisApprover: programManagement2.isThesisApprover,
+              userId: programManagement2.userId,
+              user: expect.any(Object),
+              program: expect.any(Object),
+            },
+          ])
+        })
+      })
+
+      describe('when onlyThesisApprovers and programId query params are passed', () => {
+        it('should return 200 and the correct response', async () => {
+          const response = await request
+            .get(`/api/program-managements?onlyThesisApprovers=true&programId=${programManagement1.programId}`)
+            .set({ uid: user1.id, hygroupcn: 'grp-toska' })
+          expect(response.status).toEqual(200)
+          expect(response.body).toIncludeSameMembers([])
+        })
       })
     })
 
@@ -341,7 +394,8 @@ describe('program-managements router', () => {
           .set({ uid: user1.id, hygroupcn: 'hy-employees' })
         expect(response.status).toEqual(200)
         expect(
-          (await ProgramManagement.findByPk(programThatTheUserCanManage.id)).isThesisApprover
+          (await ProgramManagement.findByPk(programThatTheUserCanManage.id))
+            .isThesisApprover
         ).toEqual(true)
       })
 
@@ -352,7 +406,8 @@ describe('program-managements router', () => {
           .set({ uid: user1.id, hygroupcn: 'hy-employees' })
         expect(response.status).toEqual(404)
         expect(
-          (await ProgramManagement.findByPk(programThatTheUserCanManage.id)).isThesisApprover
+          (await ProgramManagement.findByPk(programThatTheUserCanManage.id))
+            .isThesisApprover
         ).toEqual(false)
       })
     })
