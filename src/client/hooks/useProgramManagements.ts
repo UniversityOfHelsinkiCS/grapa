@@ -2,11 +2,27 @@ import { useQuery } from '@tanstack/react-query'
 import { ProgramManagementData } from '@backend/types'
 import apiClient from '../util/apiClient'
 
-const useProgramManagements = () => {
-  const queryKey = ['program-managements']
+type UseProgramManagementsOptions =
+  | {
+      onlyThesisApprovers: boolean
+      programId: string
+    }
+  | undefined
+const useProgramManagements = (
+  { onlyThesisApprovers, programId }: UseProgramManagementsOptions = {
+    onlyThesisApprovers: undefined,
+    programId: undefined,
+  }
+) => {
+  const queryKey = ['program-managements', programId, onlyThesisApprovers]
 
   const queryFn = async (): Promise<ProgramManagementData[]> => {
-    const { data } = await apiClient.get(`/program-managements`)
+    const { data } = await apiClient.get(`/program-managements`, {
+      params: {
+        programId,
+        onlyThesisApprovers,
+      },
+    })
 
     return data
   }
