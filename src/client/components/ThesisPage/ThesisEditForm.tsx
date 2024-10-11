@@ -320,7 +320,11 @@ const ThesisEditForm: React.FC<{
                   <Select
                     data-testid="approver-select-input"
                     required
-                    value={editedThesis.approvers[0]?.id ?? ''}
+                    value={
+                      (editedThesis.approvers &&
+                        editedThesis.approvers[0]?.id) ??
+                      ''
+                    }
                     id="approver"
                     label="Approver"
                     name="approver"

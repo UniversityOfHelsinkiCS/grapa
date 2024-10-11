@@ -29,6 +29,22 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   }),
 }))
 
+jest.unstable_mockModule('./src/client/hooks/useProgramManagements', () => ({
+  default: jest.fn().mockReturnValue({
+    programManagements: [
+      {
+        user: {
+          id: 4,
+          firstName: 'Henri',
+          lastName: 'Tunkkaaja',
+          username: 'tunkkaus',
+        },
+      },
+    ],
+    isLoading: false,
+  }),
+}))
+
 const programs = [
   {
     id: 1,
@@ -103,7 +119,6 @@ jest.unstable_mockModule('@mui/icons-material/StarOutline', () => ({
   default: jest.fn().mockReturnValue('StarOutline'),
 }))
 
-
 const ThesisEditForm = (await import('./ThesisEditForm')).default
 
 describe('ThesisEditForm', () => {
@@ -122,6 +137,7 @@ describe('ThesisEditForm', () => {
         studyTrackId: programs[0].studyTracks[0].id,
         supervisions: [],
         authors: [],
+        approvers: [],
         graders: [
           { user: null, isPrimaryGrader: true },
           { user: null, isPrimaryGrader: false },
@@ -204,9 +220,7 @@ describe('ThesisEditForm', () => {
 
         // Select a program
         await user.click(programSelect)
-        await user.click(
-          screen.getByTestId('program-select-item-1')
-        )
+        await user.click(screen.getByTestId('program-select-item-1'))
 
         // Add an author
         authorSelect.focus()
@@ -266,7 +280,9 @@ describe('ThesisEditForm', () => {
       const initialThesis = {
         programId: programs[0].key,
         studyTrackId: programs[0].studyTracks[0].id,
-        supervisions: [{ userId: 1, percentage: 100, isPrimarySupervisor: true }],
+        supervisions: [
+          { userId: 1, percentage: 100, isPrimarySupervisor: true },
+        ],
         authors: [{ userId: 2 }],
         graders: [
           {
