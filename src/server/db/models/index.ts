@@ -2,6 +2,7 @@ import User from './User'
 import Thesis from './Thesis'
 import Supervision from './Supervision'
 import Author from './Author'
+import Approver from './Approver'
 import Attachment from './Attachment'
 import Program from './Program'
 import StudyTrack from './StudyTrack'
@@ -53,7 +54,11 @@ Thesis.belongsToMany(User, {
   as: 'authors',
 })
 
-// Thesis.hasMany(Author, { as: 'authors' })
+Approver.belongsTo(User, { as: 'user' })
+Thesis.belongsToMany(User, {
+  through: Approver,
+  as: 'approvers',
+})
 
 Attachment.belongsTo(Thesis, { as: 'thesis' })
 Thesis.hasOne(Attachment, { as: 'researchPlan', foreignKey: 'thesisId' })
@@ -72,6 +77,7 @@ export {
   Supervision,
   Author,
   Attachment,
+  Approver,
   Program,
   StudyTrack,
   Grader,
