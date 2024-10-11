@@ -74,13 +74,17 @@ const createThesis = async (thesisData: ThesisData, t: Transaction) => {
     { transaction: t, validate: true, individualHooks: true }
   )
 
-  await Approver.bulkCreate(
-    thesisData.approvers.map((approver) => ({
-      userId: approver.id,
-      thesisId: createdThesis.id,
-    })),
-    { transaction: t, validate: true, individualHooks: true }
-  )
+  // We want to account for the case where approvers array is
+  // sent as undefined from the client
+  if (thesisData.approvers?.length) {
+    await Approver.bulkCreate(
+      thesisData.approvers.map((approver) => ({
+        userId: approver.id,
+        thesisId: createdThesis.id,
+      })),
+      { transaction: t, validate: true, individualHooks: true }
+    )
+  }
 
   // Create the external users from the graders
   await User.bulkCreate(
@@ -159,13 +163,17 @@ const updateThesis = async (
   )
 
   await Approver.destroy({ where: { thesisId: id }, transaction })
-  await Approver.bulkCreate(
-    thesisData.approvers.map((approver) => ({
-      userId: approver.id,
-      thesisId: id,
-    })),
-    { transaction, validate: true, individualHooks: true }
-  )
+  // We want to account for the case where approvers array is
+  // sent as undefined from the client
+  if (thesisData.approvers?.length) {
+    await Approver.bulkCreate(
+      thesisData.approvers.map((approver) => ({
+        userId: approver.id,
+        thesisId: id,
+      })),
+      { transaction, validate: true, individualHooks: true }
+    )
+  }
 }
 
 const deleteThesis = async (id: string, transaction: Transaction) => {
