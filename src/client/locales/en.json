@@ -89,6 +89,8 @@
     "targetDate": "Target date must be after start date"
   },
   "thesisForm": {
+    "approverHeader": "Program manager",
+    "approverInstructions": "Select a program manager, whose expertise is closest to the topic of the thesis, to manage the process.",
     "errorSummary": "Form contains the following errors",
     "newThesisFormTitle": "Create new thesis",
     "editThesisFormTitle": "Edit thesis",

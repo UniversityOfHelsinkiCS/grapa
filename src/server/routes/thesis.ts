@@ -16,6 +16,7 @@ import {
   Thesis,
   Supervision,
   Author,
+  Approver,
   User,
   EventLog,
 } from '../db/models'
@@ -49,6 +50,7 @@ const fetchThesisById = async (id: string, user: UserType) => {
 }
 
 const createThesis = async (thesisData: ThesisData, t: Transaction) => {
+  console.log('thesisData', thesisData)
   const createdThesis = await Thesis.create(thesisData, { transaction: t })
 
   const extUsers = await getAndCreateExtUsers(thesisData, t)
@@ -68,6 +70,14 @@ const createThesis = async (thesisData: ThesisData, t: Transaction) => {
   await Author.bulkCreate(
     thesisData.authors.map((author) => ({
       userId: author.id,
+      thesisId: createdThesis.id,
+    })),
+    { transaction: t, validate: true, individualHooks: true }
+  )
+
+  await Approver.bulkCreate(
+    thesisData.approvers.map((approver) => ({
+      userId: approver.id,
       thesisId: createdThesis.id,
     })),
     { transaction: t, validate: true, individualHooks: true }
@@ -139,10 +149,20 @@ const updateThesis = async (
     })),
     { transaction, validate: true, individualHooks: true }
   )
+
   await Author.destroy({ where: { thesisId: id }, transaction })
   await Author.bulkCreate(
     thesisData.authors.map((author) => ({
       userId: author.id,
+      thesisId: id,
+    })),
+    { transaction, validate: true, individualHooks: true }
+  )
+
+  await Approver.destroy({ where: { thesisId: id }, transaction })
+  await Approver.bulkCreate(
+    thesisData.approvers.map((approver) => ({
+      userId: approver.id,
       thesisId: id,
     })),
     { transaction, validate: true, individualHooks: true }

@@ -9,6 +9,8 @@ import { useTranslation } from 'react-i18next'
 import { User, ThesisData, TranslationLanguage } from '@backend/types'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
 import {
+  Alert,
+  AlertTitle,
   Autocomplete,
   Button,
   Dialog,
@@ -33,6 +35,7 @@ import SupervisorSelect from './SupervisorSelect/SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
 import { useDebounce } from '../../hooks/useDebounce'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
+import useProgramManagements from '../../hooks/useProgramManagements'
 import { getFormErrors, getSortedByName } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
 import ErrorSummary from '../Common/ErrorSummary'
@@ -56,6 +59,14 @@ const ThesisEditForm: React.FC<{
     initialThesis
   )
   const [userSearch, setUserSearch] = useState('')
+  const { programManagements: programManagementsOfApprovers } =
+    useProgramManagements({
+      onlyThesisApprovers: true,
+      programId: editedThesis.programId,
+    })
+  const approvers = programManagementsOfApprovers?.map(
+    (programManagement) => programManagement.user
+  )
 
   const debouncedSearch = useDebounce(userSearch, 700)
   const { users: authorOptions } = useUsers({
@@ -287,13 +298,58 @@ const ThesisEditForm: React.FC<{
                     </MenuItem>
                   ))}
                 </Select>
-                <FormHelperText error>
-                  {t(
-                    formErrors.find((error) => error.path[0] === 'programId')
-                      ?.message
-                  )}
-                </FormHelperText>
               </FormControl>
+            )}
+
+            {approvers && approvers.length > 0 && (
+              <>
+                <Alert
+                  id="grader-select-instructions"
+                  severity="info"
+                  variant="outlined"
+                  sx={{ whiteSpace: 'pre-line' }}
+                >
+                  <AlertTitle>
+                    {t('thesisForm:approverInstructions')}
+                  </AlertTitle>
+                </Alert>
+                <FormControl fullWidth>
+                  <InputLabel id="approver-select-label">
+                    {t('thesisForm:approverHeader')}
+                  </InputLabel>
+                  <Select
+                    data-testid="approver-select-input"
+                    required
+                    value={editedThesis.approvers[0]?.id ?? ''}
+                    id="approver"
+                    label="Approver"
+                    name="approver"
+                    onChange={(event) => {
+                      setEditedThesis((oldThesis) => ({
+                        ...oldThesis,
+                        approvers: [
+                          approvers.find((a) => a.id === event.target.value),
+                        ],
+                      }))
+
+                      setFormErrors(
+                        formErrors.filter(
+                          (error) => error.path[0] !== 'approver'
+                        )
+                      )
+                    }}
+                    error={formErrors.some(
+                      (error) => error.path[0] === 'approver'
+                    )}
+                  >
+                    {approvers.map((approver) => (
+                      <MenuItem key={approver.id} value={approver.id}>
+                        {approver.firstName} {approver.lastName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>{' '}
+              </>
             )}
 
             <FormControl fullWidth>

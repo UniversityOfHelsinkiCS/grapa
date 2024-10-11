@@ -55,6 +55,11 @@ export const getFindThesesOptions = async ({
       attributes: userFields,
     },
     {
+      model: User,
+      as: 'approvers',
+      attributes: userFields,
+    },
+    {
       model: Attachment,
       as: 'researchPlan',
       attributes: ['filename', ['original_name', 'name'], 'mimetype'],

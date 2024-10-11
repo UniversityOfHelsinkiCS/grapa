@@ -89,6 +89,8 @@
     "targetDate": "Tavoitepäivän on oltava aloituspäivän jälkeen"
   },
   "thesisForm": {
+    "approverHeader": "Vastaava",
+    "approverInstructions": "Valitse ohjelmavastaava, joka on lähimpänä tutkielman aihepiiriä, hallinnoimaan prosessia.",
     "errorSummary": "Lomake sisältää seuraavia virheitä",
     "newThesisFormTitle": "Uuden tutkielman luonti",
     "editThesisFormTitle": "Tutkielman muokkaus",
