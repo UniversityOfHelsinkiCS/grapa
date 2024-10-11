@@ -50,7 +50,6 @@ const fetchThesisById = async (id: string, user: UserType) => {
 }
 
 const createThesis = async (thesisData: ThesisData, t: Transaction) => {
-  console.log('thesisData', thesisData)
   const createdThesis = await Thesis.create(thesisData, { transaction: t })
 
   const extUsers = await getAndCreateExtUsers(thesisData, t)
