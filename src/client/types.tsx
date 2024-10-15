@@ -1,5 +1,5 @@
 import { MutableRefObject } from 'react'
-import { User } from '@backend/types'
+import { User, ThesisData as Thesis } from '@backend/types'
 import { GridRowSelectionModel } from '@mui/x-data-grid/models/gridRowSelectionModel'
 
 export enum StatusLocale {
@@ -20,6 +20,6 @@ export interface SupervisorSelection {
 export interface ThesisFooterProps {
   footerRef: MutableRefObject<HTMLDivElement>
   rowSelectionModel: GridRowSelectionModel[]
-  handleEditThesis: () => void
-  handleDeleteThesis: () => void
+  handleEditThesis: (thesis: Thesis) => void
+  handleDeleteThesis: (thesis: Thesis) => void
 }

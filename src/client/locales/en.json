@@ -150,6 +150,9 @@
     "filterButton": "Filters",
     "saveFiltersButton": "Save filters"
   },
+  "thesesPage": {
+    "approvalRequiredTooltip": "This thesis has been assigned to you. Your approval is required!"
+  },
   "customFilters": {
     "valuesLabel": "Values"
   },

@@ -150,6 +150,9 @@
     "filterButton": "Suodattimet",
     "saveFiltersButton": "Tallenna suodattimet"
   },
+  "thesesPage": {
+    "approvalRequiredTooltip": "Tämä tutkielma on osoitettu sinulle. Hyväksyntäsi tarvitaan!"
+  },
   "customFilters": {
     "valuesLabel": "Arvot"
   },

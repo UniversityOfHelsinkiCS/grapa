@@ -428,7 +428,7 @@ const ViewThesisFooter = (
                       color: '#000',
                     },
                   }}
-                  onClick={handleEditThesis}
+                  onClick={() => handleEditThesis(thesis)}
                 >
                   {t('editButton')}
                 </Button>
@@ -442,7 +442,7 @@ const ViewThesisFooter = (
                     borderRadius: '1rem',
                     fontWeight: 600,
                   }}
-                  onClick={handleDeleteThesis}
+                  onClick={() => handleDeleteThesis(thesis)}
                 >
                   {t('deleteButton')}
                 </Button>

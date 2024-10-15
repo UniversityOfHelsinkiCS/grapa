@@ -3,7 +3,15 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { cloneDeep } from 'lodash-es'
 
-import { Box, Stack, TextField, Typography } from '@mui/material'
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
+import {
+  Box,
+  IconButton,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import {
   DataGrid,
   DataGridProps,
@@ -45,7 +53,8 @@ const ThesesPage = () => {
   const footerRef = useRef<HTMLDivElement>(null)
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
-  const { user, isLoading: loggedInUserLoading } = useLoggedInUser()
+  const { user: currentUser, isLoading: loggedInUserLoading } =
+    useLoggedInUser()
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -92,14 +101,14 @@ const ThesesPage = () => {
 
   // Restore filters from user settings
   useEffect(() => {
-    if (user.thesesTableFilters) {
+    if (currentUser.thesesTableFilters) {
       apiRef.current.restoreState({
         filter: {
-          filterModel: user.thesesTableFilters,
+          filterModel: currentUser.thesesTableFilters,
         },
       })
     }
-  }, [user.thesesTableFilters])
+  }, [currentUser.thesesTableFilters])
 
   useEffect(() => {
     if (rowSelectionModel.length > 0) {
@@ -107,7 +116,46 @@ const ThesesPage = () => {
     }
   }, [rowSelectionModel])
 
+  const initializeThesisDelete = (thesisToDelete: Thesis) => {
+    setDeletedThesis(thesisToDelete)
+    setDeleteDialogOpen(true)
+  }
+
+  const initializeThesisEdit = (thesisToEdit: Thesis) => {
+    // NOTE: We need to clone the object to
+    // prevent the form from updating the original object
+    setEditedThesis(cloneDeep(thesisToEdit))
+  }
+
   const columns: GridColDef<Thesis>[] = [
+    {
+      field: 'more-actions',
+      type: 'actions',
+      headerName: '',
+      sortable: false,
+      renderCell: (params) => {
+        const currUserIsApprover =
+          currentUser &&
+          params.row.approvers.find(
+            (approver) => approver.id === currentUser.id
+          )
+        return (
+          Boolean(currUserIsApprover) && (
+            <Tooltip title={t('thesesPage:approvalRequiredTooltip')}>
+              <IconButton
+                aria-label="toggle-thesis-approver"
+                type="button"
+                color="primary"
+                data-testid={`toggle-thesis-approver-button-${params.row.id}`}
+                onClick={() => initializeThesisEdit(params.row)}
+              >
+                <PriorityHighIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )
+        )
+      },
+    },
     {
       field: 'programId',
       headerName: t('programHeader'),
@@ -207,7 +255,7 @@ const ThesesPage = () => {
       studyTrackId: programOptions[0].studyTracks[0]?.id,
       supervisions: [
         {
-          user,
+          user: currentUser,
           percentage: 100,
           isExternal: false,
           isPrimarySupervisor: true,
@@ -215,31 +263,14 @@ const ThesesPage = () => {
       ],
       authors: [],
       approvers: [],
-      graders: [{ user, isPrimaryGrader: true, isExternal: false }],
+      graders: [
+        { user: currentUser, isPrimaryGrader: true, isExternal: false },
+      ],
       topic: '',
       status: 'PLANNING',
       startDate: dayjs().format('YYYY-MM-DD'),
       targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
     })
-  }
-
-  const initializeThesisDelete = () => {
-    const thesisToDelete = theses.find(
-      (thesis) => thesis.id === rowSelectionModel[0]
-    )
-
-    setDeletedThesis(thesisToDelete)
-    setDeleteDialogOpen(true)
-  }
-
-  const initializeThesisEdit = () => {
-    const thesisToEdit = theses.find(
-      (thesis) => thesis.id === rowSelectionModel[0]
-    )
-
-    // NOTE: We need to clone the object to
-    // prevent the form from updating the original object
-    setEditedThesis(cloneDeep(thesisToEdit))
   }
 
   const clearRowSelection = () => {
