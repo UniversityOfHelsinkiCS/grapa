@@ -18,6 +18,7 @@ import {
   User,
 } from '../db/models'
 import { userFields } from './config'
+import { update } from 'lodash-es'
 
 const request = supertest.agent(app)
 
@@ -33,7 +34,7 @@ describe('thesis router', () => {
   describe('when the user is not a teacher', () => {
     describe('GET /api/theses', () => {
       it('should return 403', async () => {
-        const response = await request.get('/api/theses')
+        const response = await request.get('/api/theses/paginate')
         expect(response.status).toEqual(403)
       })
     })
@@ -61,7 +62,7 @@ describe('thesis router', () => {
 
     describe('GET /api/theses/:id', () => {
       it('should return 403', async () => {
-        const response = await request.get('/api/theses/1')
+        const response = await request.get('/api/theses/paginate/1')
         expect(response.status).toEqual(403)
       })
     })
@@ -71,10 +72,10 @@ describe('thesis router', () => {
     describe('GET /api/theses', () => {
       it('should return 200 and an empty array', async () => {
         const response = await request
-          .get('/api/theses')
+          .get('/api/theses/paginate')
           .set('hygroupcn', 'grp-toska')
         expect(response.status).toEqual(200)
-        expect(response.body).toEqual([])
+        expect(response.body).toEqual({ theses: [], totalCount: 0 })
       })
     })
   })
@@ -262,44 +263,47 @@ describe('thesis router', () => {
         describe('when the user is an admin', () => {
           it('should return 200 and the theses', async () => {
             const response = await request
-              .get('/api/theses')
+              .get('/api/theses/paginate')
               .set('hygroupcn', 'grp-toska')
             expect(response.status).toEqual(200)
-            expect(response.body).toMatchObject([
-              {
-                programId: 'Testing program',
-                studyTrackId: 'test-study-track-id',
-                topic: 'test topic',
-                status: 'PLANNING',
-                startDate: '1970-01-01T00:00:00.000Z',
-                targetDate: '2070-01-01T00:00:00.000Z',
-                authors: [user2],
-                researchPlan: {
-                  filename: 'testfile.pdf1',
-                  name: 'testfile.pdf1',
-                  mimetype: 'application/pdf1',
-                },
-                waysOfWorking: {
-                  filename: 'testfile.pdf2',
-                  name: 'testfile.pdf2',
-                  mimetype: 'application/pdf2',
-                },
-                supervisions: expect.toIncludeSameMembers([
-                  {
-                    user: user1,
-                    percentage: 50,
-                    isExternal: false,
-                    isPrimarySupervisor: true,
+            expect(response.body).toMatchObject({
+              totalCount: 1,
+              theses: [
+                {
+                  programId: 'Testing program',
+                  studyTrackId: 'test-study-track-id',
+                  topic: 'test topic',
+                  status: 'PLANNING',
+                  startDate: '1970-01-01T00:00:00.000Z',
+                  targetDate: '2070-01-01T00:00:00.000Z',
+                  authors: [user2],
+                  researchPlan: {
+                    filename: 'testfile.pdf1',
+                    name: 'testfile.pdf1',
+                    mimetype: 'application/pdf1',
                   },
-                  {
-                    user: user3,
-                    percentage: 50,
-                    isExternal: false,
-                    isPrimarySupervisor: false,
+                  waysOfWorking: {
+                    filename: 'testfile.pdf2',
+                    name: 'testfile.pdf2',
+                    mimetype: 'application/pdf2',
                   },
-                ]),
-              },
-            ])
+                  supervisions: expect.toIncludeSameMembers([
+                    {
+                      user: user1,
+                      percentage: 50,
+                      isExternal: false,
+                      isPrimarySupervisor: true,
+                    },
+                    {
+                      user: user3,
+                      percentage: 50,
+                      isExternal: false,
+                      isPrimarySupervisor: false,
+                    },
+                  ]),
+                },
+              ],
+            })
           })
         })
 
@@ -330,19 +334,22 @@ describe('thesis router', () => {
 
           it('should return theses that the teacher supervisers and theses of the managed program but no other theses', async () => {
             const response = await request
-              .get('/api/theses')
+              .get('/api/theses/paginate')
               .set({ uid: user1.id, hygroupcn: 'hy-employees' })
             expect(response.status).toEqual(200)
-            expect(response.body).toHaveLength(2)
-            expect(response.body).toMatchObject([
-              {
-                topic:
-                  'Thesis in the same program but supervised by another user',
-              },
-              {
-                topic: 'test topic',
-              },
-            ])
+            expect(response.body.theses).toHaveLength(2)
+            expect(response.body).toMatchObject({
+              totalCount: 2,
+              theses: [
+                {
+                  topic:
+                    'Thesis in the same program but supervised by another user',
+                },
+                {
+                  topic: 'test topic',
+                },
+              ],
+            })
           })
         })
 
@@ -373,19 +380,22 @@ describe('thesis router', () => {
 
           it('should return theses that the teacher supervisers and theses of the managed program but no other theses', async () => {
             const response = await request
-              .get('/api/theses')
+              .get('/api/theses/paginate')
               .set({ uid: user1.id, hygroupcn: 'hy-employees' })
             expect(response.status).toEqual(200)
-            expect(response.body).toHaveLength(2)
-            expect(response.body).toMatchObject([
-              {
-                topic:
-                  'Thesis in the program managed by the user, supervised by another user',
-              },
-              {
-                topic: 'test topic',
-              },
-            ])
+            expect(response.body.theses).toHaveLength(2)
+            expect(response.body).toMatchObject({
+              totalCount: 2,
+              theses: [
+                {
+                  topic:
+                    'Thesis in the program managed by the user, supervised by another user',
+                },
+                {
+                  topic: 'test topic',
+                },
+              ],
+            })
           })
         })
 
@@ -416,71 +426,77 @@ describe('thesis router', () => {
 
           it('should return theses of the managed program but no other theses', async () => {
             const response = await request
-              .get('/api/theses')
+              .get('/api/theses/paginate')
               .set({ uid: user2.id, hygroupcn: 'hy-employees' })
             expect(response.status).toEqual(200)
-            expect(response.body).toHaveLength(1)
-            expect(response.body).toMatchObject([
-              {
-                topic:
-                  'Thesis in the program managed by the user, supervised by another user',
-              },
-            ])
+            expect(response.body.theses).toHaveLength(1)
+            expect(response.body).toMatchObject({
+              totalCount: 1,
+              theses: [
+                {
+                  topic:
+                    'Thesis in the program managed by the user, supervised by another user',
+                },
+              ],
+            })
           })
         })
 
         describe('when the user is a teacher and is a supervisor of the thesis', () => {
           it('should return 200 and the theses', async () => {
             const response = await request
-              .get('/api/theses')
+              .get('/api/theses/paginate')
               .set({ uid: user1.id, hygroupcn: 'hy-employees' })
             expect(response.status).toEqual(200)
-            expect(response.body).toMatchObject([
-              {
-                programId: 'Testing program',
-                studyTrackId: 'test-study-track-id',
-                topic: 'test topic',
-                status: 'PLANNING',
-                startDate: '1970-01-01T00:00:00.000Z',
-                targetDate: '2070-01-01T00:00:00.000Z',
-                authors: [user2],
-                researchPlan: {
-                  filename: 'testfile.pdf1',
-                  name: 'testfile.pdf1',
-                  mimetype: 'application/pdf1',
-                },
-                waysOfWorking: {
-                  filename: 'testfile.pdf2',
-                  name: 'testfile.pdf2',
-                  mimetype: 'application/pdf2',
-                },
-                supervisions: expect.toIncludeSameMembers([
-                  {
-                    user: user1,
-                    percentage: 50,
-                    isExternal: false,
-                    isPrimarySupervisor: true,
+            expect(response.body).toMatchObject({
+              totalCount: 1,
+              theses: [
+                {
+                  programId: 'Testing program',
+                  studyTrackId: 'test-study-track-id',
+                  topic: 'test topic',
+                  status: 'PLANNING',
+                  startDate: '1970-01-01T00:00:00.000Z',
+                  targetDate: '2070-01-01T00:00:00.000Z',
+                  authors: [user2],
+                  researchPlan: {
+                    filename: 'testfile.pdf1',
+                    name: 'testfile.pdf1',
+                    mimetype: 'application/pdf1',
                   },
-                  {
-                    user: user3,
-                    percentage: 50,
-                    isExternal: false,
-                    isPrimarySupervisor: false,
+                  waysOfWorking: {
+                    filename: 'testfile.pdf2',
+                    name: 'testfile.pdf2',
+                    mimetype: 'application/pdf2',
                   },
-                ]),
-              },
-            ])
+                  supervisions: expect.toIncludeSameMembers([
+                    {
+                      user: user1,
+                      percentage: 50,
+                      isExternal: false,
+                      isPrimarySupervisor: true,
+                    },
+                    {
+                      user: user3,
+                      percentage: 50,
+                      isExternal: false,
+                      isPrimarySupervisor: false,
+                    },
+                  ]),
+                },
+              ],
+            })
           })
         })
 
         describe('when the user is a teacher and is not a supervisor of the thesis', () => {
           it('should return 200 and the theses', async () => {
-            const response = await request.get('/api/theses').set({
+            const response = await request.get('/api/theses/paginate').set({
               uid: 'test-id-of-not-supervisor',
               hygroupcn: 'hy-employees',
             })
             expect(response.status).toEqual(200)
-            expect(response.body).toMatchObject([])
+            expect(response.body).toMatchObject({ totalCount: 0, theses: [] })
           })
         })
       })
@@ -588,27 +604,30 @@ describe('thesis router', () => {
         describe('when the teacher user fetches own theses', () => {
           it('should return all theses supervised by the user', async () => {
             const response = await request
-              .get('/api/theses?onlySupervised=true')
+              .get('/api/theses/paginate?onlySupervised=true')
               .set({ uid: teacherUser.id, hygroupcn: 'hy-employees' })
             expect(response.status).toEqual(200)
-            expect(response.body).toMatchObject([
-              {
-                id: thesis2.id,
-                programId: 'Testing program',
-                studyTrackId: 'test-study-track-id',
-                topic: 'test topic',
-                status: 'PLANNING',
-                startDate: '1970-01-01T00:00:00.000Z',
-                targetDate: '2070-01-01T00:00:00.000Z',
-                supervisions: [
-                  {
-                    user: teacherUser,
-                    percentage: 100,
-                    isPrimarySupervisor: true,
-                  },
-                ],
-              },
-            ])
+            expect(response.body).toMatchObject({
+              totalCount: 1,
+              theses: [
+                {
+                  id: thesis2.id,
+                  programId: 'Testing program',
+                  studyTrackId: 'test-study-track-id',
+                  topic: 'test topic',
+                  status: 'PLANNING',
+                  startDate: '1970-01-01T00:00:00.000Z',
+                  targetDate: '2070-01-01T00:00:00.000Z',
+                  supervisions: [
+                    {
+                      user: teacherUser,
+                      percentage: 100,
+                      isPrimarySupervisor: true,
+                    },
+                  ],
+                },
+              ],
+            })
           })
         })
 
@@ -622,7 +641,7 @@ describe('thesis router', () => {
               topic: 'test topic',
               status: 'PLANNING',
               startDate: '1970-01-01',
-              targetDate: '2070-01-01',
+              targetDate: '2170-01-01',
             })
 
             await Supervision.create({
@@ -675,7 +694,7 @@ describe('thesis router', () => {
                 topic: 'test topic',
                 status: 'PLANNING',
                 startDate: '1970-01-01T00:00:00.000Z',
-                targetDate: '2070-01-01T00:00:00.000Z',
+                targetDate: '2170-01-01T00:00:00.000Z',
                 supervisions: [
                   {
                     user: teacherUser,
@@ -691,27 +710,30 @@ describe('thesis router', () => {
         describe('when the program manager user fetches own theses', () => {
           it('should return all theses supervised by the user, but not the others in the managed program', async () => {
             const response = await request
-              .get('/api/theses?onlySupervised=true')
+              .get('/api/theses/paginate?onlySupervised=true')
               .set({ uid: programManagerUser.id, hygroupcn: 'hy-employees' })
             expect(response.status).toEqual(200)
-            expect(response.body).toMatchObject([
-              {
-                id: thesis3.id,
-                programId: 'Testing program',
-                studyTrackId: 'test-study-track-id',
-                topic: 'test topic',
-                status: 'PLANNING',
-                startDate: '1970-01-01T00:00:00.000Z',
-                targetDate: '2070-01-01T00:00:00.000Z',
-                supervisions: [
-                  {
-                    user: programManagerUser,
-                    percentage: 100,
-                    isPrimarySupervisor: true,
-                  },
-                ],
-              },
-            ])
+            expect(response.body).toMatchObject({
+              totalCount: 1,
+              theses: [
+                {
+                  id: thesis3.id,
+                  programId: 'Testing program',
+                  studyTrackId: 'test-study-track-id',
+                  topic: 'test topic',
+                  status: 'PLANNING',
+                  startDate: '1970-01-01T00:00:00.000Z',
+                  targetDate: '2070-01-01T00:00:00.000Z',
+                  supervisions: [
+                    {
+                      user: programManagerUser,
+                      percentage: 100,
+                      isPrimarySupervisor: true,
+                    },
+                  ],
+                },
+              ],
+            })
           })
         })
 
@@ -725,7 +747,7 @@ describe('thesis router', () => {
               topic: 'test topic',
               status: 'PLANNING',
               startDate: '1970-01-01',
-              targetDate: '2070-01-01',
+              targetDate: '2170-01-01',
             })
 
             await Supervision.create({
@@ -778,7 +800,7 @@ describe('thesis router', () => {
                 topic: 'test topic',
                 status: 'PLANNING',
                 startDate: '1970-01-01T00:00:00.000Z',
-                targetDate: '2070-01-01T00:00:00.000Z',
+                targetDate: '2170-01-01T00:00:00.000Z',
                 supervisions: [
                   {
                     user: programManagerUser,
@@ -794,27 +816,30 @@ describe('thesis router', () => {
         describe('when an admin user fetches own theses', () => {
           it('should return all theses supervised by the user and only those', async () => {
             const response = await request
-              .get('/api/theses?onlySupervised=true')
+              .get('/api/theses/paginate?onlySupervised=true')
               .set({ uid: adminUser.id, hygroupcn: 'grp-toska' })
             expect(response.status).toEqual(200)
-            expect(response.body).toMatchObject([
-              {
-                id: thesis4.id,
-                programId: 'Testing program',
-                studyTrackId: 'test-study-track-id',
-                topic: 'test topic',
-                status: 'PLANNING',
-                startDate: '1970-01-01T00:00:00.000Z',
-                targetDate: '2070-01-01T00:00:00.000Z',
-                supervisions: [
-                  {
-                    user: adminUser,
-                    percentage: 100,
-                    isPrimarySupervisor: true,
-                  },
-                ],
-              },
-            ])
+            expect(response.body).toMatchObject({
+              totalCount: 1,
+              theses: [
+                {
+                  id: thesis4.id,
+                  programId: 'Testing program',
+                  studyTrackId: 'test-study-track-id',
+                  topic: 'test topic',
+                  status: 'PLANNING',
+                  startDate: '1970-01-01T00:00:00.000Z',
+                  targetDate: '2070-01-01T00:00:00.000Z',
+                  supervisions: [
+                    {
+                      user: adminUser,
+                      percentage: 100,
+                      isPrimarySupervisor: true,
+                    },
+                  ],
+                },
+              ],
+            })
           })
         })
 
@@ -828,7 +853,7 @@ describe('thesis router', () => {
               topic: 'test topic',
               status: 'PLANNING',
               startDate: '1970-01-01',
-              targetDate: '2070-01-01',
+              targetDate: '2170-01-01',
             })
 
             await Supervision.create({
@@ -881,7 +906,7 @@ describe('thesis router', () => {
                 topic: 'test topic',
                 status: 'PLANNING',
                 startDate: '1970-01-01T00:00:00.000Z',
-                targetDate: '2070-01-01T00:00:00.000Z',
+                targetDate: '2170-01-01T00:00:00.000Z',
                 supervisions: [
                   {
                     user: adminUser,
@@ -1721,7 +1746,10 @@ describe('thesis router', () => {
             expect(response.status).toEqual(200)
             delete updatedThesis.supervisions
             delete updatedThesis.authors
-            expect(response.body).toMatchObject(updatedThesis)
+            expect(response.body).toMatchObject({
+              ...updatedThesis,
+              graders: expect.toIncludeSameMembers(updatedThesis.graders),
+            })
 
             const thesis = await Thesis.findByPk(thesis1.id)
             expect(thesis.programId).toEqual('Updated program')
@@ -3377,7 +3405,10 @@ describe('thesis router', () => {
             expect(response.status).toEqual(200)
 
             const eventLog = await EventLog.findOne({
-              where: { type: 'THESIS_SUPERVISIONS_CHANGED', thesisId: thesis1.id },
+              where: {
+                type: 'THESIS_SUPERVISIONS_CHANGED',
+                thesisId: thesis1.id,
+              },
             })
             expect(eventLog).not.toBeNull()
           })
@@ -3448,7 +3479,10 @@ describe('thesis router', () => {
             expect(response.status).toEqual(200)
 
             const eventLog = await EventLog.findOne({
-              where: { type: 'THESIS_SUPERVISIONS_CHANGED', thesisId: thesis1.id },
+              where: {
+                type: 'THESIS_SUPERVISIONS_CHANGED',
+                thesisId: thesis1.id,
+              },
             })
             expect(eventLog).not.toBeNull()
           })
@@ -3523,7 +3557,10 @@ describe('thesis router', () => {
             expect(response.status).toEqual(200)
 
             const eventLog = await EventLog.findOne({
-              where: { type: 'THESIS_SUPERVISIONS_CHANGED', thesisId: thesis1.id },
+              where: {
+                type: 'THESIS_SUPERVISIONS_CHANGED',
+                thesisId: thesis1.id,
+              },
             })
             expect(eventLog).not.toBeNull()
           })
@@ -3598,7 +3635,10 @@ describe('thesis router', () => {
             expect(response.status).toEqual(200)
 
             const eventLog = await EventLog.findOne({
-              where: { type: 'THESIS_SUPERVISIONS_CHANGED', thesisId: thesis1.id },
+              where: {
+                type: 'THESIS_SUPERVISIONS_CHANGED',
+                thesisId: thesis1.id,
+              },
             })
             expect(eventLog).not.toBeNull()
           })
