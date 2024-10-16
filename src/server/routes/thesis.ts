@@ -1,5 +1,5 @@
 import express, { Response } from 'express'
-import { type Transaction } from 'sequelize'
+import { literal, type Transaction } from 'sequelize'
 
 import {
   ServerDeleteRequest,
@@ -180,12 +180,24 @@ const deleteThesis = async (id: string, transaction: Transaction) => {
   await Thesis.destroy({ where: { id }, transaction })
 }
 
+const getOrderLiteralBasedOnThesesApprovals = (currentUser: UserType) =>
+  literal(`(
+    EXISTS (
+      SELECT 1
+      FROM approvers
+      WHERE
+        approvers.thesis_id = "Thesis".id AND
+        approvers.user_id = '${currentUser.id}'
+    )
+  )`)
+
 // @ts-expect-error the user middleware updates the req object with user field
 thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
   const { onlySupervised, limit = 50, offset = 0 } = req.query
+  const currentUser = req.user
 
   const options = await getFindThesesOptions({
-    actionUser: req.user,
+    actionUser: currentUser,
     onlySupervised: onlySupervised === 'true',
   })
 
@@ -194,7 +206,10 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
     subQuery: false,
     offset: Number(offset),
     limit: Number(limit),
-    order: [['targetDate', 'ASC']],
+    order: [
+      [getOrderLiteralBasedOnThesesApprovals(currentUser), 'DESC'],
+      ['targetDate', 'ASC'],
+    ],
     distinct: true,
   })
 
