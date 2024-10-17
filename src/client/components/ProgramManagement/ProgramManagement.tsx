@@ -85,6 +85,14 @@ const ProgramManagement = () => {
       sortable: false,
       renderCell: (params) => (
         <Tooltip
+          arrow
+          PopperProps={{
+            sx: {
+              '& .MuiTooltip-tooltip': {
+                fontSize: '0.9rem',
+              },
+            },
+          }}
           title={
             params.row.isThesisApprover
               ? t('programManagementPage:disallowThesisApprovalButton')
@@ -104,9 +112,9 @@ const ProgramManagement = () => {
             data-testid={`toggle-thesis-approver-button-${params.row.userId}`}
           >
             {params.row.isThesisApprover ? (
-              <HowToRegIcon fontSize="small" />
+              <HowToRegIcon fontSize="large" />
             ) : (
-              <HowToRegOutlinedIcon fontSize="small" />
+              <HowToRegOutlinedIcon fontSize="large" />
             )}
           </IconButton>
         </Tooltip>
