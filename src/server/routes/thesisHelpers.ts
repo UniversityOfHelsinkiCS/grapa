@@ -104,6 +104,7 @@ export const getFindThesesOptions = async ({
         // if a user is only a teacher (not admin nor supervisor),
         // they should only see theses they supervise
         { '$supervisionsForFiltering.user_id$': actionUser.id },
+        { '$approvers.Approver.user_id$': actionUser.id },
         // but we also want to show all theses within programs
         // managed by the user
         programIds?.length ? { programId: programIds } : {},
