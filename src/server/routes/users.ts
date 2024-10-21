@@ -128,11 +128,7 @@ usersRouter.get('/', async (req, res) => {
 
   const trimmedSearch = search.trim()
 
-  let whereClauses: Record<string, any> = {
-    email: {
-      [Op.not]: null,
-    },
-  }
+  let whereClauses: Record<string, any> = {}
 
   if (onlyWithStudyRight) {
     whereClauses = {
@@ -145,6 +141,9 @@ usersRouter.get('/', async (req, res) => {
   if (onlyEmployees) {
     whereClauses = {
       ...whereClauses,
+      email: {
+        [Op.not]: null,
+      },
       employeeNumber: {
         [Op.not]: null,
       },
