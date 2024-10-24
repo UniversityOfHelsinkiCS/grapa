@@ -149,7 +149,7 @@ export interface ServerThesesFiltersPutRequest extends Request {
   }
   user: User
 }
-
+UserLoggedInEvent
 export interface ProgramManagementData {
   userId: string
   programId: string
@@ -167,3 +167,48 @@ export interface DepartmentAdminData {
 }
 
 export type EventLogType = (typeof VALID_EVENT_LOG_TYPES)[number]
+export interface EventLogEntry {
+  id: string
+  type: EventLogType
+  // thesisId can be null because this is set to null if a thesis is already deleted,
+  // note though that we keep the thesis's data as json in the deletion event.
+  // Moving forward, we should conider using soft deletion instead.
+  thesisId: string | null
+  user: UserInfo
+  // some events don't have additional data
+  data: any | null
+}
+
+export interface ThesisCreatedEvent extends EventLogEntry {
+  type: 'THESIS_CREATED'
+  data: null
+}
+
+export interface ThesisDeletedEvent extends EventLogEntry {
+  type: 'THESIS_DELETED'
+  data: ThesisData
+}
+
+export interface ThesisUpdatedEvent extends EventLogEntry {
+  type: 'THESIS_SUPERVISIONS_CHANGED'
+  data: {
+    thesisId: string
+    updatedFields: Partial<ThesisData>
+  }
+}
+
+export interface UserLoggedInEvent extends EventLogEntry {
+  type: 'THESIS_GRADERS_CHANGED'
+  data: {
+    originalGraders: GraderData[],
+    updatedGraders: GraderData[],
+  }
+}
+
+export interface UserLoggedOutEvent extends EventLogEntry {
+  type: 'THESIS_STATUS_CHANGED'
+  data: {
+    from: ThesisStatus,
+    to: ThesisStatus,
+  }
+}

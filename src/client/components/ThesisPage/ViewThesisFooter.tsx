@@ -27,9 +27,11 @@ import {
 
 import { ThesisFooterProps } from '../../types'
 import usePrograms from '../../hooks/usePrograms'
+import useEvents from '../../hooks/useEvents'
 import { useSingleThesis } from '../../hooks/useTheses'
 
 import { BASE_PATH } from '../../../config'
+import TextDiff from '../TextDiff/TextDiff'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
@@ -367,6 +369,7 @@ const ViewThesisFooter = (
 
   return (
     <>
+      <TextDiff leftText="Im a very small apple" rightText="Im a very big apple" />
       <GridFooter ref={footerRef} />
       {thesis ? (
         <Box sx={{ m: 2 }}>
