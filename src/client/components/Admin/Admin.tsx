@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, Navigate, Outlet, useLocation } from 'react-router-dom'
 import { Box, Tab, Tabs } from '@mui/material'

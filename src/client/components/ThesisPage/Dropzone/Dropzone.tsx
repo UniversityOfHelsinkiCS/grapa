@@ -1,5 +1,4 @@
-/* eslint-disable react/require-default-props */
-import React, { useId, useState } from 'react'
+import { useId, useState } from 'react'
 import { useDropzone } from 'react-dropzone-esm'
 import { useTranslation } from 'react-i18next'
 

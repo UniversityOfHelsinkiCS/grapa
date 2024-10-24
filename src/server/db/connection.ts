@@ -17,7 +17,7 @@ const umzug = new Umzug({
     glob: 'src/server/db/migrations/*.cjs',
     resolve: ({ name, path, context }) => {
       // Adjust the migration from the new signature to the v2 signature, making easier to upgrade to v3
-      // eslint-disable-next-line
+
       const migration = require(path)
       return {
         name,
@@ -50,7 +50,6 @@ const testConnection = async () => {
   await runMigrations()
 }
 
-// eslint-disable-next-line no-promise-executor-return
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export const connectToDatabase = async (attempt = 0): Promise<void | null> => {

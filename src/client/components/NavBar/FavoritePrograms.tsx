@@ -46,6 +46,7 @@ const FavoritePrograms = () => {
         variant: 'success',
       })
     } catch (error) {
+      console.log(error)
       enqueueSnackbar(t('navbar:favoriteProgramsUpdateFailed'), {
         variant: 'error',
       })

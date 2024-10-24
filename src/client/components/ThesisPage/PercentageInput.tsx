@@ -1,11 +1,10 @@
-import React from 'react'
 import { TextField, InputAdornment, TextFieldProps } from '@mui/material'
 
 interface PercentageInputProps {
   label: string
   value: number
   onChange: (percentage: number) => void
-  // eslint-disable-next-line react/require-default-props
+
   percentageInputProps?: TextFieldProps
 }
 

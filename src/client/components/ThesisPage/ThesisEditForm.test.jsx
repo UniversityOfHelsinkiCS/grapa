@@ -1,7 +1,6 @@
 /**
  * @jest-environment jsdom
  */
-import * as React from 'react'
 import dayjs from 'dayjs'
 import userEvent from '@testing-library/user-event'
 import { fireEvent, render, screen, within } from '@testing-library/react'

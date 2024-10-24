@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   Button,
   FormControl,
@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import { TranslationLanguage } from '@backend/types'
 import useDepartments from '../hooks/useDepartments'
-// eslint-disable-next-line import/no-named-as-default
+
 import useUserDepartmentMutation from '../hooks/useUserDepartmentMutation'
 
 const DepartmentSelector: React.FC = () => {
