@@ -94,6 +94,10 @@ jest.unstable_mockModule('@mui/icons-material/Check', () => ({
   default: jest.fn().mockReturnValue('CheckIcon'),
 }))
 
+jest.unstable_mockModule('@mui/icons-material/Bookmark', () => ({
+  default: jest.fn().mockReturnValue('BookmarkIcon'),
+}))
+
 jest.unstable_mockModule('@mui/icons-material/FileUpload', () => ({
   default: jest.fn().mockReturnValue('FileUploadIcon'),
 }))
