@@ -1,3 +1,4 @@
+import React from 'react'
 import { User } from '@backend/types'
 import { Button, Paper, Typography } from '@mui/material'
 
