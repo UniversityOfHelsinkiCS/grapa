@@ -289,8 +289,8 @@ export const handleSupervisionsChangeEventLog = async (
         thesisId: originalThesis.id,
         type: 'THESIS_SUPERVISIONS_CHANGED',
         data: {
-          originalGraders: originalThesis.supervisions,
-          updatedGraders: updatedThesis.supervisions,
+          originalSupervisions: originalThesis.supervisions,
+          updatedSupervisions: updatedThesis.supervisions,
         },
       },
       { transaction }

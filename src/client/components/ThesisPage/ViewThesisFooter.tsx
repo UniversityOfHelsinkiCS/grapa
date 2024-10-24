@@ -26,9 +26,11 @@ import {
 
 import { ThesisFooterProps } from '../../types'
 import usePrograms from '../../hooks/usePrograms'
+import useEvents from '../../hooks/useEvents'
 import { useSingleThesis } from '../../hooks/useTheses'
 
 import { BASE_PATH } from '../../../config'
+import EventsView from '../EventsView/EventsView'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
@@ -359,10 +361,11 @@ const ViewThesisFooter = (
   const { rowSelectionModel, footerRef, handleEditThesis, handleDeleteThesis } =
     props
 
+  const thesisId = rowSelectionModel[0] as unknown as string | undefined
+
   const { t } = useTranslation()
-  const { thesis, isLoading: thesisLoading } = useSingleThesis(
-    rowSelectionModel[0]
-  )
+  const { thesis, isLoading: thesisLoading } = useSingleThesis(thesisId)
+  const { events } = useEvents({ thesisId })
 
   return (
     <>
@@ -486,6 +489,8 @@ const ViewThesisFooter = (
               waysOfWorking={thesis?.waysOfWorking}
             />
           </Box>
+
+          <EventsView events={events} />
         </Box>
       ) : (
         thesisLoading && <PreviewSkeleton />
