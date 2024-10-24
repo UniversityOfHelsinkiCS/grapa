@@ -1,11 +1,10 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Box, Typography } from '@mui/material'
 import { red } from '@mui/material/colors'
 import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined'
 import { useTranslation } from 'react-i18next'
 
 interface ErrorSummaryProps {
-  // eslint-disable-next-line react/require-default-props
   autofocus?: boolean
   label: string
   children: React.ReactNode

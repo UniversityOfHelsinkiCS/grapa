@@ -1,6 +1,5 @@
 import { User } from '@backend/types'
 import { Button, Paper, Typography } from '@mui/material'
-import React from 'react'
 
 import { LOGIN_AS_LOCAL_STORAGE_KEY } from '../../config'
 

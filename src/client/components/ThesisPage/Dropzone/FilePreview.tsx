@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Chip, Link } from '@mui/material'
 import UploadFileIcon from '@mui/icons-material/UploadFile'

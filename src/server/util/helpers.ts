@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 import { ThesisData, SupervisionData } from '@backend/types'
 
 export const getTotalPercentage = (supervisions: SupervisionData[]) =>

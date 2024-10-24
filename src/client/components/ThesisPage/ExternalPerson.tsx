@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
-import React from 'react'
+
 import { useTranslation } from 'react-i18next'
 import DeleteConfirmation from '../Common/DeleteConfirmation'
 import PercentageInput from './PercentageInput'

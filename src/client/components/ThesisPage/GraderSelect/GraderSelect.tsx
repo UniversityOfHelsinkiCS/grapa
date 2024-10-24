@@ -1,4 +1,3 @@
-import React from 'react'
 import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
 import { User, GraderData } from '@backend/types'
 import { useTranslation } from 'react-i18next'

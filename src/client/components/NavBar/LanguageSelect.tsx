@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import CheckIcon from '@mui/icons-material/Check'
 import { ListSubheader, MenuItem } from '@mui/material'
