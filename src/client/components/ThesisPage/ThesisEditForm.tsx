@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { useState } from 'react'
+import { useState, FC } from 'react'
 import { ZodIssue } from 'zod'
 import 'dayjs/locale/fi'
 import dayjs from 'dayjs'
@@ -44,7 +43,7 @@ import { StatusLocale } from '../../types'
 import FileDropzone from './Dropzone/Dropzone'
 import FilePreview from './Dropzone/FilePreview'
 
-const ThesisEditForm: React.FC<{
+const ThesisEditForm: FC<{
   programs: Program[]
   formTitle: string
   initialThesis: ThesisData
