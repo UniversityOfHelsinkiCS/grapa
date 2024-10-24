@@ -12,7 +12,7 @@ const mockHeaders: UserInfo = {
   family_name: 'Kayttaja',
   email: 'grp-toska@helsinki.fi',
   preferredLanguage: 'fi',
-  hyPersonSisuId: 'hy-hlo-1441871',
+  hyPersonSisuId: 'hy-hlo-123',
   hyGroupCn: ['grp-toska', 'hy-employees'],
 }
 

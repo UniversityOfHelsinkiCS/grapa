@@ -26,6 +26,17 @@
     "error": "Error",
     "thesisPreview": "Thesis preview"
   },
+  "eventLog": {
+    "title": "Event log",
+    "changedBy": "Changed by",
+    "createdBy": "Created by",
+    "deletedBy": "Deleted by",
+    "thesisCreated": "Thesis created",
+    "thesisDeleted": "Thesis deleted",
+    "supervisorsUpdated": "Supervisors updated",
+    "gradersUpdated": "Graders updated",
+    "thesisStatusUpdated": "Thesis status updated"
+  },
   "admin": {
     "indexTab": "Login as"
   },

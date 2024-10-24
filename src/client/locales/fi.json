@@ -26,6 +26,17 @@
     "error": "Virhe",
     "thesisPreview": "Tutkielman esikatselu"
   },
+  "eventLog": {
+    "title": "Tapahtumaloki",
+    "changedBy": "Käyttäjä:",
+    "createdBy": "Käyttäjä:",
+    "deletedBy": "Käyttäjä:",
+    "thesisCreated": "Tutkielma luotu",
+    "thesisDeleted": "Tutkielma poistettu",
+    "supervisorsUpdated": "Ohjaajat päivitetty",
+    "gradersUpdated": "Arvioijat päivitetty",
+    "thesisStatusUpdated": "Tutkielman vaihe päivitetty"
+  },
   "admin": {
     "indexTab": "Login as"
   },

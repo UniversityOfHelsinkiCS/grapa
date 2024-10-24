@@ -11,6 +11,7 @@ eventLogRoute.get('/:thesisId', async (req, res) => {
   }
 
   const events = await EventLog.findAll({
+    include: ['user'],
     where: { thesisId },
     order: [['createdAt', 'DESC']],
   })

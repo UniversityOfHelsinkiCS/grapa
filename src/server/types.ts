@@ -167,3 +167,49 @@ export interface DepartmentAdminData {
 }
 
 export type EventLogType = (typeof VALID_EVENT_LOG_TYPES)[number]
+export interface EventLogEntry {
+  id: string
+  type: EventLogType
+  // thesisId can be null because this is set to null if a thesis is already deleted,
+  // note though that we keep the thesis's data as json in the deletion event.
+  // Moving forward, we should conider using soft deletion instead.
+  thesisId: string | null
+  user: UserInfo
+  // some events don't have additional data
+  data: any | null
+  createdAt: string
+}
+
+export interface ThesisCreatedEvent extends EventLogEntry {
+  type: 'THESIS_CREATED'
+  data: null
+}
+
+export interface ThesisDeletedEvent extends EventLogEntry {
+  type: 'THESIS_DELETED'
+  data: ThesisData
+}
+
+export interface SupervisionsChangedEvent extends EventLogEntry {
+  type: 'THESIS_SUPERVISIONS_CHANGED'
+  data: {
+    originalSupervisions: SupervisionData[]
+    updatedSupervisions: SupervisionData[]
+  }
+}
+
+export interface GradersChangedEvent extends EventLogEntry {
+  type: 'THESIS_GRADERS_CHANGED'
+  data: {
+    originalGraders: GraderData[]
+    updatedGraders: GraderData[]
+  }
+}
+
+export interface StatusChangedEvent extends EventLogEntry {
+  type: 'THESIS_STATUS_CHANGED'
+  data: {
+    from: ThesisStatus
+    to: ThesisStatus
+  }
+}
