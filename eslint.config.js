@@ -9,8 +9,23 @@ export default [
   { languageOptions: { globals: globals.node } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
-  { rules: { '@typescript-eslint/no-explicit-any': 'off' } },
   pluginReact.configs.flat['jsx-runtime'],
   eslintPluginPrettierRecommended,
-  
+  {
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      'react/function-component-definition': [
+        2,
+        {
+          namedComponents: 'arrow-function',
+          unnamedComponents: 'arrow-function',
+        },
+      ],
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    }
+  },
 ]
