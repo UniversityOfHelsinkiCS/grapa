@@ -37,6 +37,7 @@ jobs:
           # otherwise throws error "Too many open files"
           extra-args: --ulimit nofile=4096:4096
 
+      - run: npm run lint
       - run: npm test
       - run: npm run test:front
       - run: npm run test:integration
