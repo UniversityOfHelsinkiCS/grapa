@@ -26,6 +26,14 @@ export default [
       react: {
         version: 'detect',
       },
-    }
+    },
+    overrides: [
+      {
+        files: ['**/*.integration-test.*', '**/*.test.*'],
+        env: {
+          jest: true,
+        },
+      },
+    ],
   },
 ]
