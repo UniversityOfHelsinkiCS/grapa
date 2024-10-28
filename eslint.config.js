@@ -22,18 +22,22 @@ export default [
         },
       ],
     },
+    languageOptions: {
+      parserOptions: {
+        parser: '@babel/eslint-parser',
+        project: './tsconfig.json',
+      },
+    },
     settings: {
       react: {
         version: 'detect',
       },
     },
-    overrides: [
-      {
-        files: ['**/*.integration-test.*', '**/*.test.*'],
-        env: {
-          jest: true,
-        },
-      },
-    ],
+  },
+  {
+    files: ['**/*.integration-test.*', '**/*.test.*'],
+    languageOptions: {
+      globals: globals.jest,
+    },
   },
 ]
