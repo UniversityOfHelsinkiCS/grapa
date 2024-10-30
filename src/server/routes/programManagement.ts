@@ -65,7 +65,10 @@ programManagementRouter.get(
           as: 'program',
         },
       ],
-      order: [['programId', 'ASC']],
+      order: [
+        ['programId', 'ASC'],
+        ['user', 'lastName', 'ASC'],
+      ],
       bind: { editorUserId: req.user.id },
     })
 
