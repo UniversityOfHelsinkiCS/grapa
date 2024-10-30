@@ -54,10 +54,14 @@ export const useEditThesisMutation = () => {
 
   const mutation = useMutation({
     mutationFn,
-    onSuccess: () =>
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ['theses'],
-      }),
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['event-log', variables.thesisId],
+      })
+    },
   })
 
   return mutation
