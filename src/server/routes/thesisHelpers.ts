@@ -171,7 +171,7 @@ export const getAndCreateExtUsers = async (
 
 export const handleStatusChangeEventLog = async (
   originalThesis: Thesis,
-  updatedThesis: ThesisData,
+  updatedThesis: Thesis,
   actionUser: UserType,
   transaction: Transaction
 ) => {
@@ -193,7 +193,7 @@ export const handleStatusChangeEventLog = async (
 
 export const handleGradersChangeEventLog = async (
   originalThesis: Thesis,
-  updatedThesis: ThesisData,
+  updatedThesis: Thesis,
   actionUser: UserType,
   transaction: Transaction
 ) => {
@@ -241,7 +241,7 @@ export const handleGradersChangeEventLog = async (
 
 export const handleSupervisionsChangeEventLog = async (
   originalThesis: Thesis,
-  updatedThesis: ThesisData,
+  updatedThesis: Thesis,
   actionUser: UserType,
   transaction: Transaction
 ) => {

@@ -38,12 +38,16 @@ import {
 
 const thesisRouter = express.Router()
 
-const fetchThesisById = async (id: string, user: UserType) => {
+const fetchThesisById = async (
+  id: string,
+  user: UserType,
+  transaction?: Transaction
+) => {
   const options = await getFindThesesOptions({ thesisId: id, actionUser: user })
   // We need to use findAll here because we need to include
   // Supervision model twice (see the explanation twice above).
   // For some reason. findOne does not support that
-  const theses = await Thesis.findAll({ ...options })
+  const theses = await Thesis.findAll({ ...options, transaction })
   const thesis = theses.find((t) => t.id === id)
 
   return thesis
@@ -278,23 +282,35 @@ thesisRouter.put(
 
     if (!originalThesis) res.status(404).send('Thesis not found')
 
+    let updatedThesis
     await sequelize.transaction(async (t) => {
       await updateThesis(id, thesisData, t)
 
       await handleAttachmentByLabel(req, id, 'researchPlan', t)
       await handleAttachmentByLabel(req, id, 'waysOfWorking', t)
 
-      await handleStatusChangeEventLog(originalThesis, thesisData, req.user, t)
-      await handleGradersChangeEventLog(originalThesis, thesisData, req.user, t)
+      updatedThesis = await fetchThesisById(id, req.user, t)
+
+      await handleStatusChangeEventLog(
+        originalThesis,
+        updatedThesis,
+        req.user,
+        t
+      )
+      await handleGradersChangeEventLog(
+        originalThesis,
+        updatedThesis,
+        req.user,
+        t
+      )
       await handleSupervisionsChangeEventLog(
         originalThesis,
-        thesisData,
+        updatedThesis,
         req.user,
         t
       )
     })
 
-    const updatedThesis = await fetchThesisById(id, req.user)
     res.send(updatedThesis)
   }
 )
