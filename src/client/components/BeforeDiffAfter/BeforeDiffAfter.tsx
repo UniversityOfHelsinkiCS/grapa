@@ -49,7 +49,7 @@ interface Props {
   afterText: string
 }
 const BeforeDiffAfter = ({ beforeText, afterText }: Props) => {
-  const [value, setValue] = useState(0)
+  const [value, setValue] = useState(1)
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
