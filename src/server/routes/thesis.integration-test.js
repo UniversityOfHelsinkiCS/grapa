@@ -18,7 +18,6 @@ import {
   User,
 } from '../db/models'
 import { userFields } from './config'
-import { update } from 'lodash-es'
 
 const request = supertest.agent(app)
 
@@ -2442,7 +2441,7 @@ describe('thesis router', () => {
 
         beforeEach(() => {
           updatedThesis = {
-            programId: 'Updated program',
+            programId: 'Testing program',
             studyTrackId: 'new-test-study-track-id',
             topic: 'Updated topic',
             status: 'PLANNING',
@@ -2511,12 +2510,12 @@ describe('thesis router', () => {
             expect(response.status).toEqual(200)
 
             const thesis = await Thesis.findByPk(thesis1.id)
-            expect(thesis.programId).toEqual('Updated program')
+            expect(thesis.programId).toEqual('Testing program')
             expect(thesis.topic).toEqual('Updated topic')
           })
         })
 
-        describe('when the user is a manager of a different program that the updated thesis is of', () => {
+        describe('when the user is a manager of a different program than the updated thesis is of', () => {
           beforeEach(async () => {
             await ProgramManagement.create({
               programId: 'Updated program',
@@ -2524,7 +2523,7 @@ describe('thesis router', () => {
             })
           })
 
-          it('should return 200 and update the thesis', async () => {
+          it('should return 404 and not update the thesis', async () => {
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
               .set({ uid: user2.id, hygroupcn: 'hy-employees' })
