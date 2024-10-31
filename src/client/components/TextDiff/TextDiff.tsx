@@ -1,6 +1,5 @@
-/* eslint-disable react/no-unknown-property */
 /** @jsxImportSource @emotion/react */
-import React from 'react'
+import type { FC } from 'react'
 import { css } from '@emotion/react'
 import { diffWords } from 'diff'
 
@@ -8,19 +7,6 @@ interface TextDiffProps {
   leftText: string
   rightText: string
 }
-
-const containerStyle = css`
-  display: flex;
-  justify-content: space-between;
-`
-
-const columnStyle = css`
-  flex: 1;
-  border: 1px solid #ccc;
-  padding: 10px;
-  background-color: #f9f9f9;
-  white-space: pre-wrap;
-`
 
 const addedStyle = css`
   background-color: #d4fcbc;
@@ -47,14 +33,8 @@ const getHighlightedText = (leftText: string, rightText: string) => {
   })
 }
 
-const TextDiff: React.FC<TextDiffProps> = ({ leftText, rightText }) => {
-  return (
-    <div css={containerStyle}>
-      <div css={columnStyle}>
-        <p>{getHighlightedText(leftText, rightText)}</p>
-      </div>
-    </div>
-  )
+const TextDiff: FC<TextDiffProps> = ({ leftText, rightText }) => {
+  return <div>{getHighlightedText(leftText, rightText)}</div>
 }
 
 export default TextDiff

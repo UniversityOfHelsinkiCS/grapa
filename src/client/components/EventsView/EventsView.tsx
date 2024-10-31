@@ -8,7 +8,7 @@ import {
 import { Collapse, Divider, Paper, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import TextDiff from '../TextDiff/TextDiff'
+import BeforeDiffAfter from '../BeforeDiffAfter/BeforeDiffAfter'
 
 const EventDate = ({ date }: { date: string }) => (
   <p>{new Date(date).toLocaleString('fi')}</p>
@@ -58,9 +58,9 @@ const SupervisionsChangedEntry = (entry: SupervisionsChangedEvent) => {
       date={entry.createdAt}
       doneByString={`${t('eventLog:changedBy')} ${entry.user.email}`}
     >
-      <TextDiff
-        leftText={JSON.stringify(entry.data.originalSupervisions, null, 2)}
-        rightText={JSON.stringify(entry.data.updatedSupervisions, null, 2)}
+      <BeforeDiffAfter
+        beforeText={JSON.stringify(entry.data.originalSupervisions, null, 2)}
+        afterText={JSON.stringify(entry.data.updatedSupervisions, null, 2)}
       />
     </LogEntry>
   )
@@ -75,9 +75,9 @@ const GradersChangedEntry = (entry: GradersChangedEvent) => {
       date={entry.createdAt}
       doneByString={`${t('eventLog:changedBy')} ${entry.user.email}`}
     >
-      <TextDiff
-        leftText={JSON.stringify(entry.data.originalGraders, null, 2)}
-        rightText={JSON.stringify(entry.data.updatedGraders, null, 2)}
+      <BeforeDiffAfter
+        beforeText={JSON.stringify(entry.data.originalGraders, null, 2)}
+        afterText={JSON.stringify(entry.data.updatedGraders, null, 2)}
       />
     </LogEntry>
   )
@@ -92,7 +92,7 @@ const StatusChangedEntry = (entry: StatusChangedEvent) => {
       date={entry.createdAt}
       doneByString={`${t('eventLog:changedBy')} ${entry.user.email}`}
     >
-      <TextDiff leftText={entry.data.from} rightText={entry.data.to} />
+      <BeforeDiffAfter beforeText={entry.data.from} afterText={entry.data.to} />
     </LogEntry>
   )
 }
