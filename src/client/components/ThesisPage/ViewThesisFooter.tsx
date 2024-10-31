@@ -490,7 +490,7 @@ const ViewThesisFooter = (
             />
           </Box>
 
-          <EventsView events={events} />
+          {Boolean(events && events.length) && <EventsView events={events} />}
         </Box>
       ) : (
         thesisLoading && <PreviewSkeleton />
