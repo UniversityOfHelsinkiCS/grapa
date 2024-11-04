@@ -1,4 +1,4 @@
-import { Includeable } from 'sequelize'
+import { Includeable, literal } from 'sequelize'
 import express, { Response } from 'express'
 import { Program, ProgramManagement, StudyTrack } from '../db/models'
 import { RequestWithUser } from '../types'
@@ -9,6 +9,7 @@ const programRouter = express.Router()
 programRouter.get('/', async (req: RequestWithUser, res: Response) => {
   const includeDisabled = req.query.includeDisabled === 'true'
   const includeNotManaged = req.query.includeNotManaged === 'true'
+  const language = (req.query.language ?? 'en') as string
 
   const { isAdmin, favoriteProgramIds } = req.user
 
@@ -33,11 +34,18 @@ programRouter.get('/', async (req: RequestWithUser, res: Response) => {
     })
   }
 
+  // Validate that the language is one of the allowed keys
+  const allowedLanguages = ['en', 'fi', 'sv']
+  if (!allowedLanguages.includes(language)) {
+    throw new Error('Invalid language key')
+  }
+
   const programs = await Program.findAll({
     attributes: ['id', 'name'],
     where: whereClause,
     include: includes,
-    order: [['name', 'ASC']],
+    order: [[literal(`"Program"."name"->>$language`), 'ASC']],
+    bind: { language },
   })
 
   const programsWithFavorites = programs.map((program) => ({
