@@ -1,8 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
-import { getSortedByName } from '../components/ThesisPage/util'
-
 import apiClient from '../util/apiClient'
 
 import { DepartmentData as Department } from '../../server/types'
@@ -15,22 +13,19 @@ const useDepartments = (params: UseDepartmentsParams) => {
   const { i18n } = useTranslation()
   const { language } = i18n
 
-  const queryKey = ['departments', params?.includeNotManaged]
+  const queryKey = ['departments', params?.includeNotManaged, language]
 
   const queryFn = async (): Promise<Department[]> => {
-    const { data } = await apiClient.get(`/departments`, { params })
+    const { data } = await apiClient.get(`/departments`, {
+      params: { ...params, language },
+    })
 
     return data
   }
 
   const { data: departments, ...rest } = useQuery({ queryKey, queryFn })
 
-  const sortedDepartments = getSortedByName(
-    departments,
-    language
-  ) as Department[]
-
-  return { departments: sortedDepartments, ...rest }
+  return { departments, ...rest }
 }
 
 export default useDepartments
