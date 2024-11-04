@@ -64,7 +64,7 @@ const DepartmentAdmin = () => {
     }
   }
 
-  if (userLoading || departments.length === 0 || !departmentAdmins) return null
+  if (userLoading || !departments?.length || !departmentAdmins) return null
   if (!user.isAdmin && !user.managedDepartmentIds?.length)
     return <Navigate to="/" />
 

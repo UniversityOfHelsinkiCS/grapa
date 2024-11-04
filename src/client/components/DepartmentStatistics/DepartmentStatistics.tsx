@@ -20,7 +20,7 @@ const DepartmentStatistics = () => {
 
   if (
     userLoading ||
-    departments.length === 0 ||
+    !departments?.length ||
     departmentStatisticsLoading ||
     !departmentStatistics
   )
