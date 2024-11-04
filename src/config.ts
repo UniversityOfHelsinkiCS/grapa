@@ -20,7 +20,7 @@ export const FULL_URL = inProduction
     ? 'https://grapa.ext.ocp-test-0.k8s.it.helsinki.fi'
     : 'http://localhost:3000'
 
-export const FORM_DATA_KEY = 'grapa_local_save'
+export const SELECTED_LANGUAGE_STORAGE_KEY = 'grapa-admin-selected-language'
 
 export const LOGIN_AS_LOCAL_STORAGE_KEY = 'grapa-admin-logged-in-as'
 export const LOGIN_AS_HEADER_KEY = 'x-admin-logged-in-as'

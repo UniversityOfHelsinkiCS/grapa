@@ -3,6 +3,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import { ListSubheader, MenuItem } from '@mui/material'
 
 import { LANGUAGES } from './util'
+import { SELECTED_LANGUAGE_STORAGE_KEY } from '../../../config'
 
 const LanguageSelect = () => {
   const { t, i18n } = useTranslation()
@@ -10,6 +11,7 @@ const LanguageSelect = () => {
 
   const handleLanguageChange = (newLanguage: string) => {
     i18n.changeLanguage(newLanguage)
+    localStorage.setItem(SELECTED_LANGUAGE_STORAGE_KEY, newLanguage)
   }
 
   return (

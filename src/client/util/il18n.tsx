@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next'
 
 import en from '../locales/en.json'
 import fi from '../locales/fi.json'
+import { SELECTED_LANGUAGE_STORAGE_KEY } from '../../config'
 
 declare global {
   interface Window {
@@ -16,7 +17,7 @@ const initializeI18n = () =>
       en,
       fi,
     },
-    lng: 'fi',
+    lng: localStorage.getItem(SELECTED_LANGUAGE_STORAGE_KEY) || 'fi',
     fallbackLng: 'fi',
     defaultNS: 'common',
   })
