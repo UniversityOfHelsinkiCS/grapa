@@ -1,17 +1,9 @@
 import express, { Response } from 'express'
-import { QueryTypes } from 'sequelize'
+import { Includeable, literal } from 'sequelize'
 import { RequestWithUser } from '../types'
-import { sequelize } from '../db/connection'
+import { Department, DepartmentAdmin } from '../db/models'
 
 const departmentRouter = express.Router()
-
-const getDepartmentQueryStr = (isAdmin: boolean, includeNotManaged: boolean) =>
-  `
-    SELECT departments.id, departments.name
-    FROM departments
-    ${!isAdmin && !includeNotManaged ? 'INNER JOIN department_admins ON departments.id = department_admins.department_id AND department_admins.user_id = $userId' : ''}
-    ORDER BY name->>$language ASC
-    `
 
 // @ts-expect-error the user middleware updates the req object with user field
 departmentRouter.get('/', async (req: RequestWithUser, res: Response) => {
@@ -19,23 +11,29 @@ departmentRouter.get('/', async (req: RequestWithUser, res: Response) => {
   const language = (req.query.language ?? 'en') as string
   const includeNotManaged = req.query.includeNotManaged === 'true'
 
+  const includes: Includeable[] = []
+
+  if (!isAdmin && !includeNotManaged) {
+    includes.push({
+      model: DepartmentAdmin,
+      attributes: [],
+      where: { userId: req.user.id },
+      required: true,
+    })
+  }
+
   // Validate that the language is one of the allowed keys
   const allowedLanguages = ['en', 'fi', 'sv']
   if (!allowedLanguages.includes(language)) {
     throw new Error('Invalid language key')
   }
 
-  const departments = await sequelize.query(
-    getDepartmentQueryStr(isAdmin, includeNotManaged),
-    {
-      bind: {
-        userId: req.user.id,
-        language,
-      },
-      type: QueryTypes.SELECT,
-      logging: console.log,
-    }
-  )
+  const departments = await Department.findAll({
+    attributes: ['id', 'name'],
+    include: includes,
+    order: [[literal(`name->>$language`), 'ASC']],
+    bind: { language },
+  })
 
   res.send(departments)
 })
