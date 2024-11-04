@@ -3,6 +3,7 @@ import { EventLog } from '../db/models'
 
 const eventLogRoute = express.Router()
 
+// @ts-expect-error the user middleware updates the req object with user field
 eventLogRoute.get('/:thesisId', async (req, res) => {
   const { thesisId } = req.params
 
