@@ -137,6 +137,7 @@ const ProfileMenu = () => {
           paper: {
             elevation: 0,
             sx: {
+              width: 655,
               overflowY: 'scroll',
               overflowX: 'visible',
               filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
