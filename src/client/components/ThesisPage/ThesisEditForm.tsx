@@ -35,7 +35,7 @@ import useUsers from '../../hooks/useUsers'
 import { useDebounce } from '../../hooks/useDebounce'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useProgramManagements from '../../hooks/useProgramManagements'
-import { getFormErrors, getSortedByName } from './util'
+import { getFormErrors } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
 import ErrorSummary from '../Common/ErrorSummary'
 import { ProgramData as Program } from '../../../server/types'
@@ -111,15 +111,6 @@ const ThesisEditForm: FC<{
 
   const favoritePrograms = programs.filter((program) => program.isFavorite)
   const otherPrograms = programs.filter((program) => !program.isFavorite)
-
-  const sortedFavoritePrograms = getSortedByName(
-    favoritePrograms,
-    language
-  ) as Program[]
-  const sortedOtherPrograms = getSortedByName(
-    otherPrograms,
-    language
-  ) as Program[]
 
   const sortedStudyTracks =
     selectedProgram && selectedProgram.studyTracks?.length
@@ -230,7 +221,7 @@ const ThesisEditForm: FC<{
                   ]
                 }
               >
-                {sortedFavoritePrograms.map((program) => (
+                {favoritePrograms.map((program) => (
                   <MenuItem
                     data-testid={`program-select-item-${program.id}`}
                     key={program.id}
@@ -242,7 +233,7 @@ const ThesisEditForm: FC<{
                     <ListItemText primary={program.name[language]} />
                   </MenuItem>
                 ))}
-                {sortedOtherPrograms.map((program) => (
+                {otherPrograms.map((program) => (
                   <MenuItem
                     data-testid={`program-select-item-${program.id}`}
                     key={program.id}

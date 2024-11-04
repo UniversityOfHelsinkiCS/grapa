@@ -13,7 +13,6 @@ import { enqueueSnackbar } from 'notistack'
 import usePrograms from '../../hooks/usePrograms'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useUserProgramsMutation from '../../hooks/useUserProgramsMutation'
-import { getSortedByName } from '../ThesisPage/util'
 
 const FavoritePrograms = () => {
   const { t, i18n } = useTranslation()
@@ -31,9 +30,6 @@ const FavoritePrograms = () => {
 
   const favoritePrograms = programs.filter((program) => program.isFavorite)
   const otherPrograms = programs.filter((program) => !program.isFavorite)
-
-  const sortedFavoritePrograms = getSortedByName(favoritePrograms, language)
-  const sortedOtherPrograms = getSortedByName(otherPrograms, language)
 
   const handleUpdateFavoritePrograms = (programId: string) => {
     const newFavoriteProgramIds = user.favoriteProgramIds.includes(programId)
@@ -58,7 +54,7 @@ const FavoritePrograms = () => {
       <ListSubheader disableSticky>
         {t('navbar:favProgramsSubHeader')}
       </ListSubheader>
-      {sortedFavoritePrograms.map((program) => (
+      {favoritePrograms.map((program) => (
         <Tooltip
           key={program.id}
           describeChild
@@ -80,7 +76,7 @@ const FavoritePrograms = () => {
         </Tooltip>
       ))}
 
-      {sortedOtherPrograms.map((program) => (
+      {otherPrograms.map((program) => (
         <Tooltip
           key={program.id}
           describeChild

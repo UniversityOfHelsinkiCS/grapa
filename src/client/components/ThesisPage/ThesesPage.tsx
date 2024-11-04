@@ -21,11 +21,7 @@ import {
 } from '@mui/x-data-grid'
 import { fiFI, enUS } from '@mui/x-data-grid/locales'
 
-import {
-  ProgramData,
-  ThesisData as Thesis,
-  TranslationLanguage,
-} from '@backend/types'
+import { ThesisData as Thesis, TranslationLanguage } from '@backend/types'
 
 import { usePaginatedTheses } from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
@@ -41,8 +37,6 @@ import ThesisToolbar from './ThesisToolbar'
 import ViewThesisFooter from './ViewThesisFooter'
 import StatusFilter from './Filters/StatusFilter'
 import DeleteConfirmation from '../Common/DeleteConfirmation'
-
-import { getSortedByName } from './util'
 
 import { StatusLocale } from '../../types'
 
@@ -239,16 +233,7 @@ const ThesesPage = () => {
     const favoritePrograms = programs.filter((program) => program.isFavorite)
     const otherPrograms = programs.filter((program) => !program.isFavorite)
 
-    const sortedFavoritePrograms = getSortedByName(
-      favoritePrograms,
-      language
-    ) as ProgramData[]
-    const sortedOtherPrograms = getSortedByName(
-      otherPrograms,
-      language
-    ) as ProgramData[]
-
-    const programOptions = [...sortedFavoritePrograms, ...sortedOtherPrograms]
+    const programOptions = [...favoritePrograms, ...otherPrograms]
 
     setNewThesis({
       programId: programOptions[0].id,
