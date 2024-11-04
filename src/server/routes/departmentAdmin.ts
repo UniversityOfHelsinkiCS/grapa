@@ -42,7 +42,10 @@ departmentAdminRouter.get(
           as: 'department',
         },
       ],
-      order: [['departmentId', 'ASC']],
+      order: [
+        [{ model: User, as: 'user' }, 'lastName', 'ASC'],
+        ['departmentId', 'ASC'],
+      ],
       bind: { editorUserId: req.user.id },
     })
 
