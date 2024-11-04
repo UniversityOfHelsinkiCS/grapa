@@ -1,17 +1,6 @@
-import sortBy from 'lodash-es/sortBy'
-import { SupervisionData, ThesisData, TranslatedName } from '@backend/types'
+import { SupervisionData, ThesisData } from '@backend/types'
 import { SupervisorSelection } from '@frontend/types'
 import { ThesisSchema, ThesisDateSchema } from './thesisValidator'
-
-type SortableData = {
-  name: TranslatedName
-}
-
-export const getSortedByName = (data: SortableData[], language: string) =>
-  sortBy(
-    data,
-    (entity) => entity.name[language as keyof TranslatedName]
-  ) as unknown
 
 export const getTotalPercentage = (supervisions: SupervisionData[]) =>
   supervisions.reduce((total, selection) => total + selection.percentage, 0)
