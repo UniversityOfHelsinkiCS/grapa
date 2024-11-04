@@ -161,7 +161,7 @@ const ThesesPage = () => {
       headerName: t('programHeader'),
       width: 250,
       valueGetter: (_, row) =>
-        programs.find((program) => program.id === row.programId)?.name[
+        (programs ?? []).find((program) => program.id === row.programId)?.name[
           language
         ],
     },

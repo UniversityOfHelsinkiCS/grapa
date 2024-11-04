@@ -16,7 +16,11 @@ const useEvents = (params: UseEventsParams) => {
     return data
   }
 
-  const { data: events, ...rest } = useQuery({ queryKey, queryFn })
+  const { data: events, ...rest } = useQuery({
+    queryKey,
+    queryFn,
+    enabled: Boolean(params.thesisId),
+  })
 
   return { events, ...rest }
 }
