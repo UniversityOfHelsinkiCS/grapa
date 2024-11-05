@@ -2,7 +2,13 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react'
 
 // import SupervisorSelect from './SupervisorSelect'
 import initializeI18n from '../../../util/il18n'
@@ -61,7 +67,6 @@ jest.unstable_mockModule('@mui/icons-material/Star', () => ({
 jest.unstable_mockModule('@mui/icons-material/StarOutline', () => ({
   default: jest.fn().mockReturnValue('StarOutline'),
 }))
-
 
 const SupervisorSelect = (await import('./SupervisorSelect')).default
 
@@ -170,7 +175,12 @@ describe('SupervisorSelect', () => {
         ]}
         setErrors={setErrors}
         supervisorSelections={[
-          { user: null, percentage: 100, isExternal: false, isPrimarySupervisor: true },
+          {
+            user: null,
+            percentage: 100,
+            isExternal: false,
+            isPrimarySupervisor: true,
+          },
         ]}
         setSupervisorSelections={setSupervisorSelections}
       />
@@ -190,15 +200,10 @@ describe('SupervisorSelect', () => {
       <SupervisorSelect
         errors={[
           {
-            code: "custom",
-            message: "formErrors:supervisorPercentage",
-            path: [
-              "supervisions",
-              "general",
-              "supervisor",
-              "error"
-            ]
-          }
+            code: 'custom',
+            message: 'formErrors:supervisorPercentage',
+            path: ['supervisions', 'general', 'supervisor', 'error'],
+          },
         ]}
         setErrors={setErrors}
         supervisorSelections={[
@@ -219,7 +224,9 @@ describe('SupervisorSelect', () => {
       />
     )
 
-    const percentageError = screen.getByTestId('supervisions-general-supervisor-error')
+    const percentageError = screen.getByTestId(
+      'supervisions-general-supervisor-error'
+    )
     expect(percentageError).toBeInTheDocument()
   })
 
@@ -228,15 +235,10 @@ describe('SupervisorSelect', () => {
       <SupervisorSelect
         errors={[
           {
-            code: "custom",
-            message: "formErrors:primarySupervisor",
-            path: [
-              "supervisions",
-              "general",
-              "supervisor",
-              "error"
-            ]
-          }
+            code: 'custom',
+            message: 'formErrors:primarySupervisor',
+            path: ['supervisions', 'general', 'supervisor', 'error'],
+          },
         ]}
         setErrors={setErrors}
         supervisorSelections={[
@@ -257,7 +259,9 @@ describe('SupervisorSelect', () => {
       />
     )
 
-    const primaryError = screen.getByTestId('supervisions-general-supervisor-error')
+    const primaryError = screen.getByTestId(
+      'supervisions-general-supervisor-error'
+    )
     expect(primaryError).toBeInTheDocument()
 
     const primarySupervisorCheckbox = screen.getByRole('checkbox')
@@ -265,9 +269,9 @@ describe('SupervisorSelect', () => {
     expect(primarySupervisorCheckbox).not.toBeChecked()
     expect(primarySupervisorCheckbox).toHaveAttribute('aria-invalid', 'true')
   })
-  
+
   describe('interactions', () => {
-    it('should call setSupervisorSelections when a supervision is added', () => {
+    it('should call setSupervisorSelections when a supervision is added', async () => {
       render(
         <SupervisorSelect
           errors={[]}
@@ -278,11 +282,28 @@ describe('SupervisorSelect', () => {
       )
 
       const select = screen.getByTestId('add-supervisor-button')
-      select.click()
+      fireEvent.click(select)
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('add-supervisor-menu-item-internal')
+        ).toBeInTheDocument()
+      })
+
+      const internalSupervisorButton = screen.getByTestId(
+        'add-supervisor-menu-item-internal'
+      )
+      fireEvent.click(internalSupervisorButton)
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
       expect(setSupervisorSelections).toHaveBeenCalledWith([
-        { user: null, percentage: 100, isExternal: false, isPrimarySupervisor: false, creationTimeIdentifier: expect.any(String) },
+        {
+          user: null,
+          percentage: 100,
+          isExternal: false,
+          isPrimarySupervisor: false,
+          creationTimeIdentifier: expect.any(String),
+        },
       ])
     })
 
@@ -296,14 +317,18 @@ describe('SupervisorSelect', () => {
         />
       )
 
-      const supervisorOptions = screen.getByTestId('change-add-supervisor-button-action')
+      const supervisorOptions = screen.getByTestId('add-supervisor-button')
       fireEvent.click(supervisorOptions)
 
       await waitFor(() => {
-        expect(screen.getByTestId('add-supervisor-menu-item-external')).toBeInTheDocument()
+        expect(
+          screen.getByTestId('add-supervisor-menu-item-external')
+        ).toBeInTheDocument()
       })
 
-      const externalSupervisor = screen.getByTestId('add-supervisor-menu-item-external')
+      const externalSupervisor = screen.getByTestId(
+        'add-supervisor-menu-item-external'
+      )
       fireEvent.click(externalSupervisor)
 
       await waitFor(() => {
@@ -316,12 +341,18 @@ describe('SupervisorSelect', () => {
       await waitFor(() => {
         expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
         expect(setSupervisorSelections).toHaveBeenCalledWith([
-          { user: null, percentage: 100, isExternal: true, isPrimarySupervisor: false, creationTimeIdentifier: expect.any(String)},
+          {
+            user: null,
+            percentage: 100,
+            isExternal: true,
+            isPrimarySupervisor: false,
+            creationTimeIdentifier: expect.any(String),
+          },
         ])
       })
-    })  
+    })
 
-    it('should adjust the supervisor workload percentages accordingly', () => {
+    it('should adjust the supervisor workload percentages accordingly', async () => {
       render(
         <SupervisorSelect
           errors={[]}
@@ -356,7 +387,18 @@ describe('SupervisorSelect', () => {
       )
 
       const select = screen.getByTestId('add-supervisor-button')
-      select.click()
+      fireEvent.click(select)
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('add-supervisor-menu-item-internal')
+        ).toBeInTheDocument()
+      })
+
+      const internalSupervisorButton = screen.getByTestId(
+        'add-supervisor-menu-item-internal'
+      )
+      fireEvent.click(internalSupervisorButton)
 
       expect(setSupervisorSelections).toHaveBeenCalledTimes(1)
       expect(setSupervisorSelections).toHaveBeenCalledWith([
@@ -383,7 +425,13 @@ describe('SupervisorSelect', () => {
           isExternal: false,
           isPrimarySupervisor: false,
         },
-        { user: null, percentage: 33, isExternal: false, isPrimarySupervisor: false, creationTimeIdentifier: expect.any(String)},
+        {
+          user: null,
+          percentage: 33,
+          isExternal: false,
+          isPrimarySupervisor: false,
+          creationTimeIdentifier: expect.any(String),
+        },
       ])
     })
 
@@ -421,14 +469,18 @@ describe('SupervisorSelect', () => {
         />
       )
 
-       const supervisorOptions = screen.getByTestId('change-add-supervisor-button-action')
+      const supervisorOptions = screen.getByTestId('add-supervisor-button')
       fireEvent.click(supervisorOptions)
 
       await waitFor(() => {
-        expect(screen.getByTestId('add-supervisor-menu-item-external')).toBeInTheDocument()
+        expect(
+          screen.getByTestId('add-supervisor-menu-item-external')
+        ).toBeInTheDocument()
       })
 
-      const externalSupervisor = screen.getByTestId('add-supervisor-menu-item-external')
+      const externalSupervisor = screen.getByTestId(
+        'add-supervisor-menu-item-external'
+      )
       fireEvent.click(externalSupervisor)
 
       await waitFor(() => {
@@ -464,7 +516,13 @@ describe('SupervisorSelect', () => {
             isExternal: false,
             isPrimarySupervisor: false,
           },
-          { user: null, percentage: 33, isExternal: true, isPrimarySupervisor: false, creationTimeIdentifier: expect.any(String) },
+          {
+            user: null,
+            percentage: 33,
+            isExternal: true,
+            isPrimarySupervisor: false,
+            creationTimeIdentifier: expect.any(String),
+          },
         ])
       })
     })
@@ -684,7 +742,12 @@ describe('SupervisorSelect', () => {
           ]}
           setErrors={setErrors}
           supervisorSelections={[
-            { user: null, percentage: 100, isExternal: false, isPrimarySupervisor: true },
+            {
+              user: null,
+              percentage: 100,
+              isExternal: false,
+              isPrimarySupervisor: true,
+            },
           ]}
           setSupervisorSelections={setSupervisorSelections}
         />
@@ -695,12 +758,12 @@ describe('SupervisorSelect', () => {
       )
       expect(helperText).toBeInTheDocument()
 
-      const inputElement = select.container.querySelector('#supervisions-0-user')
+      const inputElement = select.container.querySelector(
+        '#supervisions-0-user'
+      )
       expect(inputElement).toHaveAttribute('aria-invalid', 'true')
 
-      const superVisorSelect1 = screen.getByTestId(
-        'supervisor-select-input-1'
-      )
+      const superVisorSelect1 = screen.getByTestId('supervisor-select-input-1')
 
       const superVisorInput1 = within(superVisorSelect1).getByRole('combobox')
 

@@ -2,7 +2,13 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react'
 
 // import GraderSelect from './GraderSelect'
 import initializeI18n from '../../../util/il18n'
@@ -154,7 +160,9 @@ describe('GraderSelect', () => {
           },
         ]}
         setErrors={setErrors}
-        graderSelections={[{ user: null, isPrimaryGrader: true, isExternal: false }]}
+        graderSelections={[
+          { user: null, isPrimaryGrader: true, isExternal: false },
+        ]}
         setGraderSelections={setGraderSelections}
       />
     )
@@ -215,15 +223,19 @@ describe('GraderSelect', () => {
         />
       )
 
-      const graderOptions = screen.getByTestId('change-add-grader-button-action')
+      const graderOptions = screen.getByTestId('add-grader-button')
       fireEvent.click(graderOptions)
 
       await waitFor(() => {
-        expect(screen.getByTestId('add-grader-menu-item-external')).toBeInTheDocument()
+        expect(
+          screen.getByTestId('add-grader-menu-item-external')
+        ).toBeInTheDocument()
       })
 
-      const externalSupervisor = screen.getByTestId('add-grader-menu-item-external')
-      fireEvent.click(externalSupervisor)
+      const externalGraderButton = screen.getByTestId(
+        'add-grader-menu-item-external'
+      )
+      fireEvent.click(externalGraderButton)
 
       await waitFor(() => {
         expect(screen.getByTestId('add-grader-button')).toBeInTheDocument()
@@ -245,7 +257,7 @@ describe('GraderSelect', () => {
             },
             isPrimaryGrader: true,
             isExternal: false,
-          }, 
+          },
           { user: null, isPrimaryGrader: false, isExternal: true },
         ])
       })

@@ -3,7 +3,13 @@
  */
 import dayjs from 'dayjs'
 import userEvent from '@testing-library/user-event'
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
 
@@ -205,6 +211,15 @@ describe('ThesisEditForm', () => {
 
         const addSupervisorBtn = screen.getByTestId('add-supervisor-button')
         await user.click(addSupervisorBtn)
+        await waitFor(() => {
+          expect(
+            screen.getByTestId('add-supervisor-menu-item-internal')
+          ).toBeInTheDocument()
+        })
+        const internalSupervisorButton = screen.getByTestId(
+          'add-supervisor-menu-item-internal'
+        )
+        fireEvent.click(internalSupervisorButton)
 
         const superVisorSelect1 = screen.getByTestId(
           'supervisor-select-input-1'

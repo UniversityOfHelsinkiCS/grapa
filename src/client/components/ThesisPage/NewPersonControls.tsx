@@ -1,13 +1,13 @@
 import * as React from 'react'
 import {
   Button,
-  ButtonGroup,
   ClickAwayListener,
   Grow,
   MenuItem,
   MenuList,
   Paper,
   Popper,
+  Stack,
 } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { useTranslation } from 'react-i18next'
@@ -26,20 +26,19 @@ const NewPersonControls = ({
   const { t } = useTranslation()
 
   const [open, setOpen] = React.useState(false)
-  const anchorRef = React.useRef<HTMLDivElement>(null)
-  const [selectedIndex, setSelectedIndex] = React.useState(0)
+  const anchorRef = React.useRef<HTMLButtonElement>(null)
 
-  const handleClick = () => {
+  const handleClick = (selectedIndex: number) => {
     const selectedAction = options[selectedIndex]
 
     handleAddPerson(selectedAction.isExternal)
   }
 
   const handleMenuItemClick = (
-    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    _: React.MouseEvent<HTMLLIElement, MouseEvent>,
     index: number
   ) => {
-    setSelectedIndex(index)
+    handleClick(index)
     setOpen(false)
   }
 
@@ -59,36 +58,26 @@ const NewPersonControls = ({
   }
 
   return (
-    <>
-      <ButtonGroup
+    <Stack alignItems="center">
+      <Button
         disableElevation
         variant="contained"
         ref={anchorRef}
-        aria-label="Button group with a nested menu"
+        data-testid={`add-${personGroup}-button`}
+        aria-controls={open ? `${personGroup}-button-menu` : undefined}
+        aria-expanded={open ? 'true' : undefined}
+        aria-label={t(`thesisForm:${personGroup}ButtonGroupAriaLabel`)}
         sx={{
+          borderRadius: '0.5rem',
           justifyContent: 'center',
+          width: 'fit-content',
         }}
+        onClick={handleToggle}
       >
-        <Button
-          data-testid={`add-${personGroup}-button`}
-          sx={{ borderRadius: '0.5rem' }}
-          onClick={handleClick}
-        >
-          {options[selectedIndex].label}
-        </Button>
-        <Button
-          data-testid={`change-add-${personGroup}-button-action`}
-          size="small"
-          aria-controls={open ? `${personGroup}-split-button-menu` : undefined}
-          aria-expanded={open ? 'true' : undefined}
-          aria-label={t(`thesisForm:${personGroup}ButtonGroupAriaLabel`)}
-          aria-haspopup="menu"
-          onClick={handleToggle}
-          sx={{ borderRadius: '0.5rem' }}
-        >
-          <ArrowDropDownIcon />
-        </Button>
-      </ButtonGroup>
+        {options[0].label}
+        <ArrowDropDownIcon />
+      </Button>
+
       <Popper
         sx={{
           zIndex: 1,
@@ -114,7 +103,6 @@ const NewPersonControls = ({
                     <MenuItem
                       key={option.label}
                       data-testid={`add-${personGroup}-menu-item-${option.isExternal ? 'external' : 'internal'}`}
-                      selected={index === selectedIndex}
                       onClick={(event) => handleMenuItemClick(event, index)}
                     >
                       {option.label}
@@ -126,7 +114,7 @@ const NewPersonControls = ({
           </Grow>
         )}
       </Popper>
-    </>
+    </Stack>
   )
 }
 
