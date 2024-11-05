@@ -1383,13 +1383,10 @@ describe('thesis router', () => {
         })
 
         describe("when the user is a manager of the thesis' program", () => {
-          it('should return 201, create the thesis and log the event', async () => {
-            await ProgramManagement.create({
-              programId: 'New program',
-              userId: user2.id,
-            })
+          let newThesis
 
-            const newThesis = {
+          beforeEach(() => {
+            newThesis = {
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -1413,30 +1410,80 @@ describe('thesis router', () => {
               ],
               authors: [user2],
             }
-            const response = await request
-              .post('/api/theses')
-              .set({ uid: user2.id, hygroupcn: 'hy-employees' })
-              .attach(
-                'waysOfWorking',
-                path.resolve(
-                  dirname(fileURLToPath(import.meta.url)),
-                  './index.ts'
-                )
-              )
-              .attach(
-                'researchPlan',
-                path.resolve(
-                  dirname(fileURLToPath(import.meta.url)),
-                  './index.ts'
-                )
-              )
-              .field('json', JSON.stringify(newThesis))
-            expect(response.status).toEqual(201)
+          })
 
-            const eventLog = await EventLog.findOne({
-              where: { type: 'THESIS_CREATED', thesisId: response.body.id },
+          describe('when the user is also an approver of the program', () => {
+            beforeEach(async () => {
+              await ProgramManagement.create({
+                programId: 'New program',
+                userId: user2.id,
+                isThesisApprover: true,
+              })
             })
-            expect(eventLog).not.toBeNull()
+
+            it('should return 201, create the thesis and log the event', async () => {
+              const response = await request
+                .post('/api/theses')
+                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(newThesis))
+              expect(response.status).toEqual(201)
+
+              const eventLog = await EventLog.findOne({
+                where: { type: 'THESIS_CREATED', thesisId: response.body.id },
+              })
+              expect(eventLog).not.toBeNull()
+            })
+          })
+
+          describe('when the user is not an approver of the program', () => {
+            beforeEach(async () => {
+              await ProgramManagement.create({
+                programId: 'New program',
+                userId: user2.id,
+                isThesisApprover: false,
+              })
+            })
+
+            it('should return 403, and not log the event', async () => {
+              const response = await request
+                .post('/api/theses')
+                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(newThesis))
+              expect(response.status).toEqual(403)
+
+              const eventLog = await EventLog.findOne({
+                where: { type: 'THESIS_CREATED' },
+              })
+              expect(eventLog).toBeNull()
+            })
           })
         })
 
@@ -2610,13 +2657,10 @@ describe('thesis router', () => {
         })
 
         describe("when the user is a manager of the thesis' program", () => {
-          it('should return 200 and update the thesis', async () => {
-            await ProgramManagement.create({
-              programId: 'Testing program',
-              userId: user2.id,
-            })
+          let updatedThesis
 
-            const updatedThesis = {
+          beforeEach(() => {
+            updatedThesis = {
               programId: 'Testing program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -2645,26 +2689,72 @@ describe('thesis router', () => {
               ],
               authors: [user2],
             }
-            const response = await request
-              .put(`/api/theses/${thesis1.id}`)
-              .set({ uid: user2.id, hygroupcn: 'hy-employees' })
-              .attach(
-                'waysOfWorking',
-                path.resolve(
-                  dirname(fileURLToPath(import.meta.url)),
-                  './index.ts'
-                )
-              )
-              .attach(
-                'researchPlan',
-                path.resolve(
-                  dirname(fileURLToPath(import.meta.url)),
-                  './index.ts'
-                )
-              )
-              .field('json', JSON.stringify(updatedThesis))
+          })
 
-            expect(response.status).toEqual(200)
+          describe('when the user is approver of the prgram', () => {
+            beforeEach(async () => {
+              await ProgramManagement.create({
+                programId: 'Testing program',
+                userId: user2.id,
+                isThesisApprover: true,
+              })
+            })
+
+            it('should return 200 and update the thesis', async () => {
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+
+              expect(response.status).toEqual(200)
+            })
+          })
+
+          describe('when the user is not an approver of the prgram', () => {
+            beforeEach(async () => {
+              await ProgramManagement.create({
+                programId: 'Testing program',
+                userId: user2.id,
+                isThesisApprover: false,
+              })
+            })
+
+            it('should return 403 status code', async () => {
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+
+              expect(response.status).toEqual(403)
+            })
           })
         })
 
@@ -2738,13 +2828,10 @@ describe('thesis router', () => {
           })
 
           describe('when the thesis already has IN_PROGRESS status', () => {
-            it('should return 200 and update the thesis', async () => {
-              await ProgramManagement.create({
-                programId: 'Testing program',
-                userId: user2.id,
-              })
+            let updatedThesis
 
-              const updatedThesis = {
+            beforeEach(() => {
+              updatedThesis = {
                 programId: 'Testing program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -2773,26 +2860,72 @@ describe('thesis router', () => {
                 ],
                 authors: [user2],
               }
-              const response = await request
-                .put(`/api/theses/${thesis1.id}`)
-                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
-                .attach(
-                  'waysOfWorking',
-                  path.resolve(
-                    dirname(fileURLToPath(import.meta.url)),
-                    './index.ts'
-                  )
-                )
-                .attach(
-                  'researchPlan',
-                  path.resolve(
-                    dirname(fileURLToPath(import.meta.url)),
-                    './index.ts'
-                  )
-                )
-                .field('json', JSON.stringify(updatedThesis))
+            })
 
-              expect(response.status).toEqual(200)
+            describe('when the user is an approver of the program', () => {
+              beforeEach(async () => {
+                await ProgramManagement.create({
+                  programId: 'Testing program',
+                  userId: user2.id,
+                  isThesisApprover: true,
+                })
+              })
+
+              it('should return 200 and update the thesis', async () => {
+                const response = await request
+                  .put(`/api/theses/${thesis1.id}`)
+                  .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                  .attach(
+                    'waysOfWorking',
+                    path.resolve(
+                      dirname(fileURLToPath(import.meta.url)),
+                      './index.ts'
+                    )
+                  )
+                  .attach(
+                    'researchPlan',
+                    path.resolve(
+                      dirname(fileURLToPath(import.meta.url)),
+                      './index.ts'
+                    )
+                  )
+                  .field('json', JSON.stringify(updatedThesis))
+
+                expect(response.status).toEqual(200)
+              })
+            })
+
+            describe('when the user is not an approver of the program', () => {
+              beforeEach(async () => {
+                await ProgramManagement.create({
+                  programId: 'Testing program',
+                  userId: user2.id,
+                  isThesisApprover: false,
+                })
+              })
+
+              it('should return 403 status code', async () => {
+                const response = await request
+                  .put(`/api/theses/${thesis1.id}`)
+                  .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                  .attach(
+                    'waysOfWorking',
+                    path.resolve(
+                      dirname(fileURLToPath(import.meta.url)),
+                      './index.ts'
+                    )
+                  )
+                  .attach(
+                    'researchPlan',
+                    path.resolve(
+                      dirname(fileURLToPath(import.meta.url)),
+                      './index.ts'
+                    )
+                  )
+                  .field('json', JSON.stringify(updatedThesis))
+
+                expect(response.status).toEqual(403)
+              })
             })
           })
 
