@@ -35,7 +35,12 @@
     "thesisDeleted": "Thesis deleted",
     "supervisorsUpdated": "Supervisors updated",
     "gradersUpdated": "Graders updated",
-    "thesisStatusUpdated": "Thesis status updated"
+    "thesisStatusUpdated": "Thesis status updated",
+    "diffView": {
+      "before": "Before change",
+      "after": "After change",
+      "diff": "Diff"
+    }
   },
   "admin": {
     "indexTab": "Login as"

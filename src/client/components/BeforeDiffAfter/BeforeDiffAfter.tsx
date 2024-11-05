@@ -5,6 +5,7 @@ import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 import { useState } from 'react'
 import TextDiff from '../TextDiff/TextDiff'
+import { useTranslation } from 'react-i18next'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -49,6 +50,7 @@ interface Props {
   afterText: string
 }
 const BeforeDiffAfter = ({ beforeText, afterText }: Props) => {
+  const { t } = useTranslation()
   const [value, setValue] = useState(1)
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -63,9 +65,9 @@ const BeforeDiffAfter = ({ beforeText, afterText }: Props) => {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Before change" {...a11yProps(0)} />
-          <Tab label="Diff" {...a11yProps(1)} />
-          <Tab label="After change" {...a11yProps(2)} />
+          <Tab label={t('eventLog:diffView:before')} {...a11yProps(0)} />
+          <Tab label={t('eventLog:diffView:diff')} {...a11yProps(1)} />
+          <Tab label={t('eventLog:diffView:after')} {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel css={tabPanelStyle} value={value} index={0}>

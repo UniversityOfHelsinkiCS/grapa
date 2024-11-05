@@ -35,7 +35,12 @@
     "thesisDeleted": "Tutkielma poistettu",
     "supervisorsUpdated": "Ohjaajat päivitetty",
     "gradersUpdated": "Arvioijat päivitetty",
-    "thesisStatusUpdated": "Tutkielman vaihe päivitetty"
+    "thesisStatusUpdated": "Tutkielman vaihe päivitetty",
+    "diffView": {
+      "before": "Ennen muutosta",
+      "after": "Muutoksen jälkeen",
+      "diff": "Muutos"
+    }
   },
   "admin": {
     "indexTab": "Login as"
