@@ -15,6 +15,9 @@ userRouter.get('/', async (req: RequestWithUser, res: any) => {
     where: { userId: user.id },
   })
   const managedProgramIds = managedPrograms.map((program) => program.programId)
+  const approvableProgramIds = managedPrograms
+    .filter((program) => program.isThesisApprover)
+    .map((program) => program.programId)
 
   const managedDepartments = await DepartmentAdmin.findAll({
     where: { userId: user.id },
@@ -23,7 +26,12 @@ userRouter.get('/', async (req: RequestWithUser, res: any) => {
     (department) => department.departmentId
   )
 
-  return res.send({ ...user, managedProgramIds, managedDepartmentIds })
+  return res.send({
+    ...user,
+    managedProgramIds,
+    managedDepartmentIds,
+    approvableProgramIds,
+  })
 })
 
 userRouter.put('/', async (req: RequestWithUser, res: any) => {

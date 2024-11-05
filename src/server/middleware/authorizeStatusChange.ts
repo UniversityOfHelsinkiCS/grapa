@@ -28,29 +28,28 @@ export const authorizeStatusChange = async (
   const thesis = await Thesis.findByPk(req.params.id)
 
   // if the thesis' status is already something else than PLANNING
-  // allow anyone who can edit the thesis to update the status
+  // allow anyone who can edit the thesis to update the status...
   if (thesis && thesis.status !== 'PLANNING') {
     next()
     return
   }
 
-  // but if current thesis' status is PLANNING
+  // ...but if current thesis' status is PLANNING
   // and the user is trying to update it
   // to something else than PLANNING,
   // then we need to check permissions i.e.
-  // only allow it if the user is the program manager
-  // or admin
-  const programsManagedByUser = await ProgramManagement.findAll({
+  // only allow it if the user is an approver-program-manager
+  const programsWhereUserIsApprover = await ProgramManagement.findAll({
     attributes: ['programId'],
-    where: { userId: actionUser.id },
+    where: { userId: actionUser.id, isThesisApprover: true },
   })
-  const programIdsManagedByUser = programsManagedByUser.map(
+  const programIdsWhereUserIsApprover = programsWhereUserIsApprover.map(
     (program) => program.programId
   )
 
-  if (!programIdsManagedByUser.includes(req.body.programId)) {
-    // if the user is not admin, not program manager and the status is changed
-    // or the thesis a new one throw an Authorization error
+  if (!programIdsWhereUserIsApprover.includes(req.body.programId)) {
+    // if the user is not an approver-program-manager and the status
+    // is changed or the thesis a new one throw an Authorization error
     if (!thesis || thesis.status !== req.body.status) {
       throw new CustomAuthorizationError(
         'User is not authorized to change the status of the thesis',
