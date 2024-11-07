@@ -118,7 +118,7 @@
     "graders": "Graders",
     "graderInstructions": {
       "title": "Instructions for filling the graders",
-      "content": "Grader 1 must be a University of Helsinki professor, assistant or associate professor, research director, senior university lecturer or university lecturer.\n\n Grader 2 must be a doctor. Grader 2 can be a person outside the University of Helsinki.\n\n",
+      "content": "Grader 1 must be a University of Helsinki professor, assistant or associate professor, research director, senior university lecturer or university lecturer.\n\n Grader 2 must be a doctor. Grader 2 can be a person outside the University of Helsinki.",
       "primaryGrader": "Professor",
       "secondaryGrader": "PhD"
     },

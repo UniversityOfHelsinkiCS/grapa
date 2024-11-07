@@ -118,7 +118,7 @@
     "graders": "Arvioijat",
     "graderInstructions": {
       "title": "Ohjeita arvioijien täyttämiseen",
-      "content": "Arvioijan 1 tulee olla Helsingin yliopiston professori, 1. tai 2. kauden apulaisprofessori, tutkimusjohtaja, vanhempi yliopistonlehtori tai yliopistonlehtori.\n\n Arvioijan 2 tulee olla tohtori. Arvioija 2 voi olla Helsingin yliopiston ulkopuolinen henkilö.\n\n",
+      "content": "Arvioijan 1 tulee olla Helsingin yliopiston professori, 1. tai 2. kauden apulaisprofessori, tutkimusjohtaja, vanhempi yliopistonlehtori tai yliopistonlehtori.\n\n Arvioijan 2 tulee olla tohtori. Arvioija 2 voi olla Helsingin yliopiston ulkopuolinen henkilö.",
       "primaryG showrader": "Professori tai muu sopiva",
       "secondaryGrader": "Tohtori"
     },
