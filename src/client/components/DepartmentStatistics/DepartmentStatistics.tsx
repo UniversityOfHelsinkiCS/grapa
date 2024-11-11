@@ -35,7 +35,7 @@ const DepartmentStatistics = () => {
       headerAlign: 'left',
       flex: 1,
       valueGetter: ({ firstName, lastName, email }) =>
-        `${firstName} ${lastName}${email ? ` (${email})` : ''}`,
+        `${lastName} ${firstName} ${email ? ` (${email})` : ''}`,
     },
     {
       field: 'department',

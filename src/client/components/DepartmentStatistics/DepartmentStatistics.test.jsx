@@ -13,12 +13,11 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
       firstName: 'John',
       lastName: 'Doe',
       username: 'johndoe',
-      managedDepartmentIds: ["1"],
-      departmentId: "1",
+      managedDepartmentIds: ['1'],
+      departmentId: '1',
     },
   }),
 }))
-
 
 jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
   default: jest.fn().mockReturnValue({
@@ -26,15 +25,15 @@ jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
       {
         id: 1,
         name: {
-          en: "Department of Computer Science",
-          fi: "Tietojenkäsittelytieteen laitos",
+          en: 'Department of Computer Science',
+          fi: 'Tietojenkäsittelytieteen laitos',
         },
       },
       {
         id: 2,
         name: { en: 'Test department', fi: 'Testiosasto' },
       },
-    ]
+    ],
   }),
 }))
 
@@ -48,8 +47,8 @@ jest.unstable_mockModule('./src/client/hooks/useDepartmentAdmins', () => ({
         department: {
           id: 1,
           name: {
-            en: "Department of Computer Science",
-            fi: "Tietojenkäsittelytieteen laitos",
+            en: 'Department of Computer Science',
+            fi: 'Tietojenkäsittelytieteen laitos',
           },
         },
         user: {
@@ -60,36 +59,38 @@ jest.unstable_mockModule('./src/client/hooks/useDepartmentAdmins', () => ({
           departmentId: 1,
         },
       },
-    ]
+    ],
   }),
   useDepartmentStatistics: jest.fn().mockReturnValue({
-    departmentStatistics: [{
-      department: {
-        id: 1,
-        name: {
-          en: "Department of Computer Science",
-          fi: "Tietojenkäsittelytieteen laitos",
+    departmentStatistics: [
+      {
+        department: {
+          id: 1,
+          name: {
+            en: 'Department of Computer Science',
+            fi: 'Tietojenkäsittelytieteen laitos',
+          },
+        },
+        statusCounts: {
+          PLANNING: 3,
+          IN_PROGRESS: 1,
+          COMPLETED: 1,
+          CANCELLED: 0,
+        },
+        supervisor: {
+          id: 1,
+          firstName: 'John',
+          lastName: 'Doe',
+          username: 'johndoe',
+          email: 'test@test.fi',
+          departmentId: 1,
         },
       },
-      statusCounts:{
-        "PLANNING": 3,
-        "IN_PROGRESS": 1,
-        "COMPLETED": 1,
-        "CANCELLED": 0
-      },
-      supervisor: {
-        id: 1,
-        firstName: 'John',
-        lastName: 'Doe',
-        username: 'johndoe',
-        email: 'test@test.fi',
-        departmentId: 1,
-      },
-    }],
+    ],
   }),
 }))
 
-jest.unstable_mockModule('react-router-dom', () => ({ Navigate: jest.fn()}))
+jest.unstable_mockModule('react-router-dom', () => ({ Navigate: jest.fn() }))
 
 const DepartmentStatistics = (await import('./DepartmentStatistics')).default
 
@@ -101,10 +102,12 @@ describe('DepartmentStatistics', () => {
   it('renders all existing department admins', () => {
     render(<DepartmentStatistics />)
 
-    expect(screen.getByTestId('department-statistics-page-title')).toBeInTheDocument()
-    expect(screen.getByText('John Doe (test@test.fi)')).toBeInTheDocument()
-    expect(screen.getByText("Tietojenkäsittelytieteen laitos")).toBeInTheDocument()
+    expect(
+      screen.getByTestId('department-statistics-page-title')
+    ).toBeInTheDocument()
+    expect(screen.getByText('Doe John (test@test.fi)')).toBeInTheDocument()
+    expect(
+      screen.getByText('Tietojenkäsittelytieteen laitos')
+    ).toBeInTheDocument()
   })
-
-
 })
