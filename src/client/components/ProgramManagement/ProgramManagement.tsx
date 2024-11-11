@@ -156,7 +156,16 @@ const ProgramManagement = () => {
   ]
 
   return (
-    <Box component="section" sx={{ px: '3rem', py: '2rem', width: '100%' }}>
+    <Box
+      component="section"
+      sx={{
+        px: '3rem',
+        py: '2rem',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <Typography component="h1" variant="h4">
         {t('programManagementPage:pageTitle')}
       </Typography>
@@ -168,7 +177,7 @@ const ProgramManagement = () => {
       />
       <Box
         sx={{
-          maxWidth: '480px',
+          width: '50%',
           display: 'flex',
           flexDirection: 'column',
           gap: '1rem',

@@ -75,7 +75,16 @@ const DepartmentStatistics = () => {
   ]
 
   return (
-    <Box component="section" sx={{ px: '3rem', py: '2rem', width: '100%' }}>
+    <Box
+      component="section"
+      sx={{
+        px: '3rem',
+        py: '2rem',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <Typography
         data-testid="department-statistics-page-title"
         component="h1"
