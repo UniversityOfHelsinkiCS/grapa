@@ -88,7 +88,6 @@ const DepartmentStatistics = () => {
         rows={departmentStatistics}
         columns={columns}
         pageSizeOptions={[100]}
-        autoHeight
         getRowId={(row) => row.supervisor.id}
         columnGroupingModel={[
           {

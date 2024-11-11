@@ -267,7 +267,6 @@ const ThesesPage = () => {
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
       <Box>
         <DataGrid
-          autoHeight
           apiRef={apiRef}
           loading={isLoading}
           rows={isLoading ? skeletonRows : theses}

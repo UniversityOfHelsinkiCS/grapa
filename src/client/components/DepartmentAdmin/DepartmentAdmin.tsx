@@ -118,7 +118,6 @@ const DepartmentAdmin = () => {
         rows={departmentAdmins}
         columns={columns}
         pageSizeOptions={[100]}
-        autoHeight
       />
       <Box
         sx={{

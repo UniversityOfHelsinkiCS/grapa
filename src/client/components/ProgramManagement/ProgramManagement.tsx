@@ -165,7 +165,6 @@ const ProgramManagement = () => {
         rows={programManagements}
         columns={columns}
         pageSizeOptions={[100]}
-        autoHeight
       />
       <Box
         sx={{
