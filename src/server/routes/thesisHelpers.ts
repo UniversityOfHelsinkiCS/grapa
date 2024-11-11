@@ -94,6 +94,10 @@ export const getFindThesesOptions = async ({
       model: Supervision,
       as: 'supervisionsForFiltering',
       attributes: [] as const,
+      where: {
+        userId: actionUser.id,
+      },
+      required: false,
     }
     includes = [...includes, teacherClause]
 
