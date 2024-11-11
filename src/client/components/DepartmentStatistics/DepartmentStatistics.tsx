@@ -61,6 +61,7 @@ const DepartmentStatistics = () => {
           {t('thesisStages:planned') + ` (${totalThesisCounts.PLANNING})`}
         </Typography>
       ),
+      filterable: false,
       width: 150,
       type: 'number',
       valueGetter: (_, { statusCounts }) => statusCounts.PLANNING,
@@ -72,6 +73,7 @@ const DepartmentStatistics = () => {
           {t('thesisStages:inProgress') + ` (${totalThesisCounts.IN_PROGRESS})`}
         </Typography>
       ),
+      filterable: false,
       width: 150,
       type: 'number',
       valueGetter: (_, { statusCounts }) => statusCounts.IN_PROGRESS,
@@ -83,6 +85,7 @@ const DepartmentStatistics = () => {
           {t('thesisStages:completed') + ` (${totalThesisCounts.COMPLETED})`}
         </Typography>
       ),
+      filterable: false,
       width: 150,
       type: 'number',
       valueGetter: (_, { statusCounts }) => statusCounts.COMPLETED,
@@ -94,6 +97,7 @@ const DepartmentStatistics = () => {
           {t('thesisStages:cancelled') + ` (${totalThesisCounts.CANCELLED})`}
         </Typography>
       ),
+      filterable: false,
       width: 150,
       type: 'number',
       valueGetter: (_, { statusCounts }) => statusCounts.CANCELLED,
