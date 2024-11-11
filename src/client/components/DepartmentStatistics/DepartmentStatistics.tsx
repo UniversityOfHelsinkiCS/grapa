@@ -28,6 +28,16 @@ const DepartmentStatistics = () => {
   if (!user.isAdmin && !user.managedDepartmentIds?.length)
     return <Navigate to="/" />
 
+  const totalThesisCounts = departmentStatistics.reduce(
+    (acc, { statusCounts }) => {
+      Object.entries(statusCounts).forEach(([status, count]) => {
+        acc[status] = (acc[status] || 0) + count
+      })
+      return acc
+    },
+    {} as Record<string, number>
+  )
+
   const columns: GridColDef<ThesisStatistics>[] = [
     {
       field: 'supervisor',
@@ -46,29 +56,45 @@ const DepartmentStatistics = () => {
     },
     {
       field: 'thesisCount.PLANNING',
-      headerName: t('thesisStages:planned'),
-      width: 100,
+      renderHeader: () => (
+        <Typography variant="body2">
+          {t('thesisStages:planned') + ` (${totalThesisCounts.PLANNING})`}
+        </Typography>
+      ),
+      width: 150,
       type: 'number',
       valueGetter: (_, { statusCounts }) => statusCounts.PLANNING,
     },
     {
       field: 'thesisCount.IN_PROGRESS',
-      headerName: t('thesisStages:inProgress'),
-      width: 100,
+      renderHeader: () => (
+        <Typography variant="body2">
+          {t('thesisStages:inProgress') + ` (${totalThesisCounts.IN_PROGRESS})`}
+        </Typography>
+      ),
+      width: 150,
       type: 'number',
       valueGetter: (_, { statusCounts }) => statusCounts.IN_PROGRESS,
     },
     {
       field: 'thesisCount.COMPLETED',
-      headerName: t('thesisStages:completed'),
-      width: 100,
+      renderHeader: () => (
+        <Typography variant="body2">
+          {t('thesisStages:completed') + ` (${totalThesisCounts.COMPLETED})`}
+        </Typography>
+      ),
+      width: 150,
       type: 'number',
       valueGetter: (_, { statusCounts }) => statusCounts.COMPLETED,
     },
     {
       field: 'thesisCount.CANCELLED',
-      headerName: t('thesisStages:cancelled'),
-      width: 100,
+      renderHeader: () => (
+        <Typography variant="body2">
+          {t('thesisStages:cancelled') + ` (${totalThesisCounts.CANCELLED})`}
+        </Typography>
+      ),
+      width: 150,
       type: 'number',
       valueGetter: (_, { statusCounts }) => statusCounts.CANCELLED,
     },
