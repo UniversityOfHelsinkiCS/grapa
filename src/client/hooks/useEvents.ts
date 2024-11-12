@@ -11,7 +11,7 @@ const useEvents = ({ thesisId }: UseEventsParams) => {
   const queryKey = ['event-log', thesisId]
 
   const queryFn = async (): Promise<EventLogEntry[]> => {
-    const { data } = await apiClient.get(`/event-log/${thesisId}`)
+    const { data } = await apiClient.get(`/theses/${thesisId}/event-log`)
 
     return data
   }
