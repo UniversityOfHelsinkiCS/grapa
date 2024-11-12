@@ -3854,6 +3854,8 @@ describe('thesis router', () => {
 
     describe('GET /api/theses/:id/event-log', () => {
       beforeEach(async () => {
+        await Supervision.destroy({ where: {} })
+        await User.destroy({ where: {} })
         // Create users and thesis
         user1 = await User.create({
           username: 'user1',
