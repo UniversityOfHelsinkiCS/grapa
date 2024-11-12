@@ -3851,5 +3851,78 @@ describe('thesis router', () => {
         })
       })
     })
+
+    describe('GET /api/theses/:id/event-log', () => {
+      beforeEach(async () => {
+        // Create users and thesis
+        user1 = await User.create({
+          username: 'user1',
+          email: 'user1@test.com',
+        })
+        user2 = await User.create({
+          username: 'user2',
+          email: 'user2@test.com',
+        })
+        user3 = await User.create({
+          username: 'user3',
+          email: 'user3@test.com',
+        })
+
+        thesis1 = await Thesis.create({
+          programId: 'Testing program',
+          studyTrackId: 'test-study-track-id',
+          topic: 'test topic',
+          status: 'PLANNING',
+          startDate: '1970-01-01',
+          targetDate: '2070-01-01',
+        })
+
+        await Supervision.create({
+          userId: user1.id,
+          thesisId: thesis1.id,
+          percentage: 50,
+          isPrimarySupervisor: true,
+        })
+
+        await EventLog.create({
+          thesisId: thesis1.id,
+          type: 'THESIS_CREATED',
+          data: { id: thesis1.id },
+        })
+      })
+
+      describe('when the user is an admin', () => {
+        it('should return 200 and the event log', async () => {
+          const response = await request
+            .get(`/api/theses/${thesis1.id}/event-log`)
+            .set('hygroupcn', 'grp-toska')
+          expect(response.status).toEqual(200)
+          expect(response.body).toHaveLength(1)
+          expect(response.body[0].type).toEqual('THESIS_CREATED')
+        })
+      })
+
+      describe('when the user is a supervisor of the thesis', () => {
+        it('should return 200 and the event log', async () => {
+          const response = await request
+            .get(`/api/theses/${thesis1.id}/event-log`)
+            .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+          expect(response.status).toEqual(200)
+          expect(response.body).toHaveLength(1)
+          expect(response.body[0].type).toEqual('THESIS_CREATED')
+        })
+      })
+
+      describe('when the user is not a supervisor of the thesis', () => {
+        it('should return 200 and the event log', async () => {
+          const response = await request
+            .get(`/api/theses/${thesis1.id}/event-log`)
+            .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+          expect(response.status).toEqual(200)
+          expect(response.body).toHaveLength(1)
+          expect(response.body[0].type).toEqual('THESIS_CREATED')
+        })
+      })
+    })
   })
 })
