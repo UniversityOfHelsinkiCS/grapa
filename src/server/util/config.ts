@@ -17,6 +17,11 @@ export const JAMI_URL =
     ? 'https://api-toska.apps.ocp-prod-0.k8s.it.helsinki.fi/jami/'
     : 'https://api-toska.apps.ocp-test-0.k8s.it.helsinki.fi/jami/'
 
+export const PATE_URL =
+  inProduction || inDevelopment
+    ? 'https://api-toska.apps.ocp-prod-0.k8s.it.helsinki.fi/pate/'
+    : 'https://api-toska.apps.ocp-test-0.k8s.it.helsinki.fi/pate/'
+
 export const OIDC_ISSUER = inProduction
   ? 'https://login.helsinki.fi/.well-known/openid-configuration'
   : 'https://login-test.it.helsinki.fi/.well-known/openid-configuration'
