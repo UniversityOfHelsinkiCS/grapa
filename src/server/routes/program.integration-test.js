@@ -1,13 +1,19 @@
 import supertest from 'supertest'
 import app from '../index'
-import { Program, ProgramManagement, StudyTrack, User } from '../db/models'
+import {
+  EventLog,
+  Program,
+  ProgramManagement,
+  StudyTrack,
+  Thesis,
+  User,
+} from '../db/models'
 
 const request = supertest.agent(app)
 
 describe('program router', () => {
   let user1
   let program1
-  let programManagement1
 
   beforeEach(async () => {
     user1 = await User.create({
@@ -36,7 +42,7 @@ describe('program router', () => {
       enabled: false,
     })
 
-    programManagement1 = await ProgramManagement.create({
+    await ProgramManagement.create({
       programId: program1.id,
       userId: user1.id,
     })
@@ -59,17 +65,15 @@ describe('program router', () => {
     })
   })
 
-  describe('when the user is not a teacher', () => {
-    describe('GET /api/programs', () => {
+  describe('GET /api/programs', () => {
+    describe('when the user is not a teacher', () => {
       it('should return 403', async () => {
         const response = await request.get('/api/programs')
         expect(response.status).toEqual(403)
       })
     })
-  })
 
-  describe('when the user is a teacher', () => {
-    describe('GET /api/programs', () => {
+    describe('when the user is a teacher', () => {
       describe('when includeDisabled is not passed', () => {
         it('should return 200 and all enabled programs', async () => {
           const response = await request
@@ -209,10 +213,8 @@ describe('program router', () => {
         })
       })
     })
-  })
 
-  describe('when the user is an admin', () => {
-    describe('GET /api/programs', () => {
+    describe('when the user is an admin', () => {
       describe('when includeDisabled is not passed', () => {
         it('should return 200 and all enabled programs', async () => {
           const response = await request
@@ -299,6 +301,76 @@ describe('program router', () => {
           ])
         })
       })
+    })
+  })
+
+  describe('GET /api/programs/:id/event-log', () => {
+    let user2, adminUser, thesis1
+    beforeEach(async () => {
+      user2 = await User.create({
+        username: 'test2',
+        firstName: 'test2',
+        lastName: 'test2',
+        email: 'test@test.test2',
+        language: 'fi',
+      })
+
+      adminUser = await User.create({
+        username: 'admin',
+        firstName: 'admin',
+        lastName: 'admin',
+        email: 'admin@test.test',
+        language: 'fi',
+        isAdmin: true,
+      })
+
+      thesis1 = await Thesis.create({
+        programId: program1.id,
+        topic: 'test topic',
+        status: 'PLANNING',
+        startDate: '1970-01-01',
+        targetDate: '2070-01-01',
+      })
+
+      await EventLog.create({
+        thesisId: thesis1.id,
+        type: 'THESIS_STATUS_CHANGED',
+        userId: user1.id,
+      })
+    })
+
+    it('should return 200 and the event log for an admin user', async () => {
+      const response = await request
+        .get(`/api/programs/${program1.id}/event-log`)
+        .set({ hygroupcn: 'grp-toska', uid: adminUser.id })
+
+      expect(response.status).toEqual(200)
+      expect(response.body).toHaveLength(1)
+      expect(response.body[0]).toMatchObject({
+        thesisId: thesis1.id,
+        type: 'THESIS_STATUS_CHANGED',
+      })
+    })
+
+    it('should return 200 and the event log for a program manager', async () => {
+      const response = await request
+        .get(`/api/programs/${program1.id}/event-log`)
+        .set({ hygroupcn: 'hy-employees', uid: user1.id })
+
+      expect(response.status).toEqual(200)
+      expect(response.body).toHaveLength(1)
+      expect(response.body[0]).toMatchObject({
+        thesisId: thesis1.id,
+        type: 'THESIS_STATUS_CHANGED',
+      })
+    })
+
+    it('should return 403 for a user who is not a program manager or admin', async () => {
+      const response = await request
+        .get(`/api/programs/${program1.id}/event-log`)
+        .set({ hygroupcn: 'hy-employees', uid: user2.id })
+
+      expect(response.status).toEqual(403)
     })
   })
 })
