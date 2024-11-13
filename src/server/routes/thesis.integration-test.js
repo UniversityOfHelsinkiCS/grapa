@@ -4,7 +4,6 @@ import path from 'path'
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import app from '../index'
 import {
   Attachment,
   Author,
@@ -19,14 +18,16 @@ import {
 } from '../db/models'
 import { userFields } from './config'
 
-import { handleStatusChangeEmail } from '../routes/thesisHelpers'
-const request = supertest.agent(app)
-
 const userAttributesToFetch = userFields
 
-jest.mock('../routes/thesisHelpers', () => ({
-  handleStatusChangeEmail: jest.fn(),
+let sendEmail = await import('../mailer/pate')
+jest.unstable_mockModule('./src/server/mailer/pate', () => ({
+  default: jest.fn(),
 }))
+sendEmail = (await import('../mailer/pate')).default
+
+const app = (await import('../index')).default
+const request = supertest.agent(app)
 
 describe('thesis router', () => {
   let mockUnlinkSync
@@ -1921,7 +1922,7 @@ describe('thesis router', () => {
         })
 
         describe('when the status is changed from PLANNING to IN_PROGRESS', () => {
-          it.only('should call the sendEmail function and return 200', async () => {
+          it('should call the sendEmail function and return 200', async () => {
             const updatedThesis = {
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
@@ -1961,15 +1962,11 @@ describe('thesis router', () => {
               .field('json', JSON.stringify(updatedThesis))
 
             expect(response.status).toEqual(200)
-            expect(thesisHelpers.handleStatusChangeEmail).toHaveBeenCalledTimes(
-              1
-            )
-            expect(handleStatusChangeEmail).toHaveBeenCalledWith(
-              expect.objectContaining({
-                to: user1.email,
-                subject: 'Thesis status changed',
-                text: expect.stringContaining('IN_PROGRESS'),
-              })
+            expect(sendEmail).toHaveBeenCalledTimes(1)
+            expect(sendEmail).toHaveBeenCalledWith(
+              [user1.email, user2.email],
+              expect.any(String),
+              'Prethesis - Thesis status changed to IN PROGRESS'
             )
           })
         })

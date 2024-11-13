@@ -23,8 +23,7 @@
     "extensionsToTreatAsEsm": [
       ".ts",
       ".tsx",
-      ".jsx",
-      ".js"
+      ".jsx"
     ],
     "moduleNameMapper": {
       "^uuid$": "uuid"
