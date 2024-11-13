@@ -175,8 +175,8 @@ export const getAndCreateExtUsers = async (
 }
 
 export const handleStatusChangeEmail = async (
-  originalThesis: ThesisData,
-  updatedThesis: ThesisData,
+  originalThesis: Thesis,
+  updatedThesis: Thesis,
   actionUser: UserType
 ) => {
   if (
