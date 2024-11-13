@@ -20,11 +20,10 @@ import { userFields } from './config'
 
 const userAttributesToFetch = userFields
 
-let sendEmail = await import('../mailer/pate')
 jest.unstable_mockModule('./src/server/mailer/pate', () => ({
   default: jest.fn(),
 }))
-sendEmail = (await import('../mailer/pate')).default
+const sendEmail = (await import('../mailer/pate')).default
 
 const app = (await import('../index')).default
 const request = supertest.agent(app)
