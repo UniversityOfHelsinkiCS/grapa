@@ -1,5 +1,5 @@
 import { Includeable, Op, Transaction } from 'sequelize'
-import { uniqBy } from 'lodash-es'
+import { uniq, uniqBy } from 'lodash-es'
 import { userFields } from './config'
 import {
   Grader,
@@ -11,6 +11,7 @@ import {
   Thesis,
 } from '../db/models'
 import { ThesisData, User as UserType } from '../types'
+import sendEmail from '../mailer/pate'
 
 interface FetchThesisProps {
   thesisId?: string
@@ -171,6 +172,36 @@ export const getAndCreateExtUsers = async (
   )
 
   return extUsers
+}
+
+export const handleStatusChangeEmail = async (
+  originalThesis: ThesisData,
+  updatedThesis: ThesisData,
+  actionUser: UserType
+) => {
+  if (
+    originalThesis.status === 'PLANNING' &&
+    updatedThesis.status === 'IN_PROGRESS'
+  ) {
+    const supervisorTargets = updatedThesis.supervisions
+      .map((person) => person.user)
+      .filter((person) => !person.isExternal)
+
+    const targets = uniq(
+      [...supervisorTargets, ...updatedThesis.authors]
+        .filter((person) => person.email)
+        .map((person) => person.email)
+    )
+
+    const subject = 'Prethesis - Thesis status changed to IN PROGRESS'
+    const message = `
+    This is an automated message from Prethesis. \n\n
+
+    The status of the thesis "${updatedThesis.topic}" has been changed to IN PROGRESS by ${actionUser.firstName} ${actionUser.lastName}.
+  `
+
+    await sendEmail(targets, message, subject)
+  }
 }
 
 export const handleStatusChangeEventLog = async (
