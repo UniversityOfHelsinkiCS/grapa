@@ -9,7 +9,7 @@ const settings = {
   hideToska: false,
   disableToska: true,
   color: '#107eab',
-  header: 'Curre',
+  header: 'Prethesis',
   headerFontColor: 'white',
   dryrun: !inProduction || inStaging,
 }
