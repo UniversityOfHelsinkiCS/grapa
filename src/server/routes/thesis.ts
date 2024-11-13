@@ -28,6 +28,7 @@ import {
   getAndCreateExtUsers,
   getFindThesesOptions,
   handleGradersChangeEventLog,
+  handleStatusChangeEmail,
   handleStatusChangeEventLog,
   handleSupervisionsChangeEventLog,
 } from './thesisHelpers'
@@ -311,6 +312,7 @@ thesisRouter.put(
         t
       )
     })
+    await handleStatusChangeEmail(originalThesis, updatedThesis, req.user)
 
     res.send(updatedThesis)
   }

@@ -19,9 +19,14 @@ import {
 } from '../db/models'
 import { userFields } from './config'
 
+import { handleStatusChangeEmail } from '../routes/thesisHelpers'
 const request = supertest.agent(app)
 
 const userAttributesToFetch = userFields
+
+jest.mock('../routes/thesisHelpers', () => ({
+  handleStatusChangeEmail: jest.fn(),
+}))
 
 describe('thesis router', () => {
   let mockUnlinkSync
@@ -1912,6 +1917,60 @@ describe('thesis router', () => {
             const thesis = await Thesis.findByPk(thesis1.id)
             expect(thesis.programId).toEqual('Updated program')
             expect(thesis.topic).toEqual('Updated topic')
+          })
+        })
+
+        describe('when the status is changed from PLANNING to IN_PROGRESS', () => {
+          it.only('should call the sendEmail function and return 200', async () => {
+            const updatedThesis = {
+              programId: 'Updated program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'IN_PROGRESS',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isPrimarySupervisor: true,
+                },
+              ],
+              authors: [user2],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                },
+              ],
+              waysOfWorking: {
+                filename: 'testfile.pdf2',
+                name: 'testfile.pdf2',
+                mimetype: 'application/pdf2',
+              },
+              researchPlan: {
+                filename: 'testfile.pdf1',
+                name: 'testfile.pdf1',
+                mimetype: 'application/pdf1',
+              },
+            }
+
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set('hygroupcn', 'grp-toska')
+              .field('json', JSON.stringify(updatedThesis))
+
+            expect(response.status).toEqual(200)
+            expect(thesisHelpers.handleStatusChangeEmail).toHaveBeenCalledTimes(
+              1
+            )
+            expect(handleStatusChangeEmail).toHaveBeenCalledWith(
+              expect.objectContaining({
+                to: user1.email,
+                subject: 'Thesis status changed',
+                text: expect.stringContaining('IN_PROGRESS'),
+              })
+            )
           })
         })
 
