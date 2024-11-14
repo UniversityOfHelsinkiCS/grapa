@@ -34,6 +34,7 @@ import { useSingleThesis } from '../../hooks/useTheses'
 import { BASE_PATH } from '../../../config'
 import EventsView from '../EventsView/EventsView'
 import { useState } from 'react'
+import { ExpandLess, ExpandMore } from '@mui/icons-material'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
@@ -510,7 +511,7 @@ const ViewThesisFooter = (
                 onClick={() => setEventLogOpen(!eventLogOpen)}
               >
                 <span style={{ marginRight: '0.5rem' }}>
-                  {eventLogOpen ? '▲' : '▼'}
+                  {eventLogOpen ? <ExpandLess /> : <ExpandMore />}
                 </span>
                 {t('eventLog:title')}
               </Typography>
