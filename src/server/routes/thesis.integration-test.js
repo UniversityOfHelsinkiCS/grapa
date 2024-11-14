@@ -3853,6 +3853,7 @@ describe('thesis router', () => {
     })
 
     describe('GET /api/theses/:id/event-log', () => {
+      let thesis2
       beforeEach(async () => {
         await Supervision.destroy({ where: {} })
         await User.destroy({ where: {} })
@@ -3879,6 +3880,15 @@ describe('thesis router', () => {
           targetDate: '2070-01-01',
         })
 
+        thesis2 = await Thesis.create({
+          programId: 'Testing program',
+          studyTrackId: 'test-study-track-id',
+          topic: 'test topic',
+          status: 'PLANNING',
+          startDate: '1970-01-01',
+          targetDate: '2070-01-01',
+        })
+
         await Supervision.create({
           userId: user1.id,
           thesisId: thesis1.id,
@@ -3891,10 +3901,15 @@ describe('thesis router', () => {
           type: 'THESIS_CREATED',
           data: { id: thesis1.id },
         })
+        await EventLog.create({
+          thesisId: thesis2.id,
+          type: 'THESIS_CREATED',
+          data: { id: thesis1.id },
+        })
       })
 
       describe('when the user is an admin', () => {
-        it('should return 200 and the event log', async () => {
+        it('should return 200 and the event log for the specified thesis', async () => {
           const response = await request
             .get(`/api/theses/${thesis1.id}/event-log`)
             .set('hygroupcn', 'grp-toska')
@@ -3905,7 +3920,7 @@ describe('thesis router', () => {
       })
 
       describe('when the user is a supervisor of the thesis', () => {
-        it('should return 200 and the event log', async () => {
+        it('should return 200 and the event log for the specified thesis', async () => {
           const response = await request
             .get(`/api/theses/${thesis1.id}/event-log`)
             .set({ uid: user1.id, hygroupcn: 'hy-employees' })
@@ -3916,7 +3931,7 @@ describe('thesis router', () => {
       })
 
       describe('when the user is not a supervisor of the thesis', () => {
-        it('should return 200 and the event log', async () => {
+        it('should return 200 and the event log for the specified thesis', async () => {
           const response = await request
             .get(`/api/theses/${thesis1.id}/event-log`)
             .set({ uid: user2.id, hygroupcn: 'hy-employees' })

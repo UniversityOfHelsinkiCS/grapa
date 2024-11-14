@@ -305,7 +305,7 @@ describe('program router', () => {
   })
 
   describe('GET /api/programs/:id/event-log', () => {
-    let user2, adminUser, thesis1
+    let user2, adminUser, thesis1, thesis2, program2
     beforeEach(async () => {
       user2 = await User.create({
         username: 'test2',
@@ -332,45 +332,77 @@ describe('program router', () => {
         targetDate: '2070-01-01',
       })
 
+      program2 = await Program.create({
+        id: 'another-program',
+        name: {
+          fi: 'test2suomeksi',
+          en: 'test2inenglish',
+          sv: 'test2pasvenska',
+        },
+        level: 'master',
+        international: false,
+        companionFaculties: [],
+        enabled: false,
+      })
+
+      thesis2 = await Thesis.create({
+        programId: program2.id,
+        topic: 'test topic',
+        status: 'PLANNING',
+        startDate: '1970-01-01',
+        targetDate: '2070-01-01',
+      })
+
       await EventLog.create({
         thesisId: thesis1.id,
         type: 'THESIS_STATUS_CHANGED',
         userId: user1.id,
       })
-    })
-
-    it('should return 200 and the event log for an admin user', async () => {
-      const response = await request
-        .get(`/api/programs/${program1.id}/event-log`)
-        .set({ hygroupcn: 'grp-toska', uid: adminUser.id })
-
-      expect(response.status).toEqual(200)
-      expect(response.body).toHaveLength(1)
-      expect(response.body[0]).toMatchObject({
-        thesisId: thesis1.id,
+      await EventLog.create({
+        thesisId: thesis2.id,
         type: 'THESIS_STATUS_CHANGED',
+        userId: user1.id,
       })
     })
 
-    it('should return 200 and the event log for a program manager', async () => {
-      const response = await request
-        .get(`/api/programs/${program1.id}/event-log`)
-        .set({ hygroupcn: 'hy-employees', uid: user1.id })
+    describe('when the user is an admin', () => {
+      it('should return 200 and the event log for the specified program', async () => {
+        const response = await request
+          .get(`/api/programs/${program1.id}/event-log`)
+          .set({ hygroupcn: 'grp-toska', uid: adminUser.id })
 
-      expect(response.status).toEqual(200)
-      expect(response.body).toHaveLength(1)
-      expect(response.body[0]).toMatchObject({
-        thesisId: thesis1.id,
-        type: 'THESIS_STATUS_CHANGED',
+        expect(response.status).toEqual(200)
+        expect(response.body).toHaveLength(1)
+        expect(response.body[0]).toMatchObject({
+          thesisId: thesis1.id,
+          type: 'THESIS_STATUS_CHANGED',
+        })
       })
     })
 
-    it('should return 403 for a user who is not a program manager or admin', async () => {
-      const response = await request
-        .get(`/api/programs/${program1.id}/event-log`)
-        .set({ hygroupcn: 'hy-employees', uid: user2.id })
+    describe('when the user is a program manager', () => {
+      it('should return 200 and the event log for the specified program', async () => {
+        const response = await request
+          .get(`/api/programs/${program1.id}/event-log`)
+          .set({ hygroupcn: 'hy-employees', uid: user1.id })
 
-      expect(response.status).toEqual(403)
+        expect(response.status).toEqual(200)
+        expect(response.body).toHaveLength(1)
+        expect(response.body[0]).toMatchObject({
+          thesisId: thesis1.id,
+          type: 'THESIS_STATUS_CHANGED',
+        })
+      })
+    })
+
+    describe('when the user is not a program manager nor admin', () => {
+      it('should return 403', async () => {
+        const response = await request
+          .get(`/api/programs/${program1.id}/event-log`)
+          .set({ hygroupcn: 'hy-employees', uid: user2.id })
+
+        expect(response.status).toEqual(403)
+      })
     })
   })
 })
