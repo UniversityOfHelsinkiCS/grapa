@@ -27,6 +27,7 @@
     "thesisPreview": "Thesis preview"
   },
   "eventLog": {
+    "thesis": "Thesis",
     "title": "Event log",
     "changedBy": "Changed by",
     "createdBy": "Created by",

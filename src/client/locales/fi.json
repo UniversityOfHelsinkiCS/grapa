@@ -27,6 +27,7 @@
     "thesisPreview": "Tutkielman esikatselu"
   },
   "eventLog": {
+    "thesis": "Tutkielma",
     "title": "Tapahtumaloki",
     "changedBy": "Käyttäjä:",
     "createdBy": "Käyttäjä:",

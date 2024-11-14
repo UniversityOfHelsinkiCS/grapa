@@ -4,11 +4,13 @@ import { GridFooter, GridSlotProps } from '@mui/x-data-grid'
 import {
   Box,
   Button,
+  Collapse,
   Grid,
   Link,
   List,
   ListItem,
   ListItemText,
+  Paper,
   Skeleton,
   Stack,
   Typography,
@@ -31,6 +33,7 @@ import { useSingleThesis } from '../../hooks/useTheses'
 
 import { BASE_PATH } from '../../../config'
 import EventsView from '../EventsView/EventsView'
+import { useState } from 'react'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
@@ -364,6 +367,7 @@ const ViewThesisFooter = (
   const thesisId = rowSelectionModel[0] as unknown as string | undefined
 
   const { t } = useTranslation()
+  const [eventLogOpen, setEventLogOpen] = useState(false)
   const { thesis, isLoading: thesisLoading } = useSingleThesis(thesisId)
   const { events } = useEvents({ thesisId })
 
@@ -490,7 +494,31 @@ const ViewThesisFooter = (
             />
           </Box>
 
-          {Boolean(events && events.length) && <EventsView events={events} />}
+          {Boolean(events && events.length) && (
+            <Paper
+              elevation={1}
+              sx={{ p: 2, mb: 2, border: '1px solid', borderColor: 'divider' }}
+            >
+              <Typography
+                component="legend"
+                sx={{
+                  cursor: 'pointer',
+                  color: 'text.primary',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                }}
+                onClick={() => setEventLogOpen(!eventLogOpen)}
+              >
+                <span style={{ marginRight: '0.5rem' }}>
+                  {eventLogOpen ? '▲' : '▼'}
+                </span>
+                {t('eventLog:title')}
+              </Typography>
+              <Collapse in={eventLogOpen}>
+                <EventsView events={events} />
+              </Collapse>
+            </Paper>
+          )}
         </Box>
       ) : (
         thesisLoading && <PreviewSkeleton />
