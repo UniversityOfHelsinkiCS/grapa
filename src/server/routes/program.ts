@@ -88,7 +88,7 @@ programRouter.get(
         {
           model: Thesis,
           as: 'thesis',
-          attributes: [],
+          attributes: ['id', 'topic'],
           include: [
             {
               model: Program,
