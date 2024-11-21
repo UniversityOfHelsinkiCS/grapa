@@ -306,6 +306,8 @@ describe('Theisis router with mocks', () => {
     })
 
     describe('when the user is a teacher', () => {
+      // It should return 403 because supervisor is not allowed to change the status
+      // from PLANNING to IN_PROGRESS
       it('should not call the sendEmail function and return 403', async () => {
         const updatedThesis = {
           programId: 'Testing program',
