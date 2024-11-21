@@ -18,7 +18,7 @@ interface SingleProgramLogsProps {
   program: ProgramData
   expanded: boolean
   handleChange: (
-    panel: string
+    targetProgramId: string
   ) => (event: React.SyntheticEvent, isExpanded: boolean) => void
 }
 const SingleProgramLogs = ({
@@ -64,8 +64,9 @@ const ProgramLogs = () => {
   const [expanded, setExpanded] = useState<string | false>(false)
 
   const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false)
+    (targetProgramId: string) =>
+    (_: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? targetProgramId : false)
     }
 
   if (programsAreLoading) {
