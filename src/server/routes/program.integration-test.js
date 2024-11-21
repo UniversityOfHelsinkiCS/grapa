@@ -404,5 +404,44 @@ describe('program router', () => {
         expect(response.status).toEqual(403)
       })
     })
+
+    describe('nonAdminOnly query param', () => {
+      beforeEach(async () => {
+        // create event logs that are created by admin users
+        await EventLog.create({
+          thesisId: thesis1.id,
+          type: 'THESIS_STATUS_CHANGED',
+          userId: adminUser.id,
+        })
+      })
+
+      describe('when nonAdminOnly is true', () => {
+        it('should return 200 and only the event logs for the specified program that were created by non-admin users', async () => {
+          const response = await request
+            .get(`/api/programs/${program1.id}/event-log`)
+            .set({ hygroupcn: 'hy-employees', uid: user1.id })
+            .query({ nonAdminOnly: true })
+
+          expect(response.status).toEqual(200)
+          expect(response.body).toHaveLength(1)
+          expect(response.body[0]).toMatchObject({
+            thesisId: thesis1.id,
+            type: 'THESIS_STATUS_CHANGED',
+          })
+        })
+      })
+
+      describe('when nonAdminOnly is false', () => {
+        it('should return 200 and all event logs for the specified program', async () => {
+          const response = await request
+            .get(`/api/programs/${program1.id}/event-log`)
+            .set({ hygroupcn: 'hy-employees', uid: user1.id })
+            .query({ nonAdminOnly: false })
+
+          expect(response.status).toEqual(200)
+          expect(response.body).toHaveLength(2)
+        })
+      })
+    })
   })
 })
