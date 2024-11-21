@@ -6,6 +6,7 @@ import {
   ProgramManagement,
   StudyTrack,
   Thesis,
+  User,
 } from '../db/models'
 import { RequestWithUser } from '../types'
 
@@ -67,6 +68,7 @@ programRouter.get(
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
     const { id: programId } = req.params
+    const { nonAdminOnly } = req.query
 
     if (!programId || typeof programId !== 'string') {
       return res.status(400).send('Program ID is required')
@@ -84,7 +86,12 @@ programRouter.get(
 
     const events = await EventLog.findAll({
       include: [
-        'user',
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'firstName', 'lastName', 'email'],
+          where: nonAdminOnly === 'true' ? { isAdmin: false } : {},
+        },
         {
           model: Thesis,
           as: 'thesis',

@@ -6,6 +6,8 @@ import {
   CircularProgress,
   Box,
   Typography,
+  FormControlLabel,
+  Switch,
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import usePrograms from '../../hooks/usePrograms'
@@ -17,6 +19,7 @@ import { ProgramData, TranslationLanguage } from '@backend/types'
 interface SingleProgramLogsProps {
   program: ProgramData
   expanded: boolean
+  showNonAdminOnly: boolean
   handleChange: (
     targetProgramId: string
   ) => (event: React.SyntheticEvent, isExpanded: boolean) => void
@@ -24,6 +27,7 @@ interface SingleProgramLogsProps {
 const SingleProgramLogs = ({
   program,
   expanded,
+  showNonAdminOnly,
   handleChange,
 }: SingleProgramLogsProps) => {
   const { i18n } = useTranslation()
@@ -32,6 +36,7 @@ const SingleProgramLogs = ({
   const { events, isLoading: eventsAreLoading } = useProgramEvents({
     enabled: Boolean(expanded),
     programId: program.id,
+    showNonAdminOnly,
   })
   return (
     <Accordion
@@ -62,6 +67,7 @@ const ProgramLogs = () => {
     includeNotManaged: false,
   })
   const [expanded, setExpanded] = useState<string | false>(false)
+  const [showNonAdminOnly, setShowNonAdminOnly] = useState(true)
 
   const handleChange =
     (targetProgramId: string) =>
@@ -78,10 +84,24 @@ const ProgramLogs = () => {
       <Typography component="h1" variant="h4" mb={3}>
         {t('programLogsPage:pageTitle')}
       </Typography>
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: '1rem' }}>
+        {
+          <FormControlLabel
+            control={
+              <Switch
+                checked={showNonAdminOnly}
+                onChange={() => setShowNonAdminOnly((prev) => !prev)}
+              />
+            }
+            label={t('programLogsPage:showNonAdminOnlySwitch')}
+          />
+        }
+      </Box>
       {programs.map((program) => (
         <SingleProgramLogs
           key={program.id}
           program={program}
+          showNonAdminOnly={showNonAdminOnly}
           expanded={expanded === program.id}
           handleChange={handleChange}
         />

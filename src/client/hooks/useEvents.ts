@@ -28,15 +28,19 @@ const useEvents = ({ thesisId }: UseEventsParams) => {
 interface UseProgramEventsParams {
   programId: string | undefined
   enabled: boolean
+  showNonAdminOnly: boolean
 }
 export const useProgramEvents = ({
   programId,
   enabled,
+  showNonAdminOnly,
 }: UseProgramEventsParams) => {
-  const queryKey = ['program-event-log', programId]
+  const queryKey = ['program-event-log', programId, showNonAdminOnly]
 
   const queryFn = async (): Promise<EventLogEntry[]> => {
-    const { data } = await apiClient.get(`/programs/${programId}/event-log`)
+    const { data } = await apiClient.get(`/programs/${programId}/event-log`, {
+      params: { nonAdminOnly: showNonAdminOnly },
+    })
 
     return data
   }

@@ -186,7 +186,8 @@
     "removeProgramManagementContent": "Haluatko varmasti poistaa henkilön {{name}} ohjelmasta {{program}}?"
   },
   "programLogsPage": {
-    "pageTitle": "Ohjelman lokit"
+    "pageTitle": "Ohjelman lokit",
+    "showNonAdminOnlySwitch": "Näytä vain ei-admin lokit"
   },
   "departmentAdminPage": {
     "pageTitle": "Osastojen ylläpitäjät",

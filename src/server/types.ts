@@ -172,6 +172,12 @@ export interface EventLogEntryThesis {
   id: string
   topic: string
 }
+export interface EventLogEntryUser {
+  id: string
+  firstName: string
+  lastName: string
+  email: string
+}
 export interface EventLogEntry {
   id: string
   type: EventLogType
@@ -180,7 +186,7 @@ export interface EventLogEntry {
   // Moving forward, we should conider using soft deletion instead.
   thesisId: string | null
   thesis?: EventLogEntryThesis
-  user: UserInfo
+  user: EventLogEntryUser
   // some events don't have additional data
   data: any | null
   createdAt: string

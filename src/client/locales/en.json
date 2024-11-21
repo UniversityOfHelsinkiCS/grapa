@@ -186,7 +186,8 @@
     "removeProgramManagementContent": "Are you sure you want to delete {{name}} from the {{program}}?"
   },
   "programLogsPage": {
-    "pageTitle": "Program logs"
+    "pageTitle": "Program logs",
+    "showNonAdminOnlySwitch": "Show only non-admin logs"
   },
   "departmentAdminPage": {
     "pageTitle": "Department admins",
