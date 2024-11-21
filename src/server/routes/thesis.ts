@@ -228,6 +228,11 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
 // @ts-expect-error the user middleware updates the req object with user field
 thesisRouter.get('/:id', async (req: ServerGetRequest, res: Response) => {
   const { id } = req.params
+
+  if (!id || typeof id !== 'string') {
+    return res.status(400).send('Thesis ID is required')
+  }
+
   const thesis = await fetchThesisById(id, req.user)
 
   if (!thesis) res.status(404).send('Thesis not found')
@@ -236,6 +241,25 @@ thesisRouter.get('/:id', async (req: ServerGetRequest, res: Response) => {
 
   res.send(thesisData)
 })
+
+thesisRouter.get(
+  '/:id/event-log',
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: ServerGetRequest, res: Response) => {
+    const { id: thesisId } = req.params
+
+    if (!thesisId || typeof thesisId !== 'string') {
+      return res.status(400).send('Thesis ID is required')
+    }
+
+    const events = await EventLog.findAll({
+      include: ['user'],
+      where: { thesisId },
+      order: [['createdAt', 'DESC']],
+    })
+    return res.json(events)
+  }
+)
 
 thesisRouter.post(
   '/',

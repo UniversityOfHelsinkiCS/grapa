@@ -64,6 +64,10 @@ Attachment.belongsTo(Thesis, { as: 'thesis' })
 Thesis.hasOne(Attachment, { as: 'researchPlan', foreignKey: 'thesisId' })
 Thesis.hasOne(Attachment, { as: 'waysOfWorking', foreignKey: 'thesisId' })
 
+// Program and Thesis association
+Thesis.belongsTo(Program, { as: 'program' })
+Program.hasMany(Thesis, { as: 'theses' })
+
 Program.hasMany(StudyTrack, { as: 'studyTracks' })
 StudyTrack.belongsTo(Program, { as: 'program' })
 

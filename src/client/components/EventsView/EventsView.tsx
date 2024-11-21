@@ -1,12 +1,12 @@
 import {
   EventLogEntry,
+  EventLogEntryThesis,
   GradersChangedEvent,
   StatusChangedEvent,
   SupervisionsChangedEvent,
   ThesisCreatedEvent,
 } from '@backend/types'
-import { Collapse, Divider, Paper, Stack, Typography } from '@mui/material'
-import { useState } from 'react'
+import { Divider, Stack, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import BeforeDiffAfter from '../BeforeDiffAfter/BeforeDiffAfter'
 
@@ -16,11 +16,13 @@ const EventDate = ({ date }: { date: string }) => (
 
 interface LogEntryProps {
   title: string
-  date: string
+  entry: EventLogEntry
   doneByString: string
+  thesis?: EventLogEntryThesis
   children?: React.ReactNode
 }
-const LogEntry = ({ title, date, doneByString, children }: LogEntryProps) => {
+const LogEntry = ({ title, entry, doneByString, children }: LogEntryProps) => {
+  const { t } = useTranslation()
   return (
     <Stack
       spacing={1}
@@ -30,7 +32,10 @@ const LogEntry = ({ title, date, doneByString, children }: LogEntryProps) => {
       component="fieldset"
     >
       <h3>{title}</h3>
-      <EventDate date={date} />
+      {entry.thesis && (
+        <p>{`${t('eventLog:thesis')}: ${entry.thesis.topic}`}</p>
+      )}
+      <EventDate date={entry.createdAt} />
       <p>{doneByString}</p>
       {children}
     </Stack>
@@ -43,7 +48,7 @@ const ThesisCreatedEntry = (entry: ThesisCreatedEvent) => {
   return (
     <LogEntry
       title={t('eventLog:thesisCreated')}
-      date={entry.createdAt}
+      entry={entry}
       doneByString={`${t('eventLog:createdBy')} ${entry.user.email}`}
     />
   )
@@ -55,7 +60,7 @@ const SupervisionsChangedEntry = (entry: SupervisionsChangedEvent) => {
   return (
     <LogEntry
       title={t('eventLog:supervisorsUpdated')}
-      date={entry.createdAt}
+      entry={entry}
       doneByString={`${t('eventLog:changedBy')} ${entry.user.email}`}
     >
       <BeforeDiffAfter
@@ -72,7 +77,7 @@ const GradersChangedEntry = (entry: GradersChangedEvent) => {
   return (
     <LogEntry
       title={t('eventLog:gradersUpdated')}
-      date={entry.createdAt}
+      entry={entry}
       doneByString={`${t('eventLog:changedBy')} ${entry.user.email}`}
     >
       <BeforeDiffAfter
@@ -89,7 +94,7 @@ const StatusChangedEntry = (entry: StatusChangedEvent) => {
   return (
     <LogEntry
       title={t('eventLog:thesisStatusUpdated')}
-      date={entry.createdAt}
+      entry={entry}
       doneByString={`${t('eventLog:changedBy')} ${entry.user.email}`}
     >
       <BeforeDiffAfter beforeText={entry.data.from} afterText={entry.data.to} />
@@ -97,75 +102,55 @@ const StatusChangedEntry = (entry: StatusChangedEvent) => {
   )
 }
 
-const EventsView: React.FC<{ events: EventLogEntry[] }> = ({ events }) => {
-  const [open, setOpen] = useState(false)
-  const { t } = useTranslation()
-
+interface EventsViewProps {
+  events: EventLogEntry[]
+}
+const EventsView: React.FC<EventsViewProps> = ({ events }) => {
   return (
-    <Paper
-      elevation={1}
-      sx={{ p: 2, mb: 2, border: '1px solid', borderColor: 'divider' }}
+    <Stack
+      spacing={3}
+      sx={{ mt: 2 }}
+      divider={<Divider orientation="horizontal" flexItem />}
     >
-      <Typography
-        component="legend"
-        sx={{
-          cursor: 'pointer',
-          color: 'text.primary',
-          display: 'flex',
-          alignItems: 'flex-start',
-        }}
-        onClick={() => setOpen(!open)}
-      >
-        <span style={{ marginRight: '0.5rem' }}>{open ? '▲' : '▼'}</span>
-        {t('eventLog:title')}
-      </Typography>
-      <Collapse in={open}>
-        <Stack
-          spacing={3}
-          sx={{ mt: 2 }}
-          divider={<Divider orientation="horizontal" flexItem />}
-        >
-          {events.map((event, index) => {
-            switch (event.type) {
-              case 'THESIS_CREATED':
-                return (
-                  <ThesisCreatedEntry
-                    key={index}
-                    {...(event as ThesisCreatedEvent)}
-                  />
-                )
-              case 'THESIS_SUPERVISIONS_CHANGED':
-                return (
-                  <SupervisionsChangedEntry
-                    key={index}
-                    {...(event as SupervisionsChangedEvent)}
-                  />
-                )
-              case 'THESIS_GRADERS_CHANGED':
-                return (
-                  <GradersChangedEntry
-                    key={index}
-                    {...(event as GradersChangedEvent)}
-                  />
-                )
-              case 'THESIS_STATUS_CHANGED':
-                return (
-                  <StatusChangedEntry
-                    key={index}
-                    {...(event as StatusChangedEvent)}
-                  />
-                )
-              default:
-                return (
-                  <Typography key={index} color="error">
-                    Unknown event type: {event.type}
-                  </Typography>
-                )
-            }
-          })}
-        </Stack>
-      </Collapse>
-    </Paper>
+      {events.map((event, index) => {
+        switch (event.type) {
+          case 'THESIS_CREATED':
+            return (
+              <ThesisCreatedEntry
+                key={index}
+                {...(event as ThesisCreatedEvent)}
+              />
+            )
+          case 'THESIS_SUPERVISIONS_CHANGED':
+            return (
+              <SupervisionsChangedEntry
+                key={index}
+                {...(event as SupervisionsChangedEvent)}
+              />
+            )
+          case 'THESIS_GRADERS_CHANGED':
+            return (
+              <GradersChangedEntry
+                key={index}
+                {...(event as GradersChangedEvent)}
+              />
+            )
+          case 'THESIS_STATUS_CHANGED':
+            return (
+              <StatusChangedEntry
+                key={index}
+                {...(event as StatusChangedEvent)}
+              />
+            )
+          default:
+            return (
+              <Typography key={index} color="error">
+                Unknown event type: {event.type}
+              </Typography>
+            )
+        }
+      })}
+    </Stack>
   )
 }
 

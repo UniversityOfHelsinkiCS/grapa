@@ -1,6 +1,12 @@
 import { Includeable, literal } from 'sequelize'
 import express, { Response } from 'express'
-import { Program, ProgramManagement, StudyTrack } from '../db/models'
+import {
+  EventLog,
+  Program,
+  ProgramManagement,
+  StudyTrack,
+  Thesis,
+} from '../db/models'
 import { RequestWithUser } from '../types'
 
 const programRouter = express.Router()
@@ -55,5 +61,50 @@ programRouter.get('/', async (req: RequestWithUser, res: Response) => {
 
   res.send(programsWithFavorites)
 })
+
+programRouter.get(
+  '/:id/event-log',
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: ServerGetRequest, res: Response) => {
+    const { id: programId } = req.params
+
+    if (!programId || typeof programId !== 'string') {
+      return res.status(400).send('Program ID is required')
+    }
+
+    // check if the current usr is an admin
+    // or if they are a program manager for the program
+    const { isAdmin } = req.user
+    const programManagement = await ProgramManagement.findOne({
+      where: { userId: req.user.id, programId },
+    })
+    if (!isAdmin && !programManagement) {
+      return res.status(403).send('Unauthorized')
+    }
+
+    const events = await EventLog.findAll({
+      include: [
+        'user',
+        {
+          model: Thesis,
+          as: 'thesis',
+          attributes: ['id', 'topic'],
+          include: [
+            {
+              model: Program,
+              as: 'program',
+              attributes: [],
+              where: { id: programId },
+              required: true,
+            },
+          ],
+          required: true,
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    })
+    return res.json(events)
+  }
+)
 
 export default programRouter

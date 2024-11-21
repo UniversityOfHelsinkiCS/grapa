@@ -168,6 +168,10 @@ export interface DepartmentAdminData {
 }
 
 export type EventLogType = (typeof VALID_EVENT_LOG_TYPES)[number]
+export interface EventLogEntryThesis {
+  id: string
+  topic: string
+}
 export interface EventLogEntry {
   id: string
   type: EventLogType
@@ -175,6 +179,7 @@ export interface EventLogEntry {
   // note though that we keep the thesis's data as json in the deletion event.
   // Moving forward, we should conider using soft deletion instead.
   thesisId: string | null
+  thesis?: EventLogEntryThesis
   user: UserInfo
   // some events don't have additional data
   data: any | null

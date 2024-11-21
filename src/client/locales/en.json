@@ -27,6 +27,7 @@
     "thesisPreview": "Thesis preview"
   },
   "eventLog": {
+    "thesis": "Thesis",
     "title": "Event log",
     "changedBy": "Changed by",
     "createdBy": "Created by",
@@ -46,7 +47,9 @@
     "indexTab": "Login as"
   },
   "navbar": {
+    "program": "Program",
     "programManager": "Program managers",
+    "programLogs": "Program logs",
     "departmentAdmin": "Department admins",
     "departmentStatistics": "Departmental statistics",
     "loginAs": "Login as",
@@ -181,6 +184,9 @@
     "disallowThesisApprovalButton": "Disallow thesis approval",
     "removeProgramManagementTitle": "Delete program management",
     "removeProgramManagementContent": "Are you sure you want to delete {{name}} from the {{program}}?"
+  },
+  "programLogsPage": {
+    "pageTitle": "Program logs"
   },
   "departmentAdminPage": {
     "pageTitle": "Department admins",

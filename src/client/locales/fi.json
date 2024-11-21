@@ -27,6 +27,7 @@
     "thesisPreview": "Tutkielman esikatselu"
   },
   "eventLog": {
+    "thesis": "Tutkielma",
     "title": "Tapahtumaloki",
     "changedBy": "Käyttäjä:",
     "createdBy": "Käyttäjä:",
@@ -46,7 +47,9 @@
     "indexTab": "Login as"
   },
   "navbar": {
+    "program": "Ohjelma",
     "programManager": "Ohjelmavastaavat",
+    "programLogs": "Ohjelman lokit",
     "departmentAdmin": "Osastojen ylläpitäjät",
     "departmentStatistics": "Osastojen tilastot",
     "loginAs": "Kirjaudu toisella käyttäjällä",
@@ -181,6 +184,9 @@
     "disallowThesisApprovalButton": "Estä tutkielman hyväksyminen",
     "removeProgramManagementTitle": "Poista vastaava",
     "removeProgramManagementContent": "Haluatko varmasti poistaa henkilön {{name}} ohjelmasta {{program}}?"
+  },
+  "programLogsPage": {
+    "pageTitle": "Ohjelman lokit"
   },
   "departmentAdminPage": {
     "pageTitle": "Osastojen ylläpitäjät",

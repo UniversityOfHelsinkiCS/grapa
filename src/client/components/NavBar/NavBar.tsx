@@ -25,8 +25,9 @@ import useLoggedInUser from '../../hooks/useLoggedInUser'
 import LanguageSelect from './LanguageSelect'
 import MobileMenu from './MobileMenu'
 import ProfileMenu from './ProfileMenu'
+import { PositionedMenu, PositionedMenuLinkItem } from './PositionedMenu'
 
-const navStyles = {
+export const navStyles = {
   appbar: {
     zIndex: (theme: Theme) => theme.zIndex.drawer + 1,
     backgroundColor: 'rgba(255, 255, 255, 0)',
@@ -78,6 +79,38 @@ const navStyles = {
   },
 }
 
+const ProgramMenu = () => {
+  const { t } = useTranslation()
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  return (
+    <PositionedMenu
+      label={t('navbar:program')}
+      open={open}
+      anchorEl={anchorEl}
+      handleClick={handleClick}
+      handleClose={handleClose}
+    >
+      <PositionedMenuLinkItem to="/program-managements" onClick={handleClose}>
+        {t('navbar:programManager')}
+      </PositionedMenuLinkItem>
+      <PositionedMenuLinkItem to="/program-logs" onClick={handleClose}>
+        {t('navbar:programLogs')}
+      </PositionedMenuLinkItem>
+    </PositionedMenu>
+  )
+}
+
 const NavBar = () => {
   const { t } = useTranslation()
   const { user, isLoading } = useLoggedInUser()
@@ -113,13 +146,7 @@ const NavBar = () => {
               sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' } }}
             >
               {Boolean(user.isAdmin || user.managedProgramIds?.length) && (
-                <Button
-                  component={NavLink}
-                  to="/program-managements"
-                  sx={navStyles.link}
-                >
-                  {t('navbar:programManager')}
-                </Button>
+                <ProgramMenu />
               )}
               {Boolean(user.isAdmin || user.managedDepartmentIds?.length) && (
                 <Button
