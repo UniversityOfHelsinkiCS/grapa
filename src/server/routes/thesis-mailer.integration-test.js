@@ -304,5 +304,50 @@ describe('Theisis router with mocks', () => {
         )
       })
     })
+
+    describe('when the user is a teacher', () => {
+      it('should not call the sendEmail function and return 403', async () => {
+        const updatedThesis = {
+          programId: 'Testing program',
+          studyTrackId: 'test-study-track-id',
+          topic: 'test topic',
+          status: 'IN_PROGRESS',
+          startDate: '1970-01-01',
+          targetDate: '2070-01-01',
+          supervisions: [
+            {
+              user: user1,
+              percentage: 100,
+              isPrimarySupervisor: true,
+            },
+          ],
+          authors: [user2],
+          graders: [
+            {
+              user: user3,
+              isPrimaryGrader: true,
+            },
+          ],
+          waysOfWorking: {
+            filename: 'testfile.pdf2',
+            name: 'testfile.pdf2',
+            mimetype: 'application/pdf2',
+          },
+          researchPlan: {
+            filename: 'testfile.pdf1',
+            name: 'testfile.pdf1',
+            mimetype: 'application/pdf1',
+          },
+        }
+
+        const response = await request
+          .put(`/api/theses/${thesis1.id}`)
+          .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+          .field('json', JSON.stringify(updatedThesis))
+
+        expect(response.status).toEqual(403)
+        expect(sendEmail).toHaveBeenCalledTimes(0)
+      })
+    })
   })
 })
