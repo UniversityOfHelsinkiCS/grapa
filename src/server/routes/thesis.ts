@@ -335,8 +335,8 @@ thesisRouter.put(
         req.user,
         t
       )
+      await handleStatusChangeEmail(originalThesis, updatedThesis, req.user)
     })
-    await handleStatusChangeEmail(originalThesis, updatedThesis, req.user)
 
     res.send(updatedThesis)
   }
