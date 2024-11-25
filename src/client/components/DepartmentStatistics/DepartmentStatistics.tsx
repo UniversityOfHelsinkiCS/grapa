@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Box, Typography } from '@mui/material'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid'
 
 import { ThesisStatistics, TranslationLanguage } from '@backend/types'
 
@@ -128,6 +128,7 @@ const DepartmentStatistics = () => {
         columns={columns}
         pageSizeOptions={[100]}
         getRowId={(row) => row.supervisor.id}
+        slots={{ toolbar: GridToolbar }}
         columnGroupingModel={[
           {
             groupId: t('departmentStatisticsPage:thesisCountHeader'),
