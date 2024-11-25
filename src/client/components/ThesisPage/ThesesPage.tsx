@@ -219,13 +219,13 @@ const ThesesPage = () => {
   const skeletonRows: Thesis[] = Array.from({ length: 7 }).map((_, index) => ({
     programId: '',
     topic: '',
-    authors: [],
-    approvers: [],
+    authors: [] as Thesis['authors'],
+    approvers: [] as Thesis['approvers'],
     status: 'PLANNING',
     startDate: '',
     targetDate: '',
-    supervisions: [],
-    graders: [],
+    supervisions: [] as Thesis['supervisions'],
+    graders: [] as Thesis['graders'],
     id: index.toString(),
   }))
 
