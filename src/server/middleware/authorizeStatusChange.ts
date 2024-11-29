@@ -25,6 +25,17 @@ export const authorizeStatusChange = async (
     return
   }
 
+  if (req.body.status === 'COMPLETED') {
+    throw new CustomAuthorizationError(
+      'User is not authorized to change the status of the thesis to COMPLETED',
+      {
+        programId: [
+          'User is not authorized to change the status of the thesis to COMPLETED',
+        ],
+      }
+    )
+  }
+
   const thesis = await Thesis.findByPk(req.params.id)
 
   // if the thesis' status is already something else than PLANNING
