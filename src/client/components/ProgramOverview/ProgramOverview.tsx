@@ -97,7 +97,7 @@ const ProgramOverview = () => {
     <Box component="section" sx={{ px: '1rem', py: '2rem', width: '100%' }}>
       {selectedProgram && programsUserManages?.length > 1 ? (
         <>
-          <FormControl fullWidth>
+          <FormControl sx={{ width: 500 }}>
             <InputLabel id="program-select-label">
               {t('programHeader')}
             </InputLabel>
