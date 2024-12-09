@@ -1624,6 +1624,246 @@ describe('thesis router', () => {
         })
       })
 
+      describe('when trying to create a thesis with COMPLETED status', () => {
+        describe('when the user is an admin', () => {
+          it('should return 201, create the thesis and log the event', async () => {
+            const newThesis = {
+              programId: 'New program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'New topic',
+              status: 'COMPLETED',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isExternal: false,
+                  isPrimarySupervisor: true,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .post('/api/theses')
+              .set('hygroupcn', 'grp-toska')
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(newThesis))
+            expect(response.status).toEqual(201)
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_CREATED', thesisId: response.body.id },
+            })
+            expect(eventLog).not.toBeNull()
+          })
+        })
+
+        describe("when the user is a manager of the thesis' program", () => {
+          let newThesis
+
+          beforeEach(() => {
+            newThesis = {
+              programId: 'New program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'New topic',
+              status: 'COMPLETED',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isExternal: false,
+                  isPrimarySupervisor: true,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+          })
+
+          describe('when the user is also an approver of the program', () => {
+            beforeEach(async () => {
+              await ProgramManagement.create({
+                programId: 'New program',
+                userId: user2.id,
+                isThesisApprover: true,
+              })
+            })
+
+            it('should return 403 and not make event log for it', async () => {
+              const response = await request
+                .post('/api/theses')
+                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(newThesis))
+              expect(response.status).toEqual(403)
+              expect(response.body).toEqual({
+                error:
+                  'User is not authorized to change the status of the thesis to COMPLETED',
+                data: {
+                  programId: [
+                    'User is not authorized to change the status of the thesis to COMPLETED',
+                  ],
+                },
+              })
+
+              const eventLog = await EventLog.findOne({
+                where: { type: 'THESIS_CREATED' },
+              })
+              expect(eventLog).toBeNull()
+            })
+          })
+
+          describe('when the user is not an approver of the program', () => {
+            beforeEach(async () => {
+              await ProgramManagement.create({
+                programId: 'New program',
+                userId: user2.id,
+                isThesisApprover: false,
+              })
+            })
+
+            it('should return 403 and not make event log for it', async () => {
+              const response = await request
+                .post('/api/theses')
+                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(newThesis))
+              expect(response.status).toEqual(403)
+              expect(response.body).toEqual({
+                error:
+                  'User is not authorized to change the status of the thesis to COMPLETED',
+                data: {
+                  programId: [
+                    'User is not authorized to change the status of the thesis to COMPLETED',
+                  ],
+                },
+              })
+
+              const eventLog = await EventLog.findOne({
+                where: { type: 'THESIS_CREATED' },
+              })
+              expect(eventLog).toBeNull()
+            })
+          })
+        })
+
+        describe('when the user is a teacher and is a supervisor of the thesis', () => {
+          it('should return 403 and a correct error message, and not log the event', async () => {
+            const newThesis = {
+              programId: 'New program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'New topic',
+              status: 'COMPLETED',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isExternal: false,
+                  isPrimarySupervisor: true,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .post('/api/theses')
+              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(newThesis))
+            expect(response.status).toEqual(403)
+            expect(response.body).toEqual({
+              error:
+                'User is not authorized to change the status of the thesis to COMPLETED',
+              data: {
+                programId: [
+                  'User is not authorized to change the status of the thesis to COMPLETED',
+                ],
+              },
+            })
+
+            const eventLog = await EventLog.findOne({
+              where: { type: 'THESIS_CREATED' },
+            })
+            expect(eventLog).toBeNull()
+          })
+        })
+      })
+
       describe('when the request contains duplicate supervisors', () => {
         it('should return 400 and not log the event', async () => {
           const newThesis = {
