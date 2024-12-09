@@ -451,7 +451,7 @@ describe('Theisis router with mocks', () => {
         })
       })
 
-      it('setting status to COMPLETED should not call the sendEmail function and return 200', async () => {
+      it('setting status to COMPLETED is not allowed, returns 403 and does not call sendEmail function', async () => {
         const updatedThesis = {
           programId: 'Testing program',
           studyTrackId: 'test-study-track-id',
@@ -490,7 +490,7 @@ describe('Theisis router with mocks', () => {
           .set({ uid: programManagerUser.id, hygroupcn: 'hy-employees' })
           .field('json', JSON.stringify(updatedThesis))
 
-        expect(response.status).toEqual(200)
+        expect(response.status).toEqual(403)
         expect(sendEmail).toHaveBeenCalledTimes(0)
       })
 
