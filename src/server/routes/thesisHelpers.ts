@@ -15,11 +15,13 @@ import sendEmail from '../mailer/pate'
 
 interface FetchThesisProps {
   thesisId?: string
+  programId?: string
   actionUser: UserType
   onlySupervised?: boolean
 }
 export const getFindThesesOptions = async ({
   thesisId,
+  programId,
   actionUser,
   onlySupervised,
 }: FetchThesisProps) => {
@@ -77,6 +79,11 @@ export const getFindThesesOptions = async ({
   ]
 
   let whereClause: Record<any, any> = thesisId ? { id: thesisId } : {}
+
+  if (programId) {
+    whereClause = { ...whereClause, programId }
+  }
+
   if (!actionUser.isAdmin || onlySupervised) {
     const programManagement = onlySupervised
       ? []
@@ -105,6 +112,7 @@ export const getFindThesesOptions = async ({
     const programIds = programManagement.map((pm) => pm.programId)
 
     whereClause = {
+      ...whereClause,
       [Op.or]: [
         // if a user is only a teacher (not admin nor supervisor),
         // they should only see theses they supervise

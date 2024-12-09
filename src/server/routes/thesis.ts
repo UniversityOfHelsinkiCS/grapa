@@ -201,8 +201,10 @@ const getOrderLiteralBasedOnThesesApprovals = (currentUser: UserType) =>
 thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
   const { onlySupervised, limit = 50, offset = 0 } = req.query
   const currentUser = req.user
+  const programId = req.query.programId as string
 
   const options = await getFindThesesOptions({
+    programId,
     actionUser: currentUser,
     onlySupervised: onlySupervised === 'true',
   })
