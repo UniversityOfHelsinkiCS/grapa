@@ -25,7 +25,14 @@ export const authorizeStatusChange = async (
     return
   }
 
-  if (req.body.status === 'COMPLETED') {
+  const thesis = await Thesis.findByPk(req.params.id)
+
+  const isNewThesisWithStatusCompleted =
+    !thesis && req.body.status === 'COMPLETED'
+  const isExistingThesisChangedToCompleted =
+    thesis && thesis.status !== 'COMPLETED' && req.body.status === 'COMPLETED'
+
+  if (isNewThesisWithStatusCompleted || isExistingThesisChangedToCompleted) {
     throw new CustomAuthorizationError(
       'User is not authorized to change the status of the thesis to COMPLETED',
       {
@@ -35,8 +42,6 @@ export const authorizeStatusChange = async (
       }
     )
   }
-
-  const thesis = await Thesis.findByPk(req.params.id)
 
   // if the thesis' status is already something else than PLANNING
   // allow anyone who can edit the thesis to update the status...
