@@ -37,7 +37,7 @@ export interface User {
   isExternal: boolean
   affiliation?: string
   departmentId?: string
-  thesesTableFilters: GridFilterModel
+  thesesTableFilters?: GridFilterModel
 }
 
 export interface RequestWithUser extends Request {

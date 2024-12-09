@@ -207,13 +207,13 @@ export const handleStatusChangeEmail = async (
 export const handleStatusChangeEventLog = async (
   originalThesis: Thesis,
   updatedThesis: Thesis,
-  actionUser: UserType,
+  actionUser: UserType | null,
   transaction: Transaction
 ) => {
   if (originalThesis.status !== updatedThesis.status) {
     await EventLog.create(
       {
-        userId: actionUser.id,
+        userId: actionUser?.id,
         thesisId: originalThesis.id,
         type: 'THESIS_STATUS_CHANGED',
         data: {
