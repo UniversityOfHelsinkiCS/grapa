@@ -64,15 +64,43 @@ const attainmentsHandler = async (attainments: AttainmentData[]) => {
   )
 }
 
-export const fetchThesesAttainments = async () => {
-  const personIds = unfinishedTheses
-    .map((thesis) => thesis.authors.map((author) => author.id))
-    .flat()
+const isNumber = (value: any) => !Number.isNaN(parseInt(value, 10))
 
-  await mangleData({
-    url: 'masters-attainments',
-    limit: 10_000,
-    handler: attainmentsHandler,
-    queryParams: { personIds },
-  })
+// Taken from Norppa
+const normalizeOrganisationCode = (r: string) => {
+  if (r.startsWith('T')) {
+    return r.replace('T', '7')
+  }
+  if (!r.includes('_')) {
+    return r
+  }
+
+  const [left, right] = r.split('_')
+  const prefix = [...left].filter(isNumber).join('')
+  const suffix = `${left[0]}${right}`
+  const providercode = `${prefix}0-${suffix}`
+  return providercode
+}
+
+export const fetchThesesAttainments = async () => {
+  const personIdsPerOrganisation = unfinishedTheses.reduce(
+    (acc, thesis) => {
+      const organisationCode = normalizeOrganisationCode(thesis.programId)
+      const personIds = thesis.authors.map((author) => author.id)
+      acc[organisationCode] = acc[organisationCode]
+        ? [...acc[organisationCode], ...personIds]
+        : personIds
+      return acc
+    },
+    {} as Record<string, string[]>
+  )
+
+  for (const [orgCode, personIds] of Object.entries(personIdsPerOrganisation)) {
+    await mangleData({
+      url: `masters-attainments/${orgCode}`,
+      limit: 10_000,
+      handler: attainmentsHandler,
+      queryParams: { personIds },
+    })
+  }
 }
