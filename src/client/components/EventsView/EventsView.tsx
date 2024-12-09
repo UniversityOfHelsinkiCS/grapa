@@ -49,7 +49,7 @@ const ThesisCreatedEntry = (entry: ThesisCreatedEvent) => {
     <LogEntry
       title={t('eventLog:thesisCreated')}
       entry={entry}
-      doneByString={`${t('eventLog:createdBy')} ${entry.user.email}`}
+      doneByString={`${t('eventLog:createdBy')} ${entry?.user?.email ?? 'SYSTEM'}`}
     />
   )
 }
@@ -61,7 +61,7 @@ const SupervisionsChangedEntry = (entry: SupervisionsChangedEvent) => {
     <LogEntry
       title={t('eventLog:supervisorsUpdated')}
       entry={entry}
-      doneByString={`${t('eventLog:changedBy')} ${entry.user.email}`}
+      doneByString={`${t('eventLog:changedBy')} ${entry?.user?.email ?? 'SYSTEM'}`}
     >
       <BeforeDiffAfter
         beforeText={JSON.stringify(entry.data.originalSupervisions, null, 2)}
@@ -78,7 +78,7 @@ const GradersChangedEntry = (entry: GradersChangedEvent) => {
     <LogEntry
       title={t('eventLog:gradersUpdated')}
       entry={entry}
-      doneByString={`${t('eventLog:changedBy')} ${entry.user.email}`}
+      doneByString={`${t('eventLog:changedBy')} ${entry?.user?.email ?? 'SYSTEM'}`}
     >
       <BeforeDiffAfter
         beforeText={JSON.stringify(entry.data.originalGraders, null, 2)}
@@ -95,7 +95,7 @@ const StatusChangedEntry = (entry: StatusChangedEvent) => {
     <LogEntry
       title={t('eventLog:thesisStatusUpdated')}
       entry={entry}
-      doneByString={`${t('eventLog:changedBy')} ${entry.user.email}`}
+      doneByString={`${t('eventLog:changedBy')} ${entry?.user?.email ?? 'SYSTEM'}`}
     >
       <BeforeDiffAfter beforeText={entry.data.from} afterText={entry.data.to} />
     </LogEntry>
