@@ -45,7 +45,7 @@ programManagementRouter.get(
         },
       }
     }
-    if (onlyThesisApprovers) {
+    if (onlyThesisApprovers === 'true') {
       whereClause = {
         ...whereClause,
         isThesisApprover: true,
