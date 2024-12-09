@@ -3,6 +3,8 @@ import { Op } from 'sequelize'
 import { Thesis, User } from '../db/models'
 import { mangleData } from './mangleData'
 import logger from '../util/logger'
+import { sequelize } from '../db/connection'
+import { handleStatusChangeEventLog } from '../routes/thesisHelpers'
 
 interface AttainmentData {
   id: string
@@ -46,19 +48,37 @@ const attainmentsHandler = async (attainments: AttainmentData[]) => {
       ) {
         logger.info(`Updating thesis ${thesis.id} to COMPLETED`)
 
-        await Thesis.update(
-          {
-            status: 'COMPLETED',
-            targetDate: attainments.find(
-              (attainment) => attainment.personId === thesis.authors[0].id
-            )?.attainmentDate,
-          },
-          {
-            where: {
-              id: thesis.id,
+        await sequelize.transaction(async (t) => {
+          const initialThesis = await Thesis.findByPk(thesis.id, {
+            transaction: t,
+          })
+
+          await Thesis.update(
+            {
+              status: 'COMPLETED',
+              targetDate: attainments.find(
+                (attainment) => attainment.personId === thesis.authors[0].id
+              )?.attainmentDate,
             },
-          }
-        )
+            {
+              where: {
+                id: thesis.id,
+              },
+              transaction: t,
+            }
+          )
+
+          const updatedThesis = await Thesis.findByPk(thesis.id, {
+            transaction: t,
+          })
+
+          await handleStatusChangeEventLog(
+            initialThesis as Thesis,
+            updatedThesis as Thesis,
+            null, // No user for the system automation
+            t
+          )
+        })
       }
     })
   )
