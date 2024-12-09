@@ -3442,6 +3442,359 @@ describe('thesis router', () => {
         })
       })
 
+      describe('when trying to update a thesis status to COMPLETED', () => {
+        describe('when the user is an admin', () => {
+          it('should return 200 and update the thesis', async () => {
+            const updatedThesis = {
+              programId: 'Updated program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'COMPLETED',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isExternal: false,
+                  isPrimarySupervisor: true,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+                {
+                  user: user5,
+                  isPrimaryGrader: false,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+            const response = await request
+              .put(`/api/theses/${thesis1.id}`)
+              .set('hygroupcn', 'grp-toska')
+              .attach(
+                'waysOfWorking',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .attach(
+                'researchPlan',
+                path.resolve(
+                  dirname(fileURLToPath(import.meta.url)),
+                  './index.ts'
+                )
+              )
+              .field('json', JSON.stringify(updatedThesis))
+
+            expect(response.status).toEqual(200)
+          })
+        })
+
+        describe("when the user is a manager of the thesis' program", () => {
+          let updatedThesis
+
+          beforeEach(() => {
+            updatedThesis = {
+              programId: 'Testing program',
+              studyTrackId: 'new-test-study-track-id',
+              topic: 'Updated topic',
+              status: 'COMPLETED',
+              startDate: '1970-01-01T00:00:00.000Z',
+              targetDate: '2070-01-01T00:00:00.000Z',
+              supervisions: [
+                {
+                  user: user1,
+                  percentage: 100,
+                  isExternal: false,
+                  isPrimarySupervisor: true,
+                },
+              ],
+              graders: [
+                {
+                  user: user4,
+                  isPrimaryGrader: true,
+                  isExternal: false,
+                },
+                {
+                  user: user5,
+                  isPrimaryGrader: false,
+                  isExternal: false,
+                },
+              ],
+              authors: [user2],
+            }
+          })
+
+          describe('when the user is approver of the thesis', () => {
+            beforeEach(async () => {
+              await ProgramManagement.create({
+                programId: 'Testing program',
+                userId: user2.id,
+                isThesisApprover: true,
+              })
+            })
+
+            it('should return 403 status code', async () => {
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+
+              expect(response.status).toEqual(403)
+            })
+          })
+
+          describe('when the user is not an approver of the prgram', () => {
+            beforeEach(async () => {
+              await ProgramManagement.create({
+                programId: 'Testing program',
+                userId: user2.id,
+                isThesisApprover: false,
+              })
+            })
+
+            it('should return 403 status code', async () => {
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+
+              expect(response.status).toEqual(403)
+            })
+          })
+        })
+
+        describe('when the user is a teacher and is a supervisor of the thesis', () => {
+          describe('when the thesis has PLANNING status', () => {
+            it('should return 403 and a correct error message, and not log status change event', async () => {
+              const updatedThesis = {
+                programId: 'Updated program',
+                studyTrackId: 'new-test-study-track-id',
+                topic: 'Updated topic',
+                status: 'COMPLETED',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: user1,
+                    percentage: 100,
+                    isExternal: false,
+                    isPrimarySupervisor: true,
+                  },
+                ],
+                graders: [
+                  {
+                    user: user4,
+                    isPrimaryGrader: true,
+                    isExternal: false,
+                  },
+                  {
+                    user: user5,
+                    isPrimaryGrader: false,
+                    isExternal: false,
+                  },
+                ],
+                authors: [user2],
+              }
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+              expect(response.status).toEqual(403)
+              expect(response.body).toEqual({
+                error:
+                  'User is not authorized to change the status of the thesis to COMPLETED',
+                data: {
+                  programId: [
+                    'User is not authorized to change the status of the thesis to COMPLETED',
+                  ],
+                },
+              })
+
+              const eventLog = await EventLog.findOne({
+                where: { type: 'THESIS_STATUS_CHANGED' },
+              })
+              expect(eventLog).toBeNull()
+            })
+          })
+
+          describe('when the thesis already has COMPLETED status', () => {
+            beforeEach(async () => {
+              thesis1.status = 'COMPLETED'
+              await thesis1.save()
+            })
+
+            it('should return 200, update the thesis and not log status change event', async () => {
+              const updatedThesis = {
+                programId: 'Updated program',
+                studyTrackId: 'new-test-study-track-id',
+                topic: 'Updated topic',
+                status: 'COMPLETED',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: user1,
+                    percentage: 100,
+                    isExternal: false,
+                    isPrimarySupervisor: true,
+                  },
+                ],
+                graders: [
+                  {
+                    user: user4,
+                    isPrimaryGrader: true,
+                    isExternal: false,
+                  },
+                  {
+                    user: user5,
+                    isPrimaryGrader: false,
+                    isExternal: false,
+                  },
+                ],
+                authors: [user2],
+              }
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+              expect(response.status).toEqual(200)
+
+              const eventLog = await EventLog.findOne({
+                where: { type: 'THESIS_STATUS_CHANGED' },
+              })
+              expect(eventLog).toBeNull()
+            })
+          })
+
+          describe('when the thesis has status other than PLANING or COMPLETED', () => {
+            beforeEach(async () => {
+              thesis1.status = 'CANCELLED'
+              await thesis1.save()
+            })
+
+            it('should return 403 and not log status change event', async () => {
+              const updatedThesis = {
+                programId: 'Updated program',
+                studyTrackId: 'new-test-study-track-id',
+                topic: 'Updated topic',
+                status: 'COMPLETED',
+                startDate: '1970-01-01T00:00:00.000Z',
+                targetDate: '2070-01-01T00:00:00.000Z',
+                supervisions: [
+                  {
+                    user: user1,
+                    percentage: 100,
+                    isExternal: false,
+                    isPrimarySupervisor: true,
+                  },
+                ],
+                graders: [
+                  {
+                    user: user4,
+                    isPrimaryGrader: true,
+                    isExternal: false,
+                  },
+                  {
+                    user: user5,
+                    isPrimaryGrader: false,
+                    isExternal: false,
+                  },
+                ],
+                authors: [user2],
+              }
+              const response = await request
+                .put(`/api/theses/${thesis1.id}`)
+                .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+                .attach(
+                  'waysOfWorking',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .attach(
+                  'researchPlan',
+                  path.resolve(
+                    dirname(fileURLToPath(import.meta.url)),
+                    './index.ts'
+                  )
+                )
+                .field('json', JSON.stringify(updatedThesis))
+              expect(response.status).toEqual(403)
+
+              const eventLog = await EventLog.findOne({
+                where: { type: 'THESIS_STATUS_CHANGED' },
+              })
+              expect(eventLog).toBeNull()
+            })
+          })
+        })
+      })
+
       describe('logic for adding THESIS_GRADERS_CHANGED event to the event_log table', () => {
         describe('when a new grader is added to the thesis', () => {
           beforeEach(async () => {
