@@ -42,7 +42,10 @@ import { StatusLocale } from '../../types'
 
 const PAGE_SIZE = 25
 
-const ThesesPage = () => {
+interface Props {
+  filteringProgramId?: string
+}
+const ThesesPage = ({ filteringProgramId }: Props) => {
   const apiRef = useGridApiRef()
   const footerRef = useRef<HTMLDivElement>(null)
   const { t, i18n } = useTranslation()
@@ -69,6 +72,7 @@ const ThesesPage = () => {
     totalCount,
     isLoading: isThesesLoading,
   } = usePaginatedTheses({
+    programId: filteringProgramId,
     onlySupervised: showOnlyOwnTheses,
     offset: paginationModel.page * paginationModel.pageSize,
     limit: paginationModel.pageSize,

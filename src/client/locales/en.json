@@ -24,7 +24,8 @@
     "removeConfirmation": "To confirm, type ({{confirmationText}}) in the box below:",
     "removeButton": "Remove",
     "error": "Error",
-    "thesisPreview": "Thesis preview"
+    "thesisPreview": "Thesis preview",
+    "theses": "Theses"
   },
   "eventLog": {
     "thesis": "Thesis",
@@ -49,7 +50,7 @@
   "navbar": {
     "program": "Program",
     "programManager": "Program managers",
-    "programLogs": "Program logs",
+    "programOverview": "Program overview",
     "departmentAdmin": "Department admins",
     "departmentStatistics": "Departmental statistics",
     "loginAs": "Login as",

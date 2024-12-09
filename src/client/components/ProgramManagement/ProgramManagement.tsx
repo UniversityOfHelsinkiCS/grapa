@@ -37,7 +37,10 @@ import {
   TranslationLanguage,
 } from '../../../server/types'
 
-const ProgramManagement = () => {
+interface Props {
+  filteringProgramId?: string
+}
+const ProgramManagement = ({ filteringProgramId }: Props) => {
   const { t, i18n } = useTranslation()
   const { user, isLoading: userLoading } = useLoggedInUser()
   const { language } = i18n as { language: TranslationLanguage }
@@ -49,7 +52,14 @@ const ProgramManagement = () => {
   const [deletedProgramManagement, setDeletedProgramManagement] = useState(null)
 
   const { programs } = usePrograms({ includeNotManaged: false })
-  const { programManagements } = useProgramManagements()
+  const { programManagements } = useProgramManagements(
+    filteringProgramId
+      ? {
+          programId: filteringProgramId,
+          onlyThesisApprovers: false,
+        }
+      : undefined
+  )
   const { mutateAsync: createProgramManagement } =
     useCreateProgramManagementMutation()
   const { mutateAsync: deleteProgramManagement } =
@@ -159,7 +169,7 @@ const ProgramManagement = () => {
     <Box
       component="section"
       sx={{
-        px: '3rem',
+        px: '1rem',
         py: '2rem',
         width: '100%',
         display: 'flex',

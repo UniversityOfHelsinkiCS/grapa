@@ -24,7 +24,8 @@
     "removeThesisConfirmationContent": "Haluatko varmasti poistaa tutkielman: {{topic}}?",
     "removeConfirmation": "Vahvista poisto kirjoittamalla (<strong>{{confirmationText}}</strong>) alla olevaan kenttään:",
     "error": "Virhe",
-    "thesisPreview": "Tutkielman esikatselu"
+    "thesisPreview": "Tutkielman esikatselu",
+    "theses": "Tutkielmat"
   },
   "eventLog": {
     "thesis": "Tutkielma",
@@ -49,7 +50,7 @@
   "navbar": {
     "program": "Ohjelma",
     "programManager": "Ohjelmavastaavat",
-    "programLogs": "Ohjelman lokit",
+    "programOverview": "Ohjelman yleiskatsaus",
     "departmentAdmin": "Osastojen ylläpitäjät",
     "departmentStatistics": "Osastojen tilastot",
     "loginAs": "Kirjaudu toisella käyttäjällä",
