@@ -23,7 +23,6 @@ import EventsView from '../EventsView/EventsView'
 import { useProgramEvents } from '../../hooks/useEvents'
 import { ProgramData, TranslationLanguage } from '@backend/types'
 import ThesesPage from '../ThesisPage/ThesesPage'
-import ProgramManagement from '../ProgramManagement/ProgramManagement'
 
 interface SingleProgramLogsProps {
   program: ProgramData
@@ -132,10 +131,6 @@ const ProgramOverview = () => {
       ) : null}
       {Boolean(selectedProgram) && (
         <>
-          <ProgramManagement filteringProgramId={selectedProgram.id} />
-
-          <Divider sx={{ mt: 2, mb: 2, borderWidth: 'medium' }} />
-
           <Stack sx={{ px: '1rem', py: '2rem' }}>
             <Typography component="h1" variant="h4">
               {t('programLogsPage:pageTitle')}
