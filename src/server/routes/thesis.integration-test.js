@@ -265,243 +265,412 @@ describe('thesis router', () => {
 
     describe('GET /api/theses', () => {
       describe('when fetching all theses a user has access to', () => {
-        describe('when the user is an admin', () => {
-          it('should return 200 and the theses', async () => {
-            const response = await request
-              .get('/api/theses/paginate')
-              .set('hygroupcn', 'grp-toska')
-            expect(response.status).toEqual(200)
-            expect(response.body).toMatchObject({
-              totalCount: 1,
-              theses: [
-                {
-                  programId: 'Testing program',
-                  studyTrackId: 'test-study-track-id',
-                  topic: 'test topic',
-                  status: 'PLANNING',
-                  startDate: '1970-01-01T00:00:00.000Z',
-                  targetDate: '2070-01-01T00:00:00.000Z',
-                  authors: [user2],
-                  researchPlan: {
-                    filename: 'testfile.pdf1',
-                    name: 'testfile.pdf1',
-                    mimetype: 'application/pdf1',
-                  },
-                  waysOfWorking: {
-                    filename: 'testfile.pdf2',
-                    name: 'testfile.pdf2',
-                    mimetype: 'application/pdf2',
-                  },
-                  supervisions: expect.toIncludeSameMembers([
-                    {
-                      user: user1,
-                      percentage: 50,
-                      isExternal: false,
-                      isPrimarySupervisor: true,
+        describe('when no filtering is applied', () => {
+          describe('when the user is an admin', () => {
+            it('should return 200 and the theses', async () => {
+              const response = await request
+                .get('/api/theses/paginate')
+                .set('hygroupcn', 'grp-toska')
+              expect(response.status).toEqual(200)
+              expect(response.body).toMatchObject({
+                totalCount: 1,
+                theses: [
+                  {
+                    programId: 'Testing program',
+                    studyTrackId: 'test-study-track-id',
+                    topic: 'test topic',
+                    status: 'PLANNING',
+                    startDate: '1970-01-01T00:00:00.000Z',
+                    targetDate: '2070-01-01T00:00:00.000Z',
+                    authors: [user2],
+                    researchPlan: {
+                      filename: 'testfile.pdf1',
+                      name: 'testfile.pdf1',
+                      mimetype: 'application/pdf1',
                     },
-                    {
-                      user: user3,
-                      percentage: 50,
-                      isExternal: false,
-                      isPrimarySupervisor: false,
+                    waysOfWorking: {
+                      filename: 'testfile.pdf2',
+                      name: 'testfile.pdf2',
+                      mimetype: 'application/pdf2',
                     },
-                  ]),
-                },
-              ],
-            })
-          })
-        })
-
-        describe('when the user is a teacher-supervisor of one thesis and is a manager of the program that thesis belongs to', () => {
-          let thesisSupervisedByOtherUser
-          beforeEach(async () => {
-            await ProgramManagement.create({
-              programId: 'Testing program',
-              userId: user1.id,
-            })
-            thesisSupervisedByOtherUser = await Thesis.create({
-              programId: 'Testing program',
-              studyTrackId: 'test-study-track-id',
-              topic:
-                'Thesis in the same program but supervised by another user',
-              status: 'PLANNING',
-              startDate: '1970-01-01',
-              targetDate: '2050-01-01',
-            })
-
-            await Supervision.create({
-              userId: user2.id,
-              thesisId: thesisSupervisedByOtherUser.id,
-              percentage: 100,
-              isPrimarySupervisor: true,
-            })
-          })
-
-          it('should return theses that the teacher supervisers and theses of the managed program but no other theses', async () => {
-            const response = await request
-              .get('/api/theses/paginate')
-              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
-            expect(response.status).toEqual(200)
-            expect(response.body.theses).toHaveLength(2)
-            expect(response.body).toMatchObject({
-              totalCount: 2,
-              theses: [
-                {
-                  topic:
-                    'Thesis in the same program but supervised by another user',
-                },
-                {
-                  topic: 'test topic',
-                },
-              ],
-            })
-          })
-        })
-
-        describe('when the user is a teacher-supervisor of one thesis and is a manager of the program that thesis does not belong to', () => {
-          let thesisSupervisedByOtherUser
-          beforeEach(async () => {
-            await ProgramManagement.create({
-              programId: 'Updated program',
-              userId: user1.id,
-            })
-            thesisSupervisedByOtherUser = await Thesis.create({
-              programId: 'Updated program',
-              studyTrackId: 'test-study-track-id',
-              topic:
-                'Thesis in the program managed by the user, supervised by another user',
-              status: 'PLANNING',
-              startDate: '1970-01-01',
-              targetDate: '2050-01-01',
-            })
-
-            await Supervision.create({
-              userId: user2.id,
-              thesisId: thesisSupervisedByOtherUser.id,
-              percentage: 100,
-              isPrimarySupervisor: true,
-            })
-          })
-
-          it('should return theses that the teacher supervisers and theses of the managed program but no other theses', async () => {
-            const response = await request
-              .get('/api/theses/paginate')
-              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
-            expect(response.status).toEqual(200)
-            expect(response.body.theses).toHaveLength(2)
-            expect(response.body).toMatchObject({
-              totalCount: 2,
-              theses: [
-                {
-                  topic:
-                    'Thesis in the program managed by the user, supervised by another user',
-                },
-                {
-                  topic: 'test topic',
-                },
-              ],
-            })
-          })
-        })
-
-        describe('when the user does not supervise theses but is a manager of a program', () => {
-          let thesisSupervisedByOtherUser
-          beforeEach(async () => {
-            await ProgramManagement.create({
-              programId: 'Updated program',
-              userId: user2.id,
-            })
-            thesisSupervisedByOtherUser = await Thesis.create({
-              programId: 'Updated program',
-              studyTrackId: 'test-study-track-id',
-              topic:
-                'Thesis in the program managed by the user, supervised by another user',
-              status: 'PLANNING',
-              startDate: '1970-01-01',
-              targetDate: '2050-01-01',
-            })
-
-            await Supervision.create({
-              userId: user1.id,
-              thesisId: thesisSupervisedByOtherUser.id,
-              percentage: 100,
-              isPrimarySupervisor: true,
-            })
-          })
-
-          it('should return theses of the managed program but no other theses', async () => {
-            const response = await request
-              .get('/api/theses/paginate')
-              .set({ uid: user2.id, hygroupcn: 'hy-employees' })
-            expect(response.status).toEqual(200)
-            expect(response.body.theses).toHaveLength(1)
-            expect(response.body).toMatchObject({
-              totalCount: 1,
-              theses: [
-                {
-                  topic:
-                    'Thesis in the program managed by the user, supervised by another user',
-                },
-              ],
-            })
-          })
-        })
-
-        describe('when the user is a teacher and is a supervisor of the thesis', () => {
-          it('should return 200 and the theses', async () => {
-            const response = await request
-              .get('/api/theses/paginate')
-              .set({ uid: user1.id, hygroupcn: 'hy-employees' })
-            expect(response.status).toEqual(200)
-            expect(response.body).toMatchObject({
-              totalCount: 1,
-              theses: [
-                {
-                  programId: 'Testing program',
-                  studyTrackId: 'test-study-track-id',
-                  topic: 'test topic',
-                  status: 'PLANNING',
-                  startDate: '1970-01-01T00:00:00.000Z',
-                  targetDate: '2070-01-01T00:00:00.000Z',
-                  authors: [user2],
-                  researchPlan: {
-                    filename: 'testfile.pdf1',
-                    name: 'testfile.pdf1',
-                    mimetype: 'application/pdf1',
+                    supervisions: expect.toIncludeSameMembers([
+                      {
+                        user: user1,
+                        percentage: 50,
+                        isExternal: false,
+                        isPrimarySupervisor: true,
+                      },
+                      {
+                        user: user3,
+                        percentage: 50,
+                        isExternal: false,
+                        isPrimarySupervisor: false,
+                      },
+                    ]),
                   },
-                  waysOfWorking: {
-                    filename: 'testfile.pdf2',
-                    name: 'testfile.pdf2',
-                    mimetype: 'application/pdf2',
+                ],
+              })
+            })
+          })
+
+          describe('when the user is a teacher-supervisor of one thesis and is a manager of the program that thesis belongs to', () => {
+            let thesisSupervisedByOtherUser
+            beforeEach(async () => {
+              await ProgramManagement.create({
+                programId: 'Testing program',
+                userId: user1.id,
+              })
+              thesisSupervisedByOtherUser = await Thesis.create({
+                programId: 'Testing program',
+                studyTrackId: 'test-study-track-id',
+                topic:
+                  'Thesis in the same program but supervised by another user',
+                status: 'PLANNING',
+                startDate: '1970-01-01',
+                targetDate: '2050-01-01',
+              })
+
+              await Supervision.create({
+                userId: user2.id,
+                thesisId: thesisSupervisedByOtherUser.id,
+                percentage: 100,
+                isPrimarySupervisor: true,
+              })
+            })
+
+            it('should return theses that the teacher supervisers and theses of the managed program but no other theses', async () => {
+              const response = await request
+                .get('/api/theses/paginate')
+                .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              expect(response.status).toEqual(200)
+              expect(response.body.theses).toHaveLength(2)
+              expect(response.body).toMatchObject({
+                totalCount: 2,
+                theses: [
+                  {
+                    topic:
+                      'Thesis in the same program but supervised by another user',
                   },
-                  supervisions: expect.toIncludeSameMembers([
-                    {
-                      user: user1,
-                      percentage: 50,
-                      isExternal: false,
-                      isPrimarySupervisor: true,
+                  {
+                    topic: 'test topic',
+                  },
+                ],
+              })
+            })
+          })
+
+          describe('when the user is a teacher-supervisor of one thesis and is a manager of the program that thesis does not belong to', () => {
+            let thesisSupervisedByOtherUser
+            beforeEach(async () => {
+              await ProgramManagement.create({
+                programId: 'Updated program',
+                userId: user1.id,
+              })
+              thesisSupervisedByOtherUser = await Thesis.create({
+                programId: 'Updated program',
+                studyTrackId: 'test-study-track-id',
+                topic:
+                  'Thesis in the program managed by the user, supervised by another user',
+                status: 'PLANNING',
+                startDate: '1970-01-01',
+                targetDate: '2050-01-01',
+              })
+
+              await Supervision.create({
+                userId: user2.id,
+                thesisId: thesisSupervisedByOtherUser.id,
+                percentage: 100,
+                isPrimarySupervisor: true,
+              })
+            })
+
+            it('should return theses that the teacher supervisers and theses of the managed program but no other theses', async () => {
+              const response = await request
+                .get('/api/theses/paginate')
+                .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              expect(response.status).toEqual(200)
+              expect(response.body.theses).toHaveLength(2)
+              expect(response.body).toMatchObject({
+                totalCount: 2,
+                theses: [
+                  {
+                    topic:
+                      'Thesis in the program managed by the user, supervised by another user',
+                  },
+                  {
+                    topic: 'test topic',
+                  },
+                ],
+              })
+            })
+          })
+
+          describe('when the user does not supervise theses but is a manager of a program', () => {
+            let thesisSupervisedByOtherUser
+            beforeEach(async () => {
+              await ProgramManagement.create({
+                programId: 'Updated program',
+                userId: user2.id,
+              })
+              thesisSupervisedByOtherUser = await Thesis.create({
+                programId: 'Updated program',
+                studyTrackId: 'test-study-track-id',
+                topic:
+                  'Thesis in the program managed by the user, supervised by another user',
+                status: 'PLANNING',
+                startDate: '1970-01-01',
+                targetDate: '2050-01-01',
+              })
+
+              await Supervision.create({
+                userId: user1.id,
+                thesisId: thesisSupervisedByOtherUser.id,
+                percentage: 100,
+                isPrimarySupervisor: true,
+              })
+            })
+
+            it('should return theses of the managed program but no other theses', async () => {
+              const response = await request
+                .get('/api/theses/paginate')
+                .set({ uid: user2.id, hygroupcn: 'hy-employees' })
+              expect(response.status).toEqual(200)
+              expect(response.body.theses).toHaveLength(1)
+              expect(response.body).toMatchObject({
+                totalCount: 1,
+                theses: [
+                  {
+                    topic:
+                      'Thesis in the program managed by the user, supervised by another user',
+                  },
+                ],
+              })
+            })
+          })
+
+          describe('when the user is a teacher and is a supervisor of the thesis', () => {
+            it('should return 200 and the theses', async () => {
+              const response = await request
+                .get('/api/theses/paginate')
+                .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              expect(response.status).toEqual(200)
+              expect(response.body).toMatchObject({
+                totalCount: 1,
+                theses: [
+                  {
+                    programId: 'Testing program',
+                    studyTrackId: 'test-study-track-id',
+                    topic: 'test topic',
+                    status: 'PLANNING',
+                    startDate: '1970-01-01T00:00:00.000Z',
+                    targetDate: '2070-01-01T00:00:00.000Z',
+                    authors: [user2],
+                    researchPlan: {
+                      filename: 'testfile.pdf1',
+                      name: 'testfile.pdf1',
+                      mimetype: 'application/pdf1',
                     },
-                    {
-                      user: user3,
-                      percentage: 50,
-                      isExternal: false,
-                      isPrimarySupervisor: false,
+                    waysOfWorking: {
+                      filename: 'testfile.pdf2',
+                      name: 'testfile.pdf2',
+                      mimetype: 'application/pdf2',
                     },
-                  ]),
-                },
-              ],
+                    supervisions: expect.toIncludeSameMembers([
+                      {
+                        user: user1,
+                        percentage: 50,
+                        isExternal: false,
+                        isPrimarySupervisor: true,
+                      },
+                      {
+                        user: user3,
+                        percentage: 50,
+                        isExternal: false,
+                        isPrimarySupervisor: false,
+                      },
+                    ]),
+                  },
+                ],
+              })
+            })
+          })
+
+          describe('when the user is a teacher and is not a supervisor of the thesis', () => {
+            it('should return 200 and the theses', async () => {
+              const response = await request.get('/api/theses/paginate').set({
+                uid: 'test-id-of-not-supervisor',
+                hygroupcn: 'hy-employees',
+              })
+              expect(response.status).toEqual(200)
+              expect(response.body).toMatchObject({ totalCount: 0, theses: [] })
             })
           })
         })
 
-        describe('when the user is a teacher and is not a supervisor of the thesis', () => {
-          it('should return 200 and the theses', async () => {
-            const response = await request.get('/api/theses/paginate').set({
-              uid: 'test-id-of-not-supervisor',
-              hygroupcn: 'hy-employees',
+        describe('when filtering by programId', () => {
+          describe('when the user is an admin', () => {
+            describe('when the programId doesnot exit', () => {
+              it('should return 200 and the theses', async () => {
+                const response = await request
+                  .get('/api/theses/paginate?programId=Nonexistent')
+                  .set('hygroupcn', 'grp-toska')
+                expect(response.status).toEqual(200)
+                expect(response.body).toMatchObject({
+                  totalCount: 0,
+                  theses: [],
+                })
+              })
             })
-            expect(response.status).toEqual(200)
-            expect(response.body).toMatchObject({ totalCount: 0, theses: [] })
+
+            describe('when the programId does exits', () => {
+              it('should return 200 and the theses', async () => {
+                const response = await request
+                  .get('/api/theses/paginate?programId=Testing program')
+                  .set('hygroupcn', 'grp-toska')
+                expect(response.status).toEqual(200)
+                expect(response.body).toMatchObject({
+                  totalCount: 1,
+                  theses: [
+                    {
+                      programId: 'Testing program',
+                      studyTrackId: 'test-study-track-id',
+                      topic: 'test topic',
+                      status: 'PLANNING',
+                      startDate: '1970-01-01T00:00:00.000Z',
+                      targetDate: '2070-01-01T00:00:00.000Z',
+                      authors: [user2],
+                      researchPlan: {
+                        filename: 'testfile.pdf1',
+                        name: 'testfile.pdf1',
+                        mimetype: 'application/pdf1',
+                      },
+                      waysOfWorking: {
+                        filename: 'testfile.pdf2',
+                        name: 'testfile.pdf2',
+                        mimetype: 'application/pdf2',
+                      },
+                      supervisions: expect.toIncludeSameMembers([
+                        {
+                          user: user1,
+                          percentage: 50,
+                          isExternal: false,
+                          isPrimarySupervisor: true,
+                        },
+                        {
+                          user: user3,
+                          percentage: 50,
+                          isExternal: false,
+                          isPrimarySupervisor: false,
+                        },
+                      ]),
+                    },
+                  ],
+                })
+              })
+            })
+          })
+
+          describe('when the user is a teacher-supervisor of two theses but only one belongs to the program we are filtering on', () => {
+            let thesisSupervisedByTheUser
+            beforeEach(async () => {
+              thesisSupervisedByTheUser = await Thesis.create({
+                programId: 'Updated program',
+                studyTrackId: 'test-study-track-id',
+                topic:
+                  'Thesis in the same program but supervised by another user',
+                status: 'PLANNING',
+                startDate: '1970-01-01',
+                targetDate: '2050-01-01',
+              })
+
+              await Supervision.create({
+                userId: user1.id,
+                thesisId: thesisSupervisedByTheUser.id,
+                percentage: 100,
+                isPrimarySupervisor: true,
+              })
+            })
+
+            it('should return theses that the teacher supervisers and theses of the managed program but no other theses', async () => {
+              const response = await request
+                .get('/api/theses/paginate?programId=Updated program')
+                .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+              expect(response.status).toEqual(200)
+              expect(response.body.theses).toHaveLength(1)
+              expect(response.body).toMatchObject({
+                totalCount: 1,
+                theses: [
+                  {
+                    topic:
+                      'Thesis in the same program but supervised by another user',
+                  },
+                ],
+              })
+            })
+          })
+
+          describe('when the user is a manager of a program', () => {
+            let thesisSupervisedByOtherUser
+            beforeEach(async () => {
+              await ProgramManagement.create({
+                programId: 'Updated program',
+                userId: user1.id,
+              })
+              thesisSupervisedByOtherUser = await Thesis.create({
+                programId: 'Updated program',
+                studyTrackId: 'test-study-track-id',
+                topic:
+                  'Thesis in the program managed by the user, supervised by another user',
+                status: 'PLANNING',
+                startDate: '1970-01-01',
+                targetDate: '2050-01-01',
+              })
+
+              await Supervision.create({
+                userId: user2.id,
+                thesisId: thesisSupervisedByOtherUser.id,
+                percentage: 100,
+                isPrimarySupervisor: true,
+              })
+            })
+
+            describe('and we are filtering by only that program', () => {
+              it('should return theses that the teacher supervisers and theses of the managed program but no other theses', async () => {
+                const response = await request
+                  .get('/api/theses/paginate?programId=Updated program')
+                  .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+                expect(response.status).toEqual(200)
+                expect(response.body.theses).toHaveLength(1)
+                expect(response.body).toMatchObject({
+                  totalCount: 1,
+                  theses: [
+                    {
+                      topic:
+                        'Thesis in the program managed by the user, supervised by another user',
+                    },
+                  ],
+                })
+              })
+            })
+
+
+            describe('and we are filtering by another programId', () => {
+              it('should return theses that the teacher supervisers and theses of the managed program but no other theses', async () => {
+                const response = await request
+                  .get('/api/theses/paginate?programId=Testing program')
+                  .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+                expect(response.status).toEqual(200)
+                expect(response.body.theses).toHaveLength(1)
+                expect(response.body).toMatchObject({
+                  totalCount: 1,
+                  theses: [
+                    {
+                      topic: 'test topic',
+                    },
+                  ],
+                })
+              })
+            })
           })
         })
       })
