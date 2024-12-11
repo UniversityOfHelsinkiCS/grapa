@@ -271,6 +271,10 @@ const ThesesPage = ({ filteringProgramId }: Props) => {
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
       <Box>
         <DataGrid
+          // We want to disable virtualization to prevent a bug
+          // that sometimes causes the grid to not render
+          // more than 10 rows after switching the page
+          disableVirtualization
           apiRef={apiRef}
           loading={isLoading}
           rows={isLoading ? skeletonRows : theses}
