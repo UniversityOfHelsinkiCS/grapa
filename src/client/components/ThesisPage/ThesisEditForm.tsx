@@ -405,7 +405,7 @@ const ThesisEditForm: FC<{
                 data-testid="status-select-input"
                 required
                 disabled={
-                  editedThesis.status === 'PLANNING' &&
+                  initialThesis.status === 'PLANNING' &&
                   !user.isAdmin &&
                   !user.approvableProgramIds?.includes(editedThesis.programId)
                 }
@@ -429,9 +429,11 @@ const ThesisEditForm: FC<{
                 <MenuItem value="IN_PROGRESS">
                   {t(StatusLocale.IN_PROGRESS)}
                 </MenuItem>
-                <MenuItem value="COMPLETED">
-                  {t(StatusLocale.COMPLETED)}
-                </MenuItem>
+                {user.isAdmin && (
+                  <MenuItem value="COMPLETED">
+                    {t(StatusLocale.COMPLETED)}
+                  </MenuItem>
+                )}
                 <MenuItem value="CANCELLED">
                   {t(StatusLocale.CANCELLED)}
                 </MenuItem>
