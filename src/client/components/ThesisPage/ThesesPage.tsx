@@ -138,7 +138,7 @@ const ThesesPage = ({ filteringProgramId }: Props) => {
             (approver) => approver.id === currentUser.id
           )
         return (
-          Boolean(currUserIsApprover) && (
+          Boolean(currUserIsApprover && params.row.status === 'PLANNING') && (
             <Tooltip title={t('thesesPage:approvalRequiredTooltip')}>
               <IconButton
                 aria-label="toggle-thesis-approver"
