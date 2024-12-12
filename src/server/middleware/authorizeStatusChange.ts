@@ -54,17 +54,17 @@ export const authorizeStatusChange = async (
   // and the user is trying to update it
   // to something else than PLANNING,
   // then we need to check permissions i.e.
-  // only allow it if the user is an approver-program-manager
-  const programsWhereUserIsApprover = await ProgramManagement.findAll({
+  // only allow it if the user is a-program-manager
+  const programsWhereUserIsManager = await ProgramManagement.findAll({
     attributes: ['programId'],
-    where: { userId: actionUser.id, isThesisApprover: true },
+    where: { userId: actionUser.id },
   })
-  const programIdsWhereUserIsApprover = programsWhereUserIsApprover.map(
+  const programIdsWhereUserIsManager = programsWhereUserIsManager.map(
     (program) => program.programId
   )
 
-  if (!programIdsWhereUserIsApprover.includes(req.body.programId)) {
-    // if the user is not an approver-program-manager and the status
+  if (!programIdsWhereUserIsManager.includes(req.body.programId)) {
+    // if the user is not a program-manager and the status
     // is changed or the thesis a new one throw an Authorization error
     if (!thesis || thesis.status !== req.body.status) {
       throw new CustomAuthorizationError(

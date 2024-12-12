@@ -407,7 +407,7 @@ const ThesisEditForm: FC<{
                 disabled={
                   initialThesis.status === 'PLANNING' &&
                   !user.isAdmin &&
-                  !user.approvableProgramIds?.includes(editedThesis.programId)
+                  !user.managedProgramIds?.includes(editedThesis.programId)
                 }
                 value={editedThesis.status}
                 label={t('statusHeader')}
