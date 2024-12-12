@@ -335,6 +335,7 @@ describe('department-admins router', () => {
               COMPLETED: 0,
               CANCELLED: 0,
             },
+            startedWithinHalfYearCount: 0,
           },
         ])
       })
