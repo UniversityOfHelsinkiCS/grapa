@@ -15,7 +15,6 @@ const studyTracksHandler = async (studyTracks: ImporterStudyTrack[]) => {
     programId: programCode,
   }))
 
-  // By default updates all fields on duplicate id
   await safeBulkCreate({
     entityName: 'StudyTrack',
     entities: parsedStudyTracks,
