@@ -1633,7 +1633,7 @@ describe('thesis router', () => {
               })
             })
 
-            it('should return 403, and not log the event', async () => {
+            it('should return 201, and log the event', async () => {
               const response = await request
                 .post('/api/theses')
                 .set({ uid: user2.id, hygroupcn: 'hy-employees' })
@@ -1652,12 +1652,12 @@ describe('thesis router', () => {
                   )
                 )
                 .field('json', JSON.stringify(newThesis))
-              expect(response.status).toEqual(403)
+              expect(response.status).toEqual(201)
 
               const eventLog = await EventLog.findOne({
-                where: { type: 'THESIS_CREATED' },
+                where: { type: 'THESIS_CREATED', thesisId: response.body.id },
               })
-              expect(eventLog).toBeNull()
+              expect(eventLog).not.toBeNull()
             })
           })
         })
@@ -3148,7 +3148,7 @@ describe('thesis router', () => {
               })
             })
 
-            it('should return 403 status code', async () => {
+            it('should return 200 status code', async () => {
               const response = await request
                 .put(`/api/theses/${thesis1.id}`)
                 .set({ uid: user2.id, hygroupcn: 'hy-employees' })
@@ -3168,7 +3168,7 @@ describe('thesis router', () => {
                 )
                 .field('json', JSON.stringify(updatedThesis))
 
-              expect(response.status).toEqual(403)
+              expect(response.status).toEqual(200)
             })
           })
         })
