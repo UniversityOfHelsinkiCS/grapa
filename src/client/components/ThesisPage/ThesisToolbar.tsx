@@ -17,7 +17,13 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
 
   const { mutateAsync: applyFilters } = useUserThesesTableFilterMutation()
 
-  const { createNewThesis, toggleShowOnlyOwnTheses, showOnlyOwnTheses } = props
+  const {
+    createNewThesis,
+    toggleShowOnlyOwnTheses,
+    showOnlyOwnTheses,
+    noOwnThesesSwitch,
+  } = props
+  console.log(noOwnThesesSwitch)
 
   const handleNewThesis = () => {
     createNewThesis()
@@ -48,7 +54,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
         >
           {t('thesesTableToolbar:newThesisButton')}
         </Button>
-        {user?.isAdmin && (
+        {!noOwnThesesSwitch && user?.isAdmin && (
           <FormControlLabel
             control={
               <Switch
@@ -59,7 +65,11 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
             label={t('thesesTableToolbar:showAllThesesSwitch')}
           />
         )}
-        {Boolean(!user?.isAdmin && user?.managedProgramIds?.length) && (
+        {Boolean(
+          !noOwnThesesSwitch &&
+            !user?.isAdmin &&
+            user?.managedProgramIds?.length
+        ) && (
           <FormControlLabel
             control={
               <Switch

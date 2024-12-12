@@ -164,7 +164,10 @@ const ProgramOverview = () => {
             <Typography component="h1" variant="h4">
               {t('theses')}
             </Typography>
-            <ThesesPage filteringProgramId={selectedProgram.id} />
+            <ThesesPage
+              filteringProgramId={selectedProgram.id}
+              noOwnThesesSwitch
+            />
           </Stack>
         </>
       )}
