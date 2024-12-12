@@ -1,9 +1,13 @@
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Box, Typography } from '@mui/material'
+import { Box, Tooltip, Typography } from '@mui/material'
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid'
 
-import { ThesisStatistics, TranslationLanguage } from '@backend/types'
+import {
+  ThesisStatistics,
+  ThesisStatus,
+  TranslationLanguage,
+} from '@backend/types'
 
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useDepartments from '../../hooks/useDepartments'
@@ -28,14 +32,25 @@ const DepartmentStatistics = () => {
   if (!user.isAdmin && !user.managedDepartmentIds?.length)
     return <Navigate to="/" />
 
+  console.log(departmentStatistics)
   const totalThesisCounts = departmentStatistics.reduce(
-    (acc, { statusCounts }) => {
-      Object.entries(statusCounts).forEach(([status, count]) => {
-        acc[status] = (acc[status] || 0) + count
-      })
+    (acc, { statusCounts, startedWithinHalfYearCount }) => {
+      ;(Object.entries(statusCounts) as [ThesisStatus, number][]).forEach(
+        ([status, count]) => {
+          acc[status] = (acc[status] || 0) + count
+        }
+      )
+      acc.startedWithinHalfYearCount =
+        (acc.startedWithinHalfYearCount || 0) + startedWithinHalfYearCount
       return acc
     },
-    {} as Record<string, number>
+    {
+      startedWithinHalfYearCount: 0,
+      PLANNING: 0,
+      IN_PROGRESS: 0,
+      COMPLETED: 0,
+      CANCELLED: 0,
+    } as { startedWithinHalfYearCount: number } & Record<ThesisStatus, number>
   )
 
   const columns: GridColDef<ThesisStatistics>[] = [
@@ -102,6 +117,24 @@ const DepartmentStatistics = () => {
       type: 'number',
       valueGetter: (_, { statusCounts }) => statusCounts.CANCELLED,
     },
+    {
+      field: 'thesisCount.STARTED_WITHIN_HALF_YEAR',
+      renderHeader: () => (
+        <Tooltip
+          title={t('departmentStatisticsPage:startedWithinHalfYearTooltip')}
+        >
+          <Typography variant="body2">
+            {t('departmentStatisticsPage:startedWithinHalfYearCount') +
+              ` (${totalThesisCounts.startedWithinHalfYearCount})`}
+          </Typography>
+        </Tooltip>
+      ),
+      filterable: false,
+      width: 150,
+      type: 'number',
+      valueGetter: (_, { startedWithinHalfYearCount }) =>
+        startedWithinHalfYearCount,
+    },
   ]
 
   return (
@@ -138,6 +171,7 @@ const DepartmentStatistics = () => {
               { field: 'thesisCount.IN_PROGRESS' },
               { field: 'thesisCount.COMPLETED' },
               { field: 'thesisCount.CANCELLED' },
+              { field: 'thesisCount.STARTED_WITHIN_HALF_YEAR' },
             ],
           },
         ]}

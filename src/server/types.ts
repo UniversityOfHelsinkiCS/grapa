@@ -92,6 +92,7 @@ export interface ThesisStatistics {
   department: DepartmentData
   supervisor: Partial<User>
   statusCounts: Record<ThesisStatus, number>
+  startedWithinHalfYearCount: number
 }
 
 export interface StudyTrackData {

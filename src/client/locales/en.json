@@ -202,7 +202,9 @@
     "pageTitle": "Departmental statistics",
     "supervisorHeader": "Supervisor",
     "departmentHeader": "Department",
-    "thesisCountHeader": "Count of theses"
+    "thesisCountHeader": "Count of theses",
+    "startedWithinHalfYearCount": "Started",
+    "startedWithinHalfYearTooltip": "Theses that have been started within the last six months"
   },
   "loginAsPage": {
     "title": "Choose a user to log in as",

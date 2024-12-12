@@ -15,6 +15,11 @@ import { RequestWithUser, ThesisStatistics } from '../types'
 
 const departmentAdminRouter = express.Router()
 
+const HALF_YEAR = (1000 * 60 * 60 * 24 * 365) / 2
+
+const isWithinLastHalfYear = (date: Date) =>
+  date.getTime() > Date.now() - HALF_YEAR
+
 departmentAdminRouter.get(
   '/',
   // @ts-expect-error the user middleware updates the req object with user field
@@ -128,12 +133,17 @@ departmentAdminRouter.get(
 
     departmentSupervisions.forEach((supervision) => {
       const { user, thesis } = supervision
-      const { status } = thesis
+      const { status, startDate } = thesis
 
       const supervisor = statistics.find((s) => s.supervisor.id === user.id)
       if (supervisor) {
         supervisor.statusCounts[status] =
           (supervisor.statusCounts[status] || 0) + 1
+        supervisor.startedWithinHalfYearCount += isWithinLastHalfYear(
+          new Date(startDate)
+        )
+          ? 1
+          : 0
       } else {
         const department = departments.find((d) => d.id === user.departmentId)
 
@@ -153,6 +163,9 @@ departmentAdminRouter.get(
             COMPLETED: status === 'COMPLETED' ? 1 : 0,
             CANCELLED: status === 'CANCELLED' ? 1 : 0,
           },
+          startedWithinHalfYearCount: isWithinLastHalfYear(new Date(startDate))
+            ? 1
+            : 0,
         })
       }
     })

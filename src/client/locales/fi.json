@@ -202,7 +202,9 @@
     "pageTitle": "Osastojen tilastot",
     "supervisorHeader": "Ohjaaja",
     "departmentHeader": "Osasto",
-    "thesisCountHeader": "Tutkielmien määrä"
+    "thesisCountHeader": "Tutkielmien määrä",
+    "startedWithinHalfYearCount": "Alkaneet",
+    "startedWithinHalfYearTooltip": "Tutkielmat, jotka on aloitettu viimeisen puolen vuoden aikana"
   },
   "loginAsPage": {
     "title": "Valitse käyttäjä, jona haluat kirjautua",
