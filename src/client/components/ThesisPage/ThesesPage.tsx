@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { cloneDeep } from 'lodash-es'
 
@@ -15,7 +15,10 @@ import {
 import {
   DataGrid,
   DataGridProps,
+  getGridStringOperators,
   GridColDef,
+  GridFilterModel,
+  GridFilterOperator,
   GridRowSelectionModel,
   useGridApiRef,
 } from '@mui/x-data-grid'
@@ -39,6 +42,7 @@ import StatusFilter from './Filters/StatusFilter'
 import DeleteConfirmation from '../Common/DeleteConfirmation'
 
 import { StatusLocale } from '../../types'
+import { useDebounce } from '../../hooks/useDebounce'
 
 const PAGE_SIZE = 25
 
@@ -68,12 +72,26 @@ const ThesesPage = ({ filteringProgramId, noOwnThesesSwitch }: Props) => {
   const [newThesis, setNewThesis] = useState<Thesis | null>(null)
   const [showOnlyOwnTheses, setShowOnlyOwnTheses] = useState(!noOwnThesesSwitch)
 
+  const [filterStatus, setFilterStatus] = useState<string | null>(null)
+  const [filterTopic, setFilterTopic] = useState<string | null>(null)
+  const [filterAuthors, setFilterAuthors] = useState<string | null>(null)
+  const [filterProgramName, setFilterProgramName] = useState<string | null>(
+    null
+  )
+  const debouncedFilterTopic = useDebounce(filterTopic, 500)
+  const debouncedFilterAuthors = useDebounce(filterAuthors, 500)
+  const debouncedFilterProgramName = useDebounce(filterProgramName, 500)
+
   const {
     theses,
     totalCount,
     isLoading: isThesesLoading,
   } = usePaginatedTheses({
     programId: filteringProgramId,
+    status: filterStatus,
+    topicPartial: debouncedFilterTopic,
+    authorsPartial: debouncedFilterAuthors,
+    programNamePartial: debouncedFilterProgramName,
     onlySupervised: showOnlyOwnTheses,
     offset: paginationModel.page * paginationModel.pageSize,
     limit: paginationModel.pageSize,
@@ -126,12 +144,17 @@ const ThesesPage = ({ filteringProgramId, noOwnThesesSwitch }: Props) => {
     setEditedThesis(cloneDeep(thesisToEdit))
   }
 
+  const stringFilterOperators: GridFilterOperator[] = getGridStringOperators()
+  const allowedFilterOperators = stringFilterOperators.filter(
+    (operator) => operator.value === 'contains'
+  )
   const columns: GridColDef<Thesis>[] = [
     {
       field: 'more-actions',
       type: 'actions',
       headerName: '',
       sortable: false,
+      filterable: false,
       renderCell: (params) => {
         const currUserIsApprover =
           currentUser &&
@@ -157,6 +180,8 @@ const ThesesPage = ({ filteringProgramId, noOwnThesesSwitch }: Props) => {
     },
     {
       field: 'programId',
+      filterable: true,
+      filterOperators: allowedFilterOperators,
       headerName: t('programHeader'),
       width: 250,
       valueGetter: (_, row) =>
@@ -166,11 +191,15 @@ const ThesesPage = ({ filteringProgramId, noOwnThesesSwitch }: Props) => {
     },
     {
       field: 'topic',
+      filterable: true,
+      filterOperators: allowedFilterOperators,
       headerName: t('topicHeader'),
       width: 300,
     },
     {
       field: 'authors',
+      filterable: true,
+      filterOperators: allowedFilterOperators,
       headerName: t('authorsHeader'),
       width: 300,
       valueGetter: (_, row) =>
@@ -189,7 +218,7 @@ const ThesesPage = ({ filteringProgramId, noOwnThesesSwitch }: Props) => {
       valueGetter: (_, row) => t(StatusLocale[row.status]),
       filterOperators: [
         {
-          value: 'contains',
+          value: 'isAnyOf',
           getApplyFilterFn: (filterItem) => {
             if (filterItem.value == null || filterItem.value.length === 0) {
               return null
@@ -267,6 +296,31 @@ const ThesesPage = ({ filteringProgramId, noOwnThesesSwitch }: Props) => {
     setRowSelectionModel([])
   }
 
+  const onFilterChange = useCallback((filterModel: GridFilterModel) => {
+    // we allow only one filter at a time
+    // so we can safely reset the filters
+    setFilterStatus(null)
+    setFilterTopic(null)
+    setFilterAuthors(null)
+    setFilterProgramName(null)
+    switch (filterModel.items[0].field) {
+      case 'status':
+        setFilterStatus(filterModel.items[0].value)
+        break
+      case 'topic':
+        setFilterTopic(filterModel.items[0].value)
+        break
+      case 'authors':
+        setFilterAuthors(filterModel.items[0].value)
+        break
+      case 'programId':
+        setFilterProgramName(filterModel.items[0].value)
+        break
+      default:
+        break
+    }
+  }, [])
+
   const isLoading = loggedInUserLoading || isThesesLoading || isProgramLoading
   return (
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
@@ -283,6 +337,8 @@ const ThesesPage = ({ filteringProgramId, noOwnThesesSwitch }: Props) => {
           getRowHeight={() => 44}
           columns={columns}
           columnHeaderHeight={36}
+          filterMode="server"
+          onFilterModelChange={onFilterChange}
           hideFooterSelectedRowCount
           pageSizeOptions={[PAGE_SIZE]}
           paginationMode="server"

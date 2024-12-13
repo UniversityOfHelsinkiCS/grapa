@@ -13,6 +13,7 @@ import {
 } from '@mui/material'
 
 import { StatusLocale } from '../../../types'
+import { THESIS_STATUSES } from '../../../../config'
 
 const StatusFilter = (props: GridFilterInputValueProps) => {
   const { t } = useTranslation()
@@ -52,26 +53,28 @@ const StatusFilter = (props: GridFilterInputValueProps) => {
           onChange={handleFilterChange}
           renderValue={(rawSelectedValues) => {
             const selectedValues = rawSelectedValues.map(
-              (value: StatusLocale) => t(value)
+              (value: keyof typeof StatusLocale) => t(StatusLocale[value])
             )
 
             return selectedValues.join(', ')
           }}
         >
-          <MenuItem sx={{ m: 0, p: 0 }} value={StatusLocale.PLANNING}>
-            <Checkbox checked={itemValue.includes(StatusLocale.PLANNING)} />
+          <MenuItem sx={{ m: 0, p: 0 }} value={THESIS_STATUSES.PLANNING}>
+            <Checkbox checked={itemValue.includes(THESIS_STATUSES.PLANNING)} />
             <ListItemText primary={t(StatusLocale.PLANNING)} />
           </MenuItem>
-          <MenuItem sx={{ m: 0, p: 0 }} value={StatusLocale.IN_PROGRESS}>
-            <Checkbox checked={itemValue.includes(StatusLocale.IN_PROGRESS)} />
+          <MenuItem sx={{ m: 0, p: 0 }} value={THESIS_STATUSES.IN_PROGRESS}>
+            <Checkbox
+              checked={itemValue.includes(THESIS_STATUSES.IN_PROGRESS)}
+            />
             <ListItemText primary={t(StatusLocale.IN_PROGRESS)} />
           </MenuItem>
-          <MenuItem sx={{ m: 0, p: 0 }} value={StatusLocale.COMPLETED}>
-            <Checkbox checked={itemValue.includes(StatusLocale.COMPLETED)} />
+          <MenuItem sx={{ m: 0, p: 0 }} value={THESIS_STATUSES.COMPLETED}>
+            <Checkbox checked={itemValue.includes(THESIS_STATUSES.COMPLETED)} />
             <ListItemText primary={t(StatusLocale.COMPLETED)} />
           </MenuItem>
-          <MenuItem sx={{ m: 0, p: 0 }} value={StatusLocale.CANCELLED}>
-            <Checkbox checked={itemValue.includes(StatusLocale.CANCELLED)} />
+          <MenuItem sx={{ m: 0, p: 0 }} value={THESIS_STATUSES.CANCELLED}>
+            <Checkbox checked={itemValue.includes(THESIS_STATUSES.CANCELLED)} />
             <ListItemText primary={t(StatusLocale.CANCELLED)} />
           </MenuItem>
         </Select>

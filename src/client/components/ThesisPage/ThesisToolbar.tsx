@@ -23,7 +23,6 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
     showOnlyOwnTheses,
     noOwnThesesSwitch,
   } = props
-  console.log(noOwnThesesSwitch)
 
   const handleNewThesis = () => {
     createNewThesis()

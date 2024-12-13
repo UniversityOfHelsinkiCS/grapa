@@ -201,10 +201,27 @@ const getOrderLiteralBasedOnThesesApprovals = (currentUser: UserType) =>
 thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
   const { onlySupervised, limit = 50, offset = 0 } = req.query
   const currentUser = req.user
+  const language = (req.query.language ?? 'en') as string
   const programId = req.query.programId as string
+  // These are optional filter query parameters
+  const programNamePartial = req.query.programNamePartial as string
+  const topicPartial = req.query.topicPartial as string
+  const authorsPartial = req.query.authorsPartial as string
+  const status = req.query.status as string
+
+  // Validate that the language is one of the allowed keys
+  const allowedLanguages = ['en', 'fi', 'sv']
+  if (!allowedLanguages.includes(language)) {
+    throw new Error('Invalid language key')
+  }
 
   const options = await getFindThesesOptions({
     programId,
+    programNamePartial,
+    topicPartial,
+    authorsPartial,
+    status,
+    language,
     actionUser: currentUser,
     onlySupervised: onlySupervised === 'true',
   })

@@ -9,19 +9,68 @@ import {
   ProgramManagement,
   EventLog,
   Thesis,
+  Program,
 } from '../db/models'
 import { ThesisData, User as UserType } from '../types'
 import sendEmail from '../mailer/pate'
+import {
+  getWhereClauseForManyWordSearch,
+  getWhereClauseForOneWordSearch,
+  getWhereClauseForTwoWordSearch,
+} from './usersSearchHelpers'
+
+const getAuthorsWhereClause = (authorsPartial: string) => {
+  const trimmedAuthorsPartial = authorsPartial.trim()
+  const searchedWords = trimmedAuthorsPartial.split(' ')
+  if (searchedWords.length === 2) {
+    return getWhereClauseForTwoWordSearch(trimmedAuthorsPartial)
+  } else if (searchedWords.length > 2) {
+    return getWhereClauseForManyWordSearch(trimmedAuthorsPartial)
+  } else {
+    return getWhereClauseForOneWordSearch(trimmedAuthorsPartial)
+  }
+}
+
+const getProgramWhereClause = (
+  programNamePartial: string,
+  language: string | undefined
+) => {
+  const acualLanguage = language ?? 'en'
+  // Validate that the language is one of the allowed keys
+  const allowedLanguages = ['en', 'fi', 'sv']
+  if (!allowedLanguages.includes(acualLanguage)) {
+    throw new Error('Invalid language key')
+  }
+  return {
+    [Op.or]: [
+      {
+        [`name.${acualLanguage}`]: {
+          [Op.iLike]: `%${programNamePartial.trim()}%`,
+        },
+      },
+    ],
+  }
+}
 
 interface FetchThesisProps {
   thesisId?: string
   programId?: string
+  programNamePartial?: string
+  topicPartial?: string
+  authorsPartial?: string
+  status?: string
+  language?: string
   actionUser: UserType
   onlySupervised?: boolean
 }
 export const getFindThesesOptions = async ({
   thesisId,
   programId,
+  programNamePartial,
+  topicPartial,
+  authorsPartial,
+  status,
+  language,
   actionUser,
   onlySupervised,
 }: FetchThesisProps) => {
@@ -56,6 +105,7 @@ export const getFindThesesOptions = async ({
       model: User,
       as: 'authors',
       attributes: userFields,
+      where: authorsPartial ? getAuthorsWhereClause(authorsPartial) : undefined,
     },
     {
       model: User,
@@ -76,12 +126,32 @@ export const getFindThesesOptions = async ({
       where: { label: 'waysOfWorking' },
       required: false,
     },
+    {
+      model: Program,
+      as: 'program',
+      attributes: [],
+      where: programNamePartial
+        ? getProgramWhereClause(programNamePartial, language)
+        : undefined,
+      required: true,
+    },
   ]
 
   let whereClause: Record<any, any> = thesisId ? { id: thesisId } : {}
 
   if (programId) {
     whereClause = { ...whereClause, programId }
+  }
+  if (topicPartial) {
+    whereClause = {
+      ...whereClause,
+      topic: {
+        [Op.iLike]: `%${topicPartial.trim()}%`,
+      },
+    }
+  }
+  if (status) {
+    whereClause = { ...whereClause, status }
   }
 
   if (!actionUser.isAdmin || onlySupervised) {

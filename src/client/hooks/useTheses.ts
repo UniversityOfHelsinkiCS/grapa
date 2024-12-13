@@ -7,6 +7,10 @@ import apiClient from '../util/apiClient'
 
 interface UsePaginatedThesesParams {
   programId?: string
+  programNamePartial?: string
+  topicPartial?: string
+  authorsPartial?: string
+  status?: string
   onlySupervised: boolean
   offset: number
   limit: number
@@ -19,6 +23,10 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     params.offset,
     params.limit,
     params.programId,
+    params.status,
+    params.topicPartial,
+    params.authorsPartial,
+    params.programNamePartial,
   ]
 
   const queryFn = async (): Promise<{
