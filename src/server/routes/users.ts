@@ -153,38 +153,29 @@ usersRouter.get('/', async (req, res) => {
   const searchedWords = trimmedSearch.split(' ')
 
   if (searchedWords.length === 2) {
-    const users = await User.findAll({
-      attributes: userFields,
-      where: {
-        ...getWhereClauseForTwoWordSearch(trimmedSearch),
-        ...whereClauses,
-      },
-      limit: USER_FETCH_LIMIT,
-    })
-    res.send(users)
+    whereClauses = {
+      ...whereClauses,
+      ...getWhereClauseForTwoWordSearch(trimmedSearch),
+    }
   } else if (searchedWords.length > 2) {
-    const users = await User.findAll({
-      attributes: userFields,
-      where: {
-        ...getWhereClauseForManyWordSearch(trimmedSearch),
-        ...whereClauses,
-      },
-      limit: USER_FETCH_LIMIT,
-    })
-    res.send(users)
+    whereClauses = {
+      ...whereClauses,
+      ...getWhereClauseForManyWordSearch(trimmedSearch),
+    }
   } else {
     // the search consists of only one word
-    const users = await User.findAll({
-      attributes: userFields,
-      where: {
-        ...getWhereClauseForOneWordSearch(trimmedSearch),
-        ...whereClauses,
-      },
-      limit: USER_FETCH_LIMIT,
-    })
-
-    res.send(users)
+    whereClauses = {
+      ...whereClauses,
+      ...getWhereClauseForOneWordSearch(trimmedSearch),
+    }
   }
+
+  const users = await User.findAll({
+    attributes: userFields,
+    where: whereClauses,
+    limit: USER_FETCH_LIMIT,
+  })
+  res.send(users)
 })
 
 export default usersRouter
