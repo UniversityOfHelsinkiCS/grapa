@@ -159,7 +159,6 @@ const DepartmentStatistics = () => {
         sx={{ mt: '2rem' }}
         rows={departmentStatistics}
         columns={columns}
-        pageSizeOptions={[100]}
         getRowId={(row) => row.supervisor.id}
         slots={{ toolbar: GridToolbar }}
         columnGroupingModel={[
@@ -175,6 +174,9 @@ const DepartmentStatistics = () => {
             ],
           },
         ]}
+        // we cannot disable pagination in the community version
+        // so we set the page size to a high number
+        pageSizeOptions={[2000]}
       />
     </Box>
   )
