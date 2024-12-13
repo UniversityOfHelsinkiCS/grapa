@@ -303,6 +303,11 @@ const ThesesPage = ({ filteringProgramId, noOwnThesesSwitch }: Props) => {
     setFilterTopic(null)
     setFilterAuthors(null)
     setFilterProgramName(null)
+
+    if (filterModel.items.length === 0) {
+      return
+    }
+
     switch (filterModel.items[0].field) {
       case 'status':
         setFilterStatus(filterModel.items[0].value)
