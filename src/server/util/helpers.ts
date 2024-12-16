@@ -6,6 +6,7 @@ export const getTotalPercentage = (supervisions: SupervisionData[]) =>
 // Helper function to transform a single thesis data
 export const transformSingleThesis = (thesis: ThesisData) => ({
   ...thesis,
+  studyTrackId: thesis.studyTrackId || '', // Convert null to empty string for frontend select component
   graders: thesis.graders
     .map((grader) => ({
       ...grader,
