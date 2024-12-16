@@ -22,6 +22,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
     toggleShowOnlyOwnTheses,
     showOnlyOwnTheses,
     noOwnThesesSwitch,
+    noAddThesisButton,
   } = props
 
   const handleNewThesis = () => {
@@ -39,20 +40,22 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
       sx={{ p: 2, alignItems: 'center', justifyContent: 'space-between' }}
     >
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-        <Button
-          variant="contained"
-          size="small"
-          sx={{
-            fontSize: '12px',
-            height: 24,
-            px: 2,
-            borderRadius: '1rem',
-            fontWeight: 700,
-          }}
-          onClick={handleNewThesis}
-        >
-          {t('thesesTableToolbar:newThesisButton')}
-        </Button>
+        {!noAddThesisButton && (
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              fontSize: '12px',
+              height: 24,
+              px: 2,
+              borderRadius: '1rem',
+              fontWeight: 700,
+            }}
+            onClick={handleNewThesis}
+          >
+            {t('thesesTableToolbar:newThesisButton')}
+          </Button>
+        )}
         {!noOwnThesesSwitch && user?.isAdmin && (
           <FormControlLabel
             control={

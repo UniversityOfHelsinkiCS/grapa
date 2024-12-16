@@ -167,6 +167,7 @@ const ProgramOverview = () => {
             <ThesesPage
               filteringProgramId={selectedProgram.id}
               noOwnThesesSwitch
+              noAddThesisButton
             />
           </Stack>
         </>

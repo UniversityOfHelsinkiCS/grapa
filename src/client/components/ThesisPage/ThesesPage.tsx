@@ -49,8 +49,13 @@ const PAGE_SIZE = 25
 interface Props {
   filteringProgramId?: string
   noOwnThesesSwitch?: boolean
+  noAddThesisButton?: boolean
 }
-const ThesesPage = ({ filteringProgramId, noOwnThesesSwitch }: Props) => {
+const ThesesPage = ({
+  filteringProgramId,
+  noOwnThesesSwitch,
+  noAddThesisButton,
+}: Props) => {
   const apiRef = useGridApiRef()
   const footerRef = useRef<HTMLDivElement>(null)
   const { t, i18n } = useTranslation()
@@ -367,6 +372,7 @@ const ThesesPage = ({ filteringProgramId, noOwnThesesSwitch }: Props) => {
                 setShowOnlyOwnTheses((prev) => !prev),
               showOnlyOwnTheses,
               noOwnThesesSwitch,
+              noAddThesisButton,
             },
             footer: {
               footerRef,
