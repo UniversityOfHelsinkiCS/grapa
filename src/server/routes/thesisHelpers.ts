@@ -1,4 +1,4 @@
-import { Includeable, Op, Transaction } from 'sequelize'
+import { Includeable, literal, Op, Order, Transaction } from 'sequelize'
 import { uniq, uniqBy } from 'lodash-es'
 import { userFields } from './config'
 import {
@@ -18,6 +18,7 @@ import {
   getWhereClauseForOneWordSearch,
   getWhereClauseForTwoWordSearch,
 } from './usersSearchHelpers'
+import { Literal } from 'sequelize/types/utils'
 
 const getAuthorsWhereClause = (authorsPartial: string) => {
   const trimmedAuthorsPartial = authorsPartial.trim()
@@ -50,6 +51,38 @@ const getProgramWhereClause = (
       },
     ],
   }
+}
+
+const getOrderLiteralBasedOnThesesApprovals = (currentUser: UserType) =>
+  literal(`(
+    EXISTS (
+      SELECT 1
+      FROM approvers
+      WHERE
+        approvers.thesis_id = "Thesis".id AND
+        approvers.user_id = '${currentUser.id}'
+    )
+  )`)
+
+interface GetOrderingProps {
+  currentUser: UserType
+  orderBy: 'topic' | 'status' | 'startDate' | 'targetDate' | Literal | undefined
+  orderDirection: 'asc' | 'desc' | undefined
+}
+export const getOrdering = ({
+  currentUser,
+  orderBy,
+  orderDirection,
+}: GetOrderingProps): Order => {
+  if (orderBy && orderDirection) {
+    return [[orderBy, orderDirection]]
+  }
+  // If no ordering is specified, we want to order the theses
+  // based on the current user's approvals and the target date.
+  return [
+    [getOrderLiteralBasedOnThesesApprovals(currentUser), 'DESC'],
+    ['targetDate', 'ASC'],
+  ]
 }
 
 interface FetchThesisProps {

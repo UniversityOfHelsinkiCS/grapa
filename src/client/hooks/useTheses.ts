@@ -4,8 +4,10 @@ import { useQuery } from '@tanstack/react-query'
 import { ThesisData } from '@backend/types'
 
 import apiClient from '../util/apiClient'
+import { useTranslation } from 'react-i18next'
 
 interface UsePaginatedThesesParams {
+  order: { sortBy?: string; sortOrder?: 'asc' | 'desc' }
   programId?: string
   programNamePartial?: string
   topicPartial?: string
@@ -17,6 +19,8 @@ interface UsePaginatedThesesParams {
 }
 
 export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
+  const { i18n } = useTranslation()
+  const { language } = i18n
   const queryKey = [
     'theses',
     params.onlySupervised,
@@ -27,13 +31,29 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     params.topicPartial,
     params.authorsPartial,
     params.programNamePartial,
+    params.order.sortBy,
+    params.order.sortOrder,
+    language,
   ]
 
   const queryFn = async (): Promise<{
     theses: ThesisData[]
     totalCount: number
   }> => {
-    const { data } = await apiClient.get('/theses/paginate', { params })
+    const { data } = await apiClient.get('/theses/paginate', {
+      params: {
+        onlySupervised: params.onlySupervised,
+        offset: params.offset,
+        limit: params.limit,
+        programId: params.programId,
+        status: params.status,
+        topicPartial: params.topicPartial,
+        authorsPartial: params.authorsPartial,
+        programNamePartial: params.programNamePartial,
+        language,
+        ...params.order,
+      },
+    })
 
     return data
   }

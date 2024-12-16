@@ -20,6 +20,7 @@ import {
   GridFilterModel,
   GridFilterOperator,
   GridRowSelectionModel,
+  GridSortModel,
   useGridApiRef,
 } from '@mui/x-data-grid'
 import { fiFI, enUS } from '@mui/x-data-grid/locales'
@@ -87,11 +88,14 @@ const ThesesPage = ({
   const debouncedFilterAuthors = useDebounce(filterAuthors, 500)
   const debouncedFilterProgramName = useDebounce(filterProgramName, 500)
 
+  const [order, setOrder] = useState({})
+
   const {
     theses,
     totalCount,
     isLoading: isThesesLoading,
   } = usePaginatedTheses({
+    order,
     programId: filteringProgramId,
     status: filterStatus,
     topicPartial: debouncedFilterTopic,
@@ -331,6 +335,18 @@ const ThesesPage = ({
     }
   }, [])
 
+  const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
+    if (sortModel.length === 0) {
+      setOrder({})
+      return
+    } else {
+      setOrder({
+        sortBy: sortModel[0].field,
+        sortOrder: sortModel[0].sort,
+      })
+    }
+  }, [])
+
   const isLoading = loggedInUserLoading || isThesesLoading || isProgramLoading
   return (
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
@@ -349,6 +365,8 @@ const ThesesPage = ({
           columnHeaderHeight={36}
           filterMode="server"
           onFilterModelChange={onFilterChange}
+          sortingMode="server"
+          onSortModelChange={handleSortModelChange}
           hideFooterSelectedRowCount
           pageSizeOptions={[PAGE_SIZE]}
           paginationMode="server"

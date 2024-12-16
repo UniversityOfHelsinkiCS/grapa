@@ -1,5 +1,6 @@
 import express, { Response } from 'express'
 import { literal, type Transaction } from 'sequelize'
+import { Literal } from 'sequelize/types/utils'
 
 import {
   ServerDeleteRequest,
@@ -27,6 +28,7 @@ import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import {
   getAndCreateExtUsers,
   getFindThesesOptions,
+  getOrdering,
   handleGradersChangeEventLog,
   handleStatusChangeEmail,
   handleStatusChangeEventLog,
@@ -186,16 +188,26 @@ const deleteThesis = async (id: string, transaction: Transaction) => {
   await Thesis.destroy({ where: { id }, transaction })
 }
 
-const getOrderLiteralBasedOnThesesApprovals = (currentUser: UserType) =>
-  literal(`(
-    EXISTS (
-      SELECT 1
-      FROM approvers
-      WHERE
-        approvers.thesis_id = "Thesis".id AND
-        approvers.user_id = '${currentUser.id}'
-    )
-  )`)
+const getSortByColumn = (
+  sortBy: string
+): 'status' | 'topic' | Literal | 'startDate' | 'targetDate' => {
+  switch (sortBy) {
+    case 'status':
+      return 'status'
+    case 'topic':
+      return 'topic'
+    case 'programId':
+      return literal(`"program"."name"->>$language`)
+    case 'authors':
+      return literal(`"authors"."last_name"`)
+    case 'startDate':
+      return 'startDate'
+    case 'targetDate':
+      return 'targetDate'
+    default:
+      return undefined
+  }
+}
 
 // @ts-expect-error the user middleware updates the req object with user field
 thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
@@ -208,12 +220,22 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
   const topicPartial = req.query.topicPartial as string
   const authorsPartial = req.query.authorsPartial as string
   const status = req.query.status as string
+  // These are optional sort query parameters
+  const sortBy = req.query.sortBy as string
+  const sortOrder = req.query.sortOrder as 'asc' | 'desc'
 
   // Validate that the language is one of the allowed keys
   const allowedLanguages = ['en', 'fi', 'sv']
   if (!allowedLanguages.includes(language)) {
     throw new Error('Invalid language key')
   }
+
+  const allowedSortOrder = ['asc', 'desc']
+  if (sortOrder && !allowedSortOrder.includes(sortOrder)) {
+    throw new Error('Invalid sort order')
+  }
+
+  const sortByColumn = getSortByColumn(sortBy)
 
   const options = await getFindThesesOptions({
     programId,
@@ -231,11 +253,13 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
     subQuery: false,
     offset: Number(offset),
     limit: Number(limit),
-    order: [
-      [getOrderLiteralBasedOnThesesApprovals(currentUser), 'DESC'],
-      ['targetDate', 'ASC'],
-    ],
+    order: getOrdering({
+      currentUser,
+      orderBy: sortByColumn,
+      orderDirection: sortOrder,
+    }),
     distinct: true,
+    bind: { language },
   })
 
   const thesesRows = rows.map((t) => t.toJSON()) as ThesisData[]
