@@ -6,8 +6,6 @@ import {
   CircularProgress,
   Box,
   Typography,
-  FormControlLabel,
-  Switch,
   Select,
   MenuItem,
   ListItemText,
@@ -26,19 +24,15 @@ import ThesesPage from '../ThesisPage/ThesesPage'
 
 interface SingleProgramLogsProps {
   program: ProgramData
-  showNonAdminOnly: boolean
 }
-const SingleProgramLogs = ({
-  program,
-  showNonAdminOnly,
-}: SingleProgramLogsProps) => {
+const SingleProgramLogs = ({ program }: SingleProgramLogsProps) => {
   const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
 
   const { events, isLoading: eventsAreLoading } = useProgramEvents({
     enabled: Boolean(expanded),
     programId: program.id,
-    showNonAdminOnly,
+    showNonAdminOnly: false,
   })
   return (
     <Accordion
@@ -73,7 +67,6 @@ const ProgramOverview = () => {
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(
     null
   )
-  const [showNonAdminOnly, setShowNonAdminOnly] = useState(true)
 
   const handleChange = (targetProgramId: string) =>
     setSelectedProgramId(targetProgramId)
@@ -131,31 +124,15 @@ const ProgramOverview = () => {
       ) : null}
       {Boolean(selectedProgram) && (
         <>
-          <Stack sx={{ px: '1rem', py: '2rem' }}>
+          <Stack
+            sx={{ px: '1rem', py: '2rem' }}
+            useFlexGap
+            spacing={{ xs: 1, sm: 2 }}
+          >
             <Typography component="h1" variant="h4">
               {t('programLogsPage:pageTitle')}
             </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: 2,
-                alignItems: 'center',
-              }}
-            >
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={showNonAdminOnly}
-                    onChange={() => setShowNonAdminOnly((prev) => !prev)}
-                  />
-                }
-                label={t('programLogsPage:showNonAdminOnlySwitch')}
-              />
-            </Box>
-            <SingleProgramLogs
-              program={selectedProgram}
-              showNonAdminOnly={showNonAdminOnly}
-            />
+            <SingleProgramLogs program={selectedProgram} />
           </Stack>
 
           <Divider sx={{ mt: 2, mb: 2, borderWidth: 'medium' }} />
