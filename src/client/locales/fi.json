@@ -25,7 +25,8 @@
     "removeConfirmation": "Vahvista poisto kirjoittamalla (<strong>{{confirmationText}}</strong>) alla olevaan kenttään:",
     "error": "Virhe",
     "thesisPreview": "Tutkielman esikatselu",
-    "theses": "Tutkielmat"
+    "theses": "Tutkielmat",
+    "none": "Ei mitään"
   },
   "eventLog": {
     "thesis": "Tutkielma",
