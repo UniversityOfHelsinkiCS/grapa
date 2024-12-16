@@ -25,7 +25,8 @@
     "removeButton": "Remove",
     "error": "Error",
     "thesisPreview": "Thesis preview",
-    "theses": "Theses"
+    "theses": "Theses",
+    "none": "No studytrack"
   },
   "eventLog": {
     "thesis": "Thesis",
