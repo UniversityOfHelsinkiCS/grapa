@@ -261,7 +261,7 @@ const ThesisEditForm: FC<{
                 <Select
                   data-testid="study-track-select-input"
                   required
-                  value={editedThesis.studyTrackId}
+                  value={editedThesis.studyTrackId ?? ''}
                   id="studyTrackId"
                   label="Study Track"
                   name="studyTrackId"
@@ -282,6 +282,9 @@ const ThesisEditForm: FC<{
                     (error) => error.path[0] === 'studyTrackId'
                   )}
                 >
+                  <MenuItem value="">
+                    <em>{t('common:none')}</em>
+                  </MenuItem>
                   {sortedStudyTracks.map((studyTrack) => (
                     <MenuItem key={studyTrack.id} value={studyTrack.id}>
                       {studyTrack.name[language]}
