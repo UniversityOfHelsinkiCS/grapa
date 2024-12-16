@@ -1935,6 +1935,58 @@ describe('thesis router', () => {
         expect(eventLog).not.toBeNull()
       })
 
+      it('should return 201 with empty studytrack and log the event', async () => {
+        const newThesis = {
+          programId: 'New program',
+          studyTrackId: null,
+          topic: 'New topic',
+          status: 'PLANNING',
+          startDate: '1970-01-01T00:00:00.000Z',
+          targetDate: '2070-01-01T00:00:00.000Z',
+          supervisions: [
+            {
+              user: user1,
+              percentage: 100,
+              isExternal: false,
+              isPrimarySupervisor: true,
+            },
+          ],
+          graders: [
+            {
+              user: user4,
+              isPrimaryGrader: true,
+              isExternal: false,
+            },
+          ],
+          authors: [user2],
+        }
+
+        const response = await request
+          .post('/api/theses')
+          .set('hygroupcn', 'grp-toska')
+          .attach(
+            'waysOfWorking',
+            path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
+          )
+          .attach(
+            'researchPlan',
+            path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
+          )
+          .field('json', JSON.stringify(newThesis))
+
+        expect(response.status).toEqual(201)
+
+        const eventLog = await EventLog.findOne({
+          where: { type: 'THESIS_CREATED', thesisId: response.body.id },
+        })
+
+        expect(eventLog).not.toBeNull()
+
+        const thesis = await Thesis.findByPk(response.body.id)
+        expect(thesis).not.toBeNull()
+        expect(thesis.studyTrackId).toBeNull()
+      })
+
       it('should return 400 and not log the event if the request is missing a required field', async () => {
         const newThesis = {
           programId: 'New program',
