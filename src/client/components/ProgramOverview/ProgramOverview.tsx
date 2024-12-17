@@ -88,7 +88,7 @@ const ProgramOverview = () => {
 
   return (
     <Box component="section" sx={{ px: '1rem', py: '2rem', width: '100%' }}>
-      {selectedProgram && programsUserManages?.length > 1 ? (
+      {selectedProgram && programsUserManages?.length > 0 && (
         <>
           <FormControl sx={{ width: 500 }}>
             <InputLabel id="program-select-label">
@@ -122,7 +122,7 @@ const ProgramOverview = () => {
             </Select>
           </FormControl>
         </>
-      ) : null}
+      )}
       {Boolean(selectedProgram) && (
         <>
           <Stack
