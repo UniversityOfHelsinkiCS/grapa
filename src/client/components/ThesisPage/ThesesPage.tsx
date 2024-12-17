@@ -45,7 +45,7 @@ import DeleteConfirmation from '../Common/DeleteConfirmation'
 import { StatusLocale } from '../../types'
 import { useDebounce } from '../../hooks/useDebounce'
 
-const PAGE_SIZE = 25
+const DEFAULT_PAGE_SIZE = 25
 
 interface Props {
   filteringProgramId?: string
@@ -53,6 +53,7 @@ interface Props {
   noOwnThesesSwitch?: boolean
   noAddThesisButton?: boolean
   showExportOptions?: boolean
+  pageSize?: number
 }
 const ThesesPage = ({
   filteringProgramId,
@@ -60,7 +61,10 @@ const ThesesPage = ({
   noOwnThesesSwitch,
   noAddThesisButton,
   showExportOptions,
+  pageSize,
 }: Props) => {
+  pageSize = pageSize ?? DEFAULT_PAGE_SIZE
+
   const apiRef = useGridApiRef()
   const footerRef = useRef<HTMLDivElement>(null)
   const { t, i18n } = useTranslation()
@@ -70,7 +74,7 @@ const ThesesPage = ({
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
-    pageSize: PAGE_SIZE,
+    pageSize,
   })
 
   const [rowSelectionModel, setRowSelectionModel] =
@@ -373,7 +377,7 @@ const ThesesPage = ({
           sortingMode="server"
           onSortModelChange={handleSortModelChange}
           hideFooterSelectedRowCount
-          pageSizeOptions={[PAGE_SIZE]}
+          pageSizeOptions={[pageSize]}
           paginationMode="server"
           paginationModel={paginationModel}
           onPaginationModelChange={(newModel) => setPaginationModel(newModel)}

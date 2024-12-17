@@ -92,6 +92,7 @@ const DepartmentOverview = () => {
               noOwnThesesSwitch
               noAddThesisButton
               showExportOptions
+              pageSize={100}
             />
           </Stack>
         </>
