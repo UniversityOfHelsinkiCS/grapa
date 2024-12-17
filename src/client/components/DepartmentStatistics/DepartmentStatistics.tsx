@@ -32,7 +32,6 @@ const DepartmentStatistics = () => {
   if (!user.isAdmin && !user.managedDepartmentIds?.length)
     return <Navigate to="/" />
 
-  console.log(departmentStatistics)
   const totalThesisCounts = departmentStatistics.reduce(
     (acc, { statusCounts, startedWithinHalfYearCount }) => {
       ;(Object.entries(statusCounts) as [ThesisStatus, number][]).forEach(
