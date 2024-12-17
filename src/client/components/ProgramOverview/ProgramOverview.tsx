@@ -39,6 +39,7 @@ const SingleProgramLogs = ({ program }: SingleProgramLogsProps) => {
       key={program.id}
       expanded={expanded}
       onChange={() => setExpanded((prev) => !prev)}
+      TransitionProps={{ timeout: 0 }}
     >
       <AccordionSummary
         sx={{ flexDirection: 'row-reverse' }}
