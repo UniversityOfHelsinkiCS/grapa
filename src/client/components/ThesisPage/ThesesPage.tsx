@@ -52,12 +52,14 @@ interface Props {
   filteringDepartmentId?: string
   noOwnThesesSwitch?: boolean
   noAddThesisButton?: boolean
+  showExportOptions?: boolean
 }
 const ThesesPage = ({
   filteringProgramId,
   filteringDepartmentId,
   noOwnThesesSwitch,
   noAddThesisButton,
+  showExportOptions,
 }: Props) => {
   const apiRef = useGridApiRef()
   const footerRef = useRef<HTMLDivElement>(null)
@@ -394,6 +396,7 @@ const ThesesPage = ({
               showOnlyOwnTheses,
               noOwnThesesSwitch,
               noAddThesisButton,
+              showExportOptions,
             },
             footer: {
               footerRef,

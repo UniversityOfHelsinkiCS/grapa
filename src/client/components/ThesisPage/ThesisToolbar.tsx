@@ -1,8 +1,10 @@
+import { format } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { Button, Box, FormControlLabel, Switch } from '@mui/material'
 import {
   GridSlotProps,
   GridToolbarContainer,
+  GridToolbarExport,
   GridToolbarFilterButton,
   useGridApiContext,
 } from '@mui/x-data-grid'
@@ -23,6 +25,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
     showOnlyOwnTheses,
     noOwnThesesSwitch,
     noAddThesisButton,
+    showExportOptions,
   } = props
 
   const handleNewThesis = () => {
@@ -84,6 +87,14 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
         )}
       </Box>
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+        {showExportOptions && (
+          <GridToolbarExport
+            csvOptions={{
+              fileName: `department-overview-${format(new Date(), 'yyyy-MM-dd')}`,
+              delimiter: ';',
+            }}
+          />
+        )}
         <GridToolbarFilterButton />
         <Button
           size="small"

@@ -91,6 +91,7 @@ const DepartmentOverview = () => {
               filteringDepartmentId={selectedDepartmentId}
               noOwnThesesSwitch
               noAddThesisButton
+              showExportOptions
             />
           </Stack>
         </>
