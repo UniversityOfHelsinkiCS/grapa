@@ -219,7 +219,7 @@ const NavBar = () => {
             </ListItemButton>
           </ListItem>
         )}
-        {(user.isAdmin || user.managedProgramIds?.length) && (
+        {(user.isAdmin || user.managedProgramIds?.length > 0) && (
           <ListItem disablePadding>
             <ListItemButton
               component={NavLink}
@@ -227,6 +227,51 @@ const NavBar = () => {
               sx={{ justifyContent: 'space-between', px: 4 }}
             >
               <ListItemText primary={t('navbar:programManager')} />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {(user.isAdmin || user.managedProgramIds?.length > 0) && (
+          <ListItem disablePadding>
+            <ListItemButton
+              component={NavLink}
+              to="/program-overview"
+              sx={{ justifyContent: 'space-between', px: 4 }}
+            >
+              <ListItemText primary={t('navbar:programOverview')} />
+            </ListItemButton>
+          </ListItem>
+        )}
+        <Divider />
+        {(user.isAdmin || user.managedDepartmentIds?.length > 0) && (
+          <ListItem disablePadding>
+            <ListItemButton
+              component={NavLink}
+              to="/department-statistics"
+              sx={{ justifyContent: 'space-between', px: 4 }}
+            >
+              <ListItemText primary={t('navbar:departmentStatistics')} />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {(user.isAdmin || user.managedDepartmentIds?.length > 0) && (
+          <ListItem disablePadding>
+            <ListItemButton
+              component={NavLink}
+              to="/department-overview"
+              sx={{ justifyContent: 'space-between', px: 4 }}
+            >
+              <ListItemText primary={t('navbar:departmentOverview')} />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {(user.isAdmin || user.managedDepartmentIds?.length > 0) && (
+          <ListItem disablePadding>
+            <ListItemButton
+              component={NavLink}
+              to="/department-admins"
+              sx={{ justifyContent: 'space-between', px: 4 }}
+            >
+              <ListItemText primary={t('navbar:departmentAdmin')} />
             </ListItemButton>
           </ListItem>
         )}
