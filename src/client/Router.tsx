@@ -12,6 +12,7 @@ import ProgramOverview from './components/ProgramOverview/ProgramOverview'
 import ProgramManagement from './components/ProgramManagement/ProgramManagement'
 import DepartmentAdmin from './components/DepartmentAdmin/DepartmentAdmin'
 import DepartmentStatistics from './components/DepartmentStatistics/DepartmentStatistics'
+import DepartmentOverview from './components/DepartmentOverview/DepartmentOverview'
 
 import { BASE_PATH } from '../config'
 
@@ -46,6 +47,10 @@ const router = createBrowserRouter(
         {
           path: '/department-statistics',
           element: <DepartmentStatistics />,
+        },
+        {
+          path: '/department-overview',
+          element: <DepartmentOverview />,
         },
         {
           path: '/admin',

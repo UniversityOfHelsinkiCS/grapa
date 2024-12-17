@@ -49,11 +49,13 @@ const PAGE_SIZE = 25
 
 interface Props {
   filteringProgramId?: string
+  filteringDepartmentId?: string
   noOwnThesesSwitch?: boolean
   noAddThesisButton?: boolean
 }
 const ThesesPage = ({
   filteringProgramId,
+  filteringDepartmentId,
   noOwnThesesSwitch,
   noAddThesisButton,
 }: Props) => {
@@ -97,6 +99,7 @@ const ThesesPage = ({
   } = usePaginatedTheses({
     order,
     programId: filteringProgramId,
+    departmentId: filteringDepartmentId,
     status: filterStatus,
     topicPartial: debouncedFilterTopic,
     authorsPartial: debouncedFilterAuthors,
