@@ -19,6 +19,7 @@ import {
   getWhereClauseForTwoWordSearch,
 } from './usersSearchHelpers'
 import { Literal } from 'sequelize/types/utils'
+import { StringifyOptions } from 'node:querystring'
 
 const getAuthorsWhereClause = (authorsPartial: string) => {
   const trimmedAuthorsPartial = authorsPartial.trim()
@@ -87,7 +88,7 @@ export const getOrdering = ({
 
 interface FetchThesisProps {
   thesisId?: string
-  programId?: string
+  programId?: StringifyOptions
   programNamePartial?: string
   topicPartial?: string
   authorsPartial?: string
@@ -205,6 +206,11 @@ export const getFindThesesOptions = async ({
       model: Supervision,
       as: 'supervisionsForFiltering',
       attributes: [] as const,
+      // This where clause and required: false are needed to make sure
+      // LIMIT operator works correctly. Otherwise, sequelize would
+      // apply the limit to each SQL row, not the whole result set.
+      // This would make the number of returned theses be smaller than
+      // the LIMIT number.
       where: {
         userId: actionUser.id,
       },
