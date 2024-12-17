@@ -111,6 +111,41 @@ const ProgramMenu = () => {
   )
 }
 
+const DepartmentMenu = () => {
+  const { t } = useTranslation()
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  return (
+    <PositionedMenu
+      label={t('navbar:department')}
+      open={open}
+      anchorEl={anchorEl}
+      handleClick={handleClick}
+      handleClose={handleClose}
+    >
+      <PositionedMenuLinkItem to="/department-admins" onClick={handleClose}>
+        {t('navbar:departmentAdmin')}
+      </PositionedMenuLinkItem>
+      <PositionedMenuLinkItem to="/department-statistics" onClick={handleClose}>
+        {t('navbar:departmentStatistics')}
+      </PositionedMenuLinkItem>
+      <PositionedMenuLinkItem to="/department-overview" onClick={handleClose}>
+        {t('navbar:departmentOverview')}
+      </PositionedMenuLinkItem>
+    </PositionedMenu>
+  )
+}
+
 const NavBar = () => {
   const { t } = useTranslation()
   const { user, isLoading } = useLoggedInUser()
@@ -149,22 +184,7 @@ const NavBar = () => {
                 <ProgramMenu />
               )}
               {Boolean(user.isAdmin || user.managedDepartmentIds?.length) && (
-                <Button
-                  component={NavLink}
-                  to="/department-admins"
-                  sx={navStyles.link}
-                >
-                  {t('navbar:departmentAdmin')}
-                </Button>
-              )}
-              {Boolean(user.managedDepartmentIds?.length) && (
-                <Button
-                  component={NavLink}
-                  to="/department-statistics"
-                  sx={navStyles.link}
-                >
-                  {t('navbar:departmentStatistics')}
-                </Button>
+                <DepartmentMenu />
               )}
             </Box>
 
