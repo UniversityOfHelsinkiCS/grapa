@@ -220,6 +220,7 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
   const topicPartial = req.query.topicPartial as string
   const authorsPartial = req.query.authorsPartial as string
   const status = req.query.status as string
+  const departmentId = req.query.departmentId as string
   // These are optional sort query parameters
   const sortBy = req.query.sortBy as string
   const sortOrder = req.query.sortOrder as 'asc' | 'desc'
@@ -239,6 +240,7 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
 
   const options = await getFindThesesOptions({
     programId,
+    departmentId,
     programNamePartial,
     topicPartial,
     authorsPartial,

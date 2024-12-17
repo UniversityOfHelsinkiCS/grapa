@@ -19,7 +19,6 @@ import {
   getWhereClauseForTwoWordSearch,
 } from './usersSearchHelpers'
 import { Literal } from 'sequelize/types/utils'
-import { StringifyOptions } from 'node:querystring'
 
 const getAuthorsWhereClause = (authorsPartial: string) => {
   const trimmedAuthorsPartial = authorsPartial.trim()
@@ -88,7 +87,8 @@ export const getOrdering = ({
 
 interface FetchThesisProps {
   thesisId?: string
-  programId?: StringifyOptions
+  programId?: string
+  departmentId?: string
   programNamePartial?: string
   topicPartial?: string
   authorsPartial?: string
@@ -100,6 +100,7 @@ interface FetchThesisProps {
 export const getFindThesesOptions = async ({
   thesisId,
   programId,
+  departmentId,
   programNamePartial,
   topicPartial,
   authorsPartial,
@@ -186,6 +187,28 @@ export const getFindThesesOptions = async ({
   }
   if (status) {
     whereClause = { ...whereClause, status }
+  }
+  if (departmentId) {
+    includes = [
+      ...includes,
+      {
+        model: Supervision,
+        as: 'supervisionsForDepartmentFiltering',
+        attributes: [],
+        include: [
+          {
+            model: User,
+            as: 'userForDepartmentFiltering',
+            attributes: [],
+            where: { departmentId },
+            // we need both required: true jere and below
+            // for the query to work correctly
+            required: true,
+          },
+        ],
+        required: true,
+      },
+    ]
   }
 
   if (!actionUser.isAdmin || onlySupervised) {

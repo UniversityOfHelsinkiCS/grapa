@@ -29,8 +29,16 @@ Thesis.hasMany(Supervision, {
   foreignKey: 'thesisId',
   as: 'supervisionsForFiltering',
 })
+Thesis.hasMany(Supervision, {
+  foreignKey: 'thesisId',
+  as: 'supervisionsForDepartmentFiltering',
+})
 
 Supervision.belongsTo(User, { as: 'user' })
+Supervision.belongsTo(User, {
+  as: 'userForDepartmentFiltering',
+  foreignKey: 'userId',
+})
 Supervision.belongsTo(Thesis, { as: 'thesis' })
 
 ProgramManagement.belongsTo(User, { as: 'user' })
