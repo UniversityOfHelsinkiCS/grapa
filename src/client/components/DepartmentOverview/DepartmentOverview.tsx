@@ -45,7 +45,7 @@ const DepartmentOverview = () => {
 
   return (
     <Box component="section" sx={{ px: '1rem', py: '2rem', width: '100%' }}>
-      {selectedDepartment && departments?.length && (
+      {selectedDepartment && departments?.length > 0 && (
         <>
           <FormControl sx={{ width: 500 }}>
             <InputLabel id="department-select-label">
