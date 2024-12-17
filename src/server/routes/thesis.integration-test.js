@@ -505,6 +505,98 @@ describe('thesis router', () => {
               expect(response.body).toMatchObject({ totalCount: 0, theses: [] })
             })
           })
+
+          describe.only('theses sorting logic', () => {
+            beforeEach(async () => {
+              await Thesis.create({
+                programId: 'Testing program',
+                topic: 'test topic 2',
+                status: 'IN_PROGRASS',
+                startDate: '1970-01-01',
+                targetDate: '2070-01-01',
+              })
+            })
+
+            describe('when sorting the theses by topic in ASC', () => {
+              it('should return the theses sorted by topic in ascending order', async () => {
+                const response = await request
+                  .get('/api/theses/paginate?sortBy=topic&sortOrder=asc')
+                  .set('hygroupcn', 'grp-toska')
+                expect(response.status).toEqual(200)
+                expect(response.body).toMatchObject({
+                  totalCount: 2,
+                  theses: [
+                    {
+                      topic: 'test topic',
+                    },
+                    {
+                      topic: 'test topic 2',
+                    },
+                  ],
+                })
+              })
+            })
+
+            describe('when sorting the theses by topic in DESC', () => {
+              it('should return the theses sorted by topic in ascending order', async () => {
+                const response = await request
+                  .get('/api/theses/paginate?sortBy=topic&sortOrder=desc')
+                  .set('hygroupcn', 'grp-toska')
+                expect(response.status).toEqual(200)
+                expect(response.body).toMatchObject({
+                  totalCount: 2,
+                  theses: [
+                    {
+                      topic: 'test topic 2',
+                    },
+                    {
+                      topic: 'test topic',
+                    },
+                  ],
+                })
+              })
+            })
+
+            describe('when sorting the theses by status in ASC', () => {
+              it('should return the theses sorted by topic in ascending order', async () => {
+                const response = await request
+                  .get('/api/theses/paginate?sortBy=status&sortOrder=asc')
+                  .set('hygroupcn', 'grp-toska')
+                expect(response.status).toEqual(200)
+                expect(response.body).toMatchObject({
+                  totalCount: 2,
+                  theses: [
+                    {
+                      status: 'PLANNING',
+                    },
+                    {
+                      status: 'IN_PROGRESS',
+                    },
+                  ],
+                })
+              })
+            })
+
+            describe('when sorting the theses by status in DESC', () => {
+              it('should return the theses sorted by topic in ascending order', async () => {
+                const response = await request
+                  .get('/api/theses/paginate?sortBy=status&sortOrder=desc')
+                  .set('hygroupcn', 'grp-toska')
+                expect(response.status).toEqual(200)
+                expect(response.body).toMatchObject({
+                  totalCount: 2,
+                  theses: [
+                    {
+                      status: 'IN_PROGRESS',
+                    },
+                    {
+                      status: 'PLANNING',
+                    },
+                  ],
+                })
+              })
+            })
+          })
         })
 
         describe('when filtering by programId', () => {
