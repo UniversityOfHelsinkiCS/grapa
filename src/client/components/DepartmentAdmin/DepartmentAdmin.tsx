@@ -14,6 +14,7 @@ import {
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { fiFI, enUS } from '@mui/x-data-grid/locales'
 
 import { TranslationLanguage, DepartmentAdminData } from '@backend/types'
 
@@ -67,6 +68,8 @@ const DepartmentAdmin = () => {
   if (userLoading || !departments?.length || !departmentAdmins) return null
   if (!user.isAdmin && !user.managedDepartmentIds?.length)
     return <Navigate to="/" />
+
+  const dataGridLocale = language === 'fi' ? fiFI : enUS
 
   const columns: GridColDef<DepartmentAdminData>[] = [
     {
@@ -127,6 +130,9 @@ const DepartmentAdmin = () => {
         rows={departmentAdmins}
         columns={columns}
         pageSizeOptions={[100]}
+        localeText={
+          dataGridLocale.components.MuiDataGrid.defaultProps.localeText
+        }
       />
       <Box
         sx={{

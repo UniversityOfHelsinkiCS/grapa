@@ -19,6 +19,8 @@ import HowToRegIcon from '@mui/icons-material/HowToReg'
 import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
+import { fiFI, enUS } from '@mui/x-data-grid/locales'
+
 import useUsers from '../../hooks/useUsers'
 import usePrograms from '../../hooks/usePrograms'
 import { useDebounce } from '../../hooks/useDebounce'
@@ -86,6 +88,8 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
   if (!user || userLoading || !programs || !programManagements) return null
   if (!user.isAdmin && !user.managedProgramIds?.length)
     return <Navigate to="/" />
+
+  const dataGridLocale = language === 'fi' ? fiFI : enUS
 
   const columns: GridColDef<ProgramManagementData>[] = [
     {
@@ -184,6 +188,9 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
         rows={programManagements}
         columns={columns}
         pageSizeOptions={[100]}
+        localeText={
+          dataGridLocale.components.MuiDataGrid.defaultProps.localeText
+        }
       />
       <Box
         sx={{

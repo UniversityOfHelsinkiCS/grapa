@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Box, Tooltip, Typography } from '@mui/material'
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid'
 
+import { fiFI, enUS } from '@mui/x-data-grid/locales'
+
 import {
   ThesisStatistics,
   ThesisStatus,
@@ -51,6 +53,8 @@ const DepartmentStatistics = () => {
       CANCELLED: 0,
     } as { startedWithinHalfYearCount: number } & Record<ThesisStatus, number>
   )
+
+  const dataGridLocale = language === 'fi' ? fiFI : enUS
 
   const columns: GridColDef<ThesisStatistics>[] = [
     {
@@ -160,6 +164,9 @@ const DepartmentStatistics = () => {
         columns={columns}
         getRowId={(row) => row.supervisor.id}
         slots={{ toolbar: GridToolbar }}
+        localeText={
+          dataGridLocale.components.MuiDataGrid.defaultProps.localeText
+        }
         columnGroupingModel={[
           {
             groupId: t('departmentStatisticsPage:thesisCountHeader'),
