@@ -10,9 +10,9 @@ import LoginAs from './components/LoginAs'
 import Admin from './components/Admin/Admin'
 import ProgramOverview from './components/ProgramOverview/ProgramOverview'
 import ProgramManagement from './components/ProgramManagement/ProgramManagement'
-import DepartmentAdmin from './components/DepartmentAdmin/DepartmentAdmin'
-import DepartmentStatistics from './components/DepartmentStatistics/DepartmentStatistics'
-import DepartmentOverview from './components/DepartmentOverview/DepartmentOverview'
+import DepartmentAdmin from './components/Department/DepartmentAdmin'
+import DepartmentStatistics from './components/Department/DepartmentStatistics'
+import DepartmentOverview from './components/Department/DepartmentOverview'
 
 import { BASE_PATH } from '../config'
 
