@@ -12,8 +12,8 @@ import {
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { TranslationLanguage } from '@backend/types'
-import ThesesPage from '../ThesisPage/ThesesPage'
 import useDepartments from '../../hooks/useDepartments'
+import DepartmentTheses from './DepartmentTheses'
 
 const DepartmentOverview = () => {
   const { t, i18n } = useTranslation()
@@ -85,9 +85,9 @@ const DepartmentOverview = () => {
         <>
           <Stack sx={{ px: '1rem', py: '2rem' }}>
             <Typography component="h1" variant="h4">
-              {t('theses')}
+              {t('supervisionsTable')}
             </Typography>
-            <ThesesPage
+            <DepartmentTheses
               filteringDepartmentId={selectedDepartmentId}
               noOwnThesesSwitch
               noAddThesisButton
