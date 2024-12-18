@@ -53,7 +53,7 @@ export const useUpdateProgramManagementMutation = () => {
     mutationFn,
     onSuccess: (_, { programManagementId, isThesisApprover }) => {
       queryClient.setQueryData(
-        ['program-managements', undefined, undefined],
+        ['program-managements', undefined, undefined, undefined],
         (oldData: ProgramManagementData[]) =>
           oldData.map((programManagement) =>
             programManagement.id === programManagementId
@@ -65,7 +65,7 @@ export const useUpdateProgramManagementMutation = () => {
           )
       )
       queryClient.invalidateQueries({
-        queryKey: ['program-managements', undefined, undefined],
+        queryKey: ['program-managements', undefined, undefined, undefined],
       })
     },
   })

@@ -344,6 +344,29 @@ export const handleStatusChangeEmail = async (
   }
 }
 
+export const handleThesisCreationEmail = async (
+  newThesis: ThesisData,
+  actionUser: UserType
+) => {
+  if (newThesis.approvers.length) {
+    const approverTargets = newThesis.approvers
+      .filter((approver) => approver.email)
+      .map((approver) => approver.email)
+
+    const targets = uniq([...approverTargets])
+
+    const subject = 'Prethesis - A new thesis for you to approve'
+    const message = `
+    This is an automated message from Prethesis. \n\n
+
+    A new thesis "${newThesis.topic}" was created by ${actionUser.firstName} ${actionUser.lastName}.
+    You were marked as an approver for this thesis.
+  `
+
+    await sendEmail(targets, message, subject)
+  }
+}
+
 export const handleStatusChangeEventLog = async (
   originalThesis: Thesis,
   updatedThesis: Thesis,

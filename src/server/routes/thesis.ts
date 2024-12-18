@@ -33,6 +33,7 @@ import {
   handleStatusChangeEmail,
   handleStatusChangeEventLog,
   handleSupervisionsChangeEventLog,
+  handleThesisCreationEmail,
 } from './thesisHelpers'
 import {
   deleteThesisAttachments,
@@ -330,6 +331,8 @@ thesisRouter.post(
         },
         { transaction: t }
       )
+
+      await handleThesisCreationEmail(thesisData, req.user)
 
       return newThesis.toJSON()
     })

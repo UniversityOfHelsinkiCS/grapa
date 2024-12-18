@@ -8,10 +8,11 @@ const programManagementRouter = express.Router()
 
 const getProgramIdFilter = (
   isAdmin: boolean,
+  limitToEditorsPrograms: boolean,
   programId: string | undefined
 ) => {
   const programIdFilter = []
-  if (!isAdmin) {
+  if (!isAdmin && limitToEditorsPrograms) {
     programIdFilter.push({
       [Op.in]: literal(
         `(SELECT program_id FROM program_managements WHERE user_id = $editorUserId)`
@@ -30,10 +31,11 @@ programManagementRouter.get(
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
     const { isAdmin } = req.user
-    const { programId, onlyThesisApprovers } = req.query
+    const { programId, onlyThesisApprovers, limitToEditorsPrograms } = req.query
 
     const programIdFilter = getProgramIdFilter(
       isAdmin,
+      limitToEditorsPrograms === 'true',
       programId as string | undefined
     )
     let whereClause = {}

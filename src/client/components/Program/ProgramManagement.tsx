@@ -59,6 +59,7 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
       ? {
           programId: filteringProgramId,
           onlyThesisApprovers: false,
+          limitToEditorsPrograms: true,
         }
       : undefined
   )

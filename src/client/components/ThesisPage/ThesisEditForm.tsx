@@ -62,6 +62,7 @@ const ThesisEditForm: FC<{
     useProgramManagements({
       onlyThesisApprovers: true,
       programId: editedThesis.programId,
+      limitToEditorsPrograms: false,
     })
   const approvers = programManagementsOfApprovers?.map(
     (programManagement) => programManagement.user
