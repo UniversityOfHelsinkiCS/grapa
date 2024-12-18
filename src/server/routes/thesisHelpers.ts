@@ -360,6 +360,7 @@ export const handleThesisCreationEmail = async (
     This is an automated message from Prethesis. \n\n
 
     A new thesis "${newThesis.topic}" was created by ${actionUser.firstName} ${actionUser.lastName}.
+    The author of the thesis is ${newThesis.authors[0].firstName} ${newThesis.authors[0].lastName}.
     You were marked as an approver for this thesis.
   `
 
