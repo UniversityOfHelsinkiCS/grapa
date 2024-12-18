@@ -1,9 +1,11 @@
 import { Box, Link } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import styles from '../styles'
 
 import toskaColor from '../assets/toscalogo_color.svg'
 
 const Footer = () => {
+  const { t } = useTranslation()
   const { footerStyles } = styles
 
   return (
@@ -24,6 +26,10 @@ const Footer = () => {
           >
             <img src={toskaColor} alt="Toska" width="70" />
           </Link>
+        </Box>
+        <Box sx={footerStyles.contactBox}>
+          <p>{t('contactInfo')}: </p>
+          <Link href="mailto:grp-toska@helsinki.fi">grp-toska@helsinki.fi</Link>
         </Box>
       </Box>
     </Box>

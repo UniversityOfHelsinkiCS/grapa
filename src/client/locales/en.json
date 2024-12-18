@@ -2,6 +2,7 @@
   "common": {
     "appName": "Prethesis",
     "author": "Author",
+    "contactInfo": "Contact information",
     "grader": "Grader {{index}}",
     "supervisor": "Supervisor {{index}}",
     "userSearchNoOptions": "Type at least 5 characters to search for users",

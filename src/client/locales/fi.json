@@ -2,6 +2,7 @@
   "common": {
     "appName": "Prethesis",
     "author": "Tekijä",
+    "contactInfo": "Yhteystiedot",
     "grader": "Arvioija {{index}}",
     "supervisor": "Ohjaaja {{index}}",
     "userSearchNoOptions": "Kirjoita vähintään 5 merkkiä etsiäksesi käyttäjiä",

@@ -207,14 +207,22 @@ const footerStyles = {
       px: '3rem',
     },
     display: 'flex',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     alignItems: 'center',
+    columnGap: '3rem',
   },
   imageBox: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     rowGap: '1rem',
+  },
+  contactBox: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    columnGap: '0.5rem',
+    color: 'white',
   },
 }
 
