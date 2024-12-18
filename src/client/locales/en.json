@@ -20,6 +20,7 @@
     "supervisionsTable": "Supervisions",
     "targetDateHeader": "Target date",
     "editButton": "Edit",
+    "approveButton": "Approve",
     "deleteButton": "Delete",
     "cancelButton": "Cancel",
     "submitButton": "Submit",

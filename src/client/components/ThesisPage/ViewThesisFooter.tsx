@@ -31,10 +31,14 @@ import usePrograms from '../../hooks/usePrograms'
 import useEvents from '../../hooks/useEvents'
 import { useSingleThesis } from '../../hooks/useTheses'
 
-import { BASE_PATH } from '../../../config'
+import { BASE_PATH, THESIS_STATUSES } from '../../../config'
 import EventsView from '../EventsView/EventsView'
 import { useState } from 'react'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
+import { useEditThesisMutation } from '../../hooks/useThesesMutation'
+import useLoggedInUser from '../../hooks/useLoggedInUser'
+
+const IN_PROGRESS_STATUS = THESIS_STATUSES.IN_PROGRESS as 'IN_PROGRESS'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
@@ -368,9 +372,11 @@ const ViewThesisFooter = (
   const thesisId = rowSelectionModel[0] as unknown as string | undefined
 
   const { t } = useTranslation()
+  const { user: currentUser } = useLoggedInUser()
   const [eventLogOpen, setEventLogOpen] = useState(false)
   const { thesis, isLoading: thesisLoading } = useSingleThesis(thesisId)
   const { events } = useEvents({ thesisId })
+  const { mutateAsync: editThesis } = useEditThesisMutation()
 
   return (
     <>
@@ -416,8 +422,37 @@ const ViewThesisFooter = (
               </Typography>
             </Typography>
 
-            {thesis && (
+            {thesis && currentUser && (
               <Box sx={{ display: 'flex', gap: 2 }}>
+                {Boolean(
+                  thesis.status === THESIS_STATUSES.PLANNING &&
+                    thesis.approvers?.length &&
+                    thesis.approvers[0].id === currentUser?.id
+                ) && (
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      color: '#000',
+                      backgroundColor: '#fcd34d',
+                      fontSize: '12px',
+                      height: 24,
+                      px: 2,
+                      borderRadius: '1rem',
+                      fontWeight: 600,
+                    }}
+                    onClick={() =>
+                      editThesis({
+                        thesisId: thesis.id,
+                        data: {
+                          ...thesis,
+                          status: IN_PROGRESS_STATUS,
+                        },
+                      })
+                    }
+                  >
+                    {t('approveButton')}
+                  </Button>
+                )}
                 <Button
                   variant="outlined"
                   sx={{

@@ -19,6 +19,7 @@
     "supervisionPercentageHeader": "Ohjausprosentti",
     "supervisionsTable": "Ohjaukset",
     "targetDateHeader": "Tavoitepäivä",
+    "approveButton": "Hyväksy",
     "editButton": "Muokkaa",
     "deleteButton": "Poista",
     "cancelButton": "Peruuta",
