@@ -105,7 +105,7 @@ describe('program-managements router', () => {
     describe('GET /api/program-managements', () => {
       it('should return 200', async () => {
         const response = await request
-          .get('/api/program-managements')
+          .get('/api/program-managements?limitToEditorsPrograms=true')
           .set({ uid: user1.id, hygroupcn: 'hy-employees' })
         expect(response.status).toEqual(200)
         expect(response.body).toMatchObject([])
@@ -293,7 +293,7 @@ describe('program-managements router', () => {
     describe('GET /api/program-managements', () => {
       it('should return 200 and only the programs that teacher is managing', async () => {
         const response = await request
-          .get('/api/program-managements')
+          .get('/api/program-managements?limitToEditorsPrograms=true')
           .set({ uid: user1.id, hygroupcn: 'hy-employees' })
         expect(response.status).toEqual(200)
         expect(response.body).toIncludeSameMembers([

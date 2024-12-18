@@ -348,7 +348,7 @@ export const handleThesisCreationEmail = async (
   newThesis: ThesisData,
   actionUser: UserType
 ) => {
-  if (newThesis.approvers.length) {
+  if (newThesis.approvers?.length) {
     const approverTargets = newThesis.approvers
       .filter((approver) => approver.email)
       .map((approver) => approver.email)
