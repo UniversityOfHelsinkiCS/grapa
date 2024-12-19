@@ -37,7 +37,7 @@ export const getWhereClauseForTwoWordSearch = (search: string) => {
       // assume that the first word is the first name and the second word is the last name
       {
         firstName: {
-          [Op.iLike]: `${firstName}%`,
+          [Op.iLike]: `%${firstName}%`,
         },
         lastName: {
           [Op.iLike]: `${lastName}%`,
@@ -48,7 +48,7 @@ export const getWhereClauseForTwoWordSearch = (search: string) => {
       // for searching with first and middle names
       {
         firstName: {
-          [Op.iLike]: `${search}%`,
+          [Op.iLike]: `%${search}%`,
         },
       },
       // sometimes, users might first type in last name and then first name
