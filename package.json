@@ -87,7 +87,7 @@
     "@types/connect-redis": "^0.0.23",
     "@types/cors": "^2.8.17",
     "@types/eslint": "^9.0.0",
-    "@types/diff": "^6.0.0",
+    "@types/diff": "^7.0.0",
     "@types/express": "^5.0.0",
     "@types/express-session": "^1.18.0",
     "@types/jest": "^29.5.12",
