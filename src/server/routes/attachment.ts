@@ -19,7 +19,7 @@ attachmentRoute.get('/:filename', async (req, res) => {
   res.setHeader('Content-Type', 'application/pdf')
   res.setHeader(
     'Content-Disposition',
-    `attachment; filename=${metadata.originalname}`
+    `attachment; filename=${metadata.originalname.replace(/,/g, '')}`
   )
   file.pipe(res)
 })
