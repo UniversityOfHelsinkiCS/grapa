@@ -211,7 +211,7 @@ export const getFindThesesOptions = async ({
     ]
   }
 
-  if (!actionUser.isAdmin || onlySupervised) {
+  if (!departmentId && (!actionUser.isAdmin || onlySupervised)) {
     const programManagement = onlySupervised
       ? []
       : await ProgramManagement.findAll({
