@@ -57,7 +57,7 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
   const { programManagements } = useProgramManagements(
     filteringProgramId
       ? {
-          programId: filteringProgramId,
+          programId: undefined,
           onlyThesisApprovers: false,
           limitToEditorsPrograms: true,
         }
@@ -85,6 +85,8 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
       setProgramId(null)
     }
   }
+
+  console.log('programManagements', programManagements)
 
   if (!user || userLoading || !programs || !programManagements) return null
   if (!user.isAdmin && !user.managedProgramIds?.length)

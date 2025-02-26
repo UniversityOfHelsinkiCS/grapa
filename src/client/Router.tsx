@@ -34,7 +34,7 @@ const router = createBrowserRouter(
         },
         {
           path: '/program-managements',
-          element: <ProgramManagement />,
+          element: <ProgramManagement filteringProgramId="own" />,
         },
         {
           path: '/program-overview',

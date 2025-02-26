@@ -19,13 +19,14 @@ const getProgramIdFilter = (
       ),
     })
   }
-  if (programId) {
+  if (programId && programId !== 'own') {
     programIdFilter.push({
       [Op.eq]: programId,
     })
   }
   return programIdFilter
 }
+
 programManagementRouter.get(
   '/',
   // @ts-expect-error the user middleware updates the req object with user field
@@ -38,6 +39,7 @@ programManagementRouter.get(
       limitToEditorsPrograms === 'true',
       programId as string | undefined
     )
+
     let whereClause = {}
     if (programIdFilter.length) {
       whereClause = {
@@ -47,6 +49,7 @@ programManagementRouter.get(
         },
       }
     }
+
     if (onlyThesisApprovers === 'true') {
       whereClause = {
         ...whereClause,
