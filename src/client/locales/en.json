@@ -163,13 +163,18 @@
     "removeSupervisorConfirmationNoName": "Are you sure you want to delete the supervisor {{index}}?",
     "removeGraderConfirmationTitle": "Delete grader",
     "removeGraderConfirmationContent": "Are you sure you want to delete the grader: {{name}}?",
-    "removeGraderConfirmationNoName": "Are you sure you want to delete the grader {{index}}?"
+    "removeGraderConfirmationNoName": "Are you sure you want to delete the grader {{index}}?",
+    "submitEthesis": "Send thesis info to Ethesis",
+    "toSubmitEthesis": "Sending the thesis info to Ethesis",
+    "send": "Send"
   },
   "thesisStages": {
     "planned": "Planned",
     "inProgress": "In progress",
     "completed": "Completed",
-    "cancelled": "Cancelled"
+    "cancelled": "Cancelled",
+    "ethesis": "In Ethesis",
+    "ethesisSent": "In Ethesis"
   },
   "thesesTableToolbar": {
     "newThesisButton": "New thesis",

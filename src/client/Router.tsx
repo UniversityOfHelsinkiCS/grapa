@@ -15,6 +15,7 @@ import DepartmentStatistics from './components/Department/DepartmentStatistics'
 import DepartmentOverview from './components/Department/DepartmentOverview'
 
 import { BASE_PATH } from '../config'
+import Ethesis from './components/Ethesis'
 
 const router = createBrowserRouter(
   [
@@ -51,6 +52,10 @@ const router = createBrowserRouter(
         {
           path: '/department-overview',
           element: <DepartmentOverview />,
+        },
+        {
+          path: '/ethesis',
+          element: <Ethesis />,
         },
         {
           path: '/admin',

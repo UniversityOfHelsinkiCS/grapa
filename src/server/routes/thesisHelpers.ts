@@ -267,6 +267,7 @@ export const getFindThesesOptions = async ({
       'targetDate',
       'programId',
       'studyTrackId',
+      'updatedAt',
     ],
     include: includes,
   }

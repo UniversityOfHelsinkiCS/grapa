@@ -25,7 +25,11 @@ import {
 } from '@mui/x-data-grid'
 import { fiFI, enUS } from '@mui/x-data-grid/locales'
 
-import { ThesisData as Thesis, TranslationLanguage } from '@backend/types'
+import {
+  ThesisData as Thesis,
+  ThesisStatus,
+  TranslationLanguage,
+} from '@backend/types'
 
 import { usePaginatedTheses } from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
@@ -44,6 +48,7 @@ import DeleteConfirmation from '../Common/DeleteConfirmation'
 
 import { StatusLocale } from '../../types'
 import { useDebounce } from '../../hooks/useDebounce'
+import EthesisConfirmation from '../Common/EthesisConfirmation'
 
 const DEFAULT_PAGE_SIZE = 25
 
@@ -83,6 +88,10 @@ const ThesesPage = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [editedTesis, setEditedThesis] = useState<Thesis | null>(null)
   const [deletedThesis, setDeletedThesis] = useState<Thesis | null>(null)
+
+  const [ethesisDialogOpen, setEthesisDialogOpen] = useState(false)
+  const [ethesisTesis, setEthesisThesis] = useState<Thesis | null>(null)
+
   const [newThesis, setNewThesis] = useState<Thesis | null>(null)
   const [showOnlyOwnTheses, setShowOnlyOwnTheses] = useState(!noOwnThesesSwitch)
 
@@ -160,6 +169,11 @@ const ThesesPage = ({
     // NOTE: We need to clone the object to
     // prevent the form from updating the original object
     setEditedThesis(cloneDeep(thesisToEdit))
+  }
+
+  const initializeSubitToEthesis = (thesisToEdit: Thesis) => {
+    setEthesisThesis(thesisToEdit)
+    setEthesisDialogOpen(true)
   }
 
   const stringFilterOperators: GridFilterOperator[] = getGridStringOperators()
@@ -407,6 +421,7 @@ const ThesesPage = ({
               rowSelectionModel,
               handleEditThesis: initializeThesisEdit,
               handleDeleteThesis: initializeThesisDelete,
+              handleSubitToEthesis: initializeSubitToEthesis,
             },
             loadingOverlay: {
               variant: 'skeleton',
@@ -443,6 +458,7 @@ const ThesesPage = ({
           formTitle={t('thesisForm:editThesisFormTitle')}
           initialThesis={editedTesis}
           onSubmit={async (updatedThesis) => {
+            console.log(updatedThesis)
             await editThesis({ thesisId: editedTesis.id, data: updatedThesis })
             setEditedThesis(null)
           }}
@@ -460,6 +476,49 @@ const ThesesPage = ({
           }}
           onClose={() => setNewThesis(null)}
         />
+      )}
+      {ethesisTesis && (
+        <EthesisConfirmation
+          open={ethesisDialogOpen}
+          setOpen={setEthesisDialogOpen}
+          onClose={() => {
+            setEthesisDialogOpen(false)
+            setEthesisThesis(null)
+          }}
+          onSubmit={async () => {
+            setEthesisDialogOpen(false)
+
+            const status = 'ETHESIS_SENT' as ThesisStatus
+            const data = { ...ethesisTesis, status }
+            await editThesis({ thesisId: ethesisTesis.id, data })
+            setEthesisThesis(null)
+          }}
+          title={t('thesisForm:toSubmitEthesis')}
+        >
+          <Box>
+            {ethesisTesis.topic}
+
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body2">
+                {t('author')}{' '}
+                {ethesisTesis.authors.length > 0 &&
+                  `${ethesisTesis.authors[0].firstName} ${ethesisTesis.authors[0].lastName}`}
+              </Typography>
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                <span style={{ marginRight: 10 }}>
+                  {t('thesisForm:graders')}
+                </span>
+                {ethesisTesis.graders.length > 0 &&
+                  ethesisTesis.graders
+                    .map(
+                      (grader) =>
+                        `${grader.user.firstName} ${grader.user.lastName}`
+                    )
+                    .join(', ')}
+              </Typography>
+            </Box>
+          </Box>
+        </EthesisConfirmation>
       )}
       {deletedThesis && (
         <DeleteConfirmation

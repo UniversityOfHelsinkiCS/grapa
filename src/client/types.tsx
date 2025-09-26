@@ -7,6 +7,8 @@ export enum StatusLocale {
   IN_PROGRESS = 'thesisStages:inProgress',
   COMPLETED = 'thesisStages:completed',
   CANCELLED = 'thesisStages:cancelled',
+  ETHESIS = 'thesisStages:ethesis',
+  ETHESIS_SENT = 'thesisStages:ethesisSent',
 }
 
 export interface SupervisorSelection {
@@ -22,4 +24,5 @@ export interface ThesisFooterProps {
   rowSelectionModel: GridRowSelectionModel[]
   handleEditThesis: (thesis: Thesis) => void
   handleDeleteThesis: (thesis: Thesis) => void
+  handleSubitToEthesis: (thesis: Thesis) => void
 }

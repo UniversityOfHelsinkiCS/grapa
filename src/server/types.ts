@@ -48,6 +48,8 @@ export interface RequestWithUser extends Request {
 export type ThesisStatus =
   | 'PLANNING'
   | 'IN_PROGRESS'
+  | 'ETHESIS_SENT'
+  | 'ETHESIS'
   | 'COMPLETED'
   | 'CANCELLED'
 

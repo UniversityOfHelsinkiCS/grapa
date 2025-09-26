@@ -266,6 +266,7 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
   })
 
   const thesesRows = rows.map((t) => t.toJSON()) as ThesisData[]
+  console.log(thesesRows)
   const theses = transformThesisData(thesesRows)
 
   res.send({ theses, totalCount: count })

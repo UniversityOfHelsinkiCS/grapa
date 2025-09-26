@@ -13,7 +13,7 @@ interface UsePaginatedThesesParams {
   programNamePartial?: string
   topicPartial?: string
   authorsPartial?: string
-  status?: string
+  status?: string | string[]
   onlySupervised: boolean
   offset: number
   limit: number
@@ -22,6 +22,9 @@ interface UsePaginatedThesesParams {
 export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
   const { i18n } = useTranslation()
   const { language } = i18n
+
+  console.log(typeof params.status, params.status)
+
   const queryKey = [
     'theses',
     params.onlySupervised,

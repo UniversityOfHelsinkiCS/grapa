@@ -163,13 +163,18 @@
     "removeSupervisorConfirmationNoName": "Haluatko varmasti poistaa ohjaajan {{index}}?",
     "removeGraderConfirmationTitle": "Poista arvioija",
     "removeGraderConfirmationContent": "Haluatko varmasti poistaa arvioijan: {{name}}?",
-    "removeGraderConfirmationNoName": "Haluatko varmasti poistaa arvioijan {{index}}?"
+    "removeGraderConfirmationNoName": "Haluatko varmasti poistaa arvioijan {{index}}?",
+    "submitEthesis": "Lähetä työn tiedot Ethesikseen",
+    "toSubmitEthesis": "Tutkielman tietojen lähettäminen Ethesikseen",
+    "send": "Lähetä"
   },
   "thesisStages": {
     "planned": "Suunniteltu",
     "inProgress": "Käynnissä",
     "completed": "Valmis",
-    "cancelled": "Keskeytetty"
+    "cancelled": "Keskeytetty",
+    "ethesis": "Ethesiksessä",
+    "ethesisSent": "Ethesiksessä"
   },
   "thesesTableToolbar": {
     "newThesisButton": "Uusi tutkielma",

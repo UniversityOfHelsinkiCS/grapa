@@ -366,8 +366,13 @@ const PreviewSkeleton = () => (
 const ViewThesisFooter = (
   props: GridSlotProps['footer'] & ThesisFooterProps
 ) => {
-  const { rowSelectionModel, footerRef, handleEditThesis, handleDeleteThesis } =
-    props
+  const {
+    rowSelectionModel,
+    footerRef,
+    handleEditThesis,
+    handleDeleteThesis,
+    handleSubitToEthesis,
+  } = props
 
   const thesisId = rowSelectionModel[0] as unknown as string | undefined
 
@@ -377,6 +382,13 @@ const ViewThesisFooter = (
   const { thesis, isLoading: thesisLoading } = useSingleThesis(thesisId)
   const { events } = useEvents({ thesisId })
   const { mutateAsync: editThesis } = useEditThesisMutation()
+
+  const ethesisReady =
+    currentUser &&
+    currentUser.isAdmin &&
+    thesis &&
+    thesis.graders.length === 2 &&
+    thesis.status === 'IN_PROGRESS'
 
   return (
     <>
@@ -528,6 +540,31 @@ const ViewThesisFooter = (
               researchPlan={thesis?.researchPlan}
               waysOfWorking={thesis?.waysOfWorking}
             />
+            {ethesisReady && (
+              <Button
+                variant="outlined"
+                onClick={() => handleSubitToEthesis(thesis)}
+                sx={{
+                  marginTop: 5,
+                  marginBottom: 10,
+                  color: '#fff',
+                  backgroundColor: '#000',
+                  borderColor: '#000',
+                  fontSize: '12px',
+                  height: 24,
+                  px: 2,
+                  borderRadius: '1rem',
+                  fontWeight: 600,
+                  '&:hover': {
+                    backgroundColor: '#fff',
+                    borderColor: '#000',
+                    color: '#000',
+                  },
+                }}
+              >
+                {t('thesisForm:submitEthesis')}
+              </Button>
+            )}
           </Box>
 
           {Boolean(events && events.length) && (

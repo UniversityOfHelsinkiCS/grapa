@@ -186,6 +186,11 @@ const NavBar = () => {
               {Boolean(user.isAdmin || user.managedDepartmentIds?.length) && (
                 <DepartmentMenu />
               )}
+              {user?.isAdmin && (
+                <Button component={NavLink} to="/ethesis" sx={navStyles.link}>
+                  Ethesis
+                </Button>
+              )}
             </Box>
 
             <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 2 }}>

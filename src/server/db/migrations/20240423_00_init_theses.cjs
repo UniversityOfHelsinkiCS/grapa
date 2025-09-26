@@ -19,7 +19,13 @@ module.exports = {
       },
       status: {
         type: DataTypes.ENUM,
-        values: ['PLANNING', 'STARTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'],
+        values: [
+          'PLANNING',
+          'STARTED',
+          'IN_PROGRESS',
+          'COMPLETED',
+          'CANCELLED',
+        ],
         allowNull: false,
       },
       start_date: {
