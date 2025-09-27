@@ -53,6 +53,7 @@ const fetchThesisById = async (
   // Supervision model twice (see the explanation comment
   // inside getFindThesesOptions).
   // For some reason. findOne does not support that
+
   const theses = await Thesis.findAll({ ...options, transaction })
   const thesis = theses.find((t) => t.id === id)
 
@@ -240,6 +241,7 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
 
   const sortByColumn = getSortByColumn(sortBy)
 
+  // TODO move to middleware
   const ethesisAdmined = await EthesisAdmin.findAll({
     where: { userId: currentUser.id },
   })
@@ -273,7 +275,6 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
   })
 
   const thesesRows = rows.map((t) => t.toJSON()) as ThesisData[]
-  console.log(thesesRows)
   const theses = transformThesisData(thesesRows)
 
   res.send({ theses, totalCount: count })
@@ -403,6 +404,7 @@ thesisRouter.delete('/:id', async (req: ServerDeleteRequest, res) => {
   const { id } = req.params
 
   const thesis = await fetchThesisById(id, req.user)
+
   if (!thesis) res.status(404).send('Thesis not found')
 
   await sequelize.transaction(async (t) => {

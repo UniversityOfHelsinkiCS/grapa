@@ -78,7 +78,7 @@ describe('thesis router', () => {
       it('should return 200 and an empty array', async () => {
         const response = await request
           .get('/api/theses/paginate')
-          .set('hygroupcn', 'grp-toska')
+          .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
         expect(response.status).toEqual(200)
         expect(response.body).toEqual({ theses: [], totalCount: 0 })
       })
@@ -144,6 +144,16 @@ describe('thesis router', () => {
           en: 'New test study track',
           sv: 'New test study track',
         },
+      })
+
+      // create the admin user
+      await User.create({
+        id: 'hy-person-123',
+        username: 'hy-person-123',
+        firstName: 'HY',
+        lastName: 'Person',
+        email: 'admin@test.fi',
+        language: 'fi',
       })
 
       await User.create({
@@ -270,7 +280,7 @@ describe('thesis router', () => {
             it('should return 200 and the theses', async () => {
               const response = await request
                 .get('/api/theses/paginate')
-                .set('hygroupcn', 'grp-toska')
+                .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               expect(response.status).toEqual(200)
               expect(response.body).toMatchObject({
                 totalCount: 1,
@@ -513,7 +523,7 @@ describe('thesis router', () => {
               it('should return 200 and the theses', async () => {
                 const response = await request
                   .get('/api/theses/paginate?programId=Nonexistent')
-                  .set('hygroupcn', 'grp-toska')
+                  .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
                 expect(response.status).toEqual(200)
                 expect(response.body).toMatchObject({
                   totalCount: 0,
@@ -526,7 +536,7 @@ describe('thesis router', () => {
               it('should return 200 and the theses', async () => {
                 const response = await request
                   .get('/api/theses/paginate?programId=Testing program')
-                  .set('hygroupcn', 'grp-toska')
+                  .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
                 expect(response.status).toEqual(200)
                 expect(response.body).toMatchObject({
                   totalCount: 1,
@@ -679,7 +689,7 @@ describe('thesis router', () => {
               it('should return 200 and the theses', async () => {
                 const response = await request
                   .get('/api/theses/paginate?programNamePartial=Nonexistent')
-                  .set('hygroupcn', 'grp-toska')
+                  .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
                 expect(response.status).toEqual(200)
                 expect(response.body).toMatchObject({
                   totalCount: 0,
@@ -694,7 +704,7 @@ describe('thesis router', () => {
                   .get(
                     '/api/theses/paginate?programNamePartial=Testing program'
                   )
-                  .set('hygroupcn', 'grp-toska')
+                  .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
                 expect(response.status).toEqual(200)
                 expect(response.body).toMatchObject({
                   totalCount: 1,
@@ -851,7 +861,7 @@ describe('thesis router', () => {
               it('should return 200 and the theses', async () => {
                 const response = await request
                   .get('/api/theses/paginate?topicPartial=Nonexistent')
-                  .set('hygroupcn', 'grp-toska')
+                  .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
                 expect(response.status).toEqual(200)
                 expect(response.body).toMatchObject({
                   totalCount: 0,
@@ -864,7 +874,7 @@ describe('thesis router', () => {
               it('should return 200 and the theses', async () => {
                 const response = await request
                   .get('/api/theses/paginate?topicPartial=test topic')
-                  .set('hygroupcn', 'grp-toska')
+                  .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
                 expect(response.status).toEqual(200)
                 expect(response.body).toMatchObject({
                   totalCount: 1,
@@ -956,7 +966,7 @@ describe('thesis router', () => {
               it('should return 200 and the theses', async () => {
                 const response = await request
                   .get('/api/theses/paginate?status=COMPLETED')
-                  .set('hygroupcn', 'grp-toska')
+                  .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
                 expect(response.status).toEqual(200)
                 expect(response.body).toMatchObject({
                   totalCount: 0,
@@ -969,7 +979,7 @@ describe('thesis router', () => {
               it('should return 200 and the theses', async () => {
                 const response = await request
                   .get('/api/theses/paginate?status=PLANNING')
-                  .set('hygroupcn', 'grp-toska')
+                  .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
                 expect(response.status).toEqual(200)
                 expect(response.body).toMatchObject({
                   totalCount: 1,
@@ -1078,7 +1088,7 @@ describe('thesis router', () => {
               it('should return 200 and the theses', async () => {
                 const response = await request
                   .get('/api/theses/paginate?authorsPartial=Nonexistent')
-                  .set('hygroupcn', 'grp-toska')
+                  .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
                 expect(response.status).toEqual(200)
                 expect(response.body).toMatchObject({
                   totalCount: 0,
@@ -1091,7 +1101,7 @@ describe('thesis router', () => {
               it('should return 200 and the theses', async () => {
                 const response = await request
                   .get('/api/theses/paginate?authorsPartial=test2')
-                  .set('hygroupcn', 'grp-toska')
+                  .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
                 expect(response.status).toEqual(200)
                 expect(response.body).toMatchObject({
                   totalCount: 1,
@@ -1138,7 +1148,7 @@ describe('thesis router', () => {
               it('should return 200 and the theses', async () => {
                 const response = await request
                   .get('/api/theses/paginate?authorsPartial=test@test.test2')
-                  .set('hygroupcn', 'grp-toska')
+                  .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
                 expect(response.status).toEqual(200)
                 expect(response.body).toMatchObject({
                   totalCount: 1,
@@ -1185,7 +1195,7 @@ describe('thesis router', () => {
               it('should return 200 and the theses', async () => {
                 const response = await request
                   .get('/api/theses/paginate?authorsPartial=test2@test.test')
-                  .set('hygroupcn', 'grp-toska')
+                  .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
                 expect(response.status).toEqual(200)
                 expect(response.body).toMatchObject({
                   totalCount: 0,
@@ -1622,7 +1632,8 @@ describe('thesis router', () => {
         it('should return 204, delete the thesis and write to event log', async () => {
           const response = await request
             .delete(`/api/theses/${thesis1.id}`)
-            .set('hygroupcn', 'grp-toska')
+            .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
+
           expect(response.status).toEqual(204)
           const thesis = await Thesis.findByPk(thesis1.id)
           expect(thesis).toBeNull()
@@ -1644,7 +1655,7 @@ describe('thesis router', () => {
         it('should return 404 and not log if the thesis does not exist', async () => {
           const response = await request
             .delete('/api/theses/999')
-            .set('hygroupcn', 'grp-toska')
+            .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
           expect(response.status).toEqual(404)
           const eventLog = await EventLog.findOne({
             where: { type: 'THESIS_DELETED' },
@@ -1775,7 +1786,7 @@ describe('thesis router', () => {
         }
         const response = await request
           .post('/api/theses')
-          .set('hygroupcn', 'grp-toska')
+          .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
           .attach(
             'waysOfWorking',
             path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
@@ -1843,7 +1854,7 @@ describe('thesis router', () => {
 
         const response = await request
           .post('/api/theses')
-          .set('hygroupcn', 'grp-toska')
+          .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
           .attach(
             'waysOfWorking',
             path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
@@ -1909,7 +1920,7 @@ describe('thesis router', () => {
 
         const response = await request
           .post('/api/theses')
-          .set('hygroupcn', 'grp-toska')
+          .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
           .attach(
             'waysOfWorking',
             path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
@@ -1963,7 +1974,7 @@ describe('thesis router', () => {
 
         const response = await request
           .post('/api/theses')
-          .set('hygroupcn', 'grp-toska')
+          .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
           .attach(
             'waysOfWorking',
             path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
@@ -2014,7 +2025,7 @@ describe('thesis router', () => {
         }
         const response = await request
           .post('/api/theses')
-          .set('hygroupcn', 'grp-toska')
+          .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
           .attach(
             'waysOfWorking',
             path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
@@ -2058,7 +2069,7 @@ describe('thesis router', () => {
 
         const response = await request
           .post('/api/theses')
-          .set('hygroupcn', 'grp-toska')
+          .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
           .attach(
             'waysOfWorking',
             path.resolve(dirname(fileURLToPath(import.meta.url)), './index.ts')
@@ -2106,7 +2117,7 @@ describe('thesis router', () => {
             }
             const response = await request
               .post('/api/theses')
-              .set('hygroupcn', 'grp-toska')
+              .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               .attach(
                 'waysOfWorking',
                 path.resolve(
@@ -2396,7 +2407,7 @@ describe('thesis router', () => {
             }
             const response = await request
               .post('/api/theses')
-              .set('hygroupcn', 'grp-toska')
+              .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               .attach(
                 'waysOfWorking',
                 path.resolve(
@@ -2651,7 +2662,7 @@ describe('thesis router', () => {
           }
           const response = await request
             .post('/api/theses')
-            .set('hygroupcn', 'grp-toska')
+            .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
             .field('json', JSON.stringify(newThesis))
 
           expect(response.status).toEqual(400)
@@ -2707,7 +2718,7 @@ describe('thesis router', () => {
 
           const response = await request
             .post('/api/theses')
-            .set('hygroupcn', 'grp-toska')
+            .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
             .field('json', JSON.stringify(newThesis))
 
           expect(response.status).toEqual(400)
@@ -2753,7 +2764,7 @@ describe('thesis router', () => {
 
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
-              .set('hygroupcn', 'grp-toska')
+              .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               .attach(
                 'waysOfWorking',
                 path.resolve(
@@ -2823,7 +2834,7 @@ describe('thesis router', () => {
             }
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
-              .set('hygroupcn', 'grp-toska')
+              .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               .attach(
                 'researchPlan',
                 path.resolve(
@@ -2886,7 +2897,7 @@ describe('thesis router', () => {
             }
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
-              .set('hygroupcn', 'grp-toska')
+              .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               .field('json', JSON.stringify(updatedThesis))
 
             expect(fs.unlinkSync).toHaveBeenCalledTimes(0)
@@ -2948,7 +2959,7 @@ describe('thesis router', () => {
             }
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
-              .set('hygroupcn', 'grp-toska')
+              .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               .field('json', JSON.stringify(updatedThesis))
 
             expect(response.status).toEqual(400)
@@ -3019,7 +3030,7 @@ describe('thesis router', () => {
 
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
-              .set('hygroupcn', 'grp-toska')
+              .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               .field('json', JSON.stringify(updatedThesis))
 
             expect(response.status).toEqual(400)
@@ -3094,7 +3105,7 @@ describe('thesis router', () => {
             }
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
-              .set('hygroupcn', 'grp-toska')
+              .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               .field('json', JSON.stringify(updatedThesis))
 
             expect(response.status).toEqual(200)
@@ -3188,7 +3199,7 @@ describe('thesis router', () => {
 
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
-              .set('hygroupcn', 'grp-toska')
+              .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               .field('json', JSON.stringify(updatedThesis))
 
             expect(response.status).toEqual(400)
@@ -3265,7 +3276,7 @@ describe('thesis router', () => {
             }
             const response = await request
               .put('/api/theses/999')
-              .set('hygroupcn', 'grp-toska')
+              .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               .attach(
                 'waysOfWorking',
                 path.resolve(
@@ -3336,7 +3347,7 @@ describe('thesis router', () => {
           }
           const response = await request
             .put(`/api/theses/${thesis1.id}`)
-            .set('hygroupcn', 'grp-toska')
+            .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
             .field('json', JSON.stringify(updatedThesis))
 
           expect(response.status).toEqual(200)
@@ -3624,7 +3635,7 @@ describe('thesis router', () => {
             }
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
-              .set('hygroupcn', 'grp-toska')
+              .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               .attach(
                 'waysOfWorking',
                 path.resolve(
@@ -4219,7 +4230,7 @@ describe('thesis router', () => {
             }
             const response = await request
               .put(`/api/theses/${thesis1.id}`)
-              .set('hygroupcn', 'grp-toska')
+              .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
               .attach(
                 'waysOfWorking',
                 path.resolve(
@@ -5248,7 +5259,7 @@ describe('thesis router', () => {
         it('should return 200 and the event log for the specified thesis', async () => {
           const response = await request
             .get(`/api/theses/${thesis1.id}/event-log`)
-            .set('hygroupcn', 'grp-toska')
+            .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
           expect(response.status).toEqual(200)
           expect(response.body).toHaveLength(1)
           expect(response.body[0].type).toEqual('THESIS_CREATED')
