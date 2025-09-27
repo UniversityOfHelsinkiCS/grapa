@@ -2,22 +2,26 @@ const { DataTypes, UUIDV4 } = require('sequelize')
 
 module.exports = {
   up: async (queryInterface) => {
-    await queryInterface.createTable('study_tracks', {
+    await queryInterface.createTable('ethesis_admins', {
       id: {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: UUIDV4,
         primaryKey: true,
       },
-      name: {
-        type: DataTypes.JSONB,
-        allowNull: false,
-      },
       program_id: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        references: {
+          model: 'programs',
+          key: 'id',
+        },
+      },
+      user_id: {
         type: DataTypes.STRING,
         allowNull: false,
         references: {
-          model: 'programs',
+          model: 'users',
           key: 'id',
         },
       },
@@ -32,6 +36,6 @@ module.exports = {
     })
   },
   down: async (queryInterface) => {
-    await queryInterface.dropTable('study_tracks')
+    await queryInterface.dropTable('ethesis_admins')
   }
 }

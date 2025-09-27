@@ -20,6 +20,7 @@ import {
   Approver,
   User,
   EventLog,
+  EthesisAdmin,
 } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
@@ -238,6 +239,12 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
   }
 
   const sortByColumn = getSortByColumn(sortBy)
+
+  const ethesisAdmined = await EthesisAdmin.findAll({
+    where: { userId: currentUser.id },
+  })
+
+  currentUser.ethesisAdmin = ethesisAdmined.length > 0 || currentUser.isAdmin
 
   const options = await getFindThesesOptions({
     programId,

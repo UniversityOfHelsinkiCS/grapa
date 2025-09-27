@@ -1,7 +1,7 @@
 import { getUser, isAuthorized } from '../util/oidc'
 import type { UserInfo } from '../types'
 import { inDevelopment, inE2EMode } from '../../config'
-import { User } from '../db/models'
+import { EthesisAdmin, User } from '../db/models'
 
 const parseIamGroups = (iamGroups: string) =>
   iamGroups?.split(';').filter(Boolean) ?? []
@@ -43,7 +43,14 @@ const userMiddleware = async (req: any, _: any, next: any) => {
 
   const userFromHeaders = getUser(headers)
   const userFromDb = (await User.findByPk(userFromHeaders.id))?.toJSON()
-  req.user = { ...userFromDb, ...userFromHeaders }
+
+  const ethesisAdmined = await EthesisAdmin.findAll({
+    where: { userId: userFromHeaders.id },
+  })
+
+  const ethesisAdmin = ethesisAdmined.length > 0 || userFromDb.isAdmin
+
+  req.user = { ...userFromDb, ...userFromHeaders, ethesisAdmin }
 
   return next()
 }

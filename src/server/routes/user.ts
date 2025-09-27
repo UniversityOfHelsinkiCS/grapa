@@ -2,7 +2,12 @@ import express from 'express'
 
 import { RequestWithUser } from '../types'
 import { validateUserThesesTableFiltersData } from '../validators/user'
-import { DepartmentAdmin, ProgramManagement, User } from '../db/models'
+import {
+  DepartmentAdmin,
+  EthesisAdmin,
+  ProgramManagement,
+  User,
+} from '../db/models'
 
 const userRouter = express.Router()
 
@@ -26,8 +31,14 @@ userRouter.get('/', async (req: RequestWithUser, res: any) => {
     (department) => department.departmentId
   )
 
+  // TODO move to middleware
+  const ethesisAdmined = await EthesisAdmin.findAll({
+    where: { userId: user.id },
+  })
+
   return res.send({
     ...user,
+    ethesisAdmin: ethesisAdmined.length > 0 || user.isAdmin,
     managedProgramIds,
     managedDepartmentIds,
     approvableProgramIds,

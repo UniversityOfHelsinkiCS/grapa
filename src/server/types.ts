@@ -38,6 +38,7 @@ export interface User {
   affiliation?: string
   departmentId?: string
   thesesTableFilters?: GridFilterModel
+  ethesisAdmin?: boolean
 }
 
 export interface RequestWithUser extends Request {

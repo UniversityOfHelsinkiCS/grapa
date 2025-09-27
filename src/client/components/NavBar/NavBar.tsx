@@ -186,7 +186,7 @@ const NavBar = () => {
               {Boolean(user.isAdmin || user.managedDepartmentIds?.length) && (
                 <DepartmentMenu />
               )}
-              {user?.isAdmin && (
+              {user?.ethesisAdmin && (
                 <Button component={NavLink} to="/ethesis" sx={navStyles.link}>
                   Ethesis
                 </Button>

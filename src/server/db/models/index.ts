@@ -11,6 +11,7 @@ import ProgramManagement from './ProgramManagement'
 import Department from './Department'
 import DepartmentAdmin from './DepartmentAdmin'
 import EventLog from './EventLog'
+import EthesisAdmin from './EthesisAdmin'
 
 User.belongsToMany(Thesis, {
   through: Supervision,
@@ -21,6 +22,9 @@ Thesis.belongsToMany(User, {
   through: Supervision,
   as: 'supervisors',
 })
+
+User.hasMany(EthesisAdmin, { foreignKey: 'userId', as: 'ethesistAdmins' })
+EthesisAdmin.belongsTo(User, { foreignKey: 'userId', as: 'user' })
 
 // see GET /theses endpoint for more details on why
 // we need both of theses associations
@@ -97,4 +101,5 @@ export {
   Department,
   DepartmentAdmin,
   EventLog,
+  EthesisAdmin,
 }
