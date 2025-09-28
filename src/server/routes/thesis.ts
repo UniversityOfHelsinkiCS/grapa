@@ -362,7 +362,16 @@ thesisRouter.put(
     const { id } = req.params
     const thesisData = req.body
 
-    const originalThesis = await fetchThesisById(id, req.user)
+    const currentUser = req.user
+
+    // TODO move to middleware
+    const ethesisAdmined = await EthesisAdmin.findAll({
+      where: { userId: currentUser.id },
+    })
+
+    currentUser.ethesisAdmin = ethesisAdmined.length > 0 || currentUser.isAdmin
+
+    const originalThesis = await fetchThesisById(id, currentUser)
 
     if (!originalThesis) res.status(404).send('Thesis not found')
 
