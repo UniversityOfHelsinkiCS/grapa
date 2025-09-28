@@ -12,6 +12,7 @@ import {
   FormControlLabel,
   Radio,
   Box,
+  Container,
 } from '@mui/material'
 import { useState } from 'react'
 import { usePaginatedTheses } from '../../hooks/useTheses'
@@ -37,7 +38,7 @@ const Ethesis = () => {
 
   const order = {
     sortBy: 'ethesisDate',
-    orderBy: 'asc',
+    sortOrder: 'desc' as const,
   }
 
   const paginationModel = {
@@ -45,17 +46,30 @@ const Ethesis = () => {
     pageSize: 20,
   }
 
-  const {
-    theses,
-    totalCount,
-    isLoading: isThesesLoading,
-  } = usePaginatedTheses({
-    order,
-    status,
-    offset: paginationModel.page * paginationModel.pageSize,
-    limit: paginationModel.pageSize,
-    onlySupervised: false,
-  })
+  const { theses: unsortedTheses, isLoading: isThesesLoading } =
+    usePaginatedTheses({
+      order,
+      status,
+      offset: paginationModel.page * paginationModel.pageSize,
+      limit: paginationModel.pageSize,
+      onlySupervised: false,
+    })
+
+  // Sort theses: ETHESIS_SENT first, then by ethesisDate
+  const theses = unsortedTheses
+    ? [...unsortedTheses].sort((a, b) => {
+        // First criteria: status (ETHESIS_SENT comes first)
+        if (a.status !== b.status) {
+          if (a.status === 'ETHESIS_SENT' && b.status === 'ETHESIS') return -1
+          if (a.status === 'ETHESIS' && b.status === 'ETHESIS_SENT') return 1
+        }
+
+        // Second criteria: ethesisDate (descending - most recent first)
+        const dateA = a.ethesisDate ? new Date(a.ethesisDate).getTime() : 0
+        const dateB = b.ethesisDate ? new Date(b.ethesisDate).getTime() : 0
+        return dateB - dateA
+      })
+    : []
 
   const handleRowClick = (thesis: any) => {
     setSelectedThesis(thesis)
@@ -72,15 +86,14 @@ const Ethesis = () => {
   }
 
   return (
-    <div>
+    <Container maxWidth="lg" sx={{ py: 3 }}>
       <Typography variant="h5" gutterBottom>
-        Ethesis ({totalCount} total, showing {theses.length})
+        {status.length === 1 ? 'New ' : 'All '} theses submitted to Etheses
       </Typography>
 
       <Box
         sx={{
-          margin: 2,
-          marginBottom: 3,
+          mb: 3,
           display: 'flex',
           alignItems: 'center',
           gap: 2,
@@ -97,7 +110,7 @@ const Ethesis = () => {
         </RadioGroup>
       </Box>
 
-      <TableContainer component={Paper} sx={{ margin: 2 }}>
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -171,7 +184,7 @@ const Ethesis = () => {
         onClose={handleCloseModal}
         thesis={selectedThesis}
       />
-    </div>
+    </Container>
   )
 }
 
