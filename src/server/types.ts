@@ -89,6 +89,7 @@ export interface ThesisData {
   graders: GraderData[]
   researchPlan?: FileData | File
   waysOfWorking?: FileData | File
+  ethesisDate?: string
 }
 
 export interface ThesisStatistics {

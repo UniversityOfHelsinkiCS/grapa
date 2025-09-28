@@ -268,6 +268,7 @@ export const getFindThesesOptions = async ({
       'status',
       'startDate',
       'targetDate',
+      'ethesisDate',
       'programId',
       'studyTrackId',
       'updatedAt',

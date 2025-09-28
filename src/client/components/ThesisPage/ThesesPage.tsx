@@ -180,6 +180,7 @@ const ThesesPage = ({
   const allowedFilterOperators = stringFilterOperators.filter(
     (operator) => operator.value === 'contains'
   )
+
   const columns: GridColDef<Thesis>[] = [
     {
       field: 'more-actions',
@@ -489,7 +490,8 @@ const ThesesPage = ({
             setEthesisDialogOpen(false)
 
             const status = 'ETHESIS_SENT' as ThesisStatus
-            const data = { ...ethesisTesis, status }
+            const ethesisDate = new Date().toISOString()
+            const data = { ...ethesisTesis, status, ethesisDate }
             await editThesis({ thesisId: ethesisTesis.id, data })
             setEthesisThesis(null)
           }}

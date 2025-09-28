@@ -31,6 +31,8 @@ class Thesis extends Model<
 
   declare targetDate: string | undefined
 
+  declare ethesisDate: string | undefined
+
   declare authors: NonAttribute<User[]>
 
   declare graders: NonAttribute<Grader[]>
@@ -76,6 +78,10 @@ Thesis.init(
       allowNull: false,
     },
     targetDate: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    ethesisDate: {
       type: DataTypes.STRING,
       allowNull: true,
     },

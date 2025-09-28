@@ -135,6 +135,7 @@ const updateThesis = async (
   thesisData: ThesisData,
   transaction: Transaction
 ) => {
+  console.log(thesisData)
   await Thesis.update(thesisData, { where: { id }, transaction })
 
   const extUsers = await getAndCreateExtUsers(thesisData, transaction)
