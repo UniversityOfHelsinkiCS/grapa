@@ -126,7 +126,8 @@ const ThesisModal = ({ open, onClose, thesis }: ThesisModalProps) => {
               </Typography>
 
               <Typography>
-                Submitted to Ethesis {formatDate(thesis.ethesisDate)}
+                {thesis.status === 'ETHESIS_SENT' ? 'Submitted' : 'Saved'} to
+                Ethesis {formatDate(thesis.ethesisDate)}
               </Typography>
 
               <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
@@ -145,20 +146,27 @@ const ThesisModal = ({ open, onClose, thesis }: ThesisModalProps) => {
               )}
 
               <Box
-                sx={{ mt: 3, display: 'flex', justifyContent: 'space-between' }}
+                sx={{
+                  mt: 3,
+                  display: 'flex',
+                  justifyContent:
+                    thesis.status === 'ETHESIS_SENT'
+                      ? 'space-between'
+                      : 'flex-end',
+                }}
               >
-                <Button
-                  variant="contained"
-                  color="warning"
-                  onClick={handleSetEthesis}
-                  disabled={
-                    thesis.status === 'ETHESIS' || editThesisMutation.isPending
-                  }
-                >
-                  {editThesisMutation.isPending
-                    ? 'Saving...'
-                    : 'Save to Ethesis'}
-                </Button>
+                {thesis.status === 'ETHESIS_SENT' && (
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    onClick={handleSetEthesis}
+                    disabled={editThesisMutation.isPending}
+                  >
+                    {editThesisMutation.isPending
+                      ? 'Saving...'
+                      : 'Save to Ethesis'}
+                  </Button>
+                )}
                 <Button variant="outlined" onClick={onClose}>
                   Close
                 </Button>
