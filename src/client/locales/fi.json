@@ -174,7 +174,7 @@
     "completed": "Valmis",
     "cancelled": "Keskeytetty",
     "ethesis": "Ethesiksessä",
-    "ethesisSent": "Ethesiksessä"
+    "ethesisSent": "Ethesikseen lähetetty"
   },
   "thesesTableToolbar": {
     "newThesisButton": "Uusi tutkielma",

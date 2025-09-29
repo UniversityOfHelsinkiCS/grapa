@@ -23,8 +23,6 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
   const { i18n } = useTranslation()
   const { language } = i18n
 
-  console.log(typeof params.status, params.status)
-
   const queryKey = [
     'theses',
     params.onlySupervised,

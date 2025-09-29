@@ -400,8 +400,9 @@ export const handleStatusChangeEmail = async (
     //targets.push(...ethesisAdminEmails)
 
     console.log('WOULD ALSO SENT TO', ethesisAdminEmails)
-
-    await sendEmail(targets, message, subject)
+    if (process.env.NODE_ENV === 'production') {
+      await sendEmail(targets, message, subject)
+    }
   }
 }
 

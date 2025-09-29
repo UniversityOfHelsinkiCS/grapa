@@ -173,8 +173,8 @@
     "inProgress": "In progress",
     "completed": "Completed",
     "cancelled": "Cancelled",
-    "ethesis": "In Ethesis",
-    "ethesisSent": "In Ethesis"
+    "ethesis": "Saved to ethesis",
+    "ethesisSent": "Sent to Ethesis"
   },
   "thesesTableToolbar": {
     "newThesisButton": "New thesis",

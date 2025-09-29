@@ -17,6 +17,8 @@ import {
 import { useState } from 'react'
 import { usePaginatedTheses } from '../../hooks/useTheses'
 import ThesisModal from './Modal'
+import { StatusLocale } from '../../types'
+import { t } from 'i18next'
 
 const formatDate = (dateString: string | undefined) => {
   if (!dateString) return 'N/A'
@@ -55,16 +57,13 @@ const Ethesis = () => {
       onlySupervised: false,
     })
 
-  // Sort theses: ETHESIS_SENT first, then by ethesisDate
   const theses = unsortedTheses
     ? [...unsortedTheses].sort((a, b) => {
-        // First criteria: status (ETHESIS_SENT comes first)
         if (a.status !== b.status) {
           if (a.status === 'ETHESIS_SENT' && b.status === 'ETHESIS') return -1
           if (a.status === 'ETHESIS' && b.status === 'ETHESIS_SENT') return 1
         }
 
-        // Second criteria: ethesisDate (descending - most recent first)
         const dateA = a.ethesisDate ? new Date(a.ethesisDate).getTime() : 0
         const dateB = b.ethesisDate ? new Date(b.ethesisDate).getTime() : 0
         return dateB - dateA
@@ -167,7 +166,7 @@ const Ethesis = () => {
                 </TableCell>
                 <TableCell>
                   <Chip
-                    label={thesis.status}
+                    label={t(StatusLocale[thesis.status])}
                     color={thesis.status === 'ETHESIS' ? 'success' : 'warning'}
                     size="small"
                   />

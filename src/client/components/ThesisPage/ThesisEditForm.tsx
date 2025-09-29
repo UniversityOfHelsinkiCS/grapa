@@ -121,6 +121,22 @@ const ThesisEditForm: FC<{
         )
       : []
 
+  console.log(initialThesis.status)
+
+  const thesisStatus = initialThesis.status
+
+  const showStatusForm =
+    user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(thesisStatus)
+
+  const showOption = {
+    PLANNING: user.isAdmin,
+    IN_PROGRESS:
+      user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(thesisStatus),
+    ETHESIS_SENT: user.isAdmin,
+    ETHESIS: user.isAdmin,
+    COMPLETED: user.isAdmin,
+  }
+
   return (
     <Dialog
       open
@@ -401,54 +417,87 @@ const ThesisEditForm: FC<{
               />
             </FormControl>
 
-            <FormControl fullWidth>
-              <InputLabel id="status-select-label">
-                {t('statusHeader')}
-              </InputLabel>
-              <Select
-                data-testid="status-select-input"
-                required
-                disabled={
-                  initialThesis.status === 'PLANNING' &&
-                  !user.isAdmin &&
-                  !user.managedProgramIds?.includes(editedThesis.programId)
-                }
-                value={editedThesis.status}
-                label={t('statusHeader')}
-                id="status"
-                name="status"
-                onChange={(event) => {
-                  setEditedThesis((oldThesis) => ({
-                    ...oldThesis,
-                    status: event.target.value as ThesisData['status'],
-                  }))
+            {showStatusForm && (
+              <FormControl fullWidth>
+                <InputLabel id="status-select-label">
+                  {t('statusHeader')}
+                </InputLabel>
+                <Select
+                  data-testid="status-select-input"
+                  required
+                  disabled={
+                    initialThesis.status === 'PLANNING' &&
+                    !user.isAdmin &&
+                    !user.managedProgramIds?.includes(editedThesis.programId)
+                  }
+                  value={editedThesis.status}
+                  label={t('statusHeader')}
+                  id="status"
+                  name="status"
+                  onChange={(event) => {
+                    setEditedThesis((oldThesis) => ({
+                      ...oldThesis,
+                      status: event.target.value as ThesisData['status'],
+                    }))
 
-                  setFormErrors(
-                    formErrors.filter((error) => error.path[0] !== 'status')
-                  )
-                }}
-                error={formErrors.some((error) => error.path[0] === 'status')}
-              >
-                <MenuItem value="PLANNING">{t(StatusLocale.PLANNING)}</MenuItem>
-                <MenuItem value="IN_PROGRESS">
-                  {t(StatusLocale.IN_PROGRESS)}
-                </MenuItem>
-                {user.isAdmin && (
-                  <MenuItem value="COMPLETED">
-                    {t(StatusLocale.COMPLETED)}
+                    setFormErrors(
+                      formErrors.filter((error) => error.path[0] !== 'status')
+                    )
+                  }}
+                  error={formErrors.some((error) => error.path[0] === 'status')}
+                >
+                  {showOption['PLANNING'] && (
+                    <MenuItem value="PLANNING">
+                      {t(StatusLocale.PLANNING)}
+                    </MenuItem>
+                  )}
+                  {showOption['IN_PROGRESS'] && (
+                    <MenuItem value="IN_PROGRESS">
+                      {t(StatusLocale.IN_PROGRESS)}
+                    </MenuItem>
+                  )}
+                  {showOption['ETHESIS_SENT'] && (
+                    <MenuItem value="ETHESIS_SENT">
+                      {t(StatusLocale.ETHESIS_SENT)}
+                    </MenuItem>
+                  )}
+                  {showOption['ETHESIS'] && (
+                    <MenuItem value="ETHESIS">
+                      {t(StatusLocale.ETHESIS)}
+                    </MenuItem>
+                  )}
+                  {showOption['COMPLETED'] && (
+                    <MenuItem value="COMPLETED">
+                      {t(StatusLocale.COMPLETED)}
+                    </MenuItem>
+                  )}
+                  <MenuItem value="CANCELLED">
+                    {t(StatusLocale.CANCELLED)}
                   </MenuItem>
-                )}
-                <MenuItem value="CANCELLED">
-                  {t(StatusLocale.CANCELLED)}
-                </MenuItem>
-              </Select>
-              <FormHelperText error>
-                {t(
-                  formErrors.find((error) => error.path[0] === 'status')
-                    ?.message
-                )}
-              </FormHelperText>
-            </FormControl>
+                </Select>
+                <FormHelperText error>
+                  {t(
+                    formErrors.find((error) => error.path[0] === 'status')
+                      ?.message
+                  )}
+                </FormHelperText>
+              </FormControl>
+            )}
+
+            {!showStatusForm && (
+              <FormControl fullWidth>
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  sx={{ mb: 1 }}
+                >
+                  {t('statusHeader')}
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {t(StatusLocale[initialThesis.status])}
+                </Typography>
+              </FormControl>
+            )}
 
             <LocalizationProvider
               adapterLocale={language}

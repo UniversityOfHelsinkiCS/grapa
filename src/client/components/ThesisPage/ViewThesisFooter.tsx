@@ -26,7 +26,7 @@ import {
   User,
 } from '@backend/types'
 
-import { ThesisFooterProps } from '../../types'
+import { StatusLocale, ThesisFooterProps } from '../../types'
 import usePrograms from '../../hooks/usePrograms'
 import useEvents from '../../hooks/useEvents'
 import { useSingleThesis } from '../../hooks/useTheses'
@@ -37,6 +37,7 @@ import { useState } from 'react'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useEditThesisMutation } from '../../hooks/useThesesMutation'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
+import { t } from 'i18next'
 
 const IN_PROGRESS_STATUS = THESIS_STATUSES.IN_PROGRESS as 'IN_PROGRESS'
 
@@ -60,7 +61,7 @@ const StatusRow = ({ thesis }: { thesis: Thesis }) => (
         textTransform: 'capitalize',
       }}
     >
-      {thesis.status}
+      {t(StatusLocale[thesis.status])}
     </Typography>
     <Typography
       component="span"
