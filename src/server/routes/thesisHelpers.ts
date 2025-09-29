@@ -10,6 +10,8 @@ import {
   EventLog,
   Thesis,
   Program,
+  StudyTrack,
+  EthesisAdmin,
 } from '../db/models'
 import { ThesisData, User as UserType } from '../types'
 import sendEmail from '../mailer/pate'
@@ -349,22 +351,53 @@ export const handleStatusChangeEmail = async (
     originalThesis.status === 'IN_PROGRESS' &&
     updatedThesis.status === 'ETHESIS_SENT'
   ) {
-    console.log(updatedThesis)
-    const subject = 'Prethesis - A new thesis for Ethesis'
+    const author = updatedThesis.authors[0]
+    const program = await Program.findByPk(updatedThesis.programId)
+    const studyTrack = await StudyTrack.findByPk(updatedThesis.studyTrackId)
+
+    const subject = 'Prethesis - Tutkielma valmiina Ethesiskseen'
+
     const message = `
-    This is an automated message from Prethesis. \n\n
+    Seuraava tutkielma on valmiina siirrettäväksi Ethesikseen
 
-    The status of a thesis has been changed to IN ETHESIS_SENT
-
+    ${author.firstName} ${author.lastName} (${author.studentNumber})
     ${updatedThesis.topic}
-    ${actionUser.firstName} ${actionUser.lastName} (${actionUser.studentNumber})
 
-    Please go to
+    ${program?.name?.fi || program?.name?.en} ${studyTrack ? `(${studyTrack.name?.fi || studyTrack.name?.en})` : ''}
+
+    Arvioijat:
+
+    ${updatedThesis.graders
+      .map(
+        (grader) =>
+          `${grader.user.firstName} ${grader.user.lastName} (${grader.user.email}) ${grader.isPrimaryGrader ? 'ensisijainen' : ''}`
+      )
+      .join('\n    ')}
+
     <a href='https://prethesis.helsinki.fi/ethesis'>https://prethesis.helsinki.fi/ethesis</a>
-    .
   `
 
     const targets = ['matti.luukkainen@helsinki.fi']
+
+    const ethesisAdmins = await EthesisAdmin.findAll({
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['email'],
+          required: true,
+          on: {
+            id: { [Op.col]: 'EthesisAdmin.user_id' },
+          },
+        },
+      ],
+    })
+
+    const ethesisAdminEmails = ethesisAdmins
+      .filter((admin) => (admin as any).user?.email)
+      .map((admin) => (admin as any).user.email)
+
+    targets.push(...ethesisAdminEmails)
 
     await sendEmail(targets, message, subject)
   }
