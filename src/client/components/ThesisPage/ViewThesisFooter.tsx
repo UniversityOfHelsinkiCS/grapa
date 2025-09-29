@@ -385,7 +385,7 @@ const ViewThesisFooter = (
 
   const ethesisReady =
     currentUser &&
-    currentUser.isAdmin &&
+    //currentUser.isAdmin &&
     thesis &&
     thesis.graders.length === 2 &&
     thesis.status === 'IN_PROGRESS'
