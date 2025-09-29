@@ -344,6 +344,27 @@ export const handleStatusChangeEmail = async (
 
     The status of the thesis "${updatedThesis.topic}" has been changed to IN PROGRESS by ${actionUser.firstName} ${actionUser.lastName}.
   `
+    await sendEmail(targets, message, subject)
+  } else if (
+    originalThesis.status === 'IN_PROGRESS' &&
+    updatedThesis.status === 'ETHESIS_SENT'
+  ) {
+    console.log(updatedThesis)
+    const subject = 'Prethesis - A new thesis for Ethesis'
+    const message = `
+    This is an automated message from Prethesis. \n\n
+
+    The status of a thesis has been changed to IN ETHESIS_SENT
+
+    ${updatedThesis.topic}
+    ${actionUser.firstName} ${actionUser.lastName} (${actionUser.studentNumber})
+
+    Please go to
+    <a href='https://prethesis.helsinki.fi/ethesis'>https://prethesis.helsinki.fi/ethesis</a>
+    .
+  `
+
+    const targets = ['matti.luukkainen@helsinki.fi']
 
     await sendEmail(targets, message, subject)
   }
