@@ -30,6 +30,7 @@ describe('Theisis router with mocks', () => {
   let user2
   let user3
   let programManagerUser
+  let adminUser
   let thesis1
   let thesis2
 
@@ -137,6 +138,15 @@ describe('Theisis router with mocks', () => {
       language: 'fi',
     })
 
+    adminUser = await User.create({
+      id: 'hy-person-123',
+      username: 'hy-person-123',
+      firstName: 'HY',
+      lastName: 'Person',
+      email: 'admin@test.fi',
+      language: 'fi',
+    })
+
     programManagerUser = (
       await User.findOne({
         where: { username: 'programManagerUser' },
@@ -234,7 +244,7 @@ describe('Theisis router with mocks', () => {
 
         const response = await request
           .put(`/api/theses/${thesis1.id}`)
-          .set('hygroupcn', 'grp-toska')
+          .set({ hygroupcn: 'grp-toska', uid: adminUser.id })
           .field('json', JSON.stringify(updatedThesis))
 
         expect(response.status).toEqual(200)
@@ -391,7 +401,7 @@ describe('Theisis router with mocks', () => {
 
         const response = await request
           .put(`/api/theses/${thesis1.id}`)
-          .set('hygroupcn', 'grp-toska')
+          .set({ hygroupcn: 'grp-toska', uid: adminUser.id })
           .field('json', JSON.stringify(updatedThesis))
 
         expect(response.status).toEqual(200)
@@ -434,7 +444,7 @@ describe('Theisis router with mocks', () => {
 
         const response = await request
           .put(`/api/theses/${thesis1.id}`)
-          .set('hygroupcn', 'grp-toska')
+          .set({ hygroupcn: 'grp-toska', uid: adminUser.id })
           .field('json', JSON.stringify(updatedThesis))
 
         expect(response.status).toEqual(200)
