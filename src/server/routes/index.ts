@@ -16,6 +16,7 @@ import programRouter from './program'
 import programManagementRouter from './programManagement'
 import departmentRouter from './department'
 import departmentAdminRouter from './departmentAdmin'
+import ethesisAdminRouter from './ethesisAdmins'
 
 import logoutRouter from './logout'
 
@@ -51,6 +52,7 @@ router.use('/programs', programRouter)
 router.use('/program-managements', programManagementRouter)
 router.use('/departments', departmentRouter)
 router.use('/department-admins', departmentAdminRouter)
+router.use('/ethesis-admins', ethesisAdminRouter)
 
 Sentry.setupExpressErrorHandler(router)
 

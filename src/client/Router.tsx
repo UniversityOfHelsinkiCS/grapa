@@ -16,6 +16,7 @@ import DepartmentOverview from './components/Department/DepartmentOverview'
 
 import { BASE_PATH } from '../config'
 import Ethesis from './components/Ethesis'
+import EthesisAdminPage from './components/Ethesis/AdminPage'
 
 const router = createBrowserRouter(
   [
@@ -56,6 +57,10 @@ const router = createBrowserRouter(
         {
           path: '/ethesis',
           element: <Ethesis />,
+        },
+        {
+          path: '/ethesis/admin',
+          element: <EthesisAdminPage />,
         },
         {
           path: '/admin',
