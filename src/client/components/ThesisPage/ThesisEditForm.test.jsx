@@ -172,9 +172,9 @@ describe('ThesisEditForm', () => {
     it('renders ThesisEditForm correctly and renders all validation errors', () => {
       expect(screen.getByTestId('thesis-form-title')).toBeInTheDocument()
       expect(screen.getByTestId('topic-select-input')).toBeInTheDocument()
+
       expect(screen.getByTestId('program-select-input')).toBeInTheDocument()
       expect(screen.getByTestId('author-select-input')).toBeInTheDocument()
-      expect(screen.getByTestId('status-select-input')).toBeInTheDocument()
       expect(screen.getByTestId('research-plan-input')).toBeInTheDocument()
       expect(screen.getByTestId('ways-of-working-input')).toBeInTheDocument()
       expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
@@ -323,7 +323,7 @@ describe('ThesisEditForm', () => {
           },
         ],
         topic: 'Test',
-        status: 'PLANNING',
+        status: 'IN_PROGRESS',
         startDate: dayjs().format('YYYY-MM-DD'),
         targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
         researchPlan: {},
