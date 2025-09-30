@@ -21,6 +21,7 @@ import {
   User,
   EventLog,
   EthesisAdmin,
+  DepartmentAdmin,
 } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
@@ -228,7 +229,6 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
   const sortBy = req.query.sortBy as string
   const sortOrder = req.query.sortOrder as 'asc' | 'desc'
 
-  // Validate that the language is one of the allowed keys
   const allowedLanguages = ['en', 'fi', 'sv']
   if (!allowedLanguages.includes(language)) {
     throw new Error('Invalid language key')
@@ -237,6 +237,18 @@ thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
   const allowedSortOrder = ['asc', 'desc']
   if (sortOrder && !allowedSortOrder.includes(sortOrder)) {
     throw new Error('Invalid sort order')
+  }
+
+  if (departmentId && !currentUser.isAdmin) {
+    const depAdmin = await DepartmentAdmin.findOne({
+      where: { userId: currentUser.id, departmentId },
+    })
+
+    if (!depAdmin) {
+      return res
+        .status(403)
+        .send('Access denied: insufficient permissions for this department')
+    }
   }
 
   const sortByColumn = getSortByColumn(sortBy)

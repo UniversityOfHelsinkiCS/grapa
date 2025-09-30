@@ -5,7 +5,6 @@ import adminHandler from '../middleware/admin'
 
 const ethesisAdminRouter = express.Router()
 
-// @ts-expect-error the user middleware updates the req object with user field
 ethesisAdminRouter.get(
   '/',
   adminHandler,
@@ -74,7 +73,6 @@ ethesisAdminRouter.post('/', adminHandler, async (req: any, res: Response) => {
   res.status(201).send(adminData)
 })
 
-// @ts-expect-error the user middleware updates the req object with user field
 ethesisAdminRouter.delete(
   '/:id',
   adminHandler,

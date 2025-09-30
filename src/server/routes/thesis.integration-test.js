@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import {
   Attachment,
   Author,
+  Department,
   EventLog,
   Grader,
   Program,
@@ -92,6 +93,7 @@ describe('thesis router', () => {
     let user4
     let user5
     let thesis1
+    let dep
 
     beforeEach(async () => {
       await Program.create({
@@ -146,6 +148,13 @@ describe('thesis router', () => {
         },
       })
 
+      dep = await Department.create({
+        name: {
+          en: 'TKTL',
+          fi: 'TKTL',
+        },
+      })
+
       // create the admin user
       await User.create({
         id: 'hy-person-123',
@@ -162,6 +171,7 @@ describe('thesis router', () => {
         lastName: 'test1',
         email: 'test@test.test1',
         language: 'fi',
+        departmentId: dep.id,
       })
       await User.create({
         username: 'test2',
@@ -169,6 +179,7 @@ describe('thesis router', () => {
         lastName: 'test2',
         email: 'test@test.test2',
         language: 'fi',
+        departmentId: dep.id,
       })
       await User.create({
         username: 'test3',
@@ -176,6 +187,7 @@ describe('thesis router', () => {
         lastName: 'test3',
         email: 'test@test.test3',
         language: 'fi',
+        departmentId: dep.id,
       })
       await User.create({
         username: 'test4',
@@ -183,6 +195,7 @@ describe('thesis router', () => {
         lastName: 'test4',
         email: 'test@test.test4',
         language: 'fi',
+        departmentId: dep.id,
       })
       await User.create({
         username: 'test5',
@@ -190,7 +203,9 @@ describe('thesis router', () => {
         lastName: 'test5',
         email: 'test@test.test5',
         language: 'fi',
+        departmentId: dep.id,
       })
+
       user1 = (
         await User.findOne({
           where: { username: 'test1' },
@@ -513,6 +528,20 @@ describe('thesis router', () => {
               })
               expect(response.status).toEqual(200)
               expect(response.body).toMatchObject({ totalCount: 0, theses: [] })
+            })
+          })
+
+          describe('when the user is mere mortal and tries to manipulate the url', () => {
+            it('should return 200 and the theses', async () => {
+              const response = await request
+                .get(
+                  `/api/theses/paginate?onlySupervised=false&departmentId=${dep.id}`
+                )
+                .set({
+                  uid: 'test-id-of-not-supervisor',
+                  hygroupcn: 'hy-employees',
+                })
+              expect(response.status).toEqual(403)
             })
           })
         })
