@@ -3,6 +3,7 @@ import { jest } from '@jest/globals'
 import {
   Attachment,
   Author,
+  EthesisAdmin,
   EventLog,
   Grader,
   Program,
@@ -22,6 +23,7 @@ global.afterEach(async () => {
   await Supervision.destroy({ where: {} })
   await Author.destroy({ where: {} })
   await Thesis.destroy({ where: {} })
+  await EthesisAdmin.destroy({ where: {} })
   await User.destroy({ where: {} })
   await StudyTrack.destroy({ where: {} })
   await Program.destroy({ where: {} })

@@ -39,7 +39,10 @@ const sendEmail = async (targets: string[], text: string, subject: string) => {
     text,
   })
 
-  await pateClient.post('/', mail)
+  // should mock pate in dev
+  if (process.env.NODE_ENV === 'production') {
+    await pateClient.post('/', mail)
+  }
 }
 
 export default sendEmail

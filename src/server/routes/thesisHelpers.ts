@@ -397,12 +397,9 @@ export const handleStatusChangeEmail = async (
       .filter((admin) => (admin as any).user?.email)
       .map((admin) => (admin as any).user.email)
 
-    //targets.push(...ethesisAdminEmails)
+    targets.push(...ethesisAdminEmails)
 
-    console.log('WOULD ALSO SENT TO', ethesisAdminEmails)
-    if (process.env.NODE_ENV === 'production') {
-      await sendEmail(targets, message, subject)
-    }
+    await sendEmail(targets, message, subject)
   }
 }
 
