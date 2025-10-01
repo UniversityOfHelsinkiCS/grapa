@@ -31,7 +31,8 @@
     "error": "Virhe",
     "thesisPreview": "Tutkielman esikatselu",
     "theses": "Tutkielmat",
-    "none": "Ei opintosuuntaa"
+    "none": "Ei opintosuuntaa",
+    "admin": "admin"
   },
   "eventLog": {
     "thesis": "Tutkielma",
@@ -120,6 +121,7 @@
     "approverHeader": "Vastaava",
     "approverInstructions": "Valitse ohjelmavastaava, joka on lähimpänä tutkielman aihepiiriä, hallinnoimaan prosessia.",
     "errorSummary": "Lomake sisältää seuraavia virheitä",
+    "errorSummaryAriaLabel": "Lomake sisältää seuraavia virheitä",
     "newThesisFormTitle": "Uuden tutkielman luonti",
     "editThesisFormTitle": "Tutkielman muokkaus",
     "authorMissingError": "Tekijä puuttuu",
@@ -166,7 +168,8 @@
     "removeGraderConfirmationNoName": "Haluatko varmasti poistaa arvioijan {{index}}?",
     "submitEthesis": "Lähetä työn tiedot Ethesikseen",
     "toSubmitEthesis": "Tutkielman tietojen lähettäminen Ethesikseen",
-    "send": "Lähetä"
+    "send": "Lähetä",
+    "admin": "admin"
   },
   "thesisStages": {
     "planned": "Suunniteltu",

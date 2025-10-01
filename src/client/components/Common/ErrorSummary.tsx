@@ -25,7 +25,7 @@ const ErrorSummary = ({
 
   return (
     <Box
-      aria-label={t('errorSummary:ariaLabel')}
+      aria-label={t('thesisForm:errorSummaryAriaLabel')}
       aria-atomic="true"
       data-testid="error-summary"
       sx={{

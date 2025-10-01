@@ -18,6 +18,7 @@
     "format": "prettier --write '**/*.{ts,tsx,json,css,md}'",
     "build": "DISABLE_ESLINT_PLUGIN=true vite build",
     "check:migrations": "node scripts/analyzeMigrationNames.js",
+    "check:translations": "node scripts/analyzeTranslations.js",
     "prepare": "husky"
   },
   "jest": {
