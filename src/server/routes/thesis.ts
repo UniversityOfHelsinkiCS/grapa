@@ -20,7 +20,6 @@ import {
   Approver,
   User,
   EventLog,
-  EthesisAdmin,
   DepartmentAdmin,
 } from '../db/models'
 import { sequelize } from '../db/connection'
@@ -41,6 +40,7 @@ import {
   deleteThesisAttachments,
   handleAttachmentByLabel,
 } from './thesisAttachmentHelpers'
+import ethesisAdminHandler from '../middleware/ethesisAdmin'
 
 const thesisRouter = express.Router()
 
@@ -214,83 +214,82 @@ const getSortByColumn = (
 }
 
 // @ts-expect-error the user middleware updates the req object with user field
-thesisRouter.get('/paginate', async (req: ServerGetRequest, res: Response) => {
-  const { onlySupervised, limit = 50, offset = 0 } = req.query
-  const currentUser = req.user
-  const language = (req.query.language ?? 'en') as string
-  const programId = req.query.programId as string
-  // These are optional filter query parameters
-  const programNamePartial = req.query.programNamePartial as string
-  const topicPartial = req.query.topicPartial as string
-  const authorsPartial = req.query.authorsPartial as string
-  const status = req.query.status as string
-  const departmentId = req.query.departmentId as string
-  // These are optional sort query parameters
-  const sortBy = req.query.sortBy as string
-  const sortOrder = req.query.sortOrder as 'asc' | 'desc'
+thesisRouter.get(
+  '/paginate',
+  ethesisAdminHandler,
+  async (req: ServerGetRequest, res: Response) => {
+    const { onlySupervised, limit = 50, offset = 0 } = req.query
+    const currentUser = req.user
+    const language = (req.query.language ?? 'en') as string
+    const programId = req.query.programId as string
+    // These are optional filter query parameters
+    const programNamePartial = req.query.programNamePartial as string
+    const topicPartial = req.query.topicPartial as string
+    const authorsPartial = req.query.authorsPartial as string
+    const status = req.query.status as string
+    const departmentId = req.query.departmentId as string
+    // These are optional sort query parameters
+    const sortBy = req.query.sortBy as string
+    const sortOrder = req.query.sortOrder as 'asc' | 'desc'
 
-  const allowedLanguages = ['en', 'fi', 'sv']
-  if (!allowedLanguages.includes(language)) {
-    throw new Error('Invalid language key')
-  }
+    const allowedLanguages = ['en', 'fi', 'sv']
+    if (!allowedLanguages.includes(language)) {
+      throw new Error('Invalid language key')
+    }
 
-  const allowedSortOrder = ['asc', 'desc']
-  if (sortOrder && !allowedSortOrder.includes(sortOrder)) {
-    throw new Error('Invalid sort order')
-  }
+    const allowedSortOrder = ['asc', 'desc']
+    if (sortOrder && !allowedSortOrder.includes(sortOrder)) {
+      throw new Error('Invalid sort order')
+    }
 
-  if (departmentId && !currentUser.isAdmin) {
-    const depAdmin = await DepartmentAdmin.findOne({
-      where: { userId: currentUser.id, departmentId },
+    if (departmentId && !currentUser.isAdmin) {
+      const depAdmin = await DepartmentAdmin.findOne({
+        where: { userId: currentUser.id, departmentId },
+      })
+
+      if (!depAdmin) {
+        return res
+          .status(403)
+          .send('Access denied: insufficient permissions for this department')
+      }
+    }
+
+    const sortByColumn = getSortByColumn(sortBy)
+
+    console.log(currentUser)
+
+    const options = await getFindThesesOptions({
+      programId,
+      departmentId,
+      programNamePartial,
+      topicPartial,
+      authorsPartial,
+      status,
+      language,
+      actionUser: currentUser,
+      onlySupervised: onlySupervised === 'true',
     })
 
-    if (!depAdmin) {
-      return res
-        .status(403)
-        .send('Access denied: insufficient permissions for this department')
-    }
+    const { count, rows } = await Thesis.findAndCountAll({
+      ...options,
+      subQuery: false,
+      offset: Number(offset),
+      limit: Number(limit),
+      order: getOrdering({
+        currentUser,
+        orderBy: sortByColumn,
+        orderDirection: sortOrder,
+      }),
+      distinct: true,
+      bind: { language },
+    })
+
+    const thesesRows = rows.map((t) => t.toJSON()) as ThesisData[]
+    const theses = transformThesisData(thesesRows)
+
+    res.send({ theses, totalCount: count })
   }
-
-  const sortByColumn = getSortByColumn(sortBy)
-
-  // TODO move to middleware
-  const ethesisAdmined = await EthesisAdmin.findAll({
-    where: { userId: currentUser.id },
-  })
-
-  currentUser.ethesisAdmin = ethesisAdmined.length > 0 || currentUser.isAdmin
-
-  const options = await getFindThesesOptions({
-    programId,
-    departmentId,
-    programNamePartial,
-    topicPartial,
-    authorsPartial,
-    status,
-    language,
-    actionUser: currentUser,
-    onlySupervised: onlySupervised === 'true',
-  })
-
-  const { count, rows } = await Thesis.findAndCountAll({
-    ...options,
-    subQuery: false,
-    offset: Number(offset),
-    limit: Number(limit),
-    order: getOrdering({
-      currentUser,
-      orderBy: sortByColumn,
-      orderDirection: sortOrder,
-    }),
-    distinct: true,
-    bind: { language },
-  })
-
-  const thesesRows = rows.map((t) => t.toJSON()) as ThesisData[]
-  const theses = transformThesisData(thesesRows)
-
-  res.send({ theses, totalCount: count })
-})
+)
 
 // @ts-expect-error the user middleware updates the req object with user field
 thesisRouter.get('/:id', async (req: ServerGetRequest, res: Response) => {
@@ -369,18 +368,12 @@ thesisRouter.put(
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisData,
   authorizeStatusChange,
+  ethesisAdminHandler,
   async (req: ServerPutRequest, res) => {
     const { id } = req.params
     const thesisData = req.body
 
     const currentUser = req.user
-
-    // TODO move to middleware
-    const ethesisAdmined = await EthesisAdmin.findAll({
-      where: { userId: currentUser.id },
-    })
-
-    currentUser.ethesisAdmin = ethesisAdmined.length > 0 || currentUser.isAdmin
 
     const originalThesis = await fetchThesisById(id, currentUser)
 

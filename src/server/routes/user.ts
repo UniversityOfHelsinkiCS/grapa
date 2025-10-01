@@ -2,48 +2,44 @@ import express from 'express'
 
 import { RequestWithUser } from '../types'
 import { validateUserThesesTableFiltersData } from '../validators/user'
-import {
-  DepartmentAdmin,
-  EthesisAdmin,
-  ProgramManagement,
-  User,
-} from '../db/models'
+import { DepartmentAdmin, ProgramManagement, User } from '../db/models'
+import ethesisAdminHandler from '../middleware/ethesisAdmin'
 
 const userRouter = express.Router()
 
-userRouter.get('/', async (req: RequestWithUser, res: any) => {
-  const { user } = req
+userRouter.get(
+  '/',
+  ethesisAdminHandler,
+  async (req: RequestWithUser, res: any) => {
+    const { user } = req
 
-  if (!user) return res.send({})
+    if (!user) return res.send({})
 
-  const managedPrograms = await ProgramManagement.findAll({
-    where: { userId: user.id },
-  })
-  const managedProgramIds = managedPrograms.map((program) => program.programId)
-  const approvableProgramIds = managedPrograms
-    .filter((program) => program.isThesisApprover)
-    .map((program) => program.programId)
+    const managedPrograms = await ProgramManagement.findAll({
+      where: { userId: user.id },
+    })
+    const managedProgramIds = managedPrograms.map(
+      (program) => program.programId
+    )
+    const approvableProgramIds = managedPrograms
+      .filter((program) => program.isThesisApprover)
+      .map((program) => program.programId)
 
-  const managedDepartments = await DepartmentAdmin.findAll({
-    where: { userId: user.id },
-  })
-  const managedDepartmentIds = managedDepartments.map(
-    (department) => department.departmentId
-  )
+    const managedDepartments = await DepartmentAdmin.findAll({
+      where: { userId: user.id },
+    })
+    const managedDepartmentIds = managedDepartments.map(
+      (department) => department.departmentId
+    )
 
-  // TODO move to middleware
-  const ethesisAdmined = await EthesisAdmin.findAll({
-    where: { userId: user.id },
-  })
-
-  return res.send({
-    ...user,
-    ethesisAdmin: ethesisAdmined.length > 0 || user.isAdmin,
-    managedProgramIds,
-    managedDepartmentIds,
-    approvableProgramIds,
-  })
-})
+    return res.send({
+      ...user,
+      managedProgramIds,
+      managedDepartmentIds,
+      approvableProgramIds,
+    })
+  }
+)
 
 userRouter.put('/', async (req: RequestWithUser, res: any) => {
   const { user, body } = req
