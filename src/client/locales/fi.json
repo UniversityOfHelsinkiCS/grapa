@@ -166,7 +166,8 @@
     "removeGraderConfirmationTitle": "Poista arvioija",
     "removeGraderConfirmationContent": "Haluatko varmasti poistaa arvioijan: {{name}}?",
     "removeGraderConfirmationNoName": "Haluatko varmasti poistaa arvioijan {{index}}?",
-    "submitEthesis": "Lähetä työn tiedot Ethesikseen",
+    "submitEthesisLabel": "Työ valmis arviointia varten:",
+    "submitEthesis": "Lähetä tutkielman tiedot Ethesikseen",
     "toSubmitEthesis": "Tutkielman tietojen lähettäminen Ethesikseen",
     "send": "Lähetä",
     "admin": "admin"

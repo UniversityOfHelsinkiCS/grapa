@@ -386,7 +386,6 @@ const ViewThesisFooter = (
 
   const ethesisReady =
     currentUser &&
-    currentUser.isAdmin &&
     thesis &&
     thesis.graders.length === 2 &&
     thesis.status === 'IN_PROGRESS'
@@ -542,29 +541,40 @@ const ViewThesisFooter = (
               waysOfWorking={thesis?.waysOfWorking}
             />
             {ethesisReady && (
-              <Button
-                variant="outlined"
-                onClick={() => handleSubitToEthesis(thesis)}
+              <Box
                 sx={{
                   marginTop: 5,
-                  marginBottom: 10,
-                  color: '#fff',
-                  backgroundColor: '#000',
-                  borderColor: '#000',
-                  fontSize: '12px',
-                  height: 24,
-                  px: 2,
-                  borderRadius: '1rem',
-                  fontWeight: 600,
-                  '&:hover': {
-                    backgroundColor: '#fff',
-                    borderColor: '#000',
-                    color: '#000',
-                  },
+                  marginBottom: 5,
+
+                  alignItems: 'center',
+                  gap: 2,
                 }}
               >
-                {t('thesisForm:submitEthesis')}
-              </Button>
+                <Typography style={{ marginBottom: 5 }}>
+                  {t('thesisForm:submitEthesisLabel')}
+                </Typography>
+                <Button
+                  variant="outlined"
+                  onClick={() => handleSubitToEthesis(thesis)}
+                  sx={{
+                    color: '#fff',
+                    backgroundColor: '#000',
+                    borderColor: '#000',
+                    fontSize: '12px',
+                    height: 24,
+                    px: 2,
+                    borderRadius: '1rem',
+                    fontWeight: 600,
+                    '&:hover': {
+                      backgroundColor: '#fff',
+                      borderColor: '#000',
+                      color: '#000',
+                    },
+                  }}
+                >
+                  {t('thesisForm:submitEthesis')}
+                </Button>
+              </Box>
             )}
           </Box>
 

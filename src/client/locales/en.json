@@ -166,6 +166,7 @@
     "removeGraderConfirmationTitle": "Delete grader",
     "removeGraderConfirmationContent": "Are you sure you want to delete the grader: {{name}}?",
     "removeGraderConfirmationNoName": "Are you sure you want to delete the grader {{index}}?",
+    "submitEthesisLabel": "Thesis ready for assesment:",
     "submitEthesis": "Send thesis info to Ethesis",
     "toSubmitEthesis": "Sending the thesis info to Ethesis",
     "send": "Send"
