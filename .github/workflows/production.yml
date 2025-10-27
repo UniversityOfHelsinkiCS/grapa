@@ -53,7 +53,7 @@ jobs:
           SENTRY_URL: ${{ secrets.SENTRY_URL }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: grapa
+          SENTRY_PROJECT: grapa-backend
         with:
           environment: production
           set_commits: 'skip'
