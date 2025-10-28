@@ -22,7 +22,7 @@ import logoutRouter from './logout'
 
 import { inDevelopment, inE2EMode, inTest } from '../../config'
 import initializeSentry from '../util/sentry'
-// import sentryUserMiddleware from '../middleware/sentry'
+import sentryUserMiddleware from '../middleware/sentry'
 
 const router = express()
 
@@ -38,7 +38,7 @@ if (inDevelopment || inE2EMode || inTest) router.use(userMiddleware)
 // as part of oidc passport authentication
 router.use(loginAsMiddleware)
 
-// router.use(sentryUserMiddleware)
+router.use(sentryUserMiddleware)
 router.use(accessLogger)
 
 router.get('/error', () => {
