@@ -578,7 +578,7 @@ const ViewThesisFooter = (
             )}
           </Box>
 
-          {Boolean(events && events.length) && (
+          {Boolean(events && events.length) && currentUser.isAdmin && (
             <Paper
               elevation={1}
               sx={{ p: 2, mb: 2, border: '1px solid', borderColor: 'divider' }}
