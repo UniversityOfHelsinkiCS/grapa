@@ -22,6 +22,7 @@ import logoutRouter from './logout'
 
 import { inDevelopment, inE2EMode, inTest } from '../../config'
 import initializeSentry from '../util/sentry'
+// import sentryUserMiddleware from '../middleware/sentry'
 
 const router = express()
 
@@ -36,9 +37,10 @@ if (inDevelopment || inE2EMode || inTest) router.use(userMiddleware)
 // @ts-expect-error req.user is added to the request
 // as part of oidc passport authentication
 router.use(loginAsMiddleware)
+
+// router.use(sentryUserMiddleware)
 router.use(accessLogger)
 
-router.get('/ping', (_, res) => res.send('pong'))
 router.get('/error', () => {
   throw new Error('Test error')
 })
