@@ -18,7 +18,7 @@ import {
   DialogTitle,
   FormControl,
   FormHelperText,
-  Grid,
+  Grid2,
   InputLabel,
   ListItemIcon,
   ListItemText,
@@ -207,7 +207,7 @@ const ThesisEditForm: FC<{
 
             <FormControl fullWidth>
               <InputLabel id="program-select-label">
-                {t('programHeader')}
+                {`${t('programHeader')}*`}
               </InputLabel>
               <Select
                 data-testid="program-select-input"
@@ -325,7 +325,7 @@ const ThesisEditForm: FC<{
                 </Alert>
                 <FormControl fullWidth>
                   <InputLabel id="approver-select-label">
-                    {t('thesisForm:approverHeader')}
+                    {`${t('thesisForm:approverHeader')}*`}
                   </InputLabel>
                   <Select
                     data-testid="approver-select-input"
@@ -333,7 +333,7 @@ const ThesisEditForm: FC<{
                     value={
                       (editedThesis.approvers &&
                         editedThesis.approvers[0]?.id) ??
-                      ''
+                      approvers[0].id
                     }
                     id="approver"
                     label="Approver"
@@ -503,8 +503,11 @@ const ThesisEditForm: FC<{
               adapterLocale={language}
               dateAdapter={AdapterDayjs}
             >
-              <Grid container rowSpacing={{ xs: 2, md: 0 }}>
-                <Grid item xs={12} md={6} sx={{ pr: { md: '1rem' } }}>
+              <Grid2 container rowSpacing={{ xs: 2, md: 0 }}>
+                <Grid2
+                  size={{ xs: 12, md: 6 }}
+                  sx={{ paddingLeft: { md: '1rem' } }}
+                >
                   <DatePicker
                     label={t('startDateHeader')}
                     slotProps={{
@@ -538,8 +541,11 @@ const ThesisEditForm: FC<{
                       )
                     }}
                   />
-                </Grid>
-                <Grid item xs={12} md={6} sx={{ pl: { md: '1rem' } }}>
+                </Grid2>
+                <Grid2
+                  size={{ xs: 12, md: 6 }}
+                  sx={{ paddingLeft: { md: '1rem' } }}
+                >
                   <DatePicker
                     label={t('targetDateHeader')}
                     slotProps={{
@@ -574,8 +580,8 @@ const ThesisEditForm: FC<{
                       )
                     }}
                   />
-                </Grid>
-              </Grid>
+                </Grid2>
+              </Grid2>
             </LocalizationProvider>
           </Stack>
 

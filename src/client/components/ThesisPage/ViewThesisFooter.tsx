@@ -5,7 +5,7 @@ import {
   Box,
   Button,
   Collapse,
-  Grid,
+  Grid2,
   Link,
   List,
   ListItem,
@@ -154,7 +154,7 @@ const Supervisors = ({ supervisors }: { supervisors: SupervisionData[] }) => {
   const { t } = useTranslation()
 
   return (
-    <Grid item>
+    <Grid2>
       <Typography
         component="h4"
         sx={{
@@ -179,7 +179,7 @@ const Supervisors = ({ supervisors }: { supervisors: SupervisionData[] }) => {
           )
         })}
       </List>
-    </Grid>
+    </Grid2>
   )
 }
 
@@ -187,7 +187,7 @@ const Graders = ({ graders }: { graders: GraderData[] }) => {
   const { t } = useTranslation()
 
   return (
-    <Grid item>
+    <Grid2>
       <Typography
         component="h4"
         sx={{
@@ -212,7 +212,7 @@ const Graders = ({ graders }: { graders: GraderData[] }) => {
           )
         })}
       </List>
-    </Grid>
+    </Grid2>
   )
 }
 
@@ -290,14 +290,14 @@ const PreviewSkeleton = () => (
     <Box sx={{ p: 2 }}>
       <Skeleton variant="rectangular" width="40%" height={16} />
 
-      <Grid
+      <Grid2
         container
         sx={{
           mt: 4,
           gap: 4,
         }}
       >
-        <Grid item>
+        <Grid2>
           <Skeleton variant="rectangular" width={240} height={24} />
           <Box sx={{ mt: 2 }}>
             <Skeleton variant="rectangular" width={240} height={16} />
@@ -317,8 +317,8 @@ const PreviewSkeleton = () => (
               height={14}
             />
           </Box>
-        </Grid>
-        <Grid item>
+        </Grid2>
+        <Grid2>
           <Skeleton variant="rectangular" width={240} height={24} />
           <Box sx={{ mt: 2 }}>
             <Skeleton variant="rectangular" width={240} height={16} />
@@ -338,16 +338,16 @@ const PreviewSkeleton = () => (
               height={14}
             />
           </Box>
-        </Grid>
-      </Grid>
-      <Grid
+        </Grid2>
+      </Grid2>
+      <Grid2
         container
         sx={{
           mt: 4,
           gap: 4,
         }}
       >
-        <Grid item>
+        <Grid2>
           <Skeleton variant="rectangular" width={240} height={24} />
           <Box sx={{ mt: 2 }}>
             <Skeleton variant="rectangular" width={380} height={16} />
@@ -358,8 +358,8 @@ const PreviewSkeleton = () => (
               height={16}
             />
           </Box>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Box>
   </Box>
 )
@@ -525,7 +525,7 @@ const ViewThesisFooter = (
               studyTrackId={thesis.studyTrackId}
             />
 
-            <Grid
+            <Grid2
               container
               sx={{
                 mt: 4,
@@ -534,7 +534,7 @@ const ViewThesisFooter = (
             >
               <Supervisors supervisors={thesis.supervisions} />
               <Graders graders={thesis.graders} />
-            </Grid>
+            </Grid2>
 
             <Attachments
               researchPlan={thesis?.researchPlan}
