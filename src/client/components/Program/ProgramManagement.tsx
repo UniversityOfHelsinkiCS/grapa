@@ -124,7 +124,7 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
                 isThesisApprover: !params.row.isThesisApprover,
               })
             }
-            color="primary"
+            color={params.row.isThesisApprover ? 'success' : 'error'}
             data-testid={`toggle-thesis-approver-button-${params.row.userId}`}
           >
             {params.row.isThesisApprover ? (
