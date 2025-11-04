@@ -86,8 +86,6 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
     }
   }
 
-  console.log('programManagements', programManagements)
-
   if (!user || userLoading || !programs || !programManagements) return null
   if (!user.isAdmin && !user.managedProgramIds?.length)
     return <Navigate to="/" />

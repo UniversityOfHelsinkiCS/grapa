@@ -256,8 +256,6 @@ thesisRouter.get(
 
     const sortByColumn = getSortByColumn(sortBy)
 
-    console.log(currentUser)
-
     const options = await getFindThesesOptions({
       programId,
       departmentId,

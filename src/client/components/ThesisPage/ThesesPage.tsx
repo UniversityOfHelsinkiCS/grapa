@@ -459,7 +459,6 @@ const ThesesPage = ({
           formTitle={t('thesisForm:editThesisFormTitle')}
           initialThesis={editedTesis}
           onSubmit={async (updatedThesis) => {
-            console.log(updatedThesis)
             await editThesis({ thesisId: editedTesis.id, data: updatedThesis })
             setEditedThesis(null)
           }}

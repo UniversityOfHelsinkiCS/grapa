@@ -10,7 +10,6 @@ const DB_CONNECTION_RETRY_LIMIT = 10
 const require = Module.createRequire(import.meta.url)
 
 export const sequelize = new Sequelize(DATABASE_URL, { logging: false })
-console.log(DATABASE_URL)
 
 const umzug = new Umzug({
   migrations: {
