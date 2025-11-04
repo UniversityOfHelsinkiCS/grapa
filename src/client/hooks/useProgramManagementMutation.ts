@@ -12,7 +12,7 @@ export const useCreateProgramManagementMutation = () => {
     mutationFn,
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ['program-managements', undefined, undefined],
+        queryKey: ['program-managements'],
       }),
   })
 
@@ -28,7 +28,7 @@ export const useDeleteProgramManagementMutation = () => {
     mutationFn,
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ['program-managements', undefined, undefined],
+        queryKey: ['program-managements'],
       }),
   })
 
@@ -51,21 +51,9 @@ export const useUpdateProgramManagementMutation = () => {
 
   const mutation = useMutation({
     mutationFn,
-    onSuccess: (_, { programManagementId, isThesisApprover }) => {
-      queryClient.setQueryData(
-        ['program-managements', undefined, undefined, undefined],
-        (oldData: ProgramManagementData[]) =>
-          oldData.map((programManagement) =>
-            programManagement.id === programManagementId
-              ? {
-                  ...programManagement,
-                  isThesisApprover,
-                }
-              : programManagement
-          )
-      )
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['program-managements', undefined, undefined, undefined],
+        queryKey: ['program-managements'],
       })
     },
   })
