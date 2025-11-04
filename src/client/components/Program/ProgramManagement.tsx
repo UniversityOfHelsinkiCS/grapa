@@ -96,8 +96,9 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
     {
       field: 'more-actions',
       type: 'actions',
-      headerName: '',
+      headerName: t('programManagementPage:toggleApproval'),
       sortable: false,
+      width: 157,
       renderCell: (params) => (
         <Tooltip
           arrow
@@ -198,7 +199,7 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
           width: '50%',
           display: 'flex',
           flexDirection: 'column',
-          gap: '1rem',
+          gap: '2rem',
           mt: '2rem',
           mx: 'auto',
         }}

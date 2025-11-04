@@ -197,6 +197,7 @@
     "addProgramManagement": "Add program management",
     "programHeader": "Program",
     "managerHeader": "Manager",
+    "toggleApproval": "Approval rights",
     "allowThesisApprovalButton": "Allow thesis approval",
     "disallowThesisApprovalButton": "Disallow thesis approval",
     "removeProgramManagementTitle": "Delete program management",

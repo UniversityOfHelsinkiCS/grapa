@@ -198,6 +198,7 @@
     "addProgramManagement": "Vastaavien lisäys",
     "programHeader": "Ohjelma",
     "managerHeader": "Vastaava",
+    "toggleApproval": "Hyväksymisoikeudet",
     "allowThesisApprovalButton": "Salli tutkielman hyväksyminen",
     "disallowThesisApprovalButton": "Estä tutkielman hyväksyminen",
     "removeProgramManagementTitle": "Poista vastaava",
