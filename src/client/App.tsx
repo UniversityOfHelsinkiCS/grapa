@@ -16,11 +16,8 @@ const App = () => {
   const theme = useTheme()
   const themeWithLocale = createTheme(theme, fiFI)
 
-  const { user, isLoading, isError } = useLoggedInUser()
-  if (isError) {
-    window.location.href = `${FULL_URL}/api/login`
-    return null
-  }
+  const { user, isLoading } = useLoggedInUser()
+
   if (isLoading) return null
   if (!user?.id) {
     window.location.href = `${FULL_URL}/api/login`
