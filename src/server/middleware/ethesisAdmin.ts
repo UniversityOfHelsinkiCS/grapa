@@ -7,6 +7,10 @@ const ethesisAdminHandler = async (
   next: NextFunction
 ) => {
   const currentUser = req.user
+  if (!req.user) {
+    return next()
+  }
+
   const ethesisAdmined = await EthesisAdmin.findAll({
     where: { userId: currentUser.id },
   })
