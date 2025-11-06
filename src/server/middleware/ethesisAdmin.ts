@@ -7,7 +7,7 @@ const ethesisAdminHandler = async (
   next: NextFunction
 ) => {
   const currentUser = req.user
-  if (!req.user) {
+  if (!currentUser) {
     return next()
   }
 
