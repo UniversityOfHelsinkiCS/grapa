@@ -18,8 +18,8 @@ const sentryUserMiddleware = (
 
   const user = req.user as User
 
-  // Set user context for this request scope
-  Sentry.getCurrentScope().setUser(
+  // Set user
+  Sentry.setUser(
     user
       ? {
           id: user.id,
@@ -30,7 +30,7 @@ const sentryUserMiddleware = (
   )
 
   // Add request context
-  Sentry.getCurrentScope().setContext('request', {
+  Sentry.setContext('request', {
     url: req.url,
     method: req.method,
     userAgent: req.get('User-Agent'),
