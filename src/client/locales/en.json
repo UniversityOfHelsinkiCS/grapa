@@ -115,7 +115,8 @@
     "researchPlan": "Please upload a valid topic description file",
     "waysOfWorking": "Please upload a valid ways of working file",
     "startDate": "Start date must be before target date",
-    "targetDate": "Target date must be after start date"
+    "targetDate": "Target date must be after start date",
+    "approver": "Please select a program manager"
   },
   "thesisForm": {
     "approverHeader": "Program manager",

@@ -115,7 +115,8 @@
     "researchPlan": "Lataa kelvollinen aihekuvaustiedosto",
     "waysOfWorking": "Lataa kelvollinen työskentelytavat-tiedosto",
     "startDate": "Aloituspäivän on oltava ennen tavoitepäivää",
-    "targetDate": "Tavoitepäivän on oltava aloituspäivän jälkeen"
+    "targetDate": "Tavoitepäivän on oltava aloituspäivän jälkeen",
+    "approver": "Valitse ohjelmavastaava"
   },
   "thesisForm": {
     "approverHeader": "Vastaava",

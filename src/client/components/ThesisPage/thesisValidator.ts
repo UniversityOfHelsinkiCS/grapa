@@ -115,6 +115,7 @@ export const ThesisSchema = z.object({
   topic: z.string().min(1, 'formErrors:topic'),
   programId: z.string().min(1, 'formErrors:program'),
   authors: z.array(userSchema).min(1, 'formErrors:authors'),
+  approvers: z.array(userSchema).optional(),
   status: z.string().min(1, 'formErrors:status'),
   supervisions: z
     .array(supervisionSchema)

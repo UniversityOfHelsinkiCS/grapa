@@ -35,7 +35,7 @@ export const getEqualSupervisorSelectionWorkloads = (
   return updatedSelections
 }
 
-export const getFormErrors = (thesis: ThesisData) => {
+export const getFormErrors = (thesis: ThesisData, hasApprovers = false) => {
   const validatedThesis = ThesisSchema.safeParse(thesis)
   const validatedDates = ThesisDateSchema.safeParse({
     startDate: thesis.startDate,
@@ -47,6 +47,19 @@ export const getFormErrors = (thesis: ThesisData) => {
   if (!validatedThesis?.success)
     formErrors.push(...validatedThesis.error.issues)
   if (!validatedDates?.success) formErrors.push(...validatedDates.error.issues)
+
+  // Add custom validation for approvers when they are available
+  if (
+    hasApprovers &&
+    (!thesis.approvers || thesis.approvers.length === 0 || !thesis.approvers[0])
+  ) {
+    formErrors.push({
+      code: 'custom' as const,
+      message: 'formErrors:approver',
+      path: ['approver'],
+      params: {},
+    })
+  }
 
   return formErrors
 }

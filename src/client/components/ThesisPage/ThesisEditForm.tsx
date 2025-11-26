@@ -82,7 +82,7 @@ const ThesisEditForm: FC<{
   }
 
   const handleSubmit = async () => {
-    const thesisErrors = getFormErrors(editedThesis)
+    const thesisErrors = getFormErrors(editedThesis, approvers?.length > 0)
 
     if (thesisErrors.length > 0) {
       setFormErrors(thesisErrors)
@@ -331,9 +331,9 @@ const ThesisEditForm: FC<{
                     data-testid="approver-select-input"
                     required
                     value={
-                      (editedThesis.approvers &&
-                        editedThesis.approvers[0]?.id) ??
-                      approvers[0].id
+                      editedThesis.approvers
+                        ? editedThesis.approvers[0]?.id
+                        : ''
                     }
                     id="approver"
                     label="Approver"
@@ -362,7 +362,13 @@ const ThesisEditForm: FC<{
                       </MenuItem>
                     ))}
                   </Select>
-                </FormControl>{' '}
+                  <FormHelperText error>
+                    {t(
+                      formErrors.find((error) => error.path[0] === 'approver')
+                        ?.message
+                    )}
+                  </FormHelperText>
+                </FormControl>
               </>
             )}
 
