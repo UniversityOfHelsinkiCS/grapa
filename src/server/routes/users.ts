@@ -24,9 +24,11 @@ usersRouter.get('/', async (req, res) => {
 
   if (!search) {
     res.status(400).send('Search string must be provided as a query parameter')
+    return
   }
   if (search.trim().length < 5) {
     res.status(400).send('Search string must be at least 5 characters long')
+    return
   }
 
   const trimmedSearch = search.trim()
