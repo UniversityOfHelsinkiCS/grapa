@@ -35,7 +35,7 @@ $ npm run lint # Run eslint
 $ npm run format # Run Prettier
 ```
 
-### Runnning tests locally
+### Running tests locally
 
 To run tests, you can use these commands:
 
