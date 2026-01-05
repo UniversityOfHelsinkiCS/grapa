@@ -1,9 +1,14 @@
 /**
  * @jest-environment jsdom
  */
-import * as React from 'react'
 import userEvent from '@testing-library/user-event'
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
 
@@ -14,8 +19,8 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
       firstName: 'John',
       lastName: 'Doe',
       username: 'johndoe',
-      managedDepartmentIds: ["1"],
-      departmentId: "1",
+      managedDepartmentIds: ['1'],
+      departmentId: '1',
     },
   }),
 }))
@@ -47,15 +52,15 @@ jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
       {
         id: 1,
         name: {
-          en: "Department of Computer Science",
-          fi: "Tietojenkäsittelytieteen laitos",
+          en: 'Department of Computer Science',
+          fi: 'Tietojenkäsittelytieteen laitos',
         },
       },
       {
         id: 2,
         name: { en: 'Test department', fi: 'Testiosasto' },
       },
-    ]
+    ],
   }),
 }))
 
@@ -69,8 +74,8 @@ jest.unstable_mockModule('./src/client/hooks/useDepartmentAdmins', () => ({
         department: {
           id: 1,
           name: {
-            en: "Department of Computer Science",
-            fi: "Tietojenkäsittelytieteen laitos",
+            en: 'Department of Computer Science',
+            fi: 'Tietojenkäsittelytieteen laitos',
           },
         },
         user: {
@@ -81,29 +86,30 @@ jest.unstable_mockModule('./src/client/hooks/useDepartmentAdmins', () => ({
           departmentId: 1,
         },
       },
-    ]
+    ],
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useDepartmentAdminMutation', () => ({
-  useCreateDepartmentAdminMutation: jest.fn().mockReturnValue({
-    mutateAsync: jest.fn(),
-  }),
-  useDeleteDepartmentAdminMutation: jest.fn().mockReturnValue({
-    mutateAsync: jest.fn(),
+jest.unstable_mockModule(
+  './src/client/hooks/useDepartmentAdminMutation',
+  () => ({
+    useCreateDepartmentAdminMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+    useDeleteDepartmentAdminMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
   })
-}))
+)
 
 jest.unstable_mockModule('@mui/icons-material/Delete', () => ({
   default: jest.fn().mockReturnValue('DeleteIcon'),
 }))
 
-jest.unstable_mockModule('react-router-dom', () => ({ Navigate: jest.fn()}))
+jest.unstable_mockModule('react-router-dom', () => ({ Navigate: jest.fn() }))
 
-const {
-  useCreateDepartmentAdminMutation,
-  useDeleteDepartmentAdminMutation,
-} = (await import('../../hooks/useDepartmentAdminMutation'))
+const { useCreateDepartmentAdminMutation, useDeleteDepartmentAdminMutation } =
+  await import('../../hooks/useDepartmentAdminMutation')
 const DepartmentAdmin = (await import('./DepartmentAdmin')).default
 
 describe('DepartmentAdmin', () => {
@@ -121,16 +127,19 @@ describe('DepartmentAdmin', () => {
     })
     useDeleteDepartmentAdminMutation.mockReturnValue({
       mutateAsync: deleteDepartmentAdminMock,
-    })   
-
+    })
   })
 
   it('renders all existing department admins', () => {
     render(<DepartmentAdmin />)
 
-    expect(screen.getByTestId('department-admin-page-title')).toBeInTheDocument()
+    expect(
+      screen.getByTestId('department-admin-page-title')
+    ).toBeInTheDocument()
     expect(screen.getByText('Doe John')).toBeInTheDocument()
-    expect(screen.getByText("Tietojenkäsittelytieteen laitos")).toBeInTheDocument()
+    expect(
+      screen.getByText('Tietojenkäsittelytieteen laitos')
+    ).toBeInTheDocument()
   })
 
   describe('when an existing department admins is deleted', () => {
@@ -139,7 +148,9 @@ describe('DepartmentAdmin', () => {
 
       const user = userEvent.setup()
 
-      const deleteButton = screen.getByTestId('delete-department-admin-button-1')
+      const deleteButton = screen.getByTestId(
+        'delete-department-admin-button-1'
+      )
       await user.click(deleteButton)
 
       await waitFor(() => {
@@ -167,10 +178,12 @@ describe('DepartmentAdmin', () => {
       fireEvent.change(adminInput, { target: { value: 'John Doe' } })
       fireEvent.keyDown(adminInput, { key: 'ArrowDown' })
       fireEvent.keyDown(adminInput, { key: 'Enter' })
-      
+
       await userEvent.click(adminSelectInput)
-      await userEvent.click(screen.getAllByText("Tietojenkäsittelytieteen laitos")[1])
-      
+      await userEvent.click(
+        screen.getAllByText('Tietojenkäsittelytieteen laitos')[1]
+      )
+
       const createButton = screen.getByTestId('add-department-admin-button')
       expect(createButton).toBeInTheDocument()
       expect(createButton).toBeEnabled()

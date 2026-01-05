@@ -9,52 +9,52 @@ describe('department router', () => {
 
   const departments = [
     {
-      "id": "202ab77b-9c57-4cd0-a560-25dcd5108d6f", 
-      "name": {
-        "en": "Department of Chemistry", 
-        "fi": "Kemian osasto", 
-        "sv": "Avdelningen för kemi"
-      }
-    }, 
+      id: '202ab77b-9c57-4cd0-a560-25dcd5108d6f',
+      name: {
+        en: 'Department of Chemistry',
+        fi: 'Kemian osasto',
+        sv: 'Avdelningen för kemi',
+      },
+    },
     {
-      "id": "8fdce98e-2e9e-4cd7-a4c3-6d0176e29d37", 
-      "name": {
-        "en": "Department of Computer Science", 
-        "fi": "Tietojenkäsittelytieteen osasto", 
-        "sv": "Avdelningen för datavetenskap"
-      }
-    }, 
+      id: '8fdce98e-2e9e-4cd7-a4c3-6d0176e29d37',
+      name: {
+        en: 'Department of Computer Science',
+        fi: 'Tietojenkäsittelytieteen osasto',
+        sv: 'Avdelningen för datavetenskap',
+      },
+    },
     {
-      "id": "163a5a00-4571-42ac-89a6-7497dee73cbb", 
-      "name": {
-        "en": "Department of Geosciences and Geography", 
-        "fi": "Geotieteiden ja maantieteen osasto", 
-        "sv": "Avdelningen för geovetenskaper och geografi"
-      }
-    }, 
+      id: '163a5a00-4571-42ac-89a6-7497dee73cbb',
+      name: {
+        en: 'Department of Geosciences and Geography',
+        fi: 'Geotieteiden ja maantieteen osasto',
+        sv: 'Avdelningen för geovetenskaper och geografi',
+      },
+    },
     {
-      "id": "c0ce8ca5-6022-471b-a822-5172b1de507d", 
-      "name": {
-        "en": "Department of Mathematics and Statistics", 
-        "fi": "Matematiikan ja tilastotieteen osasto", 
-        "sv": "Avdelningen för matematik och statistik"
-      }
-    }, 
+      id: 'c0ce8ca5-6022-471b-a822-5172b1de507d',
+      name: {
+        en: 'Department of Mathematics and Statistics',
+        fi: 'Matematiikan ja tilastotieteen osasto',
+        sv: 'Avdelningen för matematik och statistik',
+      },
+    },
     {
-      "id": "ad8a7f5f-2a54-496a-a30e-c0e512508b5d", 
-      "name": {
-        "en": "Department of Physics", 
-        "fi": "Fysiikan osasto", 
-        "sv": "Avdelningen för fysik"
-      }
-    }, 
+      id: 'ad8a7f5f-2a54-496a-a30e-c0e512508b5d',
+      name: {
+        en: 'Department of Physics',
+        fi: 'Fysiikan osasto',
+        sv: 'Avdelningen för fysik',
+      },
+    },
     {
-      "id": "305d14cc-6011-4861-b0af-1c9cccb38113", 
-      "name": {
-        "en": "Other", 
-        "fi": "Muu", 
-        "sv": "Övrig"
-      }
+      id: '305d14cc-6011-4861-b0af-1c9cccb38113',
+      name: {
+        en: 'Other',
+        fi: 'Muu',
+        sv: 'Övrig',
+      },
     },
   ]
 
@@ -96,7 +96,7 @@ describe('department router', () => {
       expect(res.body).toHaveLength(0)
     })
   })
-  
+
   describe('when the user is an admin', () => {
     it('should return 200 and return every department when includeNotManaged is true', async () => {
       // We are seeding the database with the six departments on one of the migrations
@@ -115,7 +115,6 @@ describe('department router', () => {
       expect(res.status).toBe(200)
       expect(res.body).toEqual(expect.arrayContaining(departments))
     })
-
   })
 
   describe('when the user is a department admin', () => {
@@ -155,10 +154,12 @@ describe('department router', () => {
         .set({ uid: user2.id, hygroupcn: 'hy-employees' })
       expect(res.status).toBe(200)
       expect(res.body).toHaveLength(1)
-      expect(res.body).toIncludeSameMembers([{
-        id: department1.id,
-        name: department1.name,
-      }])
+      expect(res.body).toIncludeSameMembers([
+        {
+          id: department1.id,
+          name: department1.name,
+        },
+      ])
     })
   })
 })
