@@ -121,8 +121,6 @@ const ThesisEditForm: FC<{
         )
       : []
 
-  console.log(initialThesis.status)
-
   const thesisStatus = initialThesis.status
 
   const showStatusForm =

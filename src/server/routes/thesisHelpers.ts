@@ -298,7 +298,7 @@ export const getAndCreateExtUsers = async (
     nonDuplicateGradersAndSupervisors
       .filter((person) => person.isExternal)
       .map((person) => ({
-        username: `ext-${person.user?.email}`,
+        username: person.user?.username,
         firstName: person.user?.firstName,
         lastName: person.user?.lastName,
         email: person.user?.email,
@@ -307,13 +307,7 @@ export const getAndCreateExtUsers = async (
       })),
     {
       transaction,
-      updateOnDuplicate: [
-        'username',
-        'firstName',
-        'lastName',
-        'email',
-        'affiliation',
-      ],
+      updateOnDuplicate: ['firstName', 'lastName', 'email', 'affiliation'],
       validate: true,
     }
   )
