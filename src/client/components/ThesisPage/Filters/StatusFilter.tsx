@@ -73,6 +73,12 @@ const StatusFilter = (props: GridFilterInputValueProps) => {
             <Checkbox checked={itemValue.includes(THESIS_STATUSES.COMPLETED)} />
             <ListItemText primary={t(StatusLocale.COMPLETED)} />
           </MenuItem>
+          <MenuItem sx={{ m: 0, p: 0 }} value={THESIS_STATUSES.ETHESIS_SENT}>
+            <Checkbox
+              checked={itemValue.includes(THESIS_STATUSES.ETHESIS_SENT)}
+            />
+            <ListItemText primary={t(StatusLocale.ETHESIS_SENT)} />
+          </MenuItem>
           <MenuItem sx={{ m: 0, p: 0 }} value={THESIS_STATUSES.CANCELLED}>
             <Checkbox checked={itemValue.includes(THESIS_STATUSES.CANCELLED)} />
             <ListItemText primary={t(StatusLocale.CANCELLED)} />
