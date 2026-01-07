@@ -16,12 +16,14 @@ interface NewPersonControlsProps {
   personGroup: 'supervisor' | 'grader'
   options: { label: string; isExternal: boolean }[]
   handleAddPerson: (isExternal: boolean) => void
+  setEditDisabled: (editDisabled: boolean) => void
 }
 
 const NewPersonControls = ({
   personGroup,
   options,
   handleAddPerson,
+  setEditDisabled,
 }: NewPersonControlsProps) => {
   const { t } = useTranslation()
 
@@ -30,7 +32,7 @@ const NewPersonControls = ({
 
   const handleClick = (selectedIndex: number) => {
     const selectedAction = options[selectedIndex]
-
+    setEditDisabled(false)
     handleAddPerson(selectedAction.isExternal)
   }
 

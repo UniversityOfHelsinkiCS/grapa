@@ -89,6 +89,8 @@ const ThesesPage = ({
   const [editedTesis, setEditedThesis] = useState<Thesis | null>(null)
   const [deletedThesis, setDeletedThesis] = useState<Thesis | null>(null)
 
+  const [editDisabled, setEditDisabled] = useState(false)
+
   const [ethesisDialogOpen, setEthesisDialogOpen] = useState(false)
   const [ethesisTesis, setEthesisThesis] = useState<Thesis | null>(null)
 
@@ -463,6 +465,8 @@ const ThesesPage = ({
             setEditedThesis(null)
           }}
           onClose={() => setEditedThesis(null)}
+          editDisabled={editDisabled}
+          setEditDisabled={setEditDisabled}
         />
       )}
       {newThesis && (
@@ -475,6 +479,8 @@ const ThesesPage = ({
             setNewThesis(null)
           }}
           onClose={() => setNewThesis(null)}
+          editDisabled={editDisabled}
+          setEditDisabled={setEditDisabled}
         />
       )}
       {ethesisTesis && (
@@ -493,6 +499,7 @@ const ThesesPage = ({
             const data = { ...ethesisTesis, status, ethesisDate }
             await editThesis({ thesisId: ethesisTesis.id, data })
             setEthesisThesis(null)
+            setEditDisabled(true)
           }}
           title={t('thesisForm:toSubmitEthesis')}
         >

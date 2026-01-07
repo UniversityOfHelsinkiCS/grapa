@@ -42,6 +42,7 @@ interface BaseExternalPersonInputProps {
   inputErrors: ExternalPersonInputErrors
   inputProps: TextFieldProps
   iconButtonProps?: ButtonProps // iconButtonProps can have a default value
+  editDisabled?: boolean // The fields should be disabled in edit mode. Only way to update external person is to delete and create new.
 }
 
 interface SupervisionsExternalPersonInputProps
@@ -72,6 +73,7 @@ const ExternalPersonInput = ({
   inputProps,
   iconButtonProps = {},
   percentageInputProps,
+  editDisabled,
 }: ExternalPersonInputProps) => {
   const { t } = useTranslation()
 
@@ -123,6 +125,7 @@ const ExternalPersonInput = ({
           <TextField
             autoFocus
             required
+            disabled={editDisabled}
             margin="dense"
             id={`${inputGroup}-${index}-user-firstName`}
             name="firstName"
@@ -140,6 +143,7 @@ const ExternalPersonInput = ({
 
           <TextField
             required
+            disabled={editDisabled}
             margin="dense"
             id={`${inputGroup}-${index}-user-lastName`}
             name="lastName"
@@ -158,6 +162,7 @@ const ExternalPersonInput = ({
         <Stack spacing={1} direction="row">
           <TextField
             required
+            disabled={editDisabled}
             margin="dense"
             id={`${inputGroup}-${index}-user-email`}
             name="email"
@@ -173,6 +178,7 @@ const ExternalPersonInput = ({
 
           <TextField
             required
+            disabled={editDisabled}
             margin="dense"
             id={`${inputGroup}-${index}-user-affiliation`}
             name="affiliation"

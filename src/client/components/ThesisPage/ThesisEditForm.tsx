@@ -49,7 +49,17 @@ const ThesisEditForm: FC<{
   initialThesis: ThesisData
   onClose: () => void
   onSubmit: (data: ThesisData) => Promise<void>
-}> = ({ programs, formTitle, initialThesis, onSubmit, onClose }) => {
+  editDisabled: boolean
+  setEditDisabled: (editDisabled: boolean) => void
+}> = ({
+  programs,
+  formTitle,
+  initialThesis,
+  onSubmit,
+  onClose,
+  editDisabled,
+  setEditDisabled,
+}) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
 
@@ -599,6 +609,8 @@ const ThesisEditForm: FC<{
                 supervisions: newSupervisions,
               }))
             }
+            editDisabled={editDisabled}
+            setEditDisabled={setEditDisabled}
           />
 
           <GraderSelect
@@ -611,6 +623,8 @@ const ThesisEditForm: FC<{
                 graders: newGraders,
               }))
             }
+            editDisabled={editDisabled}
+            setEditDisabled={setEditDisabled}
           />
 
           <Stack

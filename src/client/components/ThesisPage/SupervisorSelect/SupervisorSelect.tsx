@@ -25,7 +25,16 @@ const SupervisorSelect: React.FC<{
   setErrors: (errors: ZodIssue[]) => void
   supervisorSelections: SupervisorSelection[]
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
-}> = ({ errors, setErrors, supervisorSelections, setSupervisorSelections }) => {
+  editDisabled: boolean
+  setEditDisabled: (editDisabled: boolean) => void
+}> = ({
+  errors,
+  setErrors,
+  supervisorSelections,
+  setSupervisorSelections,
+  editDisabled,
+  setEditDisabled,
+}) => {
   const { t } = useTranslation()
 
   const totalPercentage = getTotalPercentage(supervisorSelections)
@@ -199,6 +208,7 @@ const SupervisorSelect: React.FC<{
                   )
                 ),
               }}
+              editDisabled={!editDisabled && selection?.user?.id !== undefined}
             />
           )
         }
@@ -295,6 +305,7 @@ const SupervisorSelect: React.FC<{
             },
           ]}
           handleAddPerson={handleAddSupervisor}
+          setEditDisabled={setEditDisabled}
         />
       )}
     </Stack>
