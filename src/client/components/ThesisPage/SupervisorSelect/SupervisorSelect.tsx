@@ -25,15 +25,13 @@ const SupervisorSelect: React.FC<{
   setErrors: (errors: ZodIssue[]) => void
   supervisorSelections: SupervisorSelection[]
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
-  editDisabled: boolean
-  setEditDisabled: (editDisabled: boolean) => void
+  disabledMode: boolean
 }> = ({
   errors,
   setErrors,
   supervisorSelections,
   setSupervisorSelections,
-  editDisabled,
-  setEditDisabled,
+  disabledMode,
 }) => {
   const { t } = useTranslation()
 
@@ -83,7 +81,6 @@ const SupervisorSelect: React.FC<{
       numberOfSupervisors,
       supervisorSelections
     )
-
     setSupervisorSelections([
       ...updatedSelections,
       {
@@ -208,7 +205,7 @@ const SupervisorSelect: React.FC<{
                   )
                 ),
               }}
-              editDisabled={!editDisabled && selection?.user?.id !== undefined}
+              editDisabled={!disabledMode && selection?.user?.id !== undefined}
             />
           )
         }
@@ -305,7 +302,6 @@ const SupervisorSelect: React.FC<{
             },
           ]}
           handleAddPerson={handleAddSupervisor}
-          setEditDisabled={setEditDisabled}
         />
       )}
     </Stack>

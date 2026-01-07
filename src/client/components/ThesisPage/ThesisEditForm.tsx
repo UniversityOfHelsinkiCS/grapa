@@ -49,20 +49,9 @@ const ThesisEditForm: FC<{
   initialThesis: ThesisData
   onClose: () => void
   onSubmit: (data: ThesisData) => Promise<void>
-  editDisabled: boolean
-  setEditDisabled: (editDisabled: boolean) => void
-}> = ({
-  programs,
-  formTitle,
-  initialThesis,
-  onSubmit,
-  onClose,
-  editDisabled,
-  setEditDisabled,
-}) => {
+}> = ({ programs, formTitle, initialThesis, onSubmit, onClose }) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
-
   const [formErrors, setFormErrors] = useState<ZodIssue[]>([])
   const [editedThesis, setEditedThesis] = useState<ThesisData | null>(
     initialThesis
@@ -609,8 +598,7 @@ const ThesisEditForm: FC<{
                 supervisions: newSupervisions,
               }))
             }
-            editDisabled={editDisabled}
-            setEditDisabled={setEditDisabled}
+            disabledMode={false}
           />
 
           <GraderSelect
@@ -623,8 +611,7 @@ const ThesisEditForm: FC<{
                 graders: newGraders,
               }))
             }
-            editDisabled={editDisabled}
-            setEditDisabled={setEditDisabled}
+            disabledMode={false}
           />
 
           <Stack

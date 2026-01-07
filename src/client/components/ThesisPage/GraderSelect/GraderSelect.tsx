@@ -11,15 +11,13 @@ const GraderSelect: React.FC<{
   setErrors: (errors: ZodIssue[]) => void
   graderSelections: GraderData[]
   setGraderSelections: (newAuthors: GraderData[]) => void
-  editDisabled: boolean
-  setEditDisabled: (editDisabled: boolean) => void
+  disabledMode: boolean
 }> = ({
   errors,
   setErrors,
   graderSelections,
   setGraderSelections,
-  editDisabled,
-  setEditDisabled,
+  disabledMode,
 }) => {
   const { t } = useTranslation()
   const generalGraderErrors = errors.filter((error) =>
@@ -141,7 +139,7 @@ const GraderSelect: React.FC<{
                 required: false,
                 'aria-describedby': 'grader-select-instructions',
               }}
-              editDisabled={!editDisabled && selection?.user?.id !== undefined}
+              editDisabled={!disabledMode && selection?.user?.id !== undefined}
             />
           )
         }
@@ -182,7 +180,6 @@ const GraderSelect: React.FC<{
             { label: t('thesisForm:addSecondaryGrader'), isExternal: true },
           ]}
           handleAddPerson={handleAddGrader}
-          setEditDisabled={setEditDisabled}
         />
       )}
     </Stack>
