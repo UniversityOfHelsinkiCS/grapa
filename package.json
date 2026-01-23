@@ -70,7 +70,7 @@
     "react-dom": "^18.2.0",
     "react-dropzone-esm": "^15.0.1",
     "react-i18next": "^15.0.0",
-    "react-router-dom": "^6.22.3",
+    "react-router-dom": "^7.0.0",
     "sequelize": "^6.37.3",
     "umzug": "^3.8.0",
     "uuid": "^11.0.0",
