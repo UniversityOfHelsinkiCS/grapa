@@ -23,7 +23,7 @@ import {
 import { Literal } from 'sequelize/types/utils'
 import { TitleData } from '@backend/types'
 import { EMPLOYEE_TOKEN, GW_API_URL } from '../util/config'
-import { inProduction, inDevelopment } from '../../config'
+import { inStaging, inTest, inE2EMode } from '../../config'
 
 const getAuthorsWhereClause = (authorsPartial: string) => {
   const trimmedAuthorsPartial = authorsPartial.trim()
@@ -439,7 +439,7 @@ export const handleStatusChangeEmail = async (
 }
 
 export const getEmployeeTitles = async (search: string): Promise<TitleData> => {
-  if (!inProduction && !inDevelopment) {
+  if (inStaging || inTest || inE2EMode) {
     const employeeMockData = [
       {
         username: 'admini3',
