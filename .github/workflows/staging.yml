@@ -33,11 +33,11 @@ jobs:
             GIT_SHA=${{ github.sha }}
             STAGING=true
             E2E=false
-          env: |
-            DATABASE_URL={{ secrets.DATABASE_URL }}
           # ulimit 4096 is required for the buildah to work
           # otherwise throws error "Too many open files"
           extra-args: --ulimit nofile=4096:4096
+          env:
+            DATABASE_URL={{ secrets.DATABASE_URL }}
 
       - run: npm run lint
       - run: npm test
