@@ -283,7 +283,11 @@ describe('ethesis admin router', () => {
               lastName: 'User',
             }
 
-            await handleStatusChangeEmail(originalThesis, updatedThesis, actionUser)
+            await handleStatusChangeEmail(
+              originalThesis,
+              updatedThesis,
+              actionUser
+            )
 
             expect(mockSendEmail).toHaveBeenCalledTimes(1)
 

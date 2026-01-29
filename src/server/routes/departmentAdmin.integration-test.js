@@ -1,6 +1,14 @@
 import supertest from 'supertest'
 import app from '../index'
-import { Thesis, Supervision, Program, StudyTrack, Department, DepartmentAdmin, User } from '../db/models'
+import {
+  Thesis,
+  Supervision,
+  Program,
+  StudyTrack,
+  Department,
+  DepartmentAdmin,
+  User,
+} from '../db/models'
 
 const request = supertest.agent(app)
 
@@ -84,10 +92,12 @@ describe('department-admins router', () => {
 
     describe('DELETE /api/department-admins/:id', () => {
       it('should return 403', async () => {
-        const res = await request.delete(`/api/department-admins/${departmentAdmin1.id}`).send({
-          departmentId: department1.id,
-          userId: user3.id,
-        })
+        const res = await request
+          .delete(`/api/department-admins/${departmentAdmin1.id}`)
+          .send({
+            departmentId: department1.id,
+            userId: user3.id,
+          })
         expect(res.status).toBe(403)
       })
     })
@@ -106,7 +116,9 @@ describe('department-admins router', () => {
 
     describe('GET /api/department-admins/statistics', () => {
       it('should return 403 when the user is not a department admin', async () => {
-        const res = await request.get('/api/department-admins/statistics').set({ uid: user3.id, hygroupcn: 'hy-employees' })
+        const res = await request
+          .get('/api/department-admins/statistics')
+          .set({ uid: user3.id, hygroupcn: 'hy-employees' })
         expect(res.status).toBe(403)
       })
     })
@@ -133,7 +145,7 @@ describe('department-admins router', () => {
       })
     })
   })
-  
+
   describe('when the user is an admin', () => {
     describe('GET /api/department-admins', () => {
       it('should return 200', async () => {
@@ -277,7 +289,7 @@ describe('department-admins router', () => {
           level: 'master',
           international: true,
           enabled: true,
-        }) 
+        })
 
         await StudyTrack.create({
           id: 'test-study-track-id',
@@ -313,7 +325,9 @@ describe('department-admins router', () => {
       })
 
       it('should return 200 and the statistics of the department admins', async () => {
-        const res = await request.get('/api/department-admins/statistics').set({ uid: user3.id, hygroupcn: 'hy-employees' })
+        const res = await request
+          .get('/api/department-admins/statistics')
+          .set({ uid: user3.id, hygroupcn: 'hy-employees' })
         expect(res.status).toBe(200)
         expect(res.body).toIncludeSameMembers([
           {
@@ -426,6 +440,5 @@ describe('department-admins router', () => {
         expect(res.status).toBe(404)
       })
     })
-  
   })
 })

@@ -216,7 +216,9 @@ describe('program-managements router', () => {
       describe('when onlyThesisApprovers and programId query params are passed', () => {
         it('should return 200 and the correct response', async () => {
           const response = await request
-            .get(`/api/program-managements?onlyThesisApprovers=true&programId=${programManagement1.programId}`)
+            .get(
+              `/api/program-managements?onlyThesisApprovers=true&programId=${programManagement1.programId}`
+            )
             .set({ uid: user1.id, hygroupcn: 'grp-toska' })
           expect(response.status).toEqual(200)
           expect(response.body).toIncludeSameMembers([])
