@@ -10,7 +10,6 @@ import {
   within,
 } from '@testing-library/react'
 
-// import GraderSelect from './GraderSelect'
 import initializeI18n from '../../../util/il18n'
 
 jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
