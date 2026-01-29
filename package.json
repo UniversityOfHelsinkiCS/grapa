@@ -8,7 +8,7 @@
     "start:prod": "NODE_ENV=production node --no-warnings --experimental-specifier-resolution=node --loader ts-node/esm src/server/index.ts",
     "start:test": "NODE_ENV=test node --loader ts-node/esm src/server/index.ts",
     "start:dev": "NODE_ENV=development concurrently \"nodemon --exec node --no-warnings --experimental-specifier-resolution=node --loader ts-node/esm src/server/index.ts\" \"vite\"",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch '**/server/**/*.test.*' --setupFilesAfterEnv ./setupTests.ts",
+    "test": "DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch '**/server/**/*.test.*' --setupFilesAfterEnv ./setupTests.ts",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch '**/server/**/*.test.*' --setupFilesAfterEnv ./setupTests.ts --watchAll",
     "test:front": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch '**/client/**/*.test.*' --setupFilesAfterEnv ./setupTests.ts",
     "test:front:watch": "DEBUG_PRINT_LIMIT=100000 node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch '**/client/**/*.test.*' --setupFilesAfterEnv ./setupTests.ts --watchAll",
