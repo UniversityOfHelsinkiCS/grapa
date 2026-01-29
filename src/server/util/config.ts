@@ -34,6 +34,10 @@ export const OIDC_REDIRECT_URI = process.env.OIDC_REDIRECT_URI || ''
 
 export const API_TOKEN = process.env.API_TOKEN || ''
 
+export const EMPLOYEE_TOKEN = process.env.EMPLOYEE_TOKEN || ''
+
+export const GW_API_URL = 'https://gw.api.helsinki.fi/'
+
 export const IMPORTER_URL =
   inProduction || inDevelopment
     ? 'https://api-toska.apps.ocp-prod-0.k8s.it.helsinki.fi/importer'
