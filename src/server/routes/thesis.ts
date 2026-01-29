@@ -28,6 +28,7 @@ import { transformSingleThesis, transformThesisData } from '../util/helpers'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import {
   getAndCreateExtUsers,
+  getEmployeeTitles,
   getFindThesesOptions,
   getOrdering,
   handleGradersChangeEventLog,
@@ -213,7 +214,6 @@ const getSortByColumn = (
   }
 }
 
-// @ts-expect-error the user middleware updates the req object with user field
 thesisRouter.get(
   '/paginate',
   ethesisAdminHandler,
@@ -283,7 +283,8 @@ thesisRouter.get(
     })
 
     const thesesRows = rows.map((t) => t.toJSON()) as ThesisData[]
-    const theses = transformThesisData(thesesRows)
+
+    const theses = transformThesisData(thesesRows, [])
 
     res.send({ theses, totalCount: count })
   }
@@ -300,9 +301,20 @@ thesisRouter.get('/:id', async (req: ServerGetRequest, res: Response) => {
   const thesis = await fetchThesisById(id, req.user)
 
   if (!thesis) res.status(404).send('Thesis not found')
+  const graderUsernames = thesis.graders
+    .map((grader) => (grader.user.isExternal ? null : grader.user.username))
+    .filter((username) => !!username)
 
-  const thesisData = transformSingleThesis(thesis.toJSON() as ThesisData)
+  const graderTitles = []
+  for (const username of graderUsernames) {
+    const titles = await getEmployeeTitles(username)
+    graderTitles.push(titles)
+  }
 
+  const thesisData = transformSingleThesis(
+    thesis.toJSON() as ThesisData,
+    graderTitles
+  )
   res.send(thesisData)
 })
 

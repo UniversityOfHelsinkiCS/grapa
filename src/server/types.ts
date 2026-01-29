@@ -46,6 +46,11 @@ export interface RequestWithUser extends Request {
   loginAs?: boolean
 }
 
+export interface TitleData {
+  username: string
+  titles: TranslatedName[]
+}
+
 export type ThesisStatus =
   | 'PLANNING'
   | 'IN_PROGRESS'
@@ -65,6 +70,7 @@ export interface SupervisionData {
 export interface GraderData {
   user: Partial<User>
   isPrimaryGrader: boolean
+  title?: TranslatedName
   isExternal: boolean
 }
 

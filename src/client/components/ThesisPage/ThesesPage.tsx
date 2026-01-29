@@ -510,12 +510,12 @@ const ThesesPage = ({
                   {t('thesisForm:graders')}
                 </span>
                 {ethesisTesis.graders.length > 0 &&
-                  ethesisTesis.graders
-                    .map(
-                      (grader) =>
-                        `${grader.user.firstName} ${grader.user.lastName}`
-                    )
-                    .join(', ')}
+                  ethesisTesis.graders.map((grader) => (
+                    <p>
+                      <i>{grader.title[language]}</i> {grader.user.firstName}{' '}
+                      {grader.user.lastName}
+                    </p>
+                  ))}
               </Typography>
             </Box>
           </Box>
@@ -566,9 +566,7 @@ const ThesesPage = ({
                 }}
                 color="error"
                 sx={{ mt: 2, width: '100%' }}
-                InputProps={{
-                  style: { borderRadius: '0.5rem' },
-                }}
+                style={{ borderRadius: '0.5rem' }}
               />
             </Box>
           </Box>

@@ -184,8 +184,8 @@ const Supervisors = ({ supervisors }: { supervisors: SupervisionData[] }) => {
 }
 
 const Graders = ({ graders }: { graders: GraderData[] }) => {
-  const { t } = useTranslation()
-
+  const { t, i18n } = useTranslation()
+  const { language } = i18n
   return (
     <Grid2>
       <Typography
@@ -200,7 +200,10 @@ const Graders = ({ graders }: { graders: GraderData[] }) => {
       </Typography>
       <List dense>
         {graders.map((grader) => {
-          const primaryText = `${grader.user?.firstName} ${grader.user?.lastName}`
+          const title = grader.title.fi
+            ? `(${grader.title[language as keyof TranslatedName]})`
+            : ''
+          const primaryText = `${grader.user?.firstName} ${grader.user?.lastName} ${title}`
           const secondaryText = grader.user?.affiliation
             ? `${grader.user?.email} (${grader.user?.affiliation})`
             : `${grader.user?.email}`

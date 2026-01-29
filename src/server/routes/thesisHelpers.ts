@@ -21,6 +21,9 @@ import {
   getWhereClauseForTwoWordSearch,
 } from './usersSearchHelpers'
 import { Literal } from 'sequelize/types/utils'
+import { TitleData } from '@backend/types'
+import { EMPLOYEE_TOKEN, GW_API_URL } from '../util/config'
+import { inProduction, inDevelopment } from '../../config'
 
 const getAuthorsWhereClause = (authorsPartial: string) => {
   const trimmedAuthorsPartial = authorsPartial.trim()
@@ -203,7 +206,7 @@ export const getFindThesesOptions = async ({
             as: 'userForDepartmentFiltering',
             attributes: [],
             where: { departmentId },
-            // we need both required: true jere and below
+            // we need both required: true here and below
             // for the query to work correctly
             required: true,
           },
@@ -321,6 +324,15 @@ export const getAndCreateExtUsers = async (
   return extUsers
 }
 
+export const titlesGraderGroup = [
+  'professor',
+  'assistant professor',
+  'associate professor',
+  'research director',
+  'senior university lecturer',
+  'university lecturer',
+]
+
 export const handleStatusChangeEmail = async (
   originalThesis: Thesis,
   updatedThesis: Thesis,
@@ -355,6 +367,30 @@ export const handleStatusChangeEmail = async (
     const program = await Program.findByPk(updatedThesis.programId)
     const studyTrack = await StudyTrack.findByPk(updatedThesis.studyTrackId)
 
+    const employeeTitlesPrimer = (
+      await getEmployeeTitles(
+        updatedThesis.graders.filter((g) => g.isPrimaryGrader)[0].user.username
+      )
+    ).titles.filter((title) =>
+      titlesGraderGroup.includes(title.en.toLowerCase())
+    )[0] ?? {
+      fi: '',
+    }
+
+    const employeeTitlesSecond =
+      updatedThesis.graders.filter((g) => g.user.isExternal).length > 0
+        ? { fi: '' }
+        : ((
+            await getEmployeeTitles(
+              updatedThesis.graders.filter((g) => !g.isPrimaryGrader)[0].user
+                .username
+            )
+          ).titles.filter((title) =>
+            titlesGraderGroup.includes(title.en.toLowerCase())
+          )[0] ?? {
+            fi: '',
+          })
+
     const subject = 'Prethesis - Tutkielma valmiina Ethesiskseen'
 
     const message = `
@@ -370,7 +406,7 @@ export const handleStatusChangeEmail = async (
     ${updatedThesis.graders
       .map(
         (grader) =>
-          `${grader.user.firstName} ${grader.user.lastName} (${grader.user.email}) ${grader.isPrimaryGrader ? 'ensisijainen' : ''}`
+          `${grader.isPrimaryGrader ? employeeTitlesPrimer.fi : employeeTitlesSecond.fi} ${grader.user.firstName} ${grader.user.lastName} (${grader.user.email}) ${grader.isPrimaryGrader ? 'ensisijainen' : ''}`
       )
       .join('\n    ')}
 
@@ -398,9 +434,67 @@ export const handleStatusChangeEmail = async (
       .map((admin) => (admin as any).user.email)
 
     targets.push(...ethesisAdminEmails)
-
     await sendEmail(targets, message, subject)
   }
+}
+
+export const getEmployeeTitles = async (search: string): Promise<TitleData> => {
+  if (!inProduction && !inDevelopment) {
+    const employeeMockData = [
+      {
+        username: 'admini3',
+        titles: [
+          {
+            fi: 'vanhempi yliopistonlehtori',
+            en: 'Senior University Lecturer',
+            sv: 'Senior Univeristy Lecturer',
+          },
+        ],
+      },
+      {
+        username: 'program-supervisor1',
+        titles: [
+          {
+            fi: 'professori',
+            en: 'Professor',
+            sv: 'professor',
+          },
+        ],
+      },
+    ]
+    const data = employeeMockData.filter((data) => data.username === search)
+    return data ? data[0] : { username: search, titles: [] }
+  }
+
+  const url = `${GW_API_URL}employeeinformation/v1?search=${search}`
+
+  const response = await fetch(url, {
+    headers: { 'x-api-key': EMPLOYEE_TOKEN },
+  })
+
+  const data: [
+    {
+      employeeNumber: number
+      titles: [
+        {
+          fi: string
+          en: string
+          sv: string
+        },
+      ]
+      username: string
+      lastName: string
+      firstName: string
+      email: string
+    },
+  ] = await response.json()
+
+  const mappedData = data.map((dataValues) => ({
+    username: dataValues.username,
+    titles: dataValues.titles,
+  }))
+
+  return mappedData ? mappedData[0] : { username: search, titles: [] }
 }
 
 export const handleThesisCreationEmail = async (
