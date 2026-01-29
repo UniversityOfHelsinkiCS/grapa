@@ -10,19 +10,17 @@ describe('validateUserThesesTableFiltersData', () => {
       body: {
         thesesTableFilters: {
           items: [
-              {
-                  field: "status",
-                  operator: "contains",
-                  id: 44812,
-                  value: [
-                      "Suunniteltu"
-                  ]
-              }
+            {
+              field: 'status',
+              operator: 'contains',
+              id: 44812,
+              value: ['Suunniteltu'],
+            },
           ],
-          logicOperator: "and",
+          logicOperator: 'and',
           quickFilterValues: [],
-          quickFilterLogicOperator: "and"
-        }
+          quickFilterLogicOperator: 'and',
+        },
       },
     }
     res = {}
