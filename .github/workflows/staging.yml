@@ -36,7 +36,6 @@ jobs:
           # ulimit 4096 is required for the buildah to work
           # otherwise throws error "Too many open files"
           extra-args: --ulimit nofile=4096:4096
-          envs: DATABASE_URL={{ secrets.DATABASE_URL }}
 
 
       - run: npm run lint
