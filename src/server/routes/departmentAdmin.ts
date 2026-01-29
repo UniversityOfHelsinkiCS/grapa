@@ -162,6 +162,8 @@ departmentAdminRouter.get(
             IN_PROGRESS: status === 'IN_PROGRESS' ? 1 : 0,
             COMPLETED: status === 'COMPLETED' ? 1 : 0,
             CANCELLED: status === 'CANCELLED' ? 1 : 0,
+            ETHESIS_SENT: status === 'ETHESIS_SENT' ? 1 : 0,
+            ETHESIS: status === 'ETHESIS' ? 1 : 0,
           },
           startedWithinHalfYearCount: isWithinLastHalfYear(new Date(startDate))
             ? 1
