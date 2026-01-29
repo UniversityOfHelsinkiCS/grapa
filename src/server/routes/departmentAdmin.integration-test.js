@@ -348,6 +348,8 @@ describe('department-admins router', () => {
               IN_PROGRESS: 0,
               COMPLETED: 0,
               CANCELLED: 0,
+              ETHESIS: 0,
+              ETHESIS_SENT: 0,
             },
             startedWithinHalfYearCount: 0,
           },

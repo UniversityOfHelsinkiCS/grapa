@@ -369,9 +369,9 @@ export const handleStatusChangeEmail = async (
 
     const employeeTitlesPrimer = (
       await getEmployeeTitles(
-        updatedThesis.graders.filter((g) => g.isPrimaryGrader)[0].user.username
+        updatedThesis.graders.filter((g) => g.isPrimaryGrader)[0]?.user.username
       )
-    ).titles.filter((title) =>
+    )?.titles.filter((title) =>
       titlesGraderGroup.includes(title.en.toLowerCase())
     )[0] ?? {
       fi: '',
@@ -382,10 +382,10 @@ export const handleStatusChangeEmail = async (
         ? { fi: '' }
         : ((
             await getEmployeeTitles(
-              updatedThesis.graders.filter((g) => !g.isPrimaryGrader)[0].user
+              updatedThesis.graders.filter((g) => !g.isPrimaryGrader)[0]?.user
                 .username
             )
-          ).titles.filter((title) =>
+          )?.titles.filter((title) =>
             titlesGraderGroup.includes(title.en.toLowerCase())
           )[0] ?? {
             fi: '',
@@ -463,7 +463,7 @@ export const getEmployeeTitles = async (search: string): Promise<TitleData> => {
       },
     ]
     const data = employeeMockData.filter((data) => data.username === search)
-    return data ? data[0] : { username: search, titles: [] }
+    return data ? data[0] : { username: '', titles: [] }
   }
 
   const url = `${GW_API_URL}employeeinformation/v1?search=${search}`
