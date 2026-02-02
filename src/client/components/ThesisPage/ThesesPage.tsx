@@ -512,8 +512,8 @@ const ThesesPage = ({
                 {ethesisTesis.graders.length > 0 &&
                   ethesisTesis.graders.map((grader) => (
                     <p>
-                      <i>{grader.title[language]}</i> {grader.user.firstName}{' '}
-                      {grader.user.lastName}
+                      {grader.user.firstName} {grader.user.lastName} (
+                      {grader.title[language]})
                     </p>
                   ))}
               </Typography>
