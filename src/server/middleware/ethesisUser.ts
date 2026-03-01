@@ -9,6 +9,7 @@ const ethesisUserHandler = async (
   if (!currentUser) {
     return next()
   }
+  return next()
 }
 
 export default ethesisUserHandler
