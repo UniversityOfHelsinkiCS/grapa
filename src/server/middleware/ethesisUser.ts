@@ -7,7 +7,7 @@ const ethesisUserHandler = async (
 ) => {
   const currentUser = req.user
   if (!currentUser) {
-    return next()
+    throw new Error('Unauthorized')
   }
   return next()
 }
