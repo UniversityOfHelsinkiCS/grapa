@@ -1,12 +1,13 @@
 import express from 'express'
 import fs from 'fs'
 import { Attachment } from '../db/models'
+import ethesisUserHandler from '@backend/middleware/ethesisUser'
 
 const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
 
 const attachmentRoute = express.Router()
 
-attachmentRoute.get('/:filename', async (req, res) => {
+attachmentRoute.get('/:filename', ethesisUserHandler, async (req, res) => {
   const { filename } = req.params
 
   const metadata = await Attachment.findOne({
