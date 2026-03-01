@@ -1,7 +1,7 @@
 import express from 'express'
 import fs from 'fs'
 import { Attachment } from '../db/models'
-import ethesisUserHandler from '@backend/middleware/ethesisUser'
+import ethesisUserHandler from '../middleware/ethesisUser'
 
 const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
 
