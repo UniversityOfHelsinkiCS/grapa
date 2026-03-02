@@ -1,3 +1,4 @@
+import CustomUnauthorizedError from '../errors/UnauthorizedError'
 import { NextFunction, Response } from 'express'
 
 const ethesisUserHandler = async (
@@ -6,8 +7,8 @@ const ethesisUserHandler = async (
   next: NextFunction
 ) => {
   const currentUser = req.user
-  if (!currentUser) {
-    throw new Error('Unauthorized')
+  if (!currentUser || !currentUser.id) {
+    throw new CustomUnauthorizedError('Unauthorized')
   }
   return next()
 }

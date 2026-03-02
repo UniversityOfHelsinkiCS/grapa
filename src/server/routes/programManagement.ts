@@ -3,6 +3,7 @@ import { literal, Op } from 'sequelize'
 
 import { Program, ProgramManagement, User } from '../db/models'
 import { RequestWithUser } from '../types'
+import ethesisUserHandler from '../middleware/ethesisUser'
 
 const programManagementRouter = express.Router()
 
@@ -29,6 +30,7 @@ const getProgramIdFilter = (
 
 programManagementRouter.get(
   '/',
+  ethesisUserHandler,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
     const { isAdmin } = req.user
@@ -83,6 +85,7 @@ programManagementRouter.get(
 
 programManagementRouter.delete(
   '/:id',
+  ethesisUserHandler,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
     const { user: editorUser } = req
@@ -120,6 +123,7 @@ programManagementRouter.delete(
 
 programManagementRouter.post(
   '/',
+  ethesisUserHandler,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
     const { user: editorUser } = req
@@ -151,6 +155,7 @@ programManagementRouter.post(
 
 programManagementRouter.put(
   '/:id',
+  ethesisUserHandler,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
     const { user: editorUser } = req

@@ -42,6 +42,7 @@ import {
   handleAttachmentByLabel,
 } from './thesisAttachmentHelpers'
 import ethesisAdminHandler from '../middleware/ethesisAdmin'
+import ethesisUserHandler from '../middleware/ethesisUser'
 
 const thesisRouter = express.Router()
 
@@ -217,6 +218,7 @@ const getSortByColumn = (
 thesisRouter.get(
   '/paginate',
   ethesisAdminHandler,
+  // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
     const { onlySupervised, limit = 50, offset = 0 } = req.query
     const currentUser = req.user
@@ -290,36 +292,41 @@ thesisRouter.get(
   }
 )
 
-// @ts-expect-error the user middleware updates the req object with user field
-thesisRouter.get('/:id', async (req: ServerGetRequest, res: Response) => {
-  const { id } = req.params
+thesisRouter.get(
+  '/:id',
+  ethesisUserHandler,
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: ServerGetRequest, res: Response) => {
+    const { id } = req.params
 
-  if (!id || typeof id !== 'string') {
-    return res.status(400).send('Thesis ID is required')
+    if (!id || typeof id !== 'string') {
+      return res.status(400).send('Thesis ID is required')
+    }
+
+    const thesis = await fetchThesisById(id, req.user)
+
+    if (!thesis) res.status(404).send('Thesis not found')
+    const graderUsernames = thesis.graders
+      .map((grader) => (grader.user.isExternal ? null : grader.user.username))
+      .filter((username) => !!username)
+
+    const graderTitles = []
+    for (const username of graderUsernames) {
+      const titles = await getEmployeeTitles(username)
+      graderTitles.push(titles)
+    }
+
+    const thesisData = transformSingleThesis(
+      thesis.toJSON() as ThesisData,
+      graderTitles
+    )
+    res.send(thesisData)
   }
-
-  const thesis = await fetchThesisById(id, req.user)
-
-  if (!thesis) res.status(404).send('Thesis not found')
-  const graderUsernames = thesis.graders
-    .map((grader) => (grader.user.isExternal ? null : grader.user.username))
-    .filter((username) => !!username)
-
-  const graderTitles = []
-  for (const username of graderUsernames) {
-    const titles = await getEmployeeTitles(username)
-    graderTitles.push(titles)
-  }
-
-  const thesisData = transformSingleThesis(
-    thesis.toJSON() as ThesisData,
-    graderTitles
-  )
-  res.send(thesisData)
-})
+)
 
 thesisRouter.get(
   '/:id/event-log',
+  ethesisUserHandler,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
     const { id: thesisId } = req.params
@@ -344,6 +351,7 @@ thesisRouter.post(
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisData,
   authorizeStatusChange,
+  ethesisUserHandler,
   async (req: ServerPostRequest, res: Response) => {
     const thesisData = req.body
 

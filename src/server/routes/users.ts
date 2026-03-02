@@ -7,6 +7,7 @@ import {
   getWhereClauseForOneWordSearch,
   getWhereClauseForTwoWordSearch,
 } from './usersSearchHelpers'
+import ethesisUserHandler from '../middleware/ethesisUser'
 
 const USER_FETCH_LIMIT = 100
 
@@ -18,7 +19,7 @@ interface UserSearchQuery {
   onlyEmployees?: boolean
 }
 
-usersRouter.get('/', async (req, res) => {
+usersRouter.get('/', ethesisUserHandler, async (req, res) => {
   const { search, onlyEmployees, onlyWithStudyRight } =
     req.query as UserSearchQuery
 

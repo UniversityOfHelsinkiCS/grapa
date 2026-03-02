@@ -12,6 +12,7 @@ import {
 import { validateDepartmentAdminData } from '../validators/departmentAdmin'
 
 import { RequestWithUser, ThesisStatistics } from '../types'
+import ethesisUserHandler from '../middleware/ethesisUser'
 
 const departmentAdminRouter = express.Router()
 
@@ -22,6 +23,7 @@ const isWithinLastHalfYear = (date: Date) =>
 
 departmentAdminRouter.get(
   '/',
+  ethesisUserHandler,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
     const { isAdmin } = req.user
@@ -60,6 +62,7 @@ departmentAdminRouter.get(
 
 departmentAdminRouter.get(
   '/statistics',
+  ethesisUserHandler,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
     const { id: userId, isAdmin } = req.user
@@ -180,6 +183,7 @@ departmentAdminRouter.post(
   '/',
   // @ts-expect-error the user middleware updates the req object with user field
   validateDepartmentAdminData,
+  ethesisUserHandler,
   async (req: RequestWithUser, res: Response) => {
     const { user: editorUser } = req
     const { departmentId, userId: targetUserId } = req.body
@@ -214,6 +218,7 @@ departmentAdminRouter.post(
 
 departmentAdminRouter.delete(
   '/:id',
+  ethesisUserHandler,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
     const { user: editorUser } = req

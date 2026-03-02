@@ -20,44 +20,53 @@ const errorHandler = (
   if (inProduction) Sentry.captureException(error)
 
   if (error.name === 'CustomValidationError') {
-    return res.status(400).send({
+    res.status(400).send({
       error: error.message,
       data: (error as CustomValidationError).errors,
     })
+    return
   }
 
   if (error.name === 'CustomAuthorizationError') {
-    return res.status(403).send({
+    res.status(403).send({
       error: error.message,
       data: (error as CustomAuthorizationError).errors,
     })
+    return
   }
 
   if (error.name === 'SequelizeValidationError') {
-    return res
+    res
       .status(400)
       .send({ error: error.message, data: (error as ValidationError).errors })
+    return
   }
 
   if (error.name === 'SequelizeUniqueConstraintError') {
-    return res.status(400).send({
+    res.status(400).send({
       error: error.message,
       data: (error as UniqueConstraintError).errors,
     })
+    return
   }
 
-  if (error.name === 'UnauthorizedError') {
-    return res.status(401).send({
+  if (
+    error.name === 'UnauthorizedError' ||
+    error.name === 'CustomUnauthorizedError'
+  ) {
+    res.status(401).send({
       error: error.message,
       data: null,
     })
+    return
   }
 
   if (error.name === 'NotFoundError') {
-    return res.status(404).send({
+    res.status(404).send({
       error: error.message,
       data: null,
     })
+    return
   }
 
   return next(error)

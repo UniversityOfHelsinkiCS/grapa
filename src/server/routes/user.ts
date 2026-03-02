@@ -4,6 +4,7 @@ import { RequestWithUser } from '../types'
 import { validateUserThesesTableFiltersData } from '../validators/user'
 import { DepartmentAdmin, ProgramManagement, User } from '../db/models'
 import ethesisAdminHandler from '../middleware/ethesisAdmin'
+import ethesisUserHandler from '../middleware/ethesisUser'
 
 const userRouter = express.Router()
 
@@ -41,28 +42,37 @@ userRouter.get(
   }
 )
 
-userRouter.put('/', async (req: RequestWithUser, res: any) => {
-  const { user, body } = req
-  const { departmentId } = body
+userRouter.put(
+  '/',
+  ethesisUserHandler,
+  async (req: RequestWithUser, res: any) => {
+    const { user, body } = req
+    const { departmentId } = body
 
-  await User.update({ departmentId }, { where: { id: user.id } })
+    await User.update({ departmentId }, { where: { id: user.id } })
 
-  return res.status(200).send({ message: 'User updated' })
-})
+    return res.status(200).send({ message: 'User updated' })
+  }
+)
 
-userRouter.put('/favorite-programs', async (req: RequestWithUser, res: any) => {
-  const { user, body } = req
-  const { favoriteProgramIds } = body
+userRouter.put(
+  '/favorite-programs',
+  ethesisUserHandler,
+  async (req: RequestWithUser, res: any) => {
+    const { user, body } = req
+    const { favoriteProgramIds } = body
 
-  await User.update({ favoriteProgramIds }, { where: { id: user.id } })
+    await User.update({ favoriteProgramIds }, { where: { id: user.id } })
 
-  return res.status(200).send({ message: 'User favorite programs updated' })
-})
+    return res.status(200).send({ message: 'User favorite programs updated' })
+  }
+)
 
 userRouter.put(
   '/theses-table-filters',
   // @ts-expect-error the user middleware updates the req object with user field
   validateUserThesesTableFiltersData,
+  ethesisUserHandler,
   async (req: RequestWithUser, res: any) => {
     const { user, body } = req
     const { thesesTableFilters } = body
