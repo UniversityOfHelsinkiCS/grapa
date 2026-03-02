@@ -217,6 +217,7 @@ const getSortByColumn = (
 
 thesisRouter.get(
   '/paginate',
+  ethesisUserHandler,
   ethesisAdminHandler,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
@@ -346,12 +347,12 @@ thesisRouter.get(
 
 thesisRouter.post(
   '/',
+  ethesisUserHandler,
   parseMutlipartFormData,
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisData,
   authorizeStatusChange,
-  ethesisUserHandler,
   async (req: ServerPostRequest, res: Response) => {
     const thesisData = req.body
 
@@ -381,6 +382,7 @@ thesisRouter.post(
 
 thesisRouter.put(
   '/:id',
+  ethesisUserHandler,
   parseMutlipartFormData,
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
@@ -431,29 +433,33 @@ thesisRouter.put(
   }
 )
 
-// @ts-expect-error the user middleware updates the req object with user field
-thesisRouter.delete('/:id', async (req: ServerDeleteRequest, res) => {
-  const { id } = req.params
+thesisRouter.delete(
+  '/:id',
+  ethesisUserHandler,
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: ServerDeleteRequest, res) => {
+    const { id } = req.params
 
-  const thesis = await fetchThesisById(id, req.user)
+    const thesis = await fetchThesisById(id, req.user)
 
-  if (!thesis) res.status(404).send('Thesis not found')
+    if (!thesis) res.status(404).send('Thesis not found')
 
-  await sequelize.transaction(async (t) => {
-    await deleteThesisAttachments(id, t)
-    await deleteThesis(id, t)
+    await sequelize.transaction(async (t) => {
+      await deleteThesisAttachments(id, t)
+      await deleteThesis(id, t)
 
-    await EventLog.create(
-      {
-        userId: req.user.id,
-        type: 'THESIS_DELETED',
-        data: thesis.toJSON(),
-      },
-      { transaction: t }
-    )
-  })
+      await EventLog.create(
+        {
+          userId: req.user.id,
+          type: 'THESIS_DELETED',
+          data: thesis.toJSON(),
+        },
+        { transaction: t }
+      )
+    })
 
-  res.status(204).send(`Deleted thesis with id ${id}`)
-})
+    res.status(204).send(`Deleted thesis with id ${id}`)
+  }
+)
 
 export default thesisRouter

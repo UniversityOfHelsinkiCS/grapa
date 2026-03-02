@@ -10,6 +10,7 @@ const userRouter = express.Router()
 
 userRouter.get(
   '/',
+  ethesisUserHandler,
   ethesisAdminHandler,
   async (req: RequestWithUser, res: any) => {
     const { user } = req
