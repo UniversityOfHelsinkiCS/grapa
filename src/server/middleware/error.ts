@@ -50,14 +50,15 @@ const errorHandler = (
     return
   }
 
-  if (
-    error.name === 'UnauthorizedError' ||
-    error.name === 'CustomUnauthorizedError'
-  ) {
+  if (error.name === 'UnauthorizedError') {
     res.status(401).send({
       error: error.message,
       data: null,
     })
+    return
+  }
+  if (error.name === 'CustomUnauthorizedError') {
+    res.status(401).send(error.message)
     return
   }
 
