@@ -124,6 +124,26 @@ const ThesesPage = ({
     limit: paginationModel.pageSize,
   })
 
+  const showDurationColumn = useMemo(
+    () =>
+      currentUser?.isAdmin &&
+      filterStatus != null &&
+      (Array.isArray(filterStatus)
+        ? filterStatus.length === 1 && filterStatus[0] === 'COMPLETED'
+        : filterStatus === 'COMPLETED'),
+    [currentUser?.isAdmin, filterStatus]
+  )
+
+  const averageDuration = useMemo(() => {
+    if (!showDurationColumn || !theses?.length) return null
+    const durations = theses
+      .filter((t) => t.startDate && t.targetDate)
+      .map((t) => dayjs(t.targetDate).diff(dayjs(t.startDate), 'day'))
+    return durations.length
+      ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
+      : null
+  }, [theses, showDurationColumn])
+
   const { programs, isLoading: isProgramLoading } = usePrograms({
     includeNotManaged: true,
   })
@@ -275,12 +295,28 @@ const ThesesPage = ({
     },
     {
       field: 'targetDate',
-      headerName: t('targetDateHeader'),
+      headerName: showDurationColumn
+        ? t('completedDateHeader')
+        : t('targetDateHeader'),
       description: 'This column has a value getter and is not sortable.',
       filterable: false,
       width: 140,
       valueGetter: (_, row) => dayjs(row.targetDate).format('YYYY-MM-DD'),
     },
+    ...(showDurationColumn
+      ? [
+          {
+            field: 'duration',
+            headerName: t('durationHeader'),
+            filterable: false,
+            width: 130,
+            valueGetter: (_: unknown, row: Thesis) =>
+              row.startDate && row.targetDate
+                ? dayjs(row.targetDate).diff(dayjs(row.startDate), 'day')
+                : null,
+          },
+        ]
+      : []),
   ]
 
   const skeletonRows: Thesis[] = Array.from({ length: 7 }).map((_, index) => ({
@@ -374,6 +410,11 @@ const ThesesPage = ({
   const isLoading = loggedInUserLoading || isThesesLoading || isProgramLoading
   return (
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
+      {showDurationColumn && averageDuration != null && (
+        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+          {t('averageDuration', { days: averageDuration })}
+        </Typography>
+      )}
       <Box>
         <DataGrid
           // We want to disable virtualization to prevent a bug
