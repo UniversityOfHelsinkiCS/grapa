@@ -21,7 +21,6 @@ export const handleAttachmentByLabel = async (
   })
 
   if (!newFile && !fileMetadataFromClient && existingAttachment) {
-    // delete reserachPlan from DB and the disk
     await Attachment.destroy({
       where: { thesisId, label },
       transaction,
@@ -29,7 +28,6 @@ export const handleAttachmentByLabel = async (
 
     fs.unlinkSync(`${PATH_TO_FOLDER}${existingAttachment.filename}`)
   } else if (newFile && existingAttachment) {
-    // update existing attachment
     await Attachment.update(
       {
         filename: newFile.filename,
@@ -41,10 +39,8 @@ export const handleAttachmentByLabel = async (
         transaction,
       }
     )
-    // delete existing files from disk
     fs.unlinkSync(`${PATH_TO_FOLDER}${existingAttachment.filename}`)
   } else if (newFile && !existingAttachment) {
-    // create new attachment
     await Attachment.create(
       {
         thesisId,

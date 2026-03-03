@@ -55,7 +55,6 @@ const EthesisAdminPage = () => {
 
   const queryClient = useQueryClient()
 
-  // Fetch Ethesis admins
   const { data: admins, isLoading } = useQuery<EthesisAdmin[]>({
     queryKey: ['ethesis-admins'],
     queryFn: async () => {
@@ -82,7 +81,6 @@ const EthesisAdminPage = () => {
     }
   }
 
-  // Add admin mutation
   const addAdminMutation = useMutation({
     mutationFn: async (userId: string) => {
       const { data } = await apiClient.post('/ethesis-admins', { userId })
