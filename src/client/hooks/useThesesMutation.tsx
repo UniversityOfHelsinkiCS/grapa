@@ -7,8 +7,6 @@ export const useCreateThesisMutation = () => {
   const mutationFn = async (data: ThesisData) => {
     const formData = new FormData()
 
-    // Check for the empty studyTrackId
-    // If it's an empty string, set it to null
     if (data.studyTrackId === '') {
       data.studyTrackId = null
     }
@@ -45,8 +43,6 @@ export const useEditThesisMutation = () => {
   }) => {
     const formData = new FormData()
 
-    // Check for the empty studyTrackId
-    // If it's an empty string, set it to null
     if (data.studyTrackId === '') {
       data.studyTrackId = null
     }

@@ -45,13 +45,11 @@ ethesisAdminRouter.post(
       return res.status(400).send('User ID is required')
     }
 
-    // Check if user exists
     const user = await User.findByPk(userId)
     if (!user) {
       return res.status(404).send('User not found')
     }
 
-    // Check if user is already an ethesis admin
     const existingAdmin = await EthesisAdmin.findOne({ where: { userId } })
     if (existingAdmin) {
       return res.status(409).send('User is already an Ethesis admin')
@@ -59,7 +57,6 @@ ethesisAdminRouter.post(
 
     const newAdmin = await EthesisAdmin.create({ userId })
 
-    // Fetch the created admin with user details
     const createdAdmin = await EthesisAdmin.findByPk(newAdmin.id, {
       include: [
         {

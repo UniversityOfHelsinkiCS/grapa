@@ -2,7 +2,6 @@ const { DataTypes } = require('sequelize')
 
 module.exports = {
   up: async queryInterface => {
-    // insert Department of Physics
     await queryInterface.sequelize.query(`
       INSERT INTO departments (id, name, created_at, updated_at)
       VALUES (
@@ -13,7 +12,6 @@ module.exports = {
       )
     `)
 
-    // insert Department of Mathematics and Statistics
     await queryInterface.sequelize.query(`
       INSERT INTO departments (id, name, created_at, updated_at)
       VALUES (
@@ -24,7 +22,6 @@ module.exports = {
       )
     `)
 
-    // insert Department of Chemistry
     await queryInterface.sequelize.query(`
       INSERT INTO departments (id, name, created_at, updated_at)
       VALUES (
@@ -35,7 +32,6 @@ module.exports = {
       )
     `)
 
-    // insert Department of Geosciences and Geography
     await queryInterface.sequelize.query(`
       INSERT INTO departments (id, name, created_at, updated_at)
       VALUES (
