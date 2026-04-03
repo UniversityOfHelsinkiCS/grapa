@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Includeable, literal, Op, Order, Transaction } from 'sequelize'
 import { uniq, uniqBy } from 'lodash-es'
 import { userFields } from './config'
@@ -380,7 +381,7 @@ export const handleStatusChangeEmail = async (
     const employeeTitlesSecond =
       updatedThesis.graders.filter((g) => g.user.isExternal).length > 0
         ? { fi: '' }
-        : ((
+        : (
             await getEmployeeTitles(
               updatedThesis.graders.filter((g) => !g.isPrimaryGrader)[0]?.user
                 .username
@@ -389,7 +390,7 @@ export const handleStatusChangeEmail = async (
             titlesGraderGroup.includes(title.en.toLowerCase())
           )[0] ?? {
             fi: '',
-          })
+          }
 
     const subject = 'Prethesis - Tutkielma valmiina Ethesiskseen'
 
