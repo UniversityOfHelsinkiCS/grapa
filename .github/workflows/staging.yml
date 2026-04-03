@@ -18,7 +18,7 @@ jobs:
           node-version: '20.x'
           cache: 'npm'
       
-      - run: npm install
+      - run: npm ci --no-audit --no-fund
 
       - name: Build image
         id: build-image
