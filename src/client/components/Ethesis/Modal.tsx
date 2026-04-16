@@ -13,6 +13,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useEditThesisMutation } from '../../hooks/useThesesMutation'
 import usePrograms from '../../hooks/usePrograms'
+import { TranslatedName } from '@backend/types'
 
 interface ThesisModalProps {
   open: boolean
@@ -136,7 +137,7 @@ const ThesisModal = ({ open, onClose, thesis }: ThesisModalProps) => {
               {thesis.graders && thesis.graders.length > 0 ? (
                 thesis.graders.map((grader: any, index: number) => (
                   <Typography key={index}>
-                    {`${grader.user.firstName} ${grader.user.lastName} (${grader.user.email || 'N/A'})${
+                    {`${grader.title[i18n.language as keyof TranslatedName]} ${grader.user.firstName} ${grader.user.lastName} (${grader.user.email || 'N/A'})${
                       grader.isPrimaryGrader ? ' - Primary' : ''
                     }`}
                   </Typography>

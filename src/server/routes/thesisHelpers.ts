@@ -332,6 +332,7 @@ export const titlesGraderGroup = [
   'research director',
   'senior university lecturer',
   'university lecturer',
+  'postdoctoral researcher',
 ]
 
 export const handleStatusChangeEmail = async (

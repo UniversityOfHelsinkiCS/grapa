@@ -19,6 +19,8 @@ import { usePaginatedTheses } from '../../hooks/useTheses'
 import ThesisModal from './Modal'
 import { StatusLocale } from '../../types'
 import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
+import { TranslatedName } from '@backend/types'
 
 const formatDate = (dateString: string | undefined) => {
   if (!dateString) return 'N/A'
@@ -30,10 +32,11 @@ const formatDate = (dateString: string | undefined) => {
 }
 
 const Ethesis = () => {
+  const { i18n } = useTranslation()
   const [statusFilter, setStatusFilter] = useState<'NEW' | 'ALL'>('NEW')
   const [selectedThesis, setSelectedThesis] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
-
+  const { language } = i18n
   // Determine which statuses to include based on the filter
   const status =
     statusFilter === 'NEW' ? ['ETHESIS_SENT'] : ['ETHESIS', 'ETHESIS_SENT']
@@ -160,9 +163,13 @@ const Ethesis = () => {
                   {thesis.graders
                     .map(
                       (grader) =>
-                        `${grader.user.firstName} ${grader.user.lastName}`
+                        `${grader.user.firstName} ${grader.user.lastName}${
+                          grader.title
+                            ? `, ${grader.title[language as keyof TranslatedName]}`
+                            : ''
+                        }`
                     )
-                    .join(', ')}
+                    .join('; ')}
                 </TableCell>
                 <TableCell>
                   <Chip

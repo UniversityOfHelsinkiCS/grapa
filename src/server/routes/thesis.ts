@@ -46,6 +46,20 @@ import ethesisUserHandler from '../middleware/ethesisUser'
 
 const thesisRouter = express.Router()
 
+const getGraderTitles = async (thesis: ThesisData | Thesis) => {
+  const graderUsernames = thesis.graders
+    .map((grader) => (grader.user.isExternal ? null : grader.user.username))
+    .filter((username) => !!username)
+
+  const graderTitles = []
+  for (const username of graderUsernames) {
+    const titles = await getEmployeeTitles(username)
+    graderTitles.push(titles)
+  }
+
+  return graderTitles
+}
+
 const fetchThesisById = async (
   id: string,
   user: UserType,
@@ -286,8 +300,13 @@ thesisRouter.get(
     })
 
     const thesesRows = rows.map((t) => t.toJSON()) as ThesisData[]
+    const thesisGraders = []
+    for (const thesis of thesesRows) {
+      const singleThesisGraders = await getGraderTitles(thesis)
+      thesisGraders.push(singleThesisGraders)
+    }
 
-    const theses = transformThesisData(thesesRows, [])
+    const theses = transformThesisData(thesesRows, thesisGraders)
 
     res.send({ theses, totalCount: count })
   }
@@ -307,15 +326,8 @@ thesisRouter.get(
     const thesis = await fetchThesisById(id, req.user)
 
     if (!thesis) res.status(404).send('Thesis not found')
-    const graderUsernames = thesis.graders
-      .map((grader) => (grader.user.isExternal ? null : grader.user.username))
-      .filter((username) => !!username)
 
-    const graderTitles = []
-    for (const username of graderUsernames) {
-      const titles = await getEmployeeTitles(username)
-      graderTitles.push(titles)
-    }
+    const graderTitles = await getGraderTitles(thesis)
 
     const thesisData = transformSingleThesis(
       thesis.toJSON() as ThesisData,
@@ -394,19 +406,19 @@ thesisRouter.put(
     const thesisData = req.body
 
     const currentUser = req.user
-
-    const originalThesis = await fetchThesisById(id, currentUser)
+    if (!id) res.status(404).send(' id  not found')
+    const originalThesis = await fetchThesisById(id as string, currentUser)
 
     if (!originalThesis) res.status(404).send('Thesis not found')
 
     let updatedThesis
     await sequelize.transaction(async (t) => {
-      await updateThesis(id, thesisData, t)
+      await updateThesis(id as string, thesisData, t)
 
-      await handleAttachmentByLabel(req, id, 'researchPlan', t)
-      await handleAttachmentByLabel(req, id, 'waysOfWorking', t)
+      await handleAttachmentByLabel(req, id as string, 'researchPlan', t)
+      await handleAttachmentByLabel(req, id as string, 'waysOfWorking', t)
 
-      updatedThesis = await fetchThesisById(id, req.user, t)
+      updatedThesis = await fetchThesisById(id as string, req.user, t)
 
       await handleStatusChangeEventLog(
         originalThesis,
@@ -440,13 +452,13 @@ thesisRouter.delete(
   async (req: ServerDeleteRequest, res) => {
     const { id } = req.params
 
-    const thesis = await fetchThesisById(id, req.user)
+    const thesis = await fetchThesisById(id as string, req.user)
 
     if (!thesis) res.status(404).send('Thesis not found')
 
     await sequelize.transaction(async (t) => {
-      await deleteThesisAttachments(id, t)
-      await deleteThesis(id, t)
+      await deleteThesisAttachments(id as string, t)
+      await deleteThesis(id as string, t)
 
       await EventLog.create(
         {

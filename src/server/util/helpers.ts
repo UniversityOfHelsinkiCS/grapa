@@ -43,5 +43,8 @@ export const transformSingleThesis = (
 // Transforms the raw query data to suitably formatted data for the frontend
 export const transformThesisData = (
   thesisData: ThesisData[],
-  graderTitles: TitleData[]
-) => thesisData.map((thesis) => transformSingleThesis(thesis, graderTitles))
+  graderTitles: TitleData[][] // Array of title arrays
+) =>
+  thesisData.map((thesis, idx) =>
+    transformSingleThesis(thesis, graderTitles[idx])
+  )
