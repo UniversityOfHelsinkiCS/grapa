@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -41,8 +41,9 @@ import {
 
 interface Props {
   filteringProgramId?: string
+  hideTitle?: boolean
 }
-const ProgramManagement = ({ filteringProgramId }: Props) => {
+const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
   const { t, i18n } = useTranslation()
   const { user, isLoading: userLoading } = useLoggedInUser()
   const { language } = i18n as { language: TranslationLanguage }
@@ -55,13 +56,19 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
 
   const { programs } = usePrograms({ includeNotManaged: false })
   const { programManagements } = useProgramManagements(
-    filteringProgramId
+    filteringProgramId === 'own'
       ? {
           programId: undefined,
           onlyThesisApprovers: false,
           limitToEditorsPrograms: true,
         }
-      : undefined
+      : filteringProgramId
+        ? {
+            programId: filteringProgramId,
+            onlyThesisApprovers: false,
+            limitToEditorsPrograms: undefined,
+          }
+        : undefined
   )
   const { mutateAsync: createProgramManagement } =
     useCreateProgramManagementMutation()
@@ -73,6 +80,23 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
   const [userSearch, setUserSearch] = useState('')
   const debouncedSearch = useDebounce(userSearch, 700)
   const { users } = useUsers({ search: debouncedSearch, onlyEmployees: true })
+
+  useEffect(() => {
+    if (filteringProgramId && filteringProgramId !== 'own') {
+      setProgramId(filteringProgramId)
+      return
+    }
+
+    setProgramId(null)
+  }, [filteringProgramId])
+
+  const selectablePrograms =
+    filteringProgramId && filteringProgramId !== 'own'
+      ? programs?.filter((program) => program.id === filteringProgramId)
+      : programs
+  const isSingleProgramView = Boolean(
+    filteringProgramId && filteringProgramId !== 'own'
+  )
 
   const handleAddProgramManagement = async () => {
     if (managerCandidate && programId) {
@@ -182,11 +206,13 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
         flexDirection: 'column',
       }}
     >
-      <Typography component="h1" variant="h4">
-        {t('programManagementPage:pageTitle')}
-      </Typography>
+      {!hideTitle && (
+        <Typography component="h1" variant="h4">
+          {t('programManagementPage:pageTitle')}
+        </Typography>
+      )}
       <DataGrid
-        sx={{ mt: '2rem' }}
+        sx={{ mt: hideTitle ? 0 : '2rem' }}
         rows={programManagements}
         columns={columns}
         pageSizeOptions={[100]}
@@ -236,28 +262,30 @@ const ProgramManagement = ({ filteringProgramId }: Props) => {
             }}
           />
         </FormControl>
-        <FormControl fullWidth>
-          <InputLabel id="program-select-label">
-            {t('programManagementPage:programHeader')}
-          </InputLabel>
-          <Select
-            data-testid="program-select-input"
-            labelId="program-select-label"
-            label={t('programManagementPage:programHeader')}
-            value={programId ?? ''}
-            onChange={(e) => setProgramId(e.target.value as string)}
-          >
-            {programs.map((program) => (
-              <MenuItem
-                key={program.id}
-                value={program.id}
-                data-testid={`program-select-item-${program.id}`}
-              >
-                {program.name[language]}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        {!isSingleProgramView && (
+          <FormControl fullWidth>
+            <InputLabel id="program-select-label">
+              {t('programManagementPage:programHeader')}
+            </InputLabel>
+            <Select
+              data-testid="program-select-input"
+              labelId="program-select-label"
+              label={t('programManagementPage:programHeader')}
+              value={programId ?? ''}
+              onChange={(e) => setProgramId(e.target.value as string)}
+            >
+              {selectablePrograms.map((program) => (
+                <MenuItem
+                  key={program.id}
+                  value={program.id}
+                  data-testid={`program-select-item-${program.id}`}
+                >
+                  {program.name[language]}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
         <Button
           type="submit"
           variant="contained"

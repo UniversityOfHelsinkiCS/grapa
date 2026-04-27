@@ -88,6 +88,7 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
+              isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -113,6 +114,7 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
+              isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -139,6 +141,7 @@ describe('program router', () => {
                 sv: 'test1pasvenska',
               },
               isFavorite: false,
+              isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -165,6 +168,7 @@ describe('program router', () => {
                 sv: 'test1pasvenska',
               },
               isFavorite: false,
+              isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -191,6 +195,7 @@ describe('program router', () => {
                 sv: 'test1pasvenska',
               },
               isFavorite: false,
+              isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -204,6 +209,7 @@ describe('program router', () => {
                 sv: 'test2pasvenska',
               },
               isFavorite: false,
+              isManaged: false,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test3' }),
                 expect.objectContaining({ name: 'test4' }),
@@ -229,6 +235,7 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
+              isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -280,6 +287,7 @@ describe('program router', () => {
                 sv: 'test1pasvenska',
               },
               isFavorite: false,
+              isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -293,6 +301,7 @@ describe('program router', () => {
                 sv: 'test2pasvenska',
               },
               isFavorite: false,
+              isManaged: false,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test3' }),
                 expect.objectContaining({ name: 'test4' }),

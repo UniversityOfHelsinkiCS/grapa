@@ -21,6 +21,8 @@ import {
 
 import hyLogo from '../../assets/hy_logo.svg'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
+import usePrograms from '../../hooks/usePrograms'
+import { TranslationLanguage } from '@backend/types'
 
 import LanguageSelect from './LanguageSelect'
 import MobileMenu from './MobileMenu'
@@ -79,8 +81,29 @@ export const navStyles = {
   },
 }
 
+const sortProgramsForMenu = (
+  programs: Array<{
+    id: string
+    name: Record<TranslationLanguage, string>
+    isManaged: boolean
+  }>,
+  language: TranslationLanguage
+) =>
+  [...programs].sort((leftProgram, rightProgram) => {
+    if (leftProgram.isManaged !== rightProgram.isManaged) {
+      return leftProgram.isManaged ? -1 : 1
+    }
+
+    return leftProgram.name[language].localeCompare(rightProgram.name[language])
+  })
+
 const ProgramMenu = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { language } = i18n as { language: TranslationLanguage }
+  const { programs } = usePrograms({ includeNotManaged: false })
+  const sortedPrograms = programs
+    ? sortProgramsForMenu(programs, language)
+    : undefined
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -101,12 +124,15 @@ const ProgramMenu = () => {
       handleClick={handleClick}
       handleClose={handleClose}
     >
-      <PositionedMenuLinkItem to="/program-managements" onClick={handleClose}>
-        {t('navbar:programManager')}
-      </PositionedMenuLinkItem>
-      <PositionedMenuLinkItem to="/program-overview" onClick={handleClose}>
-        {t('navbar:programOverview')}
-      </PositionedMenuLinkItem>
+      {sortedPrograms?.map((program) => (
+        <PositionedMenuLinkItem
+          key={program.id}
+          to={`/program-overview?programId=${program.id}`}
+          onClick={handleClose}
+        >
+          {program.name[language]}
+        </PositionedMenuLinkItem>
+      ))}
     </PositionedMenu>
   )
 }
@@ -180,8 +206,13 @@ const EthesisMenu = () => {
 }
 
 const NavBar = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { user, isLoading } = useLoggedInUser()
+  const { programs } = usePrograms({ includeNotManaged: false })
+  const { language } = i18n as { language: TranslationLanguage }
+  const sortedPrograms = programs
+    ? sortProgramsForMenu(programs, language)
+    : undefined
 
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -253,28 +284,17 @@ const NavBar = () => {
             </ListItemButton>
           </ListItem>
         )}
-        {(user.isAdmin || user.managedProgramIds?.length > 0) && (
-          <ListItem disablePadding>
+        {sortedPrograms?.map((program) => (
+          <ListItem disablePadding key={program.id}>
             <ListItemButton
               component={NavLink}
-              to="/program-managements"
+              to={`/program-overview?programId=${program.id}`}
               sx={{ justifyContent: 'space-between', px: 4 }}
             >
-              <ListItemText primary={t('navbar:programManager')} />
+              <ListItemText primary={program.name[language]} />
             </ListItemButton>
           </ListItem>
-        )}
-        {(user.isAdmin || user.managedProgramIds?.length > 0) && (
-          <ListItem disablePadding>
-            <ListItemButton
-              component={NavLink}
-              to="/program-overview"
-              sx={{ justifyContent: 'space-between', px: 4 }}
-            >
-              <ListItemText primary={t('navbar:programOverview')} />
-            </ListItemButton>
-          </ListItem>
-        )}
+        ))}
         <Divider />
         {(user.isAdmin || user.managedDepartmentIds?.length > 0) && (
           <ListItem disablePadding>

@@ -116,6 +116,7 @@ export interface ProgramData {
   name: TranslatedName
   studyTracks: StudyTrackData[]
   isFavorite: boolean
+  isManaged: boolean
 }
 
 export interface DepartmentData {

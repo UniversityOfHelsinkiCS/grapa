@@ -208,6 +208,7 @@ describe('ThesisEditForm', () => {
 
         const authorSelect = screen.getByTestId('author-select-input')
         const authorInput = within(authorSelect).getByRole('combobox')
+        const approverSelect = screen.getByTestId('approver-select-input')
 
         const addSupervisorBtn = screen.getByTestId('add-supervisor-button')
         await user.click(addSupervisorBtn)
@@ -250,6 +251,10 @@ describe('ThesisEditForm', () => {
         // Select a status
         await user.click(statusSelect)
         await user.click(screen.getAllByText('Suunniteltu')[0])
+
+        // Select an approver
+        await user.click(approverSelect)
+        await user.click(screen.getByText('Henri Tunkkaaja'))
 
         // Add a supervisor
         superVisorSelect1.focus()
@@ -296,7 +301,7 @@ describe('ThesisEditForm', () => {
   describe('when initialThesis is an existing thesis', () => {
     beforeEach(() => {
       const initialThesis = {
-        programId: programs[0].key,
+        programId: programs[0].id,
         studyTrackId: programs[0].studyTracks[0].id,
         supervisions: [
           { userId: 1, percentage: 100, isPrimarySupervisor: true },

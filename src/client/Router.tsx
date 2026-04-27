@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import App from './App'
 import ThesesPage from './components/ThesisPage/ThesesPage'
@@ -9,7 +9,6 @@ import NoAccess from './components/NoAccess'
 import LoginAs from './components/LoginAs'
 import Admin from './components/Admin/Admin'
 import ProgramOverview from './components/Program/ProgramOverview'
-import ProgramManagement from './components/Program/ProgramManagement'
 import DepartmentAdmin from './components/Department/DepartmentAdmin'
 import DepartmentStatistics from './components/Department/DepartmentStatistics'
 import DepartmentOverview from './components/Department/DepartmentOverview'
@@ -36,7 +35,7 @@ const router = createBrowserRouter(
         },
         {
           path: '/program-managements',
-          element: <ProgramManagement filteringProgramId="own" />,
+          element: <Navigate to="/program-overview" replace />,
         },
         {
           path: '/program-overview',

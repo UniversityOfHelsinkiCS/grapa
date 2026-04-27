@@ -59,9 +59,20 @@ programRouter.get(
       bind: { language },
     })
 
+    const managedPrograms = await ProgramManagement.findAll({
+      attributes: ['programId'],
+      raw: true,
+    })
+    const managedProgramIds = new Set(
+      managedPrograms.map(
+        (programManagement) => programManagement.programId as string
+      )
+    )
+
     const programsWithFavorites = programs.map((program) => ({
       ...program.toJSON(),
       isFavorite: favoriteProgramIds.includes(program.id),
+      isManaged: managedProgramIds.has(program.id),
     }))
 
     res.send(programsWithFavorites)
