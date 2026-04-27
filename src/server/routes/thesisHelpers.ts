@@ -378,19 +378,26 @@ export const handleStatusChangeEmail = async (
       fi: '',
     }
 
-    const employeeTitlesSecond =
-      updatedThesis.graders.filter((g) => g.user.isExternal).length > 0
-        ? { fi: '' }
-        : ((
-            await getEmployeeTitles(
-              updatedThesis.graders.filter((g) => !g.isPrimaryGrader)[0]?.user
-                .username
-            )
-          )?.titles.filter((title) =>
-            titlesGraderGroup.includes(title.en.toLowerCase())
-          )[0] ?? {
-            fi: '',
-          })
+    const getSecondaryEmployeeTitle = async () => {
+      if (updatedThesis.graders.some((grader) => grader.user.isExternal)) {
+        return { fi: '' }
+      }
+
+      return (
+        (
+          await getEmployeeTitles(
+            updatedThesis.graders.filter((g) => !g.isPrimaryGrader)[0]?.user
+              .username
+          )
+        )?.titles.filter((title) =>
+          titlesGraderGroup.includes(title.en.toLowerCase())
+        )[0] ?? {
+          fi: '',
+        }
+      )
+    }
+
+    const employeeTitlesSecond = await getSecondaryEmployeeTitle()
 
     const subject = 'Prethesis - Tutkielma valmiina Ethesiskseen'
 
