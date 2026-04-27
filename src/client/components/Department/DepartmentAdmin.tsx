@@ -69,18 +69,20 @@ const DepartmentAdmin = ({ filteringDepartmentId, hideTitle }: Props) => {
 
   const isSingleDepartmentView = Boolean(filteringDepartmentId)
 
-  const selectableDepartments = filteringDepartmentId
-    ? (departments?.filter(
-        (department) => department.id === filteringDepartmentId
-      ) ?? [])
-    : (departments ?? [])
+  let selectableDepartments = departments ?? []
+  if (filteringDepartmentId) {
+    selectableDepartments = selectableDepartments.filter(
+      (department) => department.id === filteringDepartmentId
+    )
+  }
 
-  const filteredDepartmentAdmins = filteringDepartmentId
-    ? (departmentAdmins ?? []).filter(
-        (departmentAdmin) =>
-          String(departmentAdmin.departmentId) === filteringDepartmentId
-      )
-    : (departmentAdmins ?? [])
+  let filteredDepartmentAdmins = departmentAdmins ?? []
+  if (filteringDepartmentId) {
+    filteredDepartmentAdmins = filteredDepartmentAdmins.filter(
+      (departmentAdmin) =>
+        String(departmentAdmin.departmentId) === filteringDepartmentId
+    )
+  }
 
   const handleAddDepartmentAdmin = async () => {
     if (adminCandidate && departmentId) {
