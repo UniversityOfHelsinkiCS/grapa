@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Autocomplete,
@@ -31,7 +31,12 @@ import {
 
 import DeleteConfirmation from '../Common/DeleteConfirmation'
 
-const DepartmentAdmin = () => {
+interface Props {
+  filteringDepartmentId?: string
+  hideTitle?: boolean
+}
+
+const DepartmentAdmin = ({ filteringDepartmentId, hideTitle }: Props) => {
   const { user, isLoading: userLoading } = useLoggedInUser()
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -52,6 +57,30 @@ const DepartmentAdmin = () => {
   const [userSearch, setUserSearch] = useState('')
   const debouncedSearch = useDebounce(userSearch, 700)
   const { users } = useUsers({ search: debouncedSearch, onlyEmployees: true })
+
+  useEffect(() => {
+    if (filteringDepartmentId) {
+      setDepartmendId(filteringDepartmentId)
+      return
+    }
+
+    setDepartmendId(null)
+  }, [filteringDepartmentId])
+
+  const isSingleDepartmentView = Boolean(filteringDepartmentId)
+
+  const selectableDepartments = filteringDepartmentId
+    ? (departments?.filter(
+        (department) => department.id === filteringDepartmentId
+      ) ?? [])
+    : (departments ?? [])
+
+  const filteredDepartmentAdmins = filteringDepartmentId
+    ? (departmentAdmins ?? []).filter(
+        (departmentAdmin) =>
+          String(departmentAdmin.departmentId) === filteringDepartmentId
+      )
+    : (departmentAdmins ?? [])
 
   const handleAddDepartmentAdmin = async () => {
     if (adminCandidate && departmentId) {
@@ -118,16 +147,18 @@ const DepartmentAdmin = () => {
         flexDirection: 'column',
       }}
     >
-      <Typography
-        data-testid="department-admin-page-title"
-        component="h1"
-        variant="h4"
-      >
-        {t('departmentAdminPage:pageTitle')}
-      </Typography>
+      {!hideTitle && (
+        <Typography
+          data-testid="department-admin-page-title"
+          component="h1"
+          variant="h4"
+        >
+          {t('departmentAdminPage:pageTitle')}
+        </Typography>
+      )}
       <DataGrid
-        sx={{ mt: '2rem' }}
-        rows={departmentAdmins}
+        sx={{ mt: hideTitle ? 0 : '2rem' }}
+        rows={filteredDepartmentAdmins}
         columns={columns}
         pageSizeOptions={[100]}
         localeText={
@@ -176,28 +207,30 @@ const DepartmentAdmin = () => {
             }}
           />
         </FormControl>
-        <FormControl fullWidth>
-          <InputLabel id="department-select-label">
-            {t('departmentAdminPage:departmentHeader')}
-          </InputLabel>
-          <Select
-            data-testid="department-select-input"
-            labelId="department-select-label"
-            label={t('departmentAdminPage:departmentHeader')}
-            value={departmentId ?? ''}
-            onChange={(e) => setDepartmendId(e.target.value as string)}
-          >
-            {departments.map((department) => (
-              <MenuItem
-                key={department.id}
-                value={department.id}
-                data-testid={`department-select-item-${department.id}`}
-              >
-                {department.name[language]}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        {!isSingleDepartmentView && (
+          <FormControl fullWidth>
+            <InputLabel id="department-select-label">
+              {t('departmentAdminPage:departmentHeader')}
+            </InputLabel>
+            <Select
+              data-testid="department-select-input"
+              labelId="department-select-label"
+              label={t('departmentAdminPage:departmentHeader')}
+              value={departmentId ?? ''}
+              onChange={(e) => setDepartmendId(e.target.value as string)}
+            >
+              {selectableDepartments.map((department) => (
+                <MenuItem
+                  key={department.id}
+                  value={department.id}
+                  data-testid={`department-select-item-${department.id}`}
+                >
+                  {department.name[language]}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
         <Button
           type="submit"
           variant="contained"

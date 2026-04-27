@@ -9,8 +9,6 @@ import NoAccess from './components/NoAccess'
 import LoginAs from './components/LoginAs'
 import Admin from './components/Admin/Admin'
 import ProgramOverview from './components/Program/ProgramOverview'
-import DepartmentAdmin from './components/Department/DepartmentAdmin'
-import DepartmentStatistics from './components/Department/DepartmentStatistics'
 import DepartmentOverview from './components/Department/DepartmentOverview'
 
 import { BASE_PATH } from '../config'
@@ -43,11 +41,13 @@ const router = createBrowserRouter(
         },
         {
           path: '/department-admins',
-          element: <DepartmentAdmin />,
+          element: <Navigate to="/department-overview?tab=rights" replace />,
         },
         {
           path: '/department-statistics',
-          element: <DepartmentStatistics />,
+          element: (
+            <Navigate to="/department-overview?tab=statistics" replace />
+          ),
         },
         {
           path: '/department-overview',

@@ -61,7 +61,7 @@
     "program": "Ohjelmat",
     "programManager": "Ohjelmavastaavat",
     "programOverview": "Ohjelman yleiskatsaus",
-    "department": "Osasto",
+    "department": "Osastot",
     "departmentAdmin": "Osastojen ylläpitäjät",
     "departmentStatistics": "Osastojen tilastot",
     "departmentOverview": "Osaston yleiskatsaus",
@@ -89,6 +89,11 @@
     "departmentPlaceholder": "Valitse osasto",
     "pageTitle": "Valitse osasto",
     "pageDescription": "Ennen kuin jatkat, valitse osasto missä työskentelet"
+  },
+  "departmentOverviewPage": {
+    "supervisionsTab": "Ohjaukset",
+    "departmentAdminsTab": "Osaston ylläpitäjät",
+    "supervisionStatisticsTab": "Ohjaustilastot"
   },
   "dropzone": {
     "uploadText": "Pudota tiedosto tähän tai klikkaa ladataksesi",

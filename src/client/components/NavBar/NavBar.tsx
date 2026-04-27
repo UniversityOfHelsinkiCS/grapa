@@ -21,6 +21,7 @@ import {
 
 import hyLogo from '../../assets/hy_logo.svg'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
+import useDepartments from '../../hooks/useDepartments'
 import usePrograms from '../../hooks/usePrograms'
 import { TranslationLanguage } from '@backend/types'
 
@@ -97,6 +98,17 @@ const sortProgramsForMenu = (
     return leftProgram.name[language].localeCompare(rightProgram.name[language])
   })
 
+const sortDepartmentsForMenu = (
+  departments: Array<{
+    id: string
+    name: Record<TranslationLanguage, string>
+  }>,
+  language: TranslationLanguage
+) =>
+  [...departments].sort((leftDepartment, rightDepartment) =>
+    leftDepartment.name[language].localeCompare(rightDepartment.name[language])
+  )
+
 const ProgramMenu = () => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -138,7 +150,12 @@ const ProgramMenu = () => {
 }
 
 const DepartmentMenu = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { language } = i18n as { language: TranslationLanguage }
+  const { departments } = useDepartments({ includeNotManaged: false })
+  const sortedDepartments = departments
+    ? sortDepartmentsForMenu(departments, language)
+    : undefined
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -159,15 +176,15 @@ const DepartmentMenu = () => {
       handleClick={handleClick}
       handleClose={handleClose}
     >
-      <PositionedMenuLinkItem to="/department-admins" onClick={handleClose}>
-        {t('navbar:departmentAdmin')}
-      </PositionedMenuLinkItem>
-      <PositionedMenuLinkItem to="/department-statistics" onClick={handleClose}>
-        {t('navbar:departmentStatistics')}
-      </PositionedMenuLinkItem>
-      <PositionedMenuLinkItem to="/department-overview" onClick={handleClose}>
-        {t('navbar:departmentOverview')}
-      </PositionedMenuLinkItem>
+      {sortedDepartments?.map((department) => (
+        <PositionedMenuLinkItem
+          key={department.id}
+          to={`/department-overview?departmentId=${department.id}`}
+          onClick={handleClose}
+        >
+          {department.name[language]}
+        </PositionedMenuLinkItem>
+      ))}
     </PositionedMenu>
   )
 }
@@ -208,10 +225,14 @@ const EthesisMenu = () => {
 const NavBar = () => {
   const { t, i18n } = useTranslation()
   const { user, isLoading } = useLoggedInUser()
+  const { departments } = useDepartments({ includeNotManaged: false })
   const { programs } = usePrograms({ includeNotManaged: false })
   const { language } = i18n as { language: TranslationLanguage }
   const sortedPrograms = programs
     ? sortProgramsForMenu(programs, language)
+    : undefined
+  const sortedDepartments = departments
+    ? sortDepartmentsForMenu(departments, language)
     : undefined
 
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -296,39 +317,17 @@ const NavBar = () => {
           </ListItem>
         ))}
         <Divider />
-        {(user.isAdmin || user.managedDepartmentIds?.length > 0) && (
-          <ListItem disablePadding>
+        {sortedDepartments?.map((department) => (
+          <ListItem disablePadding key={department.id}>
             <ListItemButton
               component={NavLink}
-              to="/department-statistics"
+              to={`/department-overview?departmentId=${department.id}`}
               sx={{ justifyContent: 'space-between', px: 4 }}
             >
-              <ListItemText primary={t('navbar:departmentStatistics')} />
+              <ListItemText primary={department.name[language]} />
             </ListItemButton>
           </ListItem>
-        )}
-        {(user.isAdmin || user.managedDepartmentIds?.length > 0) && (
-          <ListItem disablePadding>
-            <ListItemButton
-              component={NavLink}
-              to="/department-overview"
-              sx={{ justifyContent: 'space-between', px: 4 }}
-            >
-              <ListItemText primary={t('navbar:departmentOverview')} />
-            </ListItemButton>
-          </ListItem>
-        )}
-        {(user.isAdmin || user.managedDepartmentIds?.length > 0) && (
-          <ListItem disablePadding>
-            <ListItemButton
-              component={NavLink}
-              to="/department-admins"
-              sx={{ justifyContent: 'space-between', px: 4 }}
-            >
-              <ListItemText primary={t('navbar:departmentAdmin')} />
-            </ListItemButton>
-          </ListItem>
-        )}
+        ))}
         <Divider />
         <LanguageSelect />
       </MobileMenu>

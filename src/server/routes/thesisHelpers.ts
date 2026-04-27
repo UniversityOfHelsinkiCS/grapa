@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Includeable, literal, Op, Order, Transaction } from 'sequelize'
 import { uniq, uniqBy } from 'lodash-es'
 import { userFields } from './config'
@@ -382,7 +381,7 @@ export const handleStatusChangeEmail = async (
     const employeeTitlesSecond =
       updatedThesis.graders.filter((g) => g.user.isExternal).length > 0
         ? { fi: '' }
-        : (
+        : ((
             await getEmployeeTitles(
               updatedThesis.graders.filter((g) => !g.isPrimaryGrader)[0]?.user
                 .username
@@ -391,7 +390,7 @@ export const handleStatusChangeEmail = async (
             titlesGraderGroup.includes(title.en.toLowerCase())
           )[0] ?? {
             fi: '',
-          }
+          })
 
     const subject = 'Prethesis - Tutkielma valmiina Ethesiskseen'
 
@@ -465,7 +464,7 @@ export const getEmployeeTitles = async (search: string): Promise<TitleData> => {
       },
     ]
     const data = employeeMockData.filter((data) => data.username === search)
-    return data ? data[0] : { username: '', titles: [] }
+    return data.length > 0 ? data[0] : { username: search, titles: [] }
   }
 
   const url = `${GW_API_URL}employeeinformation/v1?search=${search}`
@@ -474,29 +473,43 @@ export const getEmployeeTitles = async (search: string): Promise<TitleData> => {
     headers: { 'x-api-key': EMPLOYEE_TOKEN },
   })
 
-  const data: [
-    {
-      employeeNumber: number
-      titles: [
-        {
-          fi: string
-          en: string
-          sv: string
-        },
-      ]
-      username: string
-      lastName: string
-      firstName: string
-      email: string
-    },
-  ] = await response.json()
+  if (!response.ok) {
+    return { username: search, titles: [] }
+  }
+
+  const payload = await response.json()
+
+  return normalizeEmployeeTitlesPayload(payload, search)
+}
+
+export const normalizeEmployeeTitlesPayload = (
+  payload: unknown,
+  search: string
+): TitleData => {
+  type EmployeeTitlePayloadEntry = {
+    username?: string
+    titles?: unknown
+  }
+
+  const wrappedPayload =
+    payload && typeof payload === 'object' && 'data' in payload ? payload : null
+
+  const data: EmployeeTitlePayloadEntry[] = Array.isArray(payload)
+    ? (payload as EmployeeTitlePayloadEntry[])
+    : wrappedPayload && Array.isArray(wrappedPayload.data)
+      ? (wrappedPayload.data as EmployeeTitlePayloadEntry[])
+      : payload && typeof payload === 'object' && 'username' in payload
+        ? [payload as EmployeeTitlePayloadEntry]
+        : []
 
   const mappedData = data.map((dataValues) => ({
-    username: dataValues.username,
-    titles: dataValues.titles,
+    username: dataValues.username ?? search,
+    titles: Array.isArray(dataValues.titles) ? dataValues.titles : [],
   }))
 
-  return mappedData ? mappedData[0] : { username: search, titles: [] }
+  return mappedData.length > 0
+    ? mappedData[0]
+    : { username: search, titles: [] }
 }
 
 export const handleThesisCreationEmail = async (

@@ -15,7 +15,12 @@ import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useDepartments from '../../hooks/useDepartments'
 import { useDepartmentStatistics } from '../../hooks/useDepartmentAdmins'
 
-const DepartmentStatistics = () => {
+interface Props {
+  filteringDepartmentId?: string
+  hideTitle?: boolean
+}
+
+const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
   const { user, isLoading: userLoading } = useLoggedInUser()
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -34,7 +39,13 @@ const DepartmentStatistics = () => {
   if (!user.isAdmin && !user.managedDepartmentIds?.length)
     return <Navigate to="/" />
 
-  const totalThesisCounts = departmentStatistics.reduce(
+  const filteredDepartmentStatistics = filteringDepartmentId
+    ? departmentStatistics.filter(
+        ({ department }) => String(department.id) === filteringDepartmentId
+      )
+    : departmentStatistics
+
+  const totalThesisCounts = filteredDepartmentStatistics.reduce(
     (acc, { statusCounts, startedWithinHalfYearCount }) => {
       ;(Object.entries(statusCounts) as [ThesisStatus, number][]).forEach(
         ([status, count]) => {
@@ -151,16 +162,18 @@ const DepartmentStatistics = () => {
         flexDirection: 'column',
       }}
     >
-      <Typography
-        data-testid="department-statistics-page-title"
-        component="h1"
-        variant="h4"
-      >
-        {t('departmentStatisticsPage:pageTitle')}
-      </Typography>
+      {!hideTitle && (
+        <Typography
+          data-testid="department-statistics-page-title"
+          component="h1"
+          variant="h4"
+        >
+          {t('departmentStatisticsPage:pageTitle')}
+        </Typography>
+      )}
       <DataGrid
-        sx={{ mt: '2rem' }}
-        rows={departmentStatistics}
+        sx={{ mt: hideTitle ? 0 : '2rem' }}
+        rows={filteredDepartmentStatistics}
         columns={columns}
         getRowId={(row) => row.supervisor.id}
         slots={{ toolbar: GridToolbar }}
