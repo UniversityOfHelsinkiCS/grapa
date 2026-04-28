@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   CircularProgress,
   Box,
@@ -28,6 +28,8 @@ const parseDepartmentTab = (tab: string | null): DepartmentTab => {
 const DepartmentOverview = () => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
+  const navigate = useNavigate()
+  const { departmentId } = useParams()
 
   const { departments, isLoading: departmentsAreLoading } = useDepartments({
     includeNotManaged: false,
@@ -35,20 +37,18 @@ const DepartmentOverview = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<
     string | null
-  >(searchParams.get('departmentId'))
+  >(departmentId ?? null)
   const [tab, setTab] = useState<DepartmentTab>(
     parseDepartmentTab(searchParams.get('tab'))
   )
 
   useEffect(() => {
-    const departmentIdFromUrl = searchParams.get('departmentId')
-
     if (!departments?.length) {
       return
     }
 
     const matchingDepartment = departments.find(
-      (department) => department.id === departmentIdFromUrl
+      (department) => department.id === departmentId
     )
 
     if (matchingDepartment) {
@@ -56,12 +56,15 @@ const DepartmentOverview = () => {
       return
     }
 
-    const nextSearchParams = new URLSearchParams(searchParams)
-    nextSearchParams.set('departmentId', departments[0].id)
-
     setSelectedDepartmentId(departments[0].id)
-    setSearchParams(nextSearchParams, { replace: true })
-  }, [departments, searchParams, setSearchParams])
+    navigate(
+      {
+        pathname: `/departments/${departments[0].id}`,
+        search: searchParams.toString() ? `?${searchParams.toString()}` : '',
+      },
+      { replace: true }
+    )
+  }, [departmentId, departments, navigate, searchParams])
 
   useEffect(() => {
     setTab(parseDepartmentTab(searchParams.get('tab')))
@@ -88,7 +91,6 @@ const DepartmentOverview = () => {
               value={tab}
               onChange={(_, nextTab: DepartmentTab) => {
                 const nextSearchParams = new URLSearchParams(searchParams)
-                nextSearchParams.set('departmentId', selectedDepartment.id)
                 nextSearchParams.set('tab', nextTab)
                 setSearchParams(nextSearchParams)
               }}

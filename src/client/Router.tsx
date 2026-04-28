@@ -32,24 +32,30 @@ const router = createBrowserRouter(
         },
         {
           path: '/program-managements',
-          element: <Navigate to="/program-overview" replace />,
+          element: <Navigate to="/programs" replace />,
         },
         {
-          path: '/program-overview',
+          path: '/programs',
+          element: <ProgramOverview />,
+        },
+        {
+          path: '/programs/:programId',
           element: <ProgramOverview />,
         },
         {
           path: '/department-admins',
-          element: <Navigate to="/department-overview?tab=rights" replace />,
+          element: <Navigate to="/departments?tab=rights" replace />,
         },
         {
           path: '/department-statistics',
-          element: (
-            <Navigate to="/department-overview?tab=statistics" replace />
-          ),
+          element: <Navigate to="/departments?tab=statistics" replace />,
         },
         {
-          path: '/department-overview',
+          path: '/departments',
+          element: <DepartmentOverview />,
+        },
+        {
+          path: '/departments/:departmentId',
           element: <DepartmentOverview />,
         },
         {

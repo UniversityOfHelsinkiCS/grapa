@@ -139,7 +139,7 @@ const ProgramMenu = () => {
       {sortedPrograms?.map((program) => (
         <PositionedMenuLinkItem
           key={program.id}
-          to={`/program-overview?programId=${program.id}`}
+          to={`/programs/${program.id}`}
           onClick={handleClose}
         >
           {program.name[language]}
@@ -179,7 +179,7 @@ const DepartmentMenu = () => {
       {sortedDepartments?.map((department) => (
         <PositionedMenuLinkItem
           key={department.id}
-          to={`/department-overview?departmentId=${department.id}`}
+          to={`/departments/${department.id}`}
           onClick={handleClose}
         >
           {department.name[language]}
@@ -284,7 +284,7 @@ const NavBar = () => {
           <ListItem disablePadding key={program.id}>
             <ListItemButton
               component={NavLink}
-              to={`/program-overview?programId=${program.id}`}
+              to={`/programs/${program.id}`}
               sx={{ justifyContent: 'space-between', px: 4 }}
             >
               <ListItemText primary={program.name[language]} />
@@ -296,7 +296,7 @@ const NavBar = () => {
           <ListItem disablePadding key={department.id}>
             <ListItemButton
               component={NavLink}
-              to={`/department-overview?departmentId=${department.id}`}
+              to={`/departments/${department.id}`}
               sx={{ justifyContent: 'space-between', px: 4 }}
             >
               <ListItemText primary={department.name[language]} />

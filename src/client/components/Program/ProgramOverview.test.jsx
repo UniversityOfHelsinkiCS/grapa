@@ -4,7 +4,7 @@
 import * as React from 'react'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
 
 import initializeI18n from '../../util/il18n'
 
@@ -51,17 +51,25 @@ jest.unstable_mockModule(
 
 const ProgramOverview = (await import('./ProgramOverview')).default
 
+const renderProgramOverview = (initialEntry) =>
+  render(
+    <MemoryRouter initialEntries={[initialEntry]}>
+      <Routes>
+        <Route path="/programs">
+          <Route index element={<ProgramOverview />} />
+          <Route path=":programId" element={<ProgramOverview />} />
+        </Route>
+      </Routes>
+    </MemoryRouter>
+  )
+
 describe('ProgramOverview', () => {
   beforeEach(() => {
     initializeI18n()
   })
 
   it('reads the selected program from the URL and defaults to the theses tab', () => {
-    render(
-      <MemoryRouter initialEntries={['/program-overview?programId=program-2']}>
-        <ProgramOverview />
-      </MemoryRouter>
-    )
+    renderProgramOverview('/programs/program-2')
 
     expect(screen.queryByTestId('program-select-input')).not.toBeInTheDocument()
     expect(screen.getByTestId('theses-page')).toHaveTextContent('program-2')
@@ -70,11 +78,7 @@ describe('ProgramOverview', () => {
   })
 
   it('shows the embedded rights view in its own tab', async () => {
-    render(
-      <MemoryRouter initialEntries={['/program-overview?programId=program-2']}>
-        <ProgramOverview />
-      </MemoryRouter>
-    )
+    renderProgramOverview('/programs/program-2')
 
     const user = userEvent.setup()
     await user.click(screen.getByRole('tab', { name: 'Ohjelmavastaavat' }))
@@ -86,11 +90,7 @@ describe('ProgramOverview', () => {
   })
 
   it('defaults to the first managed program when the URL has no program id', async () => {
-    render(
-      <MemoryRouter initialEntries={['/program-overview']}>
-        <ProgramOverview />
-      </MemoryRouter>
-    )
+    renderProgramOverview('/programs')
 
     await waitFor(() => {
       expect(screen.getByTestId('theses-page')).toHaveTextContent('program-1')

@@ -4,7 +4,7 @@
 import * as React from 'react'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
 
 import initializeI18n from '../../util/il18n'
 
@@ -53,19 +53,25 @@ jest.unstable_mockModule(
 
 const DepartmentOverview = (await import('./DepartmentOverview')).default
 
+const renderDepartmentOverview = (initialEntry) =>
+  render(
+    <MemoryRouter initialEntries={[initialEntry]}>
+      <Routes>
+        <Route path="/departments">
+          <Route index element={<DepartmentOverview />} />
+          <Route path=":departmentId" element={<DepartmentOverview />} />
+        </Route>
+      </Routes>
+    </MemoryRouter>
+  )
+
 describe('DepartmentOverview', () => {
   beforeEach(() => {
     initializeI18n()
   })
 
   it('reads the selected department from the URL and defaults to the theses tab', () => {
-    render(
-      <MemoryRouter
-        initialEntries={['/department-overview?departmentId=department-2']}
-      >
-        <DepartmentOverview />
-      </MemoryRouter>
-    )
+    renderDepartmentOverview('/departments/department-2')
 
     expect(screen.getByTestId('department-theses')).toHaveTextContent(
       'department-2'
@@ -75,13 +81,7 @@ describe('DepartmentOverview', () => {
   })
 
   it('shows the embedded department admin view in its own tab', async () => {
-    render(
-      <MemoryRouter
-        initialEntries={['/department-overview?departmentId=department-2']}
-      >
-        <DepartmentOverview />
-      </MemoryRouter>
-    )
+    renderDepartmentOverview('/departments/department-2')
 
     const user = userEvent.setup()
     await user.click(screen.getByRole('tab', { name: 'Osaston ylläpitäjät' }))
@@ -93,15 +93,7 @@ describe('DepartmentOverview', () => {
   })
 
   it('shows the embedded department statistics view when opened from the statistics tab URL', async () => {
-    render(
-      <MemoryRouter
-        initialEntries={[
-          '/department-overview?departmentId=department-2&tab=statistics',
-        ]}
-      >
-        <DepartmentOverview />
-      </MemoryRouter>
-    )
+    renderDepartmentOverview('/departments/department-2?tab=statistics')
 
     await waitFor(() => {
       expect(screen.getByTestId('department-statistics')).toHaveTextContent(
@@ -111,11 +103,7 @@ describe('DepartmentOverview', () => {
   })
 
   it('defaults to the first managed department when the URL has no department id', async () => {
-    render(
-      <MemoryRouter initialEntries={['/department-overview']}>
-        <DepartmentOverview />
-      </MemoryRouter>
-    )
+    renderDepartmentOverview('/departments')
 
     await waitFor(() => {
       expect(screen.getByTestId('department-theses')).toHaveTextContent(

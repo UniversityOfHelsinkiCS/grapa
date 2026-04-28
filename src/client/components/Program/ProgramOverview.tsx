@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   CircularProgress,
   Box,
@@ -40,25 +40,24 @@ const SingleProgramLogs = ({ program }: SingleProgramLogsProps) => {
 const ProgramOverview = () => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
+  const navigate = useNavigate()
+  const { programId } = useParams()
   const { programs: programsUserManages, isLoading: programsAreLoading } =
     usePrograms({
       includeNotManaged: false,
     })
-  const [searchParams, setSearchParams] = useSearchParams()
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(
-    searchParams.get('programId')
+    programId ?? null
   )
   const [tab, setTab] = useState<'theses' | 'rights' | 'logs'>('theses')
 
   useEffect(() => {
-    const programIdFromUrl = searchParams.get('programId')
-
     if (!programsUserManages?.length) {
       return
     }
 
     const matchingProgram = programsUserManages.find(
-      (program) => program.id === programIdFromUrl
+      (program) => program.id === programId
     )
 
     if (matchingProgram) {
@@ -67,8 +66,8 @@ const ProgramOverview = () => {
     }
 
     setSelectedProgramId(programsUserManages[0].id)
-    setSearchParams({ programId: programsUserManages[0].id }, { replace: true })
-  }, [programsUserManages, searchParams, setSearchParams])
+    navigate(`/programs/${programsUserManages[0].id}`, { replace: true })
+  }, [navigate, programId, programsUserManages])
 
   useEffect(() => {
     setTab('theses')
