@@ -39,11 +39,15 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
   if (!user.isAdmin && !user.managedDepartmentIds?.length)
     return <Navigate to="/" />
 
+  const departmentStatisticsWithDepartments = departmentStatistics.filter(
+    ({ department }) => Boolean(department?.id)
+  )
+
   const filteredDepartmentStatistics = filteringDepartmentId
-    ? departmentStatistics.filter(
-        ({ department }) => String(department.id) === filteringDepartmentId
+    ? departmentStatisticsWithDepartments.filter(
+        ({ department }) => String(department?.id) === filteringDepartmentId
       )
-    : departmentStatistics
+    : departmentStatisticsWithDepartments
 
   const totalThesisCounts = filteredDepartmentStatistics.reduce(
     (acc, { statusCounts, startedWithinHalfYearCount }) => {

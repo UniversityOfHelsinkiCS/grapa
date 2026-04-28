@@ -67,9 +67,11 @@ departmentAdminRouter.get(
   async (req: RequestWithUser, res: Response) => {
     const { id: userId, isAdmin } = req.user
 
-    const managedDepartments = await DepartmentAdmin.findAll({
-      where: { userId },
-    })
+    const managedDepartments = isAdmin
+      ? []
+      : await DepartmentAdmin.findAll({
+          where: { userId },
+        })
     const managedDepartmentIds = managedDepartments.map(
       (department) => department.departmentId
     )
@@ -84,11 +86,13 @@ departmentAdminRouter.get(
 
     const departments = await Department.findAll({
       attributes: ['id', 'name'],
-      where: {
-        id: {
-          [Op.in]: managedDepartmentIds,
-        },
-      },
+      where: isAdmin
+        ? undefined
+        : {
+            id: {
+              [Op.in]: managedDepartmentIds,
+            },
+          },
     })
     const departmentSupervisions = (await Supervision.findAll({
       attributes: [
@@ -110,12 +114,16 @@ departmentAdminRouter.get(
             'email',
             'departmentId',
           ],
-          where: {
-            departmentId: {
-              [Op.in]: managedDepartmentIds,
-            },
-            isExternal: false,
-          },
+          where: isAdmin
+            ? {
+                isExternal: false,
+              }
+            : {
+                departmentId: {
+                  [Op.in]: managedDepartmentIds,
+                },
+                isExternal: false,
+              },
         },
         {
           model: Thesis,
@@ -149,6 +157,10 @@ departmentAdminRouter.get(
           : 0
       } else {
         const department = departments.find((d) => d.id === user.departmentId)
+
+        if (!department) {
+          return
+        }
 
         statistics.push({
           department,
