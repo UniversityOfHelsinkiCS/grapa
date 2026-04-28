@@ -3,6 +3,7 @@ import { ServerPostRequest, ServerPutRequest } from '@backend/types'
 import { uniqBy } from 'lodash-es'
 import CustomValidationError from '../errors/ValidationError'
 import { getTotalPercentage } from '../util/helpers'
+import { Program } from '../db/models'
 
 const validateUser = (user: any) => {
   if (!user) {
@@ -55,7 +56,7 @@ const validateExtUser = (user: any) => {
   }
 }
 
-export const validateThesisData = (
+export const validateThesisData = async (
   req: ServerPostRequest | ServerPutRequest,
   _: Express.Response,
   next: NextFunction
@@ -211,6 +212,45 @@ export const validateThesisData = (
     throw new CustomValidationError('Program is required', {
       programId: ['Program is required'],
     })
+  }
+
+  const program = await Program.findByPk(thesisData.programId)
+  const seminarSupervisionRequired = Boolean(program?.options?.seminar)
+  const seminarSupervisions = thesisData.seminarSupervisions ?? []
+
+  if (seminarSupervisionRequired && seminarSupervisions.length === 0) {
+    throw new CustomValidationError(
+      'At least one seminar supervision is required',
+      {
+        seminarSupervisions: ['At least one seminar supervision is required'],
+      }
+    )
+  }
+
+  if (seminarSupervisions.length > 1) {
+    throw new CustomValidationError(
+      'Exactly one seminar supervisor is allowed',
+      {
+        seminarSupervisions: ['Exactly one seminar supervisor is allowed'],
+      }
+    )
+  }
+
+  if (seminarSupervisions.length === 1) {
+    const seminarSupervision = seminarSupervisions[0]
+
+    if (seminarSupervision.isExternal) {
+      throw new CustomValidationError(
+        'Seminar supervisor cannot be an external user',
+        {
+          seminarSupervisions: [
+            'Seminar supervisor cannot be an external user',
+          ],
+        }
+      )
+    }
+
+    validateUser(seminarSupervision.user)
   }
 
   next()

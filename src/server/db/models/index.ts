@@ -1,4 +1,5 @@
 import User from './User'
+import SeminarSupervision from './SeminarSupervision'
 import Thesis from './Thesis'
 import Supervision from './Supervision'
 import Author from './Author'
@@ -18,9 +19,19 @@ User.belongsToMany(Thesis, {
   as: 'theses',
 })
 
+User.belongsToMany(Thesis, {
+  through: SeminarSupervision,
+  as: 'seminarSupervisedTheses',
+})
+
 Thesis.belongsToMany(User, {
   through: Supervision,
   as: 'supervisors',
+})
+
+Thesis.belongsToMany(User, {
+  through: SeminarSupervision,
+  as: 'seminarSupervisors',
 })
 
 User.hasMany(EthesisAdmin, { foreignKey: 'userId', as: 'ethesistAdmins' })
@@ -29,6 +40,10 @@ EthesisAdmin.belongsTo(User, { foreignKey: 'userId', as: 'user' })
 // see GET /theses endpoint for more details on why
 // we need both of theses associations
 Thesis.hasMany(Supervision, { foreignKey: 'thesisId', as: 'supervisions' })
+Thesis.hasMany(SeminarSupervision, {
+  foreignKey: 'thesisId',
+  as: 'seminarSupervisions',
+})
 Thesis.hasMany(Supervision, {
   foreignKey: 'thesisId',
   as: 'supervisionsForFiltering',
@@ -44,6 +59,9 @@ Supervision.belongsTo(User, {
   foreignKey: 'userId',
 })
 Supervision.belongsTo(Thesis, { as: 'thesis' })
+
+SeminarSupervision.belongsTo(User, { as: 'user' })
+SeminarSupervision.belongsTo(Thesis, { as: 'thesis' })
 
 ProgramManagement.belongsTo(User, { as: 'user' })
 ProgramManagement.belongsTo(Program, { as: 'program' })
@@ -90,6 +108,7 @@ Thesis.hasMany(EventLog)
 export {
   User,
   Thesis,
+  SeminarSupervision,
   Supervision,
   Author,
   Attachment,

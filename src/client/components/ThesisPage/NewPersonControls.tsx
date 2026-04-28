@@ -13,7 +13,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { useTranslation } from 'react-i18next'
 
 interface NewPersonControlsProps {
-  personGroup: 'supervisor' | 'grader'
+  personGroup: 'supervisor' | 'grader' | 'seminar-supervisor'
   options: { label: string; isExternal: boolean }[]
   handleAddPerson: (isExternal: boolean) => void
 }

@@ -20,6 +20,7 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import {
   FileData,
   GraderData,
+  SeminarSupervisionData,
   SupervisionData,
   ThesisData as Thesis,
   TranslatedName,
@@ -214,6 +215,42 @@ const Graders = ({ graders }: { graders: GraderData[] }) => {
             </ListItem>
           )
         })}
+      </List>
+    </Grid2>
+  )
+}
+
+const SeminarSupervisor = ({
+  seminarSupervisions,
+}: {
+  seminarSupervisions: SeminarSupervisionData[]
+}) => {
+  const { t } = useTranslation()
+
+  if (!seminarSupervisions.length) return null
+
+  const seminarSupervisor = seminarSupervisions[0]
+  const primaryText = `${seminarSupervisor.user.firstName} ${seminarSupervisor.user.lastName}`
+  const secondaryText = seminarSupervisor.user.affiliation
+    ? `${seminarSupervisor.user.email} (${seminarSupervisor.user.affiliation})`
+    : `${seminarSupervisor.user.email}`
+
+  return (
+    <Grid2>
+      <Typography
+        component="h4"
+        sx={{
+          fontSize: '1rem',
+          fontWeight: 700,
+          textTransform: 'uppercase',
+        }}
+      >
+        {t('thesisForm:seminarSupervisor')}
+      </Typography>
+      <List dense>
+        <ListItem>
+          <ListItemText primary={primaryText} secondary={secondaryText} />
+        </ListItem>
       </List>
     </Grid2>
   )
@@ -536,6 +573,9 @@ const ViewThesisFooter = (
               }}
             >
               <Supervisors supervisors={thesis.supervisions} />
+              <SeminarSupervisor
+                seminarSupervisions={thesis.seminarSupervisions ?? []}
+              />
               <Graders graders={thesis.graders} />
             </Grid2>
 

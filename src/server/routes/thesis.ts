@@ -14,6 +14,7 @@ import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMutlipartFormData from '../middleware/attachment'
 import {
   Grader,
+  SeminarSupervision,
   Thesis,
   Supervision,
   Author,
@@ -94,6 +95,18 @@ const createThesis = async (thesisData: ThesisData, t: Transaction) => {
     { transaction: t, validate: true, individualHooks: true }
   )
 
+  await SeminarSupervision.bulkCreate(
+    (thesisData.seminarSupervisions ?? [])
+      .filter((seminarSupervision) => Boolean(seminarSupervision.user))
+      .map((seminarSupervision) => ({
+        userId:
+          seminarSupervision.user?.id ??
+          extUsers.find((u) => u.email === seminarSupervision.user?.email)?.id,
+        thesisId: createdThesis.id,
+      })),
+    { transaction: t, validate: true, individualHooks: true }
+  )
+
   await Author.bulkCreate(
     thesisData.authors.map((author) => ({
       userId: author.id,
@@ -166,6 +179,19 @@ const updateThesis = async (
       percentage: supervision.percentage,
       isPrimarySupervisor: supervision.isPrimarySupervisor,
     })),
+    { transaction, validate: true, individualHooks: true }
+  )
+
+  await SeminarSupervision.destroy({ where: { thesisId: id }, transaction })
+  await SeminarSupervision.bulkCreate(
+    (thesisData.seminarSupervisions ?? [])
+      .filter((seminarSupervision) => Boolean(seminarSupervision.user))
+      .map((seminarSupervision) => ({
+        userId:
+          seminarSupervision.user?.id ??
+          extUsers.find((u) => u.email === seminarSupervision.user?.email)?.id,
+        thesisId: id,
+      })),
     { transaction, validate: true, individualHooks: true }
   )
 

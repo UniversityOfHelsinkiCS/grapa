@@ -35,7 +35,11 @@ export const getEqualSupervisorSelectionWorkloads = (
   return updatedSelections
 }
 
-export const getFormErrors = (thesis: ThesisData, hasApprovers = false) => {
+export const getFormErrors = (
+  thesis: ThesisData,
+  hasApprovers = false,
+  seminarSupervisionRequired = false
+) => {
   const validatedThesis = ThesisSchema.safeParse(thesis)
   const validatedDates = ThesisDateSchema.safeParse({
     startDate: thesis.startDate,
@@ -47,6 +51,27 @@ export const getFormErrors = (thesis: ThesisData, hasApprovers = false) => {
   if (!validatedThesis?.success)
     formErrors.push(...validatedThesis.error.issues)
   if (!validatedDates?.success) formErrors.push(...validatedDates.error.issues)
+
+  if (
+    seminarSupervisionRequired &&
+    (!thesis.seminarSupervisions || thesis.seminarSupervisions.length === 0)
+  ) {
+    formErrors.push({
+      code: 'custom' as const,
+      message: 'formErrors:seminarSupervisorRequired',
+      path: ['general', 'seminar', 'supervisor', 'error'],
+      params: {},
+    })
+  }
+
+  if (thesis.seminarSupervisions && thesis.seminarSupervisions.length > 1) {
+    formErrors.push({
+      code: 'custom' as const,
+      message: 'formErrors:singleSeminarSupervisor',
+      path: ['general', 'seminar', 'supervisor', 'error'],
+      params: {},
+    })
+  }
 
   // Add custom validation for approvers when they are available
   if (

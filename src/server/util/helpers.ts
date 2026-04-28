@@ -38,6 +38,12 @@ export const transformSingleThesis = (
             ? 1
             : -1
     ),
+  seminarSupervisions: (thesis.seminarSupervisions ?? [])
+    .map((seminarSupervision) => ({
+      ...seminarSupervision,
+      isExternal: seminarSupervision.user.isExternal,
+    }))
+    .sort((a, b) => (a.isExternal ? 1 : b.isExternal ? -1 : 0)),
 })
 
 // Transforms the raw query data to suitably formatted data for the frontend

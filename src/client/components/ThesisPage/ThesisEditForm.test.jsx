@@ -145,6 +145,7 @@ describe('ThesisEditForm', () => {
         programId: programs[0].id,
         studyTrackId: programs[0].studyTracks[0].id,
         supervisions: [],
+        seminarSupervisions: [],
         authors: [],
         approvers: [],
         graders: [
@@ -306,6 +307,7 @@ describe('ThesisEditForm', () => {
         supervisions: [
           { userId: 1, percentage: 100, isPrimarySupervisor: true },
         ],
+        seminarSupervisions: [],
         authors: [{ userId: 2 }],
         graders: [
           {

@@ -332,6 +332,7 @@ const ThesesPage = ({
     startDate: '',
     targetDate: '',
     supervisions: [] as Thesis['supervisions'],
+    seminarSupervisions: [] as Thesis['seminarSupervisions'],
     graders: [] as Thesis['graders'],
     id: index.toString(),
   }))
@@ -359,6 +360,7 @@ const ThesesPage = ({
           isPrimarySupervisor: true,
         },
       ],
+      seminarSupervisions: [],
       authors: [],
       approvers: [],
       graders: [

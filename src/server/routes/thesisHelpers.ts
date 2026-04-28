@@ -3,6 +3,7 @@ import { uniq, uniqBy } from 'lodash-es'
 import { userFields } from './config'
 import {
   Grader,
+  SeminarSupervision,
   Supervision,
   User,
   Attachment,
@@ -119,6 +120,18 @@ export const getFindThesesOptions = async ({
       model: Supervision,
       as: 'supervisions',
       attributes: ['percentage', 'isPrimarySupervisor'],
+      separate: true,
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: userFields,
+        },
+      ],
+    },
+    {
+      model: SeminarSupervision,
+      as: 'seminarSupervisions',
       separate: true,
       include: [
         {
@@ -288,6 +301,7 @@ export const getAndCreateExtUsers = async (
 ) => {
   const gradersAndSupervisors = [
     ...thesisData.supervisions,
+    ...(thesisData.seminarSupervisions ?? []),
     ...thesisData.graders,
   ]
 

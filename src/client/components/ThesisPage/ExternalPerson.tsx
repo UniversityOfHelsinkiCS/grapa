@@ -27,6 +27,11 @@ type SupervisorSelection = {
   percentage: number
 }
 
+type SeminarSupervisorSelection = {
+  user: Partial<User> | null
+  isExternal: boolean
+}
+
 type GraderSelection = {
   user: Partial<User> | null
   isPrimaryGrader: boolean
@@ -35,8 +40,8 @@ type GraderSelection = {
 
 interface BaseExternalPersonInputProps {
   index: number
-  inputGroup: 'supervisions' | 'graders'
-  selection: SupervisorSelection | GraderSelection
+  inputGroup: 'supervisions' | 'graders' | 'seminarSupervisions'
+  selection: SupervisorSelection | GraderSelection | SeminarSupervisorSelection
   handlePersonChange: (value: Partial<User> | null) => void
   handleRemovePerson: () => void
   inputErrors: ExternalPersonInputErrors
@@ -58,9 +63,17 @@ interface GradersExternalPersonInputProps extends BaseExternalPersonInputProps {
   percentageInputProps?: never
 }
 
+interface SeminarSupervisionsExternalPersonInputProps
+  extends BaseExternalPersonInputProps {
+  inputGroup: 'seminarSupervisions'
+  handlePercentageChange?: never
+  percentageInputProps?: never
+}
+
 type ExternalPersonInputProps =
   | SupervisionsExternalPersonInputProps
   | GradersExternalPersonInputProps
+  | SeminarSupervisionsExternalPersonInputProps
 
 const ExternalPersonInput = ({
   index,
@@ -79,19 +92,30 @@ const ExternalPersonInput = ({
 
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
 
-  const legendLocKey = inputGroup === 'supervisions' ? 'supervisor' : 'grader'
+  const legendLocKey =
+    inputGroup === 'supervisions'
+      ? 'supervisor'
+      : inputGroup === 'seminarSupervisions'
+        ? 'seminarSupervisor'
+        : 'grader'
   const deleteConfirmationTitleLocKey =
     inputGroup === 'supervisions'
       ? 'removeSupervisorConfirmationTitle'
-      : 'removeGraderConfirmationTitle'
+      : inputGroup === 'seminarSupervisions'
+        ? 'removeSeminarSupervisorConfirmationTitle'
+        : 'removeGraderConfirmationTitle'
   const deleteConfirmationContentLocKey =
     inputGroup === 'supervisions'
       ? 'removeSupervisorConfirmationContent'
-      : 'removeGraderConfirmationContent'
+      : inputGroup === 'seminarSupervisions'
+        ? 'removeSeminarSupervisorConfirmationContent'
+        : 'removeGraderConfirmationContent'
   const deleteConfirmationNoNameLocKey =
     inputGroup === 'supervisions'
       ? 'removeSupervisorConfirmationNoName'
-      : 'removeGraderConfirmationNoName'
+      : inputGroup === 'seminarSupervisions'
+        ? 'removeSeminarSupervisorConfirmationNoName'
+        : 'removeGraderConfirmationNoName'
 
   const handleInputChange = (key: string, value: string) => {
     handlePersonChange({
@@ -205,7 +229,11 @@ const ExternalPersonInput = ({
         </Stack>
       </Stack>
       <IconButton
-        data-testid="remove-supervisor-button"
+        data-testid={
+          inputGroup === 'seminarSupervisions'
+            ? 'remove-seminar-supervisor-button'
+            : 'remove-supervisor-button'
+        }
         type="button"
         onClick={() => setDeleteDialogOpen(true)}
         color="error"

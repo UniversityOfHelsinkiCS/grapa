@@ -37,6 +37,7 @@ import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useProgramManagements from '../../hooks/useProgramManagements'
 import { getFormErrors } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
+import SeminarSupervisorSelect from './SeminarSupervisorSelect/SeminarSupervisorSelect'
 import ErrorSummary from '../Common/ErrorSummary'
 import { ProgramData as Program } from '../../../server/types'
 import { StatusLocale } from '../../types'
@@ -81,7 +82,11 @@ const ThesisEditForm: FC<{
   }
 
   const handleSubmit = async () => {
-    const thesisErrors = getFormErrors(editedThesis, approvers?.length > 0)
+    const thesisErrors = getFormErrors(
+      editedThesis,
+      approvers?.length > 0,
+      Boolean(selectedProgram?.options?.seminar)
+    )
 
     if (thesisErrors.length > 0) {
       setFormErrors(thesisErrors)
@@ -600,6 +605,22 @@ const ThesisEditForm: FC<{
             }
             disabledMode={false}
           />
+
+          {Boolean(selectedProgram?.options?.seminar) && (
+            <SeminarSupervisorSelect
+              errors={formErrors}
+              setErrors={(errors) => setFormErrors(errors)}
+              seminarSupervisorSelections={
+                editedThesis.seminarSupervisions ?? []
+              }
+              setSeminarSupervisorSelections={(seminarSupervisions) =>
+                setEditedThesis((oldThesis) => ({
+                  ...oldThesis,
+                  seminarSupervisions,
+                }))
+              }
+            />
+          )}
 
           <GraderSelect
             errors={formErrors}

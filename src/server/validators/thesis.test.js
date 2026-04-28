@@ -1,3 +1,4 @@
+import { Program } from '../db/models'
 import { validateThesisData } from './thesis'
 
 describe('validateThesisData', () => {
@@ -5,7 +6,19 @@ describe('validateThesisData', () => {
   let res
   let next
 
+  const expectValidationError = async (message) => {
+    await expect(validateThesisData(req, res, next)).rejects.toThrow(message)
+    expect(next).toHaveBeenCalledTimes(0)
+  }
+
+  const expectNoValidationError = async () => {
+    await expect(validateThesisData(req, res, next)).resolves.toBeUndefined()
+    expect(next).toHaveBeenCalledTimes(1)
+  }
+
   beforeEach(() => {
+    jest.spyOn(Program, 'findByPk').mockResolvedValue({ options: {} })
+
     req = {
       body: {
         topic: 'Test thesis',
@@ -23,6 +36,7 @@ describe('validateThesisData', () => {
             isPrimarySupervisor: true,
           },
         ],
+        seminarSupervisions: [],
         authors: [
           {
             id: 'test-author',
@@ -59,36 +73,33 @@ describe('validateThesisData', () => {
     next = jest.fn()
   })
 
-  it('should call next if all required fields are present', () => {
-    expect(validateThesisData(req, res, next)).toBeUndefined()
-    expect(next).toHaveBeenCalledTimes(1)
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
-  it('should return an error if topic is missing', () => {
+  it('should call next if all required fields are present', async () => {
+    await expectNoValidationError()
+  })
+
+  it('should return an error if topic is missing', async () => {
     req.body = {
       ...req.body,
       topic: undefined,
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Thesis title is required'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Thesis title is required')
   })
 
-  it('should return an error if supervisions is missing', () => {
+  it('should return an error if supervisions is missing', async () => {
     req.body = {
       ...req.body,
       supervisions: undefined,
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'At least one supervision is required'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('At least one supervision is required')
   })
 
-  it('should return an error if supervisions percentage sum is under 100', () => {
+  it('should return an error if supervisions percentage sum is under 100', async () => {
     req.body = {
       ...req.body,
       supervisions: [
@@ -106,13 +117,10 @@ describe('validateThesisData', () => {
       ],
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Supervision percentages must add up to 100'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Supervision percentages must add up to 100')
   })
 
-  it('should return an error if supervisions percentage sum is over 100', () => {
+  it('should return an error if supervisions percentage sum is over 100', async () => {
     req.body = {
       ...req.body,
       supervisions: [
@@ -130,13 +138,10 @@ describe('validateThesisData', () => {
       ],
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Supervision percentages must add up to 100'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Supervision percentages must add up to 100')
   })
 
-  it('should return an error if there are duplicate supervisors', () => {
+  it('should return an error if there are duplicate supervisors', async () => {
     req.body = {
       ...req.body,
       supervisions: [
@@ -165,13 +170,10 @@ describe('validateThesisData', () => {
       ],
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Supervisors must be unique'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Supervisors must be unique')
   })
 
-  it('should return an error if primary supervisor is missing', () => {
+  it('should return an error if primary supervisor is missing', async () => {
     req.body = {
       ...req.body,
       supervisions: [
@@ -188,13 +190,10 @@ describe('validateThesisData', () => {
       ],
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Primary supervisor is required'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Primary supervisor is required')
   })
 
-  it('should return an error if there are more than one primary supervisors', () => {
+  it('should return an error if there are more than one primary supervisors', async () => {
     req.body = {
       ...req.body,
       supervisions: [
@@ -223,37 +222,28 @@ describe('validateThesisData', () => {
       ],
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Only one primary supervisor is allowed'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Only one primary supervisor is allowed')
   })
 
-  it('should return an error if authors is missing', () => {
+  it('should return an error if authors is missing', async () => {
     req.body = {
       ...req.body,
       authors: undefined,
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'At least one author is required'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('At least one author is required')
   })
 
-  it('should return an error if graders is missing', () => {
+  it('should return an error if graders is missing', async () => {
     req.body = {
       ...req.body,
       graders: undefined,
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'At least one grader is required'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('At least one grader is required')
   })
 
-  it('should return an error if primary grader is missing', () => {
+  it('should return an error if primary grader is missing', async () => {
     req.body = {
       ...req.body,
       graders: [
@@ -269,13 +259,10 @@ describe('validateThesisData', () => {
       ],
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Primary grader must be set'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Primary grader must be set')
   })
 
-  it('should return an error if there are duplicate graders', () => {
+  it('should return an error if there are duplicate graders', async () => {
     req.body = {
       ...req.body,
       graders: [
@@ -300,13 +287,10 @@ describe('validateThesisData', () => {
       ],
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Graders must be unique'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Graders must be unique')
   })
 
-  it('should return an error if primary grader is external', () => {
+  it('should return an error if primary grader is external', async () => {
     req.body = {
       ...req.body,
       graders: [
@@ -323,13 +307,10 @@ describe('validateThesisData', () => {
       ],
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Primary grader cannot be an external user'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Primary grader cannot be an external user')
   })
 
-  it('should return an error if there is two primary graders', () => {
+  it('should return an error if there is two primary graders', async () => {
     req.body = {
       ...req.body,
       graders: [
@@ -358,13 +339,10 @@ describe('validateThesisData', () => {
       ],
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Only one primary grader is allowed'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Only one primary grader is allowed')
   })
 
-  it('should return an error if the primary grader is external', () => {
+  it('should return an error if the primary grader is external', async () => {
     req.body = {
       ...req.body,
       graders: [
@@ -381,13 +359,10 @@ describe('validateThesisData', () => {
       ],
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Primary grader cannot be an external user'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Primary grader cannot be an external user')
   })
 
-  it('should return an error if researchPlan is missing', () => {
+  it('should return an error if researchPlan is missing', async () => {
     req.body = {
       ...req.body,
       researchPlan: undefined,
@@ -397,23 +372,19 @@ describe('validateThesisData', () => {
       researchPlan: undefined,
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Research plan is required'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Research plan is required')
   })
 
-  it('should pass if researchPlan is missing from files but not from body', () => {
+  it('should pass if researchPlan is missing from files but not from body', async () => {
     req.files = {
       ...req.files,
       researchPlan: undefined,
     }
 
-    expect(() => validateThesisData(req, res, next)).not.toThrow()
-    expect(next).toHaveBeenCalledTimes(1)
+    await expectNoValidationError()
   })
 
-  it('should not return an error if waysOfWorking is missing', () => {
+  it('should not return an error if waysOfWorking is missing', async () => {
     req.body = {
       ...req.body,
       waysOfWorking: undefined,
@@ -423,66 +394,128 @@ describe('validateThesisData', () => {
       waysOfWorking: undefined,
     }
 
-    expect(() => validateThesisData(req, res, next)).not.toThrow()
-    expect(next).toHaveBeenCalledTimes(1)
+    await expectNoValidationError()
   })
 
-  it('should pass if waysOfWorking is missing from files but not from body', () => {
+  it('should pass if waysOfWorking is missing from files but not from body', async () => {
     req.files = {
       ...req.files,
       waysOfWorking: undefined,
     }
 
-    expect(() => validateThesisData(req, res, next)).not.toThrow()
-    expect(next).toHaveBeenCalledTimes(1)
+    await expectNoValidationError()
   })
 
-  it('should return an error if startDate is missing', () => {
+  it('should return an error if startDate is missing', async () => {
     req.body = {
       ...req.body,
       startDate: undefined,
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Start date is required'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Start date is required')
   })
 
-  it('should return an error if targetDate is missing', () => {
+  it('should return an error if targetDate is missing', async () => {
     req.body = {
       ...req.body,
       targetDate: undefined,
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Target date is required'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Target date is required')
   })
 
-  it('should return an error if targetDate is before startDate', () => {
+  it('should return an error if targetDate is before startDate', async () => {
     req.body = {
       ...req.body,
       startDate: '2021-12-31',
       targetDate: '2021-01-01',
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Start date must be before target date'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Start date must be before target date')
   })
 
-  it('should return an error if programId is missing', () => {
+  it('should return an error if programId is missing', async () => {
     req.body = {
       ...req.body,
       programId: undefined,
     }
 
-    expect(() => validateThesisData(req, res, next)).toThrow(
-      'Program is required'
-    )
-    expect(next).toHaveBeenCalledTimes(0)
+    await expectValidationError('Program is required')
+  })
+
+  it('should require seminar supervision when the program seminar setting is enabled', async () => {
+    Program.findByPk.mockResolvedValue({ options: { seminar: true } })
+
+    await expectValidationError('At least one seminar supervision is required')
+  })
+
+  it('should return an error if there are multiple seminar supervisors', async () => {
+    req.body = {
+      ...req.body,
+      seminarSupervisions: [
+        {
+          user: {
+            id: 'seminar-supervisor-1',
+            username: 'seminar-supervisor-1',
+            firstName: 'Seminar',
+            lastName: 'Supervisor One',
+            email: 'seminar@test.fi',
+          },
+          isExternal: false,
+        },
+        {
+          user: {
+            id: 'seminar-supervisor-2',
+            username: 'seminar-supervisor-2',
+            firstName: 'Seminar',
+            lastName: 'Supervisor Two',
+            email: 'seminar@test.fi',
+          },
+          isExternal: false,
+        },
+      ],
+    }
+
+    await expectValidationError('Exactly one seminar supervisor is allowed')
+  })
+
+  it('should return an error if seminar supervisor is external', async () => {
+    req.body = {
+      ...req.body,
+      seminarSupervisions: [
+        {
+          user: {
+            firstName: 'Seminar',
+            lastName: 'Supervisor',
+            email: 'seminar@test.fi',
+            affiliation: 'Outside University',
+          },
+          isExternal: true,
+        },
+      ],
+    }
+
+    await expectValidationError('Seminar supervisor cannot be an external user')
+  })
+
+  it('should pass seminar supervision validation when one internal seminar supervision is present', async () => {
+    Program.findByPk.mockResolvedValue({ options: { seminar: true } })
+    req.body = {
+      ...req.body,
+      seminarSupervisions: [
+        {
+          user: {
+            id: 'seminar-supervisor-1',
+            username: 'seminar-supervisor-1',
+            firstName: 'Seminar',
+            lastName: 'Supervisor',
+            email: 'seminar@test.fi',
+          },
+          isExternal: false,
+        },
+      ],
+    }
+
+    await expectNoValidationError()
   })
 })

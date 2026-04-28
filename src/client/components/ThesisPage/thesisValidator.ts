@@ -24,35 +24,32 @@ const extUserSchema = z.object({
     .min(1, 'formErrors:affiliation'),
 })
 
-const supervisionSchema = z
+const supervisionSchema = z.object({
+  user: z.object({}).passthrough().nullable(),
+  percentage: z.number().min(0).max(100),
+  isExternal: z.boolean(),
+  isPrimarySupervisor: z.boolean(),
+})
+
+const seminarSupervisionSchema = z
   .object({
     user: z.object({}).passthrough().nullable(),
-    percentage: z.number().min(0).max(100),
     isExternal: z.boolean(),
-    isPrimarySupervisor: z.boolean(),
   })
   .superRefine((data, ctx) => {
-    if (!data.isExternal && !data.user) {
+    if (!data.user) {
       ctx.addIssue({
         code: 'custom',
-        message: 'formErrors:supervisors',
+        message: 'formErrors:seminarSupervisors',
         path: ['user'],
       })
     }
 
     if (data.isExternal) {
-      const userData = data.user ?? {
-        firstName: '',
-        lastName: '',
-        email: '',
-        affiliation: '',
-      }
-
-      extUserSchema.safeParse(userData).error?.issues.forEach((issue) => {
-        ctx.addIssue({
-          ...issue,
-          path: ['user', ...issue.path],
-        })
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:seminarSupervisorInternalOnly',
+        path: ['general', 'seminar', 'supervisor', 'error'],
       })
     }
   })
@@ -151,6 +148,18 @@ export const ThesisSchema = z.object({
           code: 'custom',
           message: 'formErrors:duplicateSupervisorEmails',
           path: ['general', 'supervisor', 'error'],
+        })
+      }
+    }),
+  seminarSupervisions: z
+    .array(seminarSupervisionSchema)
+    .default([])
+    .superRefine((seminarSupervisions, ctx) => {
+      if (seminarSupervisions.length > 1) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'formErrors:singleSeminarSupervisor',
+          path: ['general', 'seminar', 'supervisor', 'error'],
         })
       }
     }),

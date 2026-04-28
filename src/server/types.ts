@@ -67,6 +67,12 @@ export interface SupervisionData {
   creationTimeIdentifier?: string
 }
 
+export interface SeminarSupervisionData {
+  user: Partial<User>
+  isExternal: boolean
+  creationTimeIdentifier?: string
+}
+
 export interface GraderData {
   user: Partial<User>
   isPrimaryGrader: boolean
@@ -90,6 +96,7 @@ export interface ThesisData {
   startDate: string
   targetDate?: string
   supervisions: SupervisionData[]
+  seminarSupervisions: SeminarSupervisionData[]
   authors: User[]
   approvers: User[]
   graders: GraderData[]

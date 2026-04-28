@@ -10,6 +10,7 @@ import type { ThesisStatus } from '@backend/types'
 
 import { sequelize } from '../connection'
 import Grader from './Grader'
+import SeminarSupervision from './SeminarSupervision'
 import Supervision from './Supervision'
 import User from './User'
 
@@ -38,6 +39,8 @@ class Thesis extends Model<
   declare graders: NonAttribute<Grader[]>
 
   declare supervisions: NonAttribute<Supervision[]>
+
+  declare seminarSupervisions: NonAttribute<SeminarSupervision[]>
 }
 
 Thesis.init(
