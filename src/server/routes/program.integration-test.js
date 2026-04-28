@@ -140,6 +140,7 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
+              options: {},
               isFavorite: false,
               isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
@@ -167,6 +168,7 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
+              options: {},
               isFavorite: false,
               isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
@@ -194,6 +196,7 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
+              options: {},
               isFavorite: false,
               isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
@@ -208,6 +211,7 @@ describe('program router', () => {
                 en: 'test2inenglish',
                 sv: 'test2pasvenska',
               },
+              options: {},
               isFavorite: false,
               isManaged: false,
               studyTracks: expect.toIncludeSameMembers([
@@ -286,6 +290,7 @@ describe('program router', () => {
                 en: 'test1inenglish',
                 sv: 'test1pasvenska',
               },
+              options: {},
               isFavorite: false,
               isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
@@ -300,6 +305,7 @@ describe('program router', () => {
                 en: 'test2inenglish',
                 sv: 'test2pasvenska',
               },
+              options: {},
               isFavorite: false,
               isManaged: false,
               studyTracks: expect.toIncludeSameMembers([
