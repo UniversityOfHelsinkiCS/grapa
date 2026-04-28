@@ -13,7 +13,6 @@ import DepartmentOverview from './components/Department/DepartmentOverview'
 
 import { BASE_PATH } from '../config'
 import Ethesis from './components/Ethesis'
-import EthesisAdminPage from './components/Ethesis/AdminPage'
 
 const router = createBrowserRouter(
   [
@@ -59,7 +58,7 @@ const router = createBrowserRouter(
         },
         {
           path: '/ethesis/admin',
-          element: <EthesisAdminPage />,
+          element: <Navigate to="/ethesis?tab=admins" replace />,
         },
         {
           path: '/admin',

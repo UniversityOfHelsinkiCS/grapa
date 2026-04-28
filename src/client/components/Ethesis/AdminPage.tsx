@@ -44,7 +44,15 @@ interface User {
   username: string
 }
 
-const EthesisAdminPage = () => {
+interface EthesisAdminPageProps {
+  disableContainer?: boolean
+  hideTitle?: boolean
+}
+
+const EthesisAdminPage = ({
+  disableContainer = false,
+  hideTitle = false,
+}: EthesisAdminPageProps) => {
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedAdmin, setSelectedAdmin] = useState<EthesisAdmin | null>(null)
@@ -138,6 +146,10 @@ const EthesisAdminPage = () => {
   }
 
   if (isLoading) {
+    if (disableContainer) {
+      return <Typography>Loading...</Typography>
+    }
+
     return (
       <Container maxWidth="lg" sx={{ py: 3 }}>
         <Typography>Loading...</Typography>
@@ -145,8 +157,8 @@ const EthesisAdminPage = () => {
     )
   }
 
-  return (
-    <Container maxWidth="lg" sx={{ py: 3 }}>
+  const content = (
+    <>
       <Box
         sx={{
           display: 'flex',
@@ -155,9 +167,11 @@ const EthesisAdminPage = () => {
           mb: 3,
         }}
       >
-        <Typography variant="h4" component="h1">
-          Ethesis Administrators
-        </Typography>
+        {!hideTitle && (
+          <Typography variant="h4" component="h1">
+            Ethesis Administrators
+          </Typography>
+        )}
         <Button
           variant="contained"
           startIcon={<AddIcon />}
@@ -324,6 +338,16 @@ const EthesisAdminPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+    </>
+  )
+
+  if (disableContainer) {
+    return content
+  }
+
+  return (
+    <Container maxWidth="lg" sx={{ py: 3 }}>
+      {content}
     </Container>
   )
 }

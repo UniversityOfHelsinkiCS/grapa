@@ -189,36 +189,11 @@ const DepartmentMenu = () => {
   )
 }
 
-const EthesisMenu = () => {
-  const { user } = useLoggedInUser()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
-
+const EthesisLink = () => {
   return (
-    <PositionedMenu
-      label="Ethesis"
-      open={open}
-      anchorEl={anchorEl}
-      handleClick={handleClick}
-      handleClose={handleClose}
-    >
-      <PositionedMenuLinkItem to="/ethesis" onClick={handleClose}>
-        Ethesis Overview
-      </PositionedMenuLinkItem>
-      {user?.isAdmin && (
-        <PositionedMenuLinkItem to="/ethesis/admin" onClick={handleClose}>
-          Manage Admins
-        </PositionedMenuLinkItem>
-      )}
-    </PositionedMenu>
+    <Button component={NavLink} to="/ethesis" sx={navStyles.link}>
+      Ethesis
+    </Button>
   )
 }
 
@@ -271,7 +246,7 @@ const NavBar = () => {
               {Boolean(user.isAdmin || user.managedDepartmentIds?.length) && (
                 <DepartmentMenu />
               )}
-              {user?.ethesisAdmin && <EthesisMenu />}
+              {user?.ethesisAdmin && <EthesisLink />}
             </Box>
 
             <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 2 }}>
@@ -328,6 +303,14 @@ const NavBar = () => {
             </ListItemButton>
           </ListItem>
         ))}
+        <Divider />
+        {user?.ethesisAdmin && (
+          <ListItem disablePadding>
+            <ListItemButton component={NavLink} to="/ethesis">
+              <ListItemText primary="Ethesis" />
+            </ListItemButton>
+          </ListItem>
+        )}
         <Divider />
         <LanguageSelect />
       </MobileMenu>
