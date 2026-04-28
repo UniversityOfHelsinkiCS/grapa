@@ -197,6 +197,16 @@ const EthesisLink = () => {
   )
 }
 
+const SeminarLink = () => {
+  const { t } = useTranslation()
+
+  return (
+    <Button component={NavLink} to="/seminar" sx={navStyles.link}>
+      {t('navbar:seminar')}
+    </Button>
+  )
+}
+
 const NavBar = () => {
   const { t, i18n } = useTranslation()
   const { user, isLoading } = useLoggedInUser()
@@ -246,6 +256,7 @@ const NavBar = () => {
               {Boolean(user.isAdmin || user.managedDepartmentIds?.length) && (
                 <DepartmentMenu />
               )}
+              {user?.hasSeminarSupervisions && <SeminarLink />}
               {user?.ethesisAdmin && <EthesisLink />}
             </Box>
 
@@ -308,6 +319,13 @@ const NavBar = () => {
           <ListItem disablePadding>
             <ListItemButton component={NavLink} to="/ethesis">
               <ListItemText primary="Ethesis" />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {user?.hasSeminarSupervisions && (
+          <ListItem disablePadding>
+            <ListItemButton component={NavLink} to="/seminar">
+              <ListItemText primary={t('navbar:seminar')} />
             </ListItemButton>
           </ListItem>
         )}

@@ -35,6 +35,7 @@ export interface User {
   managedDepartmentIds?: string[]
   favoriteProgramIds?: string[]
   isExternal: boolean
+  hasSeminarSupervisions?: boolean
   affiliation?: string
   departmentId?: string
   thesesTableFilters?: GridFilterModel

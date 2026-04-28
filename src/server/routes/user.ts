@@ -2,7 +2,12 @@ import express from 'express'
 
 import { RequestWithUser } from '../types'
 import { validateUserThesesTableFiltersData } from '../validators/user'
-import { DepartmentAdmin, ProgramManagement, User } from '../db/models'
+import {
+  DepartmentAdmin,
+  ProgramManagement,
+  SeminarSupervision,
+  User,
+} from '../db/models'
 import ethesisAdminHandler from '../middleware/ethesisAdmin'
 import ethesisUserHandler from '../middleware/ethesisUser'
 
@@ -32,12 +37,16 @@ userRouter.get(
     const managedDepartmentIds = managedDepartments.map(
       (department) => department.departmentId
     )
+    const hasSeminarSupervisions = Boolean(
+      await SeminarSupervision.count({ where: { userId: user.id } })
+    )
 
     return res.send({
       ...user,
       managedProgramIds,
       managedDepartmentIds,
       approvableProgramIds,
+      hasSeminarSupervisions,
     })
   }
 )

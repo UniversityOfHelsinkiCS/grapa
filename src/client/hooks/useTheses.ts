@@ -15,6 +15,7 @@ interface UsePaginatedThesesParams {
   authorsPartial?: string
   status?: string | string[]
   onlySupervised: boolean
+  onlySeminarSupervised?: boolean
   offset: number
   limit: number
 }
@@ -26,6 +27,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
   const queryKey = [
     'theses',
     params.onlySupervised,
+    params.onlySeminarSupervised,
     params.offset,
     params.limit,
     params.programId,
@@ -46,6 +48,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     const { data } = await apiClient.get('/theses/paginate', {
       params: {
         onlySupervised: params.onlySupervised,
+        onlySeminarSupervised: params.onlySeminarSupervised,
         offset: params.offset,
         limit: params.limit,
         programId: params.programId,

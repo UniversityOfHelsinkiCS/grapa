@@ -102,6 +102,7 @@ interface FetchThesisProps {
   language?: string
   actionUser: UserType
   onlySupervised?: boolean
+  onlySeminarSupervised?: boolean
 }
 export const getFindThesesOptions = async ({
   thesisId,
@@ -114,6 +115,7 @@ export const getFindThesesOptions = async ({
   language,
   actionUser,
   onlySupervised,
+  onlySeminarSupervised,
 }: FetchThesisProps) => {
   let includes: Includeable[] = [
     {
@@ -231,14 +233,16 @@ export const getFindThesesOptions = async ({
 
   if (
     (!departmentId && !actionUser.isAdmin && !actionUser.ethesisAdmin) ||
-    onlySupervised
+    onlySupervised ||
+    onlySeminarSupervised
   ) {
-    const programManagement = onlySupervised
-      ? []
-      : await ProgramManagement.findAll({
-          attributes: ['programId'],
-          where: { userId: actionUser.id },
-        })
+    const programManagement =
+      onlySupervised || onlySeminarSupervised
+        ? []
+        : await ProgramManagement.findAll({
+            attributes: ['programId'],
+            where: { userId: actionUser.id },
+          })
 
     // We want to include theses where current user is a supervisor
     // but for the returned theses, we still want to include all
@@ -262,19 +266,37 @@ export const getFindThesesOptions = async ({
     }
     includes = [...includes, teacherClause]
 
+    const seminarClause: Includeable = {
+      model: SeminarSupervision,
+      as: 'seminarSupervisionsForFiltering',
+      attributes: [] as const,
+      where: {
+        userId: actionUser.id,
+      },
+      required: false,
+    }
+    includes = [...includes, seminarClause]
+
     const programIds = programManagement.map((pm) => pm.programId)
 
-    whereClause = {
-      ...whereClause,
-      [Op.or]: [
-        // if a user is only a teacher (not admin nor supervisor),
-        // they should only see theses they supervise
-        { '$supervisionsForFiltering.user_id$': actionUser.id },
-        { '$approvers.Approver.user_id$': actionUser.id },
-        // but we also want to show all theses within programs
-        // managed by the user
-        programIds?.length ? { programId: programIds } : {},
-      ],
+    if (onlySeminarSupervised) {
+      whereClause = {
+        ...whereClause,
+        '$seminarSupervisionsForFiltering.user_id$': actionUser.id,
+      }
+    } else {
+      whereClause = {
+        ...whereClause,
+        [Op.or]: [
+          // if a user is only a teacher (not admin nor supervisor),
+          // they should only see theses they supervise
+          { '$supervisionsForFiltering.user_id$': actionUser.id },
+          { '$approvers.Approver.user_id$': actionUser.id },
+          // but we also want to show all theses within programs
+          // managed by the user
+          programIds?.length ? { programId: programIds } : {},
+        ],
+      }
     }
   }
 

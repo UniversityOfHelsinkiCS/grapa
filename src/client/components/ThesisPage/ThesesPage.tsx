@@ -59,6 +59,7 @@ interface Props {
   noAddThesisButton?: boolean
   showExportOptions?: boolean
   pageSize?: number
+  onlySeminarSupervised?: boolean
 }
 const ThesesPage = ({
   filteringProgramId,
@@ -67,6 +68,7 @@ const ThesesPage = ({
   noAddThesisButton,
   showExportOptions,
   pageSize,
+  onlySeminarSupervised = false,
 }: Props) => {
   pageSize = pageSize ?? DEFAULT_PAGE_SIZE
 
@@ -120,6 +122,7 @@ const ThesesPage = ({
     authorsPartial: debouncedFilterAuthors,
     programNamePartial: debouncedFilterProgramName,
     onlySupervised: showOnlyOwnTheses,
+    onlySeminarSupervised,
     offset: paginationModel.page * paginationModel.pageSize,
     limit: paginationModel.pageSize,
   })

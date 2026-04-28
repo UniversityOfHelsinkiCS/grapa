@@ -10,6 +10,7 @@ import LoginAs from './components/LoginAs'
 import Admin from './components/Admin/Admin'
 import ProgramOverview from './components/Program/ProgramOverview'
 import DepartmentOverview from './components/Department/DepartmentOverview'
+import SeminarPage from './components/Seminar/SeminarPage'
 
 import { BASE_PATH } from '../config'
 import Ethesis from './components/Ethesis'
@@ -61,6 +62,10 @@ const router = createBrowserRouter(
         {
           path: '/ethesis',
           element: <Ethesis />,
+        },
+        {
+          path: '/seminar',
+          element: <SeminarPage />,
         },
         {
           path: '/ethesis/admin',

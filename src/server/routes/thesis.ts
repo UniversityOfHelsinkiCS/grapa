@@ -261,7 +261,12 @@ thesisRouter.get(
   ethesisAdminHandler,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
-    const { onlySupervised, limit = 50, offset = 0 } = req.query
+    const {
+      onlySupervised,
+      onlySeminarSupervised,
+      limit = 50,
+      offset = 0,
+    } = req.query
     const currentUser = req.user
     const language = (req.query.language ?? 'en') as string
     const programId = req.query.programId as string
@@ -309,6 +314,7 @@ thesisRouter.get(
       language,
       actionUser: currentUser,
       onlySupervised: onlySupervised === 'true',
+      onlySeminarSupervised: onlySeminarSupervised === 'true',
     })
 
     const { count, rows } = await Thesis.findAndCountAll({

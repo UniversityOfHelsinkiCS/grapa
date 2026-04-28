@@ -44,6 +44,10 @@ Thesis.hasMany(SeminarSupervision, {
   foreignKey: 'thesisId',
   as: 'seminarSupervisions',
 })
+Thesis.hasMany(SeminarSupervision, {
+  foreignKey: 'thesisId',
+  as: 'seminarSupervisionsForFiltering',
+})
 Thesis.hasMany(Supervision, {
   foreignKey: 'thesisId',
   as: 'supervisionsForFiltering',

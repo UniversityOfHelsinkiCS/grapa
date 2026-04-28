@@ -12,6 +12,7 @@ import {
   Grader,
   Program,
   ProgramManagement,
+  SeminarSupervision,
   StudyTrack,
   Supervision,
   Thesis,
@@ -1358,6 +1359,41 @@ describe('thesis router', () => {
                       user: teacherUser,
                       percentage: 100,
                       isPrimarySupervisor: true,
+                    },
+                  ],
+                },
+              ],
+            })
+          })
+        })
+
+        describe('when the teacher user fetches seminar theses', () => {
+          beforeEach(async () => {
+            await SeminarSupervision.create({
+              userId: teacherUser.id,
+              thesisId: thesis3.id,
+            })
+          })
+
+          it('should return all theses where the user is a seminar supervisor', async () => {
+            const response = await request
+              .get('/api/theses/paginate?onlySeminarSupervised=true')
+              .set({ uid: teacherUser.id, hygroupcn: 'hy-employees' })
+
+            expect(response.status).toEqual(200)
+            expect(response.body).toMatchObject({
+              totalCount: 1,
+              theses: [
+                {
+                  id: thesis3.id,
+                  programId: 'Testing program',
+                  studyTrackId: 'test-study-track-id',
+                  topic: 'test topic',
+                  status: 'PLANNING',
+                  seminarSupervisions: [
+                    {
+                      user: teacherUser,
+                      isExternal: false,
                     },
                   ],
                 },
