@@ -1,7 +1,6 @@
 /**
  * @jest-environment jsdom
  */
-import * as React from 'react'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
@@ -70,14 +69,15 @@ describe('DepartmentOverview', () => {
     initializeI18n()
   })
 
-  it('reads the selected department from the URL and defaults to the theses tab', () => {
+  it('reads the selected department from the URL and defaults to the statistics tab', () => {
     renderDepartmentOverview('/departments/department-2')
 
-    expect(screen.getByTestId('department-theses')).toHaveTextContent(
-      'department-2'
+    expect(screen.getByTestId('department-statistics')).toHaveTextContent(
+      'department-2-true'
     )
     expect(screen.getByText('Osasto kaksi')).toBeInTheDocument()
     expect(screen.queryByTestId('department-admin')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('department-theses')).not.toBeInTheDocument()
   })
 
   it('shows the embedded department admin view in its own tab', async () => {
@@ -106,8 +106,8 @@ describe('DepartmentOverview', () => {
     renderDepartmentOverview('/departments')
 
     await waitFor(() => {
-      expect(screen.getByTestId('department-theses')).toHaveTextContent(
-        'department-1'
+      expect(screen.getByTestId('department-statistics')).toHaveTextContent(
+        'department-1-true'
       )
     })
   })

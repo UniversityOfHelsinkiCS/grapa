@@ -95,6 +95,14 @@
     "departmentAdminsTab": "Department admins",
     "supervisionStatisticsTab": "Supervision statistics"
   },
+  "programOverviewPage": {
+    "configurationsTab": "Configurations",
+    "seminarToggle": "Seminar",
+    "seminarTooltip": "The thesis must include a seminar supervisor",
+    "seminarConfirmTitle": "Confirm seminar setting",
+    "seminarEnableConfirmContent": "Are you sure you want to enable the seminar requirement?",
+    "seminarDisableConfirmContent": "Are you sure you want to disable the seminar requirement?"
+  },
   "dropzone": {
     "uploadText": "Drop a file here or click to upload",
     "uploadSuccessText": "File uploaded successfully"

@@ -17,6 +17,7 @@ export type ProgrammeLevel = 'bachelor' | 'master' | 'doctoral'
 export type Programme = {
   readonly key: string
   readonly name: TranslatedName
+  readonly options: Record<string, unknown>
   readonly level: ProgrammeLevel
   readonly companionFaculties: Readonly<string[]>
   readonly international: boolean

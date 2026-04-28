@@ -95,6 +95,14 @@
     "departmentAdminsTab": "Osaston ylläpitäjät",
     "supervisionStatisticsTab": "Ohjaustilastot"
   },
+  "programOverviewPage": {
+    "configurationsTab": "Asetukset",
+    "seminarToggle": "Seminaari",
+    "seminarTooltip": "tutkielman tulee sisältää seminaarin ohjaaja",
+    "seminarConfirmTitle": "Vahvista seminaariasetus",
+    "seminarEnableConfirmContent": "Haluatko varmasti ottaa seminaarivaatimuksen käyttöön?",
+    "seminarDisableConfirmContent": "Haluatko varmasti poistaa seminaarivaatimuksen käytöstä?"
+  },
   "dropzone": {
     "uploadText": "Pudota tiedosto tähän tai klikkaa ladataksesi",
     "uploadSuccessText": "Tiedosto ladattu onnistuneesti"

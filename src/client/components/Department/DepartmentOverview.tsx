@@ -22,7 +22,7 @@ const parseDepartmentTab = (tab: string | null): DepartmentTab => {
     return tab
   }
 
-  return 'theses'
+  return 'statistics'
 }
 
 const DepartmentOverview = () => {

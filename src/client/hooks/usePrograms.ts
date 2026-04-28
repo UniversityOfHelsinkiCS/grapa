@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { ProgramData } from '@backend/types'
 
 import apiClient from '../util/apiClient'
+import queryClient from '../util/queryClient'
 
 interface UseProgramsParams {
   includeNotManaged?: boolean
@@ -25,6 +26,29 @@ const usePrograms = (params: UseProgramsParams) => {
   const { data: programs, ...rest } = useQuery({ queryKey, queryFn })
 
   return { programs, ...rest }
+}
+
+interface UpdateProgramOptionsParams {
+  programId: string
+  options: Record<string, unknown>
+}
+
+export const useUpdateProgramOptionsMutation = () => {
+  const mutationFn = async ({
+    programId,
+    options,
+  }: UpdateProgramOptionsParams) => {
+    await apiClient.put(`/programs/${programId}`, { options })
+  }
+
+  return useMutation({
+    mutationFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['programs'],
+      })
+    },
+  })
 }
 
 export default usePrograms

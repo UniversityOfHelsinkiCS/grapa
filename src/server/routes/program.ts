@@ -13,6 +13,15 @@ import ethesisUserHandler from '../middleware/ethesisUser'
 
 const programRouter = express.Router()
 
+const userCanManageProgram = async (userId: string, programId: string) => {
+  const programManagement = await ProgramManagement.findOne({
+    attributes: ['programId'],
+    where: { userId, programId },
+  })
+
+  return Boolean(programManagement)
+}
+
 programRouter.get(
   '/',
   ethesisUserHandler,
@@ -52,7 +61,7 @@ programRouter.get(
     }
 
     const programs = await Program.findAll({
-      attributes: ['id', 'name'],
+      attributes: ['id', 'name', 'options'],
       where: whereClause,
       include: includes,
       order: [[literal(`"Program"."name"->>$language`), 'ASC']],
@@ -76,6 +85,49 @@ programRouter.get(
     }))
 
     res.send(programsWithFavorites)
+  }
+)
+
+programRouter.put(
+  '/:id',
+  ethesisUserHandler,
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: RequestWithUser, res: Response) => {
+    const { id: programId } = req.params
+    const { isAdmin, id: userId } = req.user
+    const { options } = req.body
+
+    if (!programId || typeof programId !== 'string') {
+      return res.status(400).send({ error: 'Program ID is required' })
+    }
+
+    if (!options || typeof options !== 'object' || Array.isArray(options)) {
+      return res.status(400).send({ error: 'Invalid options payload' })
+    }
+
+    if (!isAdmin) {
+      const canManageProgram = await userCanManageProgram(userId, programId)
+
+      if (!canManageProgram) {
+        return res.status(403).send({ error: 'Forbidden' })
+      }
+    }
+
+    const program = await Program.findByPk(programId)
+
+    if (!program) {
+      return res.status(404).send({ error: 'Program not found' })
+    }
+
+    const [, updatedPrograms] = await Program.update(
+      { options },
+      {
+        where: { id: programId },
+        returning: true,
+      }
+    )
+
+    return res.status(200).send(updatedPrograms[0])
   }
 )
 

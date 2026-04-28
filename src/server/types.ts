@@ -114,6 +114,7 @@ export interface StudyTrackData {
 export interface ProgramData {
   id: string
   name: TranslatedName
+  options: Record<string, unknown>
   studyTracks: StudyTrackData[]
   isFavorite: boolean
   isManaged: boolean

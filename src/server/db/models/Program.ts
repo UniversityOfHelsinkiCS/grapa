@@ -17,6 +17,8 @@ class Program extends Model<
 
   declare name: TranslatedName
 
+  declare options: Record<string, unknown>
+
   declare level: string
 
   declare international: boolean
@@ -37,6 +39,11 @@ Program.init(
     name: {
       type: DataTypes.JSONB,
       allowNull: false,
+    },
+    options: {
+      type: DataTypes.JSONB,
+      allowNull: false,
+      defaultValue: {},
     },
     level: {
       type: DataTypes.STRING,

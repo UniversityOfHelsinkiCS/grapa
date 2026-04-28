@@ -22,6 +22,7 @@ export const fetchPrograms = async () => {
     options: {
       updateOnDuplicate: [
         'name',
+        'options',
         'level',
         'international',
         'companionFaculties',

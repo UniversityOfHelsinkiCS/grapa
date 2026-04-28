@@ -1,12 +1,13 @@
 /**
  * @jest-environment jsdom
  */
-import * as React from 'react'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 
 import initializeI18n from '../../util/il18n'
+
+const useLoggedInUserMock = jest.fn()
 
 jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
   default: jest.fn().mockReturnValue({
@@ -15,12 +16,18 @@ jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
       {
         id: 'program-1',
         name: { en: 'Program one', fi: 'Ohjelma yksi' },
+        options: {},
       },
       {
         id: 'program-2',
         name: { en: 'Program two', fi: 'Ohjelma kaksi' },
+        options: { seminar: false },
       },
     ],
+  }),
+  useUpdateProgramOptionsMutation: jest.fn().mockReturnValue({
+    isPending: false,
+    mutateAsync: jest.fn(),
   }),
 }))
 
@@ -29,6 +36,10 @@ jest.unstable_mockModule('./src/client/hooks/useEvents', () => ({
     events: [],
     isLoading: false,
   }),
+}))
+
+jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
+  default: useLoggedInUserMock,
 }))
 
 jest.unstable_mockModule(
@@ -50,6 +61,9 @@ jest.unstable_mockModule(
 )
 
 const ProgramOverview = (await import('./ProgramOverview')).default
+const { useUpdateProgramOptionsMutation } = await import(
+  '../../hooks/usePrograms'
+)
 
 const renderProgramOverview = (initialEntry) =>
   render(
@@ -66,6 +80,10 @@ const renderProgramOverview = (initialEntry) =>
 describe('ProgramOverview', () => {
   beforeEach(() => {
     initializeI18n()
+    useLoggedInUserMock.mockReturnValue({
+      user: { isAdmin: true },
+      isLoading: false,
+    })
   })
 
   it('reads the selected program from the URL and defaults to the theses tab', () => {
@@ -89,11 +107,50 @@ describe('ProgramOverview', () => {
     expect(screen.queryByTestId('theses-page')).not.toBeInTheDocument()
   })
 
+  it('asks for confirmation before persisting the seminar toggle', async () => {
+    renderProgramOverview('/programs/program-2')
+
+    const user = userEvent.setup()
+    const mutation = useUpdateProgramOptionsMutation()
+
+    await user.click(screen.getByRole('tab', { name: 'Asetukset' }))
+
+    const seminarToggle = screen.getByRole('checkbox')
+    expect(seminarToggle).not.toBeChecked()
+
+    await user.click(seminarToggle)
+
+    expect(mutation.mutateAsync).not.toHaveBeenCalled()
+    expect(
+      screen.getByText('Haluatko varmasti ottaa seminaarivaatimuksen käyttöön?')
+    ).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Tallenna' }))
+
+    expect(mutation.mutateAsync).toHaveBeenCalledWith({
+      programId: 'program-2',
+      options: { seminar: true },
+    })
+  })
+
   it('defaults to the first managed program when the URL has no program id', async () => {
     renderProgramOverview('/programs')
 
     await waitFor(() => {
       expect(screen.getByTestId('theses-page')).toHaveTextContent('program-1')
     })
+  })
+
+  it('hides the configurations tab for non-admin users', () => {
+    useLoggedInUserMock.mockReturnValue({
+      user: { isAdmin: false },
+      isLoading: false,
+    })
+
+    renderProgramOverview('/programs/program-2')
+
+    expect(
+      screen.queryByRole('tab', { name: 'Asetukset' })
+    ).not.toBeInTheDocument()
   })
 })
