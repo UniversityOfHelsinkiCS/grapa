@@ -147,6 +147,10 @@ const ThesesPage = ({
   const { programs, isLoading: isProgramLoading } = usePrograms({
     includeNotManaged: true,
   })
+  const managedPrograms = useMemo(
+    () => (programs ?? []).filter((program) => program.isManaged),
+    [programs]
+  )
 
   const { mutateAsync: editThesis } = useEditThesisMutation()
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
@@ -333,8 +337,14 @@ const ThesesPage = ({
   }))
 
   const initializeNewThesis = () => {
-    const favoritePrograms = programs.filter((program) => program.isFavorite)
-    const otherPrograms = programs.filter((program) => !program.isFavorite)
+    if (!managedPrograms.length) return
+
+    const favoritePrograms = managedPrograms.filter(
+      (program) => program.isFavorite
+    )
+    const otherPrograms = managedPrograms.filter(
+      (program) => !program.isFavorite
+    )
 
     const programOptions = [...favoritePrograms, ...otherPrograms]
 
@@ -508,7 +518,7 @@ const ThesesPage = ({
       )}
       {newThesis && (
         <ThesisEditForm
-          programs={programs ?? []}
+          programs={managedPrograms}
           formTitle={t('thesisForm:newThesisFormTitle')}
           initialThesis={newThesis}
           onSubmit={async (variables) => {

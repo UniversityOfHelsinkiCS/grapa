@@ -28,8 +28,11 @@ const FavoritePrograms = () => {
 
   if (!user || !programs || userLoading || programsLoading) return null
 
-  const favoritePrograms = programs.filter((program) => program.isFavorite)
-  const otherPrograms = programs.filter((program) => !program.isFavorite)
+  const managedPrograms = programs.filter((program) => program.isManaged)
+  const favoritePrograms = managedPrograms.filter(
+    (program) => program.isFavorite
+  )
+  const otherPrograms = managedPrograms.filter((program) => !program.isFavorite)
 
   const handleUpdateFavoritePrograms = (programId: string) => {
     const newFavoriteProgramIds = user.favoriteProgramIds.includes(programId)
