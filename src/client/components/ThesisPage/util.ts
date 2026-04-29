@@ -38,7 +38,8 @@ export const getEqualSupervisorSelectionWorkloads = (
 export const getFormErrors = (
   thesis: ThesisData,
   hasApprovers = false,
-  seminarSupervisionRequired = false
+  seminarSupervisionRequired = false,
+  allowMultipleSeminarResponsibles = false
 ) => {
   const validatedThesis = ThesisSchema.safeParse(thesis)
   const validatedDates = ThesisDateSchema.safeParse({
@@ -64,7 +65,11 @@ export const getFormErrors = (
     })
   }
 
-  if (thesis.seminarSupervisions && thesis.seminarSupervisions.length > 1) {
+  if (
+    !allowMultipleSeminarResponsibles &&
+    thesis.seminarSupervisions &&
+    thesis.seminarSupervisions.length > 1
+  ) {
     formErrors.push({
       code: 'custom' as const,
       message: 'formErrors:singleSeminarSupervisor',

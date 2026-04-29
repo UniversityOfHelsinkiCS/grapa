@@ -216,6 +216,9 @@ export const validateThesisData = async (
 
   const program = await Program.findByPk(thesisData.programId)
   const seminarSupervisionRequired = Boolean(program?.options?.seminar)
+  const allowMultipleSeminarResponsibles = Boolean(
+    program?.options?.allowMultipleSeminarResponsibles
+  )
   const seminarSupervisions = thesisData.seminarSupervisions ?? []
 
   if (seminarSupervisionRequired && seminarSupervisions.length === 0) {
@@ -227,7 +230,7 @@ export const validateThesisData = async (
     )
   }
 
-  if (seminarSupervisions.length > 1) {
+  if (!allowMultipleSeminarResponsibles && seminarSupervisions.length > 1) {
     throw new CustomValidationError(
       'Exactly one seminar supervisor is allowed',
       {

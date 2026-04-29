@@ -229,11 +229,7 @@ const SeminarSupervisor = ({
 
   if (!seminarSupervisions.length) return null
 
-  const seminarSupervisor = seminarSupervisions[0]
-  const primaryText = `${seminarSupervisor.user.firstName} ${seminarSupervisor.user.lastName}`
-  const secondaryText = seminarSupervisor.user.affiliation
-    ? `${seminarSupervisor.user.email} (${seminarSupervisor.user.affiliation})`
-    : `${seminarSupervisor.user.email}`
+  const isPlural = seminarSupervisions.length > 1
 
   return (
     <Grid2>
@@ -245,12 +241,23 @@ const SeminarSupervisor = ({
           textTransform: 'uppercase',
         }}
       >
-        {t('thesisForm:seminarSupervisor')}
+        {isPlural
+          ? t('thesisForm:seminarSupervisorsLabel')
+          : t('thesisForm:seminarSupervisor')}
       </Typography>
       <List dense>
-        <ListItem>
-          <ListItemText primary={primaryText} secondary={secondaryText} />
-        </ListItem>
+        {seminarSupervisions.map((seminarSupervisor) => {
+          const primaryText = `${seminarSupervisor.user.firstName} ${seminarSupervisor.user.lastName}`
+          const secondaryText = seminarSupervisor.user.affiliation
+            ? `${seminarSupervisor.user.email} (${seminarSupervisor.user.affiliation})`
+            : `${seminarSupervisor.user.email}`
+
+          return (
+            <ListItem key={seminarSupervisor.user.id}>
+              <ListItemText primary={primaryText} secondary={secondaryText} />
+            </ListItem>
+          )
+        })}
       </List>
     </Grid2>
   )

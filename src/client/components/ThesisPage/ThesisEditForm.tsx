@@ -85,7 +85,8 @@ const ThesisEditForm: FC<{
     const thesisErrors = getFormErrors(
       editedThesis,
       approvers?.length > 0,
-      Boolean(selectedProgram?.options?.seminar)
+      Boolean(selectedProgram?.options?.seminar),
+      Boolean(selectedProgram?.options?.allowMultipleSeminarResponsibles)
     )
 
     if (thesisErrors.length > 0) {
@@ -619,6 +620,9 @@ const ThesisEditForm: FC<{
                   seminarSupervisions,
                 }))
               }
+              allowMultiple={Boolean(
+                selectedProgram?.options?.allowMultipleSeminarResponsibles
+              )}
             />
           )}
 

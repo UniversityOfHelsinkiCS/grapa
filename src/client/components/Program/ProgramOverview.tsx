@@ -56,9 +56,16 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   const { t } = useTranslation()
   const updateProgramOptionsMutation = useUpdateProgramOptionsMutation()
   const seminarEnabled = Boolean(program.options?.seminar)
+  const allowMultipleSeminarResponsibles = Boolean(
+    program.options?.allowMultipleSeminarResponsibles
+  )
   const [pendingSeminarValue, setPendingSeminarValue] = useState<
     boolean | null
   >(null)
+  const [
+    pendingAllowMultipleSeminarResponsiblesValue,
+    setPendingAllowMultipleSeminarResponsiblesValue,
+  ] = useState<boolean | null>(null)
 
   const handleSeminarToggle = async (event: ChangeEvent<HTMLInputElement>) => {
     setPendingSeminarValue(event.target.checked)
@@ -84,6 +91,33 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     setPendingSeminarValue(null)
   }
 
+  const handleAllowMultipleSeminarResponsiblesToggle = async (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setPendingAllowMultipleSeminarResponsiblesValue(event.target.checked)
+  }
+
+  const handleCancelAllowMultipleSeminarResponsiblesToggle = () => {
+    setPendingAllowMultipleSeminarResponsiblesValue(null)
+  }
+
+  const handleConfirmAllowMultipleSeminarResponsiblesToggle = async () => {
+    if (pendingAllowMultipleSeminarResponsiblesValue === null) {
+      return
+    }
+
+    await updateProgramOptionsMutation.mutateAsync({
+      programId: program.id,
+      options: {
+        ...program.options,
+        allowMultipleSeminarResponsibles:
+          pendingAllowMultipleSeminarResponsiblesValue,
+      },
+    })
+
+    setPendingAllowMultipleSeminarResponsiblesValue(null)
+  }
+
   return (
     <>
       <Stack spacing={2}>
@@ -101,6 +135,30 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
             </Tooltip>
           }
         />
+        {seminarEnabled && (
+          <FormControlLabel
+            control={
+              <Switch
+                checked={allowMultipleSeminarResponsibles}
+                onChange={handleAllowMultipleSeminarResponsiblesToggle}
+                disabled={updateProgramOptionsMutation.isPending}
+              />
+            }
+            label={
+              <Tooltip
+                title={t(
+                  'programOverviewPage:allowMultipleSeminarResponsiblesTooltip'
+                )}
+              >
+                <span>
+                  {t(
+                    'programOverviewPage:allowMultipleSeminarResponsiblesToggle'
+                  )}
+                </span>
+              </Tooltip>
+            }
+          />
+        )}
       </Stack>
 
       <Dialog
@@ -127,6 +185,42 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
             type="button"
             variant="contained"
             onClick={handleConfirmSeminarToggle}
+            disabled={updateProgramOptionsMutation.isPending}
+          >
+            {t('submitButton')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={pendingAllowMultipleSeminarResponsiblesValue !== null}
+        onClose={handleCancelAllowMultipleSeminarResponsiblesToggle}
+      >
+        <DialogTitle>
+          {t(
+            'programOverviewPage:allowMultipleSeminarResponsiblesConfirmTitle'
+          )}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            {t(
+              pendingAllowMultipleSeminarResponsiblesValue
+                ? 'programOverviewPage:allowMultipleSeminarResponsiblesEnableConfirmContent'
+                : 'programOverviewPage:allowMultipleSeminarResponsiblesDisableConfirmContent'
+            )}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            type="button"
+            onClick={handleCancelAllowMultipleSeminarResponsiblesToggle}
+          >
+            {t('cancelButton')}
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={handleConfirmAllowMultipleSeminarResponsiblesToggle}
             disabled={updateProgramOptionsMutation.isPending}
           >
             {t('submitButton')}

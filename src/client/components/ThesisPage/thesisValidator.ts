@@ -151,18 +151,7 @@ export const ThesisSchema = z.object({
         })
       }
     }),
-  seminarSupervisions: z
-    .array(seminarSupervisionSchema)
-    .default([])
-    .superRefine((seminarSupervisions, ctx) => {
-      if (seminarSupervisions.length > 1) {
-        ctx.addIssue({
-          code: 'custom',
-          message: 'formErrors:singleSeminarSupervisor',
-          path: ['general', 'seminar', 'supervisor', 'error'],
-        })
-      }
-    }),
+  seminarSupervisions: z.array(seminarSupervisionSchema).default([]),
   graders: z.array(graderSchema).superRefine((graders, ctx) => {
     const nonDuplicateGraders = uniqBy(graders, (grader) => grader.user?.email)
 
