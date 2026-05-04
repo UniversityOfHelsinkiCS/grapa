@@ -16,8 +16,10 @@ attachmentRoute.get('/:filename', ethesisUserHandler, async (req, res) => {
   })
 
   try {
-    const stat = fs.statSync(`${PATH_TO_FOLDER}/${metadata.filename}`)
-    const file = fs.createReadStream(`${PATH_TO_FOLDER}${metadata.filename}`)
+    const file_path = `${PATH_TO_FOLDER}${metadata.filename}`
+    const stat = fs.statSync(file_path)
+    const file = fs.createReadStream(file_path)
+
     res.setHeader('Content-Length', stat.size)
     res.setHeader('Content-Type', 'application/pdf')
     res.setHeader(
@@ -27,7 +29,7 @@ attachmentRoute.get('/:filename', ethesisUserHandler, async (req, res) => {
     file.pipe(res)
   } catch {
     res.status(500)
-    res.send('500')
+    res.send('Internal Server Error')
   }
 })
 
