@@ -14,15 +14,21 @@ attachmentRoute.get('/:filename', ethesisUserHandler, async (req, res) => {
     where: { filename },
     attributes: ['filename', 'originalname'],
   })
-  const file = fs.createReadStream(`${PATH_TO_FOLDER}${metadata.filename}`)
-  const stat = fs.statSync(`${PATH_TO_FOLDER}/${metadata.filename}`)
-  res.setHeader('Content-Length', stat.size)
-  res.setHeader('Content-Type', 'application/pdf')
-  res.setHeader(
-    'Content-Disposition',
-    `attachment; filename=${metadata.originalname.replace(/,/g, '')}`
-  )
-  file.pipe(res)
+
+  try {
+    const stat = fs.statSync(`${PATH_TO_FOLDER}/${metadata.filename}`)
+    const file = fs.createReadStream(`${PATH_TO_FOLDER}${metadata.filename}`)
+    res.setHeader('Content-Length', stat.size)
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=${metadata.originalname.replace(/,/g, '')}`
+    )
+    file.pipe(res)
+  } catch {
+    res.status(500)
+    res.send('500')
+  }
 })
 
 export default attachmentRoute
