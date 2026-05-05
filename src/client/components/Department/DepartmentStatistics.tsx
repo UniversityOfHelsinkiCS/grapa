@@ -88,6 +88,18 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
       valueGetter: ({ name }) => name[language],
     },
     {
+      field: 'thesisCount.SUGGESTED',
+      renderHeader: () => (
+        <Typography variant="body2">
+          {t('thesisStages:suggested') + ` (${totalThesisCounts.SUGGESTED})`}
+        </Typography>
+      ),
+      filterable: false,
+      width: 150,
+      type: 'number',
+      valueGetter: (_, { statusCounts }) => statusCounts.SUGGESTED,
+    },
+    {
       field: 'thesisCount.PLANNING',
       renderHeader: () => (
         <Typography variant="body2">

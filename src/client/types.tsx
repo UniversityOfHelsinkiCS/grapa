@@ -3,6 +3,7 @@ import { User, ThesisData as Thesis } from '@backend/types'
 import { GridRowSelectionModel } from '@mui/x-data-grid/models/gridRowSelectionModel'
 
 export enum StatusLocale {
+  SUGGESTED = 'thesisStages:suggested',
   PLANNING = 'thesisStages:planned',
   IN_PROGRESS = 'thesisStages:inProgress',
   COMPLETED = 'thesisStages:completed',

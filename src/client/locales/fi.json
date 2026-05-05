@@ -204,6 +204,7 @@
     "admin": "admin"
   },
   "thesisStages": {
+    "suggested": "Ehdotus",
     "planned": "Suunniteltu",
     "inProgress": "Käynnissä",
     "completed": "Valmis",

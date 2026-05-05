@@ -203,6 +203,7 @@
     "send": "Send"
   },
   "thesisStages": {
+    "suggested": "Suggested",
     "planned": "Planned",
     "inProgress": "In progress",
     "completed": "Completed",
