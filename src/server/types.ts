@@ -40,6 +40,7 @@ export interface User {
   departmentId?: string
   thesesTableFilters?: GridFilterModel
   ethesisAdmin?: boolean
+  hasStudyRight?: boolean | null
 }
 
 export interface RequestWithUser extends Request {

@@ -11,6 +11,7 @@ import employeesAndAdminOnly from '../middleware/employeesAndAdmin'
 import userRouter from './user'
 import usersRouter from './users'
 import loginRouter from './login'
+import studentRouter from './student'
 import thesisRouter from './thesis'
 import attachmentRouter from './attachment'
 import programRouter from './program'
@@ -50,6 +51,9 @@ router.get('/error', () => {
 router.use('/login', loginRouter)
 router.use('/logout', logoutRouter)
 router.use('/user', userRouter)
+
+// These routes are available to those who have active study rights
+router.use('/student', studentRouter)
 
 // These routes should be only available to employees and admin users
 router.use(employeesAndAdminOnly)
