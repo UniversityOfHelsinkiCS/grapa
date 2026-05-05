@@ -74,7 +74,12 @@ export const getUser = (userinfo: UserInfo): UserType => {
 
 export const isAuthorized = (userinfo: UserInfo) => {
   const user = getUser(userinfo)
-  return user.isAdmin || user.iamGroups.includes('hy-employees')
+  // Allow authentication for admins, employees and ktdk students
+  return (
+    user.isAdmin ||
+    user.iamGroups.includes('hy-employees') ||
+    user.iamGroups.includes('hy-ktdk-students')
+  )
 }
 
 const verifyLogin = async (

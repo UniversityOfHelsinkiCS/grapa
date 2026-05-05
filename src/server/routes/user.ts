@@ -10,6 +10,7 @@ import {
 } from '../db/models'
 import ethesisAdminHandler from '../middleware/ethesisAdmin'
 import ethesisUserHandler from '../middleware/ethesisUser'
+import employeesAndAdminOnly from '../middleware/employeesAndAdmin'
 
 const userRouter = express.Router()
 
@@ -50,6 +51,9 @@ userRouter.get(
     })
   }
 )
+
+// These routes should be only available to admins and employees
+userRouter.use(employeesAndAdminOnly)
 
 userRouter.put(
   '/',

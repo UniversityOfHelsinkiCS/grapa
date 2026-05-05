@@ -13,6 +13,7 @@ const mockHeaders: UserInfo = {
   email: 'grp-toska@helsinki.fi',
   preferredLanguage: 'fi',
   hyPersonSisuId: 'hy-hlo-123',
+  // hyGroupCn: ['hy-ktdk-students'] // for testing student access
   hyGroupCn: ['grp-toska', 'hy-employees'],
 }
 

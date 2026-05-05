@@ -6,6 +6,7 @@ import errorHandler from '../middleware/error'
 import userMiddleware from '../middleware/user'
 import accessLogger from '../middleware/access'
 import loginAsMiddleware from '../middleware/loginAs'
+import employeesAndAdminOnly from '../middleware/employeesAndAdmin'
 
 import userRouter from './user'
 import usersRouter from './users'
@@ -44,11 +45,16 @@ router.use(accessLogger)
 router.get('/error', () => {
   throw new Error('Test error')
 })
-router.use('/user', userRouter)
-router.use('/users', usersRouter)
-router.use('/theses', thesisRouter)
+
+// These routes are available to all users, including students
 router.use('/login', loginRouter)
 router.use('/logout', logoutRouter)
+router.use('/user', userRouter)
+
+// These routes should be only available to employees and admin users
+router.use(employeesAndAdminOnly)
+router.use('/users', usersRouter)
+router.use('/theses', thesisRouter)
 router.use('/attachments', attachmentRouter)
 router.use('/programs', programRouter)
 router.use('/program-managements', programManagementRouter)
