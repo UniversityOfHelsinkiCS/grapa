@@ -6,10 +6,12 @@ import {
   Box,
   Button,
   FormControl,
+  FormControlLabel,
   IconButton,
   InputLabel,
   MenuItem,
   Select,
+  Switch,
   TextField,
   Tooltip,
   Typography,
@@ -50,6 +52,7 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
 
   const [programId, setProgramId] = useState(null)
   const [managerCandidate, setManagerCandidate] = useState(null)
+  const [isThesisApprover, setIsThesisApprover] = useState(true)
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deletedProgramManagement, setDeletedProgramManagement] = useState(null)
@@ -103,10 +106,11 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
       await createProgramManagement({
         userId: managerCandidate.id,
         programId,
-        isThesisApprover: false,
+        isThesisApprover,
       })
       setManagerCandidate(null)
       setProgramId(null)
+      setIsThesisApprover(false)
     }
   }
 
@@ -286,6 +290,15 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
             </Select>
           </FormControl>
         )}
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isThesisApprover}
+              onChange={(e) => setIsThesisApprover(e.target.checked)}
+            />
+          }
+          label={t('programManagementPage:allowThesisApprovalButton')}
+        />
         <Button
           type="submit"
           variant="contained"

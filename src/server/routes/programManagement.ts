@@ -127,7 +127,7 @@ programManagementRouter.post(
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
     const { user: editorUser } = req
-    const { programId, userId: targetUserId } = req.body
+    const { programId, userId: targetUserId, isThesisApprover } = req.body
     const { isAdmin } = req.user
     if (!isAdmin) {
       // if not admin, check if user has access to the program
@@ -148,6 +148,7 @@ programManagementRouter.post(
     const programManagement = await ProgramManagement.create({
       programId,
       userId: targetUserId,
+      isThesisApprover,
     })
     res.status(201).send(programManagement)
   }
