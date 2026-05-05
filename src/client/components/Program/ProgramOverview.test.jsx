@@ -115,7 +115,9 @@ describe('ProgramOverview', () => {
 
     await user.click(screen.getByRole('tab', { name: 'Asetukset' }))
 
-    const seminarToggle = screen.getByRole('checkbox')
+    const seminarToggle = screen.getByRole('checkbox', {
+      name: 'tutkielman tulee sisältää seminaarin ohjaaja',
+    })
     expect(seminarToggle).not.toBeChecked()
 
     await user.click(seminarToggle)
