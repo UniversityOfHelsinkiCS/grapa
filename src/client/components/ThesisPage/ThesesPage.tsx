@@ -559,7 +559,9 @@ const ThesesPage = ({
               <Typography variant="body2">
                 {t('author')}{' '}
                 {ethesisTesis.authors.length > 0 &&
-                  `${ethesisTesis.authors[0].firstName} ${ethesisTesis.authors[0].lastName}`}
+                  ethesisTesis.authors
+                    .map((a) => `${a.firstName} ${a.lastName}`)
+                    .join(', ')}
               </Typography>
               <Typography variant="body2" sx={{ mt: 1 }}>
                 <span style={{ marginRight: 10 }}>

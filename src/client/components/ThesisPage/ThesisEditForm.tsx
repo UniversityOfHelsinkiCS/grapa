@@ -111,8 +111,12 @@ const ThesisEditForm: FC<{
     onClose()
   }
 
-  const selectedProgram = programs.find(
-    (program) => program.id === editedThesis.programId
+  const selectedProgram =
+    programs &&
+    programs.find((program) => program.id === editedThesis.programId)
+
+  const allowMultipleAuthors = Boolean(
+    selectedProgram?.options?.allowMultipleAuthors
   )
 
   const favoritePrograms = programs.filter((program) => program.isFavorite)
@@ -222,12 +226,22 @@ const ThesisEditForm: FC<{
                 label="Program"
                 name="programId"
                 onChange={(event) => {
+                  const newProgramId = event.target
+                    .value as ThesisData['programId']
+                  const newProgram = programs.find(
+                    (program) => program.id === newProgramId
+                  )
+                  const newAllowMultipleAuthors = Boolean(
+                    newProgram?.options?.allowMultipleAuthors
+                  )
+
                   setEditedThesis((oldThesis) => ({
                     ...oldThesis,
-                    programId: event.target.value as ThesisData['programId'],
-                    studyTrackId: programs.find(
-                      (program) => program.id === event.target.value
-                    )?.studyTracks?.[0]?.id,
+                    programId: newProgramId,
+                    studyTrackId: newProgram?.studyTracks?.[0]?.id,
+                    authors: newAllowMultipleAuthors
+                      ? oldThesis.authors
+                      : oldThesis.authors.slice(0, 1),
                   }))
 
                   setFormErrors(
@@ -378,20 +392,33 @@ const ThesisEditForm: FC<{
             )}
 
             <FormControl fullWidth>
-              <Autocomplete<User>
-                id="authors"
-                noOptionsText={t('userSearchNoOptions')}
-                data-testid="author-select-input"
-                disablePortal
-                options={authorOptions ?? []}
-                getOptionLabel={(author) =>
-                  `${author.firstName} ${author.lastName} ${author.email ? `(${author.email})` : ''} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
+              {(() => {
+                const commonAutocompleteProps = {
+                  id: 'authors',
+                  noOptionsText: t('userSearchNoOptions'),
+                  'data-testid': 'author-select-input',
+                  disablePortal: true,
+                  options: authorOptions ?? [],
+                  getOptionLabel: (author: User) =>
+                    `${author.firstName} ${author.lastName} ${author.email ? `(${author.email})` : ''} ${author.studentNumber ? `(${author.studentNumber})` : ''}`,
+                  inputValue: userSearch,
+                  filterOptions: (x: any) => x,
+                  isOptionEqualToValue: (option: User, value: User) =>
+                    option.id === value.id,
+                  onInputChange: (event: any, value: string) => {
+                    setUserSearch(value)
+                  },
                 }
-                renderInput={(params) => (
+
+                const renderAuthorInput = (
+                  params: any,
+                  label: string,
+                  isRequired: boolean
+                ) => (
                   <TextField
                     {...params}
-                    label={t('author')}
-                    required
+                    label={label}
+                    required={isRequired}
                     error={formErrors.some(
                       (error) => error.path[0] === 'authors'
                     )}
@@ -400,32 +427,61 @@ const ThesisEditForm: FC<{
                         ?.message
                     )}
                   />
-                )}
-                inputValue={userSearch}
-                filterOptions={(x) => x}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                value={
-                  editedThesis.authors.length > 0
-                    ? editedThesis.authors[0]
-                    : null
-                }
-                onChange={(_, value) => {
-                  setEditedThesis((oldThesis) => ({
-                    ...oldThesis,
-                    authors: [value],
-                  }))
+                )
 
-                  setFormErrors(
-                    formErrors.filter((error) => error.path[0] !== 'authors')
+                if (allowMultipleAuthors) {
+                  return (
+                    <Autocomplete<User, true>
+                      {...commonAutocompleteProps}
+                      multiple
+                      renderInput={(params) =>
+                        renderAuthorInput(
+                          params,
+                          t('authorsHeader'),
+                          editedThesis.authors.length === 0
+                        )
+                      }
+                      value={editedThesis.authors}
+                      onChange={(_, value) => {
+                        setEditedThesis((oldThesis) => ({
+                          ...oldThesis,
+                          authors: value,
+                        }))
+                        setFormErrors(
+                          formErrors.filter(
+                            (error) => error.path[0] !== 'authors'
+                          )
+                        )
+                      }}
+                    />
                   )
-                }}
-                onInputChange={(event, value) => {
-                  // Fetch potential authors based on the input value
-                  // You can use debounce or throttle to limit the number of requests
-                  // Example: fetchPotentialAuthors(value)
-                  setUserSearch(value)
-                }}
-              />
+                }
+
+                return (
+                  <Autocomplete<User>
+                    {...commonAutocompleteProps}
+                    renderInput={(params) =>
+                      renderAuthorInput(params, t('author'), true)
+                    }
+                    value={
+                      editedThesis.authors.length > 0
+                        ? editedThesis.authors[0]
+                        : null
+                    }
+                    onChange={(_, value) => {
+                      setEditedThesis((oldThesis) => ({
+                        ...oldThesis,
+                        authors: value ? [value] : [],
+                      }))
+                      setFormErrors(
+                        formErrors.filter(
+                          (error) => error.path[0] !== 'authors'
+                        )
+                      )
+                    }}
+                  />
+                )
+              })()}
             </FormControl>
 
             {showStatusForm && (

@@ -59,12 +59,17 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   const allowMultipleSeminarResponsibles = Boolean(
     program.options?.allowMultipleSeminarResponsibles
   )
+  const allowMultipleAuthors = Boolean(program.options?.allowMultipleAuthors)
   const [pendingSeminarValue, setPendingSeminarValue] = useState<
     boolean | null
   >(null)
   const [
     pendingAllowMultipleSeminarResponsiblesValue,
     setPendingAllowMultipleSeminarResponsiblesValue,
+  ] = useState<boolean | null>(null)
+  const [
+    pendingAllowMultipleAuthorsValue,
+    setPendingAllowMultipleAuthorsValue,
   ] = useState<boolean | null>(null)
 
   const handleSeminarToggle = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -118,6 +123,32 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     setPendingAllowMultipleSeminarResponsiblesValue(null)
   }
 
+  const handleAllowMultipleAuthorsToggle = async (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setPendingAllowMultipleAuthorsValue(event.target.checked)
+  }
+
+  const handleCancelAllowMultipleAuthorsToggle = () => {
+    setPendingAllowMultipleAuthorsValue(null)
+  }
+
+  const handleConfirmAllowMultipleAuthorsToggle = async () => {
+    if (pendingAllowMultipleAuthorsValue === null) {
+      return
+    }
+
+    await updateProgramOptionsMutation.mutateAsync({
+      programId: program.id,
+      options: {
+        ...program.options,
+        allowMultipleAuthors: pendingAllowMultipleAuthorsValue,
+      },
+    })
+
+    setPendingAllowMultipleAuthorsValue(null)
+  }
+
   return (
     <>
       <Stack spacing={2}>
@@ -132,6 +163,22 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
           label={
             <Tooltip title={t('programOverviewPage:seminarTooltip')}>
               <span>{t('programOverviewPage:seminarToggle')}</span>
+            </Tooltip>
+          }
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={allowMultipleAuthors}
+              onChange={handleAllowMultipleAuthorsToggle}
+              disabled={updateProgramOptionsMutation.isPending}
+            />
+          }
+          label={
+            <Tooltip
+              title={t('programOverviewPage:allowMultipleAuthorsTooltip')}
+            >
+              <span>{t('programOverviewPage:allowMultipleAuthorsToggle')}</span>
             </Tooltip>
           }
         />
@@ -221,6 +268,40 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
             type="button"
             variant="contained"
             onClick={handleConfirmAllowMultipleSeminarResponsiblesToggle}
+            disabled={updateProgramOptionsMutation.isPending}
+          >
+            {t('submitButton')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={pendingAllowMultipleAuthorsValue !== null}
+        onClose={handleCancelAllowMultipleAuthorsToggle}
+      >
+        <DialogTitle>
+          {t('programOverviewPage:allowMultipleAuthorsConfirmTitle')}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            {t(
+              pendingAllowMultipleAuthorsValue
+                ? 'programOverviewPage:allowMultipleAuthorsEnableConfirmContent'
+                : 'programOverviewPage:allowMultipleAuthorsDisableConfirmContent'
+            )}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            type="button"
+            onClick={handleCancelAllowMultipleAuthorsToggle}
+          >
+            {t('cancelButton')}
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={handleConfirmAllowMultipleAuthorsToggle}
             disabled={updateProgramOptionsMutation.isPending}
           >
             {t('submitButton')}

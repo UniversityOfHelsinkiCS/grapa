@@ -107,7 +107,12 @@
     "allowMultipleSeminarResponsiblesTooltip": "Allow theses to have multiple seminar supervisors",
     "allowMultipleSeminarResponsiblesConfirmTitle": "Confirm multiple seminar responsibles setting",
     "allowMultipleSeminarResponsiblesEnableConfirmContent": "Are you sure you want to allow multiple seminar responsibles?",
-    "allowMultipleSeminarResponsiblesDisableConfirmContent": "Are you sure you want to allow only one seminar responsible?"
+    "allowMultipleSeminarResponsiblesDisableConfirmContent": "Are you sure you want to allow only one seminar responsible?",
+    "allowMultipleAuthorsToggle": "Allow multiple authors",
+    "allowMultipleAuthorsTooltip": "Allow students to add multiple authors to their thesis",
+    "allowMultipleAuthorsConfirmTitle": "Confirm multiple authors setting",
+    "allowMultipleAuthorsEnableConfirmContent": "Are you sure you want to allow multiple authors per thesis?",
+    "allowMultipleAuthorsDisableConfirmContent": "Are you sure you want to allow only one author per thesis? This will not remove existing authors."
   },
   "dropzone": {
     "uploadText": "Drop a file here or click to upload",
