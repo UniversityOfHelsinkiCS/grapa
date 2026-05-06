@@ -138,6 +138,7 @@ describe('program-managements router', () => {
       it('should return 404', async () => {
         const response = await request
           .put(`/api/program-managements/${programManagement1.id}`)
+          .send({})
           .set({ uid: user1.id, hygroupcn: 'hy-employees' })
         expect(response.status).toEqual(404)
       })
@@ -403,7 +404,7 @@ describe('program-managements router', () => {
 
       it('should return 404 when trying to update ProgramManagement for a program the user does not manage', async () => {
         const response = await request
-          .delete(`/api/program-managements/${programManagement1.id}`)
+          .put(`/api/program-managements/${programManagement1.id}`)
           .send({ isThesisApprover: true })
           .set({ uid: user1.id, hygroupcn: 'hy-employees' })
         expect(response.status).toEqual(404)

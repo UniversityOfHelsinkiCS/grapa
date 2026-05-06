@@ -43,7 +43,7 @@ if (inProduction || inStaging || inTest) {
   const INDEX_PATH = path.resolve(DIST_PATH, 'index.html')
 
   app.use(express.static(DIST_PATH))
-  app.get('*', (_, res) => res.sendFile(INDEX_PATH))
+  app.get(/.*/, (_, res) => res.sendFile(INDEX_PATH))
 }
 
 if (process.env.NODE_ENV !== 'test') {
