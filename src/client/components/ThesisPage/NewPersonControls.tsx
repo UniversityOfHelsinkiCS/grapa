@@ -57,7 +57,7 @@ const NewPersonControls = ({
   }
 
   return (
-    <Stack alignItems="center">
+    <Stack style={{ alignItems: 'center' }}>
       <Button
         disableElevation
         variant="contained"

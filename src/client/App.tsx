@@ -36,7 +36,7 @@ const App = () => {
           }}
         >
           <NavBar />
-          <Box component="main" flexGrow={1} display="flex">
+          <Box component="main" style={{ flexGrow: '1', display: 'flex' }}>
             {!user?.departmentId ? <DepartmentSelector /> : <Outlet />}
           </Box>
           <Footer />

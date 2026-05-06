@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { Button, Box, FormControlLabel, Switch } from '@mui/material'
 import {
   GridSlotProps,
-  GridToolbarContainer,
   GridToolbarExport,
   GridToolbarFilterButton,
+  Toolbar,
   useGridApiContext,
 } from '@mui/x-data-grid'
 
@@ -39,7 +39,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
   }
 
   return (
-    <GridToolbarContainer
+    <Toolbar
       sx={{ p: 2, alignItems: 'center', justifyContent: 'space-between' }}
     >
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
@@ -106,7 +106,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
           {t('thesesTableToolbar:saveFiltersButton')}
         </Button>
       </Box>
-    </GridToolbarContainer>
+    </Toolbar>
   )
 }
 

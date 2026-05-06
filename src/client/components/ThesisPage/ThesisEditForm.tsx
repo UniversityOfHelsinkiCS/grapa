@@ -18,7 +18,7 @@ import {
   DialogTitle,
   FormControl,
   FormHelperText,
-  Grid2,
+  Grid,
   InputLabel,
   ListItemIcon,
   ListItemText,
@@ -148,16 +148,7 @@ const ThesisEditForm: FC<{
   }
 
   return (
-    <Dialog
-      open
-      fullWidth
-      maxWidth="lg"
-      onClose={handleClose}
-      PaperProps={{
-        component: 'form',
-        onSubmit: handleSubmit,
-      }}
-    >
+    <Dialog open fullWidth maxWidth="lg" onClose={handleClose}>
       <DialogTitle data-testid="thesis-form-title" component="h1">
         {formTitle}
       </DialogTitle>
@@ -579,8 +570,8 @@ const ThesisEditForm: FC<{
               adapterLocale={language}
               dateAdapter={AdapterDayjs}
             >
-              <Grid2 container rowSpacing={{ xs: 2, md: 0 }}>
-                <Grid2
+              <Grid container rowSpacing={{ xs: 2, md: 0 }}>
+                <Grid
                   size={{ xs: 12, md: 6 }}
                   sx={{ paddingLeft: { md: '1rem' } }}
                 >
@@ -617,8 +608,8 @@ const ThesisEditForm: FC<{
                       )
                     }}
                   />
-                </Grid2>
-                <Grid2
+                </Grid>
+                <Grid
                   size={{ xs: 12, md: 6 }}
                   sx={{ paddingLeft: { md: '1rem' } }}
                 >
@@ -656,8 +647,8 @@ const ThesisEditForm: FC<{
                       )
                     }}
                   />
-                </Grid2>
-              </Grid2>
+                </Grid>
+              </Grid>
             </LocalizationProvider>
           </Stack>
 

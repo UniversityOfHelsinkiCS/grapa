@@ -1,5 +1,5 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import { Box, Divider, Drawer, IconButton, List } from '@mui/material'
+import { Box, Divider, Drawer, IconButton, MenuList } from '@mui/material'
 
 interface MobileMenuProps {
   isOpen: boolean
@@ -38,12 +38,12 @@ const MobileMenu = ({ isOpen, handleClose, children }: MobileMenuProps) => (
         </IconButton>
       </Box>
       <Divider />
-      <List
+      <MenuList
         onClick={handleClose}
         sx={{ textAlign: 'left', textTransform: 'uppercase' }}
       >
         {children}
-      </List>
+      </MenuList>
     </Drawer>
   </Box>
 )

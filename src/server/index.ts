@@ -2,7 +2,6 @@ import path from 'path'
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import 'express-async-errors'
 import express from 'express'
 import session from 'express-session'
 import passport from 'passport'

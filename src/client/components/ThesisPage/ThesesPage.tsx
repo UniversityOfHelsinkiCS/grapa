@@ -85,7 +85,10 @@ const ThesesPage = ({
   })
 
   const [rowSelectionModel, setRowSelectionModel] =
-    useState<GridRowSelectionModel>([])
+    useState<GridRowSelectionModel>({
+      type: 'include', // or 'exclude'
+      ids: new Set<GridRowId>([]),
+    })
   const [deleteConfirmation, setDeleteConfirmation] = useState<string>('')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [editedTesis, setEditedThesis] = useState<Thesis | null>(null)
@@ -182,7 +185,7 @@ const ThesesPage = ({
   }, [currentUser.thesesTableFilters])
 
   useEffect(() => {
-    if (rowSelectionModel.length > 0) {
+    if (rowSelectionModel.ids.size > 0) {
       footerRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
   }, [rowSelectionModel])
@@ -436,6 +439,7 @@ const ThesesPage = ({
           // that sometimes causes the grid to not render
           // more than 10 rows after switching the page
           disableVirtualization
+          showToolbar
           apiRef={apiRef}
           loading={isLoading}
           rows={isLoading ? skeletonRows : theses}

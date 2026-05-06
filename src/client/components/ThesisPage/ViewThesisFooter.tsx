@@ -5,7 +5,7 @@ import {
   Box,
   Button,
   Collapse,
-  Grid2,
+  Grid,
   Link,
   List,
   ListItem,
@@ -155,7 +155,7 @@ const Supervisors = ({ supervisors }: { supervisors: SupervisionData[] }) => {
   const { t } = useTranslation()
 
   return (
-    <Grid2>
+    <Grid>
       <Typography
         component="h4"
         sx={{
@@ -180,7 +180,7 @@ const Supervisors = ({ supervisors }: { supervisors: SupervisionData[] }) => {
           )
         })}
       </List>
-    </Grid2>
+    </Grid>
   )
 }
 
@@ -188,7 +188,7 @@ const Graders = ({ graders }: { graders: GraderData[] }) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n
   return (
-    <Grid2>
+    <Grid>
       <Typography
         component="h4"
         sx={{
@@ -216,7 +216,7 @@ const Graders = ({ graders }: { graders: GraderData[] }) => {
           )
         })}
       </List>
-    </Grid2>
+    </Grid>
   )
 }
 
@@ -232,7 +232,7 @@ const SeminarSupervisor = ({
   const isPlural = seminarSupervisions.length > 1
 
   return (
-    <Grid2>
+    <Grid>
       <Typography
         component="h4"
         sx={{
@@ -259,7 +259,7 @@ const SeminarSupervisor = ({
           )
         })}
       </List>
-    </Grid2>
+    </Grid>
   )
 }
 
@@ -337,14 +337,14 @@ const PreviewSkeleton = () => (
     <Box sx={{ p: 2 }}>
       <Skeleton variant="rectangular" width="40%" height={16} />
 
-      <Grid2
+      <Grid
         container
         sx={{
           mt: 4,
           gap: 4,
         }}
       >
-        <Grid2>
+        <Grid>
           <Skeleton variant="rectangular" width={240} height={24} />
           <Box sx={{ mt: 2 }}>
             <Skeleton variant="rectangular" width={240} height={16} />
@@ -364,8 +364,8 @@ const PreviewSkeleton = () => (
               height={14}
             />
           </Box>
-        </Grid2>
-        <Grid2>
+        </Grid>
+        <Grid>
           <Skeleton variant="rectangular" width={240} height={24} />
           <Box sx={{ mt: 2 }}>
             <Skeleton variant="rectangular" width={240} height={16} />
@@ -385,16 +385,16 @@ const PreviewSkeleton = () => (
               height={14}
             />
           </Box>
-        </Grid2>
-      </Grid2>
-      <Grid2
+        </Grid>
+      </Grid>
+      <Grid
         container
         sx={{
           mt: 4,
           gap: 4,
         }}
       >
-        <Grid2>
+        <Grid>
           <Skeleton variant="rectangular" width={240} height={24} />
           <Box sx={{ mt: 2 }}>
             <Skeleton variant="rectangular" width={380} height={16} />
@@ -405,8 +405,8 @@ const PreviewSkeleton = () => (
               height={16}
             />
           </Box>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Box>
   </Box>
 )
@@ -422,7 +422,9 @@ const ViewThesisFooter = (
     handleSubitToEthesis,
   } = props
 
-  const thesisId = rowSelectionModel[0] as unknown as string | undefined
+  const thesisId = (rowSelectionModel.ids.size > 0
+    ? rowSelectionModel.ids.entries().next().value[0]
+    : undefined) as unknown as string | undefined
 
   const { t } = useTranslation()
   const { user: currentUser } = useLoggedInUser()
@@ -572,7 +574,7 @@ const ViewThesisFooter = (
               studyTrackId={thesis.studyTrackId}
             />
 
-            <Grid2
+            <Grid
               container
               sx={{
                 mt: 4,
@@ -584,7 +586,7 @@ const ViewThesisFooter = (
                 seminarSupervisions={thesis.seminarSupervisions ?? []}
               />
               <Graders graders={thesis.graders} />
-            </Grid2>
+            </Grid>
 
             <Attachments
               researchPlan={thesis?.researchPlan}
