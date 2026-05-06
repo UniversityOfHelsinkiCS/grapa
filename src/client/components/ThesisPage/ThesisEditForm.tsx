@@ -118,6 +118,7 @@ const ThesisEditForm: FC<{
   const allowMultipleAuthors = Boolean(
     selectedProgram?.options?.allowMultipleAuthors
   )
+  const maxGraders = Number(selectedProgram?.options?.numberOfGraders) || 2
 
   const favoritePrograms = programs.filter((program) => program.isFavorite)
   const otherPrograms = programs.filter((program) => !program.isFavorite)
@@ -234,6 +235,8 @@ const ThesisEditForm: FC<{
                   const newAllowMultipleAuthors = Boolean(
                     newProgram?.options?.allowMultipleAuthors
                   )
+                  const newMaxGraders =
+                    Number(newProgram?.options?.numberOfGraders) || 2
 
                   setEditedThesis((oldThesis) => ({
                     ...oldThesis,
@@ -242,6 +245,7 @@ const ThesisEditForm: FC<{
                     authors: newAllowMultipleAuthors
                       ? oldThesis.authors
                       : oldThesis.authors.slice(0, 1),
+                    graders: oldThesis.graders.slice(0, newMaxGraders),
                   }))
 
                   setFormErrors(
@@ -700,6 +704,7 @@ const ThesisEditForm: FC<{
               }))
             }
             disabledMode={false}
+            maxGraders={Number(maxGraders)}
           />
 
           <Stack

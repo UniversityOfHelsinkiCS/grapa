@@ -92,7 +92,10 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
             open={deleteDialogOpen}
             setOpen={setDeleteDialogOpen}
             onClose={() => setDeleteDialogOpen(false)}
-            onDelete={handleRemoveGrader}
+            onDelete={() => {
+              setDeleteDialogOpen(false)
+              handleRemoveGrader()
+            }}
             title={t('thesisForm:removeGraderConfirmationTitle')}
           >
             <Box>

@@ -8,7 +8,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
   FormControlLabel,
+  Select,
+  MenuItem,
   Tab,
   Tabs,
   Typography,
@@ -71,6 +74,13 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     pendingAllowMultipleAuthorsValue,
     setPendingAllowMultipleAuthorsValue,
   ] = useState<boolean | null>(null)
+  const defaultNumberOfGraders =
+    (program.options?.numberOfGraders as number | undefined) ?? 2
+  const [draftNumberOfGraders, setDraftNumberOfGraders] = useState<number>(
+    defaultNumberOfGraders
+  )
+  const [confirmingNumberOfGraders, setConfirmingNumberOfGraders] =
+    useState(false)
 
   const handleSeminarToggle = async (event: ChangeEvent<HTMLInputElement>) => {
     setPendingSeminarValue(event.target.checked)
@@ -149,6 +159,22 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     setPendingAllowMultipleAuthorsValue(null)
   }
 
+  const handleCancelNumberOfGradersChange = () => {
+    setConfirmingNumberOfGraders(false)
+    setDraftNumberOfGraders(defaultNumberOfGraders)
+  }
+
+  const handleConfirmNumberOfGradersChange = async () => {
+    await updateProgramOptionsMutation.mutateAsync({
+      programId: program.id,
+      options: {
+        ...program.options,
+        numberOfGraders: draftNumberOfGraders,
+      },
+    })
+    setConfirmingNumberOfGraders(false)
+  }
+
   return (
     <>
       <Stack spacing={2}>
@@ -206,6 +232,31 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
             }
           />
         )}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, pt: 1 }}>
+          <Typography>
+            {t('programOverviewPage:numberOfGradersLabel')}
+          </Typography>
+          <FormControl size="small">
+            <Select
+              id="number-of-graders-select"
+              value={draftNumberOfGraders}
+              onChange={(e) => setDraftNumberOfGraders(Number(e.target.value))}
+            >
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+            </Select>
+          </FormControl>
+          <Button
+            variant="contained"
+            disabled={
+              updateProgramOptionsMutation.isPending ||
+              draftNumberOfGraders === defaultNumberOfGraders
+            }
+            onClick={() => setConfirmingNumberOfGraders(true)}
+          >
+            {t('submitButton')}
+          </Button>
+        </Box>
       </Stack>
 
       <Dialog
@@ -302,6 +353,35 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
             type="button"
             variant="contained"
             onClick={handleConfirmAllowMultipleAuthorsToggle}
+            disabled={updateProgramOptionsMutation.isPending}
+          >
+            {t('submitButton')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={confirmingNumberOfGraders}
+        onClose={handleCancelNumberOfGradersChange}
+      >
+        <DialogTitle>
+          {t('programOverviewPage:numberOfGradersConfirmTitle')}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            {t('programOverviewPage:numberOfGradersConfirmContent', {
+              count: draftNumberOfGraders,
+            })}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button type="button" onClick={handleCancelNumberOfGradersChange}>
+            {t('cancelButton')}
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={handleConfirmNumberOfGradersChange}
             disabled={updateProgramOptionsMutation.isPending}
           >
             {t('submitButton')}

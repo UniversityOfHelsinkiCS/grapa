@@ -12,12 +12,14 @@ const GraderSelect: React.FC<{
   graderSelections: GraderData[]
   setGraderSelections: (newAuthors: GraderData[]) => void
   disabledMode: boolean
+  maxGraders?: number
 }> = ({
   errors,
   setErrors,
   graderSelections,
   setGraderSelections,
   disabledMode,
+  maxGraders = 2,
 }) => {
   const { t } = useTranslation()
   const generalGraderErrors = errors.filter((error) =>
@@ -39,7 +41,7 @@ const GraderSelect: React.FC<{
 
   const handleAddGrader = (isExternal: boolean) => {
     const updatedSelections = [
-      graderSelections[0],
+      ...graderSelections,
       { user: null, isPrimaryGrader: false, isExternal },
     ]
 
@@ -172,7 +174,7 @@ const GraderSelect: React.FC<{
         )
       })}
 
-      {graderSelections.length < 2 && (
+      {graderSelections.length < maxGraders && (
         <NewPersonControls
           personGroup="grader"
           options={[

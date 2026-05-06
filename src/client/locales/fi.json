@@ -112,7 +112,10 @@
     "allowMultipleAuthorsTooltip": "Salli opiskelijoiden lisätä tutkielmaansa useita tekijöitä",
     "allowMultipleAuthorsConfirmTitle": "Vahvista useiden tekijöiden salliminen",
     "allowMultipleAuthorsEnableConfirmContent": "Haluatko varmasti sallia useita tekijöitä per tutkielma?",
-    "allowMultipleAuthorsDisableConfirmContent": "Haluatko varmasti sallia vain yhden tekijän per tutkielma? Tämä ei poista olemassa olevia tekijöitä."
+    "allowMultipleAuthorsDisableConfirmContent": "Haluatko varmasti sallia vain yhden tekijän per tutkielma? Tämä ei poista olemassa olevia tekijöitä.",
+    "numberOfGradersLabel": "Tarkastajien enimmäismäärä",
+    "numberOfGradersConfirmTitle": "Vahvista tarkastajien määrän asetus",
+    "numberOfGradersConfirmContent": "Haluatko varmasti muuttaa tarkastajien enimmäismäärän arvoon {{count}}?"
   },
   "dropzone": {
     "uploadText": "Pudota tiedosto tähän tai klikkaa ladataksesi",

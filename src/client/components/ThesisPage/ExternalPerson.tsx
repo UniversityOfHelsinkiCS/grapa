@@ -252,9 +252,9 @@ const ExternalPersonInput = ({
         title={t(`thesisForm:${deleteConfirmationTitleLocKey}`)}
       >
         <Box>
-          {selection.user
+          {selection.user?.firstName || selection.user?.lastName
             ? t(`thesisForm:${deleteConfirmationContentLocKey}`, {
-                name: `${selection.user.firstName} ${selection.user.lastName}`,
+                name: `${selection.user.firstName} ${selection.user.lastName || ''}`.trim(),
               })
             : t(`thesisForm:${deleteConfirmationNoNameLocKey}`, {
                 index: index + 1,

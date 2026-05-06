@@ -114,6 +114,12 @@ export const validateThesisData = async (
     })
   }
 
+  if (thesisData.authors.length > 5) {
+    throw new CustomValidationError('Maximum 5 authors are allowed', {
+      authors: ['Maximum 5 authors are allowed'],
+    })
+  }
+
   thesisData.authors.forEach((author) => {
     validateUser(author)
   })
@@ -121,6 +127,12 @@ export const validateThesisData = async (
   if (!thesisData.graders || thesisData.graders.length === 0) {
     throw new CustomValidationError('At least one grader is required', {
       graders: ['At least one grader is required'],
+    })
+  }
+
+  if (thesisData.graders.length > 5) {
+    throw new CustomValidationError('Maximum 5 graders are allowed', {
+      graders: ['Maximum 5 graders are allowed'],
     })
   }
 
