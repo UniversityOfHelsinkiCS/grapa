@@ -62,6 +62,7 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
     },
     {
       startedWithinHalfYearCount: 0,
+      SUGGESTED: 0,
       PLANNING: 0,
       IN_PROGRESS: 0,
       COMPLETED: 0,
