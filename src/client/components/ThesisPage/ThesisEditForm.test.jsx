@@ -124,7 +124,7 @@ jest.unstable_mockModule('@mui/icons-material/Star', () => ({
   default: jest.fn().mockReturnValue('Star'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/StarOutline', () => ({
+jest.unstable_mockModule('@mui/icons-material/StarBorder', () => ({
   default: jest.fn().mockReturnValue('StarOutline'),
 }))
 

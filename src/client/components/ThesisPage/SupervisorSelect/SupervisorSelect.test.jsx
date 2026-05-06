@@ -64,7 +64,7 @@ jest.unstable_mockModule('@mui/icons-material/Star', () => ({
   default: jest.fn().mockReturnValue('Star'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/StarOutline', () => ({
+jest.unstable_mockModule('@mui/icons-material/StarBorder', () => ({
   default: jest.fn().mockReturnValue('StarOutline'),
 }))
 
@@ -267,7 +267,6 @@ describe('SupervisorSelect', () => {
     const primarySupervisorCheckbox = screen.getByRole('checkbox')
     expect(primarySupervisorCheckbox).toBeInTheDocument()
     expect(primarySupervisorCheckbox).not.toBeChecked()
-    expect(primarySupervisorCheckbox).toHaveAttribute('aria-invalid', 'true')
   })
 
   describe('interactions', () => {

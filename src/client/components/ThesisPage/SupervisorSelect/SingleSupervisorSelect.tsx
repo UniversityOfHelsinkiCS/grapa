@@ -124,7 +124,9 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
             onChange={handlePrimarySupervisorChange}
             inputProps={{
               'aria-invalid':
-                primarySupervisorProps.error && !selection.isPrimarySupervisor,
+                primarySupervisorProps.error && !selection.isPrimarySupervisor
+                  ? 'true'
+                  : 'false',
             }}
           />
         </FormControl>

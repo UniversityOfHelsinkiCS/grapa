@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { render, screen } from '@testing-library/react'
+import { MenuList } from '@mui/material'
 
 import initializeI18n from '../../util/il18n'
 
@@ -88,7 +89,11 @@ describe('FavoritePrograms', () => {
   })
 
   it('requests only managed programs for the user settings list', () => {
-    render(<FavoritePrograms />)
+    render(
+      <MenuList>
+        <FavoritePrograms />
+      </MenuList>
+    )
 
     expect(mockUsePrograms).toHaveBeenCalledWith({ includeNotManaged: true })
     expect(screen.getByText('Hallittu suosikki')).toBeInTheDocument()
