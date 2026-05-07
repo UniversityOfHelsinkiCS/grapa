@@ -115,7 +115,6 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
       } else {
         setProgramId(null)
       }
-      setIsThesisApprover(false)
     }
   }
 
