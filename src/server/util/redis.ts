@@ -1,5 +1,5 @@
 import Redis from 'ioredis'
-import RedisStore from 'connect-redis'
+import { RedisStore } from 'connect-redis'
 
 import { REDIS_HOST } from './config'
 
