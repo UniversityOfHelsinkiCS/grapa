@@ -8,7 +8,12 @@ import {
 
 const baseURL = `${BASE_PATH}/api`
 
-const apiClient = axios.create({ baseURL })
+const apiClient = axios.create({
+  baseURL,
+  paramsSerializer: {
+    indexes: null,
+  },
+})
 
 apiClient.interceptors.request.use((config) => {
   const updatedHeaders = { ...config.headers }
