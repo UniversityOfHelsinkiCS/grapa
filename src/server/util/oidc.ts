@@ -1,10 +1,12 @@
 import {
-  Issuer,
   Strategy,
   TokenSet,
   UnknownObject,
   UserinfoResponse,
-} from 'openid-client'
+} from 'openid-client/passport'
+
+import * as oiclient from 'openid-client'
+
 import passport from 'passport'
 
 import { inE2EMode } from '../../config'
@@ -36,15 +38,12 @@ const params = {
 const checkAdmin = (iamGroups: string[]) =>
   iamGroups.some((iamGroup) => ['grp-toska'].includes(iamGroup))
 
-const getClient = async () => {
-  const issuer = await Issuer.discover(OIDC_ISSUER)
-
-  const client = new issuer.Client({
-    client_id: OIDC_CLIENT_ID,
-    client_secret: OIDC_CLIENT_SECRET,
-    redirect_uris: [OIDC_REDIRECT_URI],
-    response_types: ['code'],
-  })
+const getConfig = async () => {
+  const client = await oiclient.discovery(
+    new URL(OIDC_ISSUER),
+    OIDC_CLIENT_ID,
+    OIDC_CLIENT_SECRET
+  )
 
   return client
 }
@@ -103,7 +102,12 @@ const verifyLogin = async (
 const setupAuthentication = async () => {
   if (inE2EMode) return
 
-  const client = await getClient()
+  const config = await getConfig()
+  const options: StrategyOptions = {
+    config,
+    params,
+    OIDC_REDIRECT_URI,
+  }
 
   passport.serializeUser((user, done) => {
     const { id, iamGroups, isAdmin } = user as UserType
@@ -121,7 +125,7 @@ const setupAuthentication = async () => {
     }
   )
 
-  passport.use('oidc', new Strategy({ client, params }, verifyLogin))
+  passport.use('oidc', new Strategy(options, verifyLogin))
 }
 
 export default setupAuthentication
