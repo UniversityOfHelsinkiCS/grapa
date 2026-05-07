@@ -310,7 +310,7 @@ const ThesesPage = ({
         : t('targetDateHeader'),
       description: 'This column has a value getter and is not sortable.',
       filterable: false,
-      width: 140,
+      flex: 1,
       valueGetter: (_, row) => dayjs(row.targetDate).format('YYYY-MM-DD'),
     },
     ...(showDurationColumn
