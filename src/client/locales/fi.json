@@ -115,7 +115,12 @@
     "allowMultipleAuthorsDisableConfirmContent": "Haluatko varmasti sallia vain yhden tekijän per tutkielma? Tämä ei poista olemassa olevia tekijöitä.",
     "numberOfGradersLabel": "Tarkastajien enimmäismäärä",
     "numberOfGradersConfirmTitle": "Vahvista tarkastajien määrän asetus",
-    "numberOfGradersConfirmContent": "Haluatko varmasti muuttaa tarkastajien enimmäismäärän arvoon {{count}}?"
+    "numberOfGradersConfirmContent": "Haluatko varmasti muuttaa tarkastajien enimmäismäärän arvoon {{count}}?",
+    "waysOfWorkingRequiredToggle": "Työskentelysopimus vaaditaan",
+    "waysOfWorkingRequiredTooltip": "Tämän ohjelman tutkielmille vaaditaan työskentelysopimus",
+    "waysOfWorkingRequiredConfirmTitle": "Vahvista työskentelysopimuksen asetus",
+    "waysOfWorkingRequiredEnableConfirmContent": "Oletko varma, että haluat vaatia työskentelysopimuksen?",
+    "waysOfWorkingRequiredDisableConfirmContent": "Oletko varma, että haluat poistaa työskentelysopimuksen vaatimuksen?"
   },
   "dropzone": {
     "uploadText": "Pudota tiedosto tähän tai klikkaa ladataksesi",

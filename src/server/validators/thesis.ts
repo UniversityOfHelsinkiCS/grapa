@@ -231,6 +231,20 @@ export const validateThesisData = async (
   const allowMultipleSeminarResponsibles = Boolean(
     program?.options?.allowMultipleSeminarResponsibles
   )
+  const waysOfWorkingRequired = Boolean(program?.options?.waysOfWorkingRequired)
+
+  if (waysOfWorkingRequired) {
+    const waysOfWorkingFile = req.files?.waysOfWorking
+      ? req.files.waysOfWorking[0]
+      : thesisData.waysOfWorking
+
+    if (!waysOfWorkingFile) {
+      throw new CustomValidationError('Ways of working is required', {
+        waysOfWorking: ['Ways of working is required'],
+      })
+    }
+  }
+
   const seminarSupervisions = thesisData.seminarSupervisions ?? []
 
   if (seminarSupervisionRequired && seminarSupervisions.length === 0) {

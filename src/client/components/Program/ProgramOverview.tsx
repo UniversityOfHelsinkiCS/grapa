@@ -63,6 +63,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     program.options?.allowMultipleSeminarResponsibles
   )
   const allowMultipleAuthors = Boolean(program.options?.allowMultipleAuthors)
+  const waysOfWorkingRequired = Boolean(program.options?.waysOfWorkingRequired)
   const [pendingSeminarValue, setPendingSeminarValue] = useState<
     boolean | null
   >(null)
@@ -73,6 +74,10 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   const [
     pendingAllowMultipleAuthorsValue,
     setPendingAllowMultipleAuthorsValue,
+  ] = useState<boolean | null>(null)
+  const [
+    pendingWaysOfWorkingRequiredValue,
+    setPendingWaysOfWorkingRequiredValue,
   ] = useState<boolean | null>(null)
   const defaultNumberOfGraders =
     (program.options?.numberOfGraders as number | undefined) ?? 2
@@ -159,6 +164,32 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     setPendingAllowMultipleAuthorsValue(null)
   }
 
+  const handleWaysOfWorkingRequiredToggle = async (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setPendingWaysOfWorkingRequiredValue(event.target.checked)
+  }
+
+  const handleCancelWaysOfWorkingRequiredToggle = () => {
+    setPendingWaysOfWorkingRequiredValue(null)
+  }
+
+  const handleConfirmWaysOfWorkingRequiredToggle = async () => {
+    if (pendingWaysOfWorkingRequiredValue === null) {
+      return
+    }
+
+    await updateProgramOptionsMutation.mutateAsync({
+      programId: program.id,
+      options: {
+        ...program.options,
+        waysOfWorkingRequired: pendingWaysOfWorkingRequiredValue,
+      },
+    })
+
+    setPendingWaysOfWorkingRequiredValue(null)
+  }
+
   const handleCancelNumberOfGradersChange = () => {
     setConfirmingNumberOfGraders(false)
     setDraftNumberOfGraders(defaultNumberOfGraders)
@@ -205,6 +236,24 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
               title={t('programOverviewPage:allowMultipleAuthorsTooltip')}
             >
               <span>{t('programOverviewPage:allowMultipleAuthorsToggle')}</span>
+            </Tooltip>
+          }
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={waysOfWorkingRequired}
+              onChange={handleWaysOfWorkingRequiredToggle}
+              disabled={updateProgramOptionsMutation.isPending}
+            />
+          }
+          label={
+            <Tooltip
+              title={t('programOverviewPage:waysOfWorkingRequiredTooltip')}
+            >
+              <span>
+                {t('programOverviewPage:waysOfWorkingRequiredToggle')}
+              </span>
             </Tooltip>
           }
         />
@@ -353,6 +402,40 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
             type="button"
             variant="contained"
             onClick={handleConfirmAllowMultipleAuthorsToggle}
+            disabled={updateProgramOptionsMutation.isPending}
+          >
+            {t('submitButton')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={pendingWaysOfWorkingRequiredValue !== null}
+        onClose={handleCancelWaysOfWorkingRequiredToggle}
+      >
+        <DialogTitle>
+          {t('programOverviewPage:waysOfWorkingRequiredConfirmTitle')}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            {t(
+              pendingWaysOfWorkingRequiredValue
+                ? 'programOverviewPage:waysOfWorkingRequiredEnableConfirmContent'
+                : 'programOverviewPage:waysOfWorkingRequiredDisableConfirmContent'
+            )}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            type="button"
+            onClick={handleCancelWaysOfWorkingRequiredToggle}
+          >
+            {t('cancelButton')}
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={handleConfirmWaysOfWorkingRequiredToggle}
             disabled={updateProgramOptionsMutation.isPending}
           >
             {t('submitButton')}

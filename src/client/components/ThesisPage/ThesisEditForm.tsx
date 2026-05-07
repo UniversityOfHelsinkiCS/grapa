@@ -86,7 +86,8 @@ const ThesisEditForm: FC<{
       editedThesis,
       approvers?.length > 0,
       Boolean(selectedProgram?.options?.seminar),
-      Boolean(selectedProgram?.options?.allowMultipleSeminarResponsibles)
+      Boolean(selectedProgram?.options?.allowMultipleSeminarResponsibles),
+      Boolean(selectedProgram?.options?.waysOfWorkingRequired)
     )
 
     if (thesisErrors.length > 0) {
@@ -755,6 +756,9 @@ const ThesisEditForm: FC<{
             <FileDropzone
               id="waysOfWorking"
               label={t('thesisForm:uploadWaysOfWorking')}
+              required={Boolean(
+                selectedProgram?.options?.waysOfWorkingRequired
+              )}
               error={formErrors.some(
                 (error) => error.path[0] === 'waysOfWorking'
               )}

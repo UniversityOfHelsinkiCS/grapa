@@ -39,7 +39,8 @@ export const getFormErrors = (
   thesis: ThesisData,
   hasApprovers = false,
   seminarSupervisionRequired = false,
-  allowMultipleSeminarResponsibles = false
+  allowMultipleSeminarResponsibles = false,
+  waysOfWorkingRequired = false
 ) => {
   const validatedThesis = ThesisSchema.safeParse(thesis)
   const validatedDates = ThesisDateSchema.safeParse({
@@ -87,6 +88,18 @@ export const getFormErrors = (
       code: 'custom' as const,
       message: 'formErrors:approver',
       path: ['approver'],
+      params: {},
+    })
+  }
+
+  if (
+    waysOfWorkingRequired &&
+    (!thesis.waysOfWorking || !(thesis.waysOfWorking as any).name)
+  ) {
+    formErrors.push({
+      code: 'custom' as const,
+      message: 'formErrors:waysOfWorking',
+      path: ['waysOfWorking'],
       params: {},
     })
   }
