@@ -109,7 +109,12 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
         isThesisApprover,
       })
       setManagerCandidate(null)
-      setProgramId(null)
+      setUserSearch('')
+      if (isSingleProgramView) {
+        setProgramId(filteringProgramId)
+      } else {
+        setProgramId(null)
+      }
       setIsThesisApprover(false)
     }
   }
