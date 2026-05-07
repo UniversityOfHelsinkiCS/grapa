@@ -8,7 +8,7 @@ import {
   SeminarSupervision,
   User,
 } from '../db/models'
-import ethesisAdminHandler from '../middleware/ethesisAdmin'
+import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus'
 import ethesisUserHandler from '../middleware/ethesisUser'
 import employeesAndAdminOnly from '../middleware/employeesAndAdmin'
 
@@ -16,7 +16,7 @@ const userRouter = express.Router()
 
 userRouter.get(
   '/',
-  ethesisAdminHandler,
+  getEthesisAdminStatus,
   async (req: RequestWithUser, res: any) => {
     const { user } = req
 

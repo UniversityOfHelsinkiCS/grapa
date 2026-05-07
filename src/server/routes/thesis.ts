@@ -42,7 +42,7 @@ import {
   deleteThesisAttachments,
   handleAttachmentByLabel,
 } from './thesisAttachmentHelpers'
-import ethesisAdminHandler from '../middleware/ethesisAdmin'
+import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus'
 import ethesisUserHandler from '../middleware/ethesisUser'
 
 const thesisRouter = express.Router()
@@ -258,7 +258,7 @@ const getSortByColumn = (
 thesisRouter.get(
   '/paginate',
   ethesisUserHandler,
-  ethesisAdminHandler,
+  getEthesisAdminStatus,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
     const {
@@ -432,7 +432,7 @@ thesisRouter.put(
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisData,
   authorizeStatusChange,
-  ethesisAdminHandler,
+  getEthesisAdminStatus,
   async (req: ServerPutRequest, res) => {
     const { id } = req.params
     const thesisData = req.body

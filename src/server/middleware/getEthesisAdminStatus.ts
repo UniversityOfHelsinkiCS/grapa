@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express'
 import { EthesisAdmin } from '../db/models'
 
-const ethesisAdminHandler = async (
+const getEthesisAdminStatus = async (
   req: any,
   _: Response,
   next: NextFunction
@@ -11,12 +11,13 @@ const ethesisAdminHandler = async (
     return next()
   }
 
-  const ethesisAdmined = await EthesisAdmin.findAll({
+  const ethesisAdmined = await EthesisAdmin.findOne({
     where: { userId: currentUser.id },
   })
-  currentUser.ethesisAdmin = ethesisAdmined.length > 0 || currentUser.isAdmin
+
+  currentUser.ethesisAdmin = ethesisAdmined != null || currentUser.isAdmin
 
   return next()
 }
 
-export default ethesisAdminHandler
+export default getEthesisAdminStatus
