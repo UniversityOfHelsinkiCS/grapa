@@ -53,6 +53,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
               px: 2,
               borderRadius: '1rem',
               fontWeight: 700,
+              boxShadow: 0,
             }}
             onClick={handleNewThesis}
           >

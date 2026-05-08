@@ -45,7 +45,7 @@ export const PositionedMenu = ({
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        elevation={0}
+        elevation={1}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',

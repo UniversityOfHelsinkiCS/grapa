@@ -239,6 +239,7 @@ const NavBar = () => {
                 alt="University of Helsinki logo"
                 loading="lazy"
                 width="40 px"
+                style={{ marginRight: '0.5rem' }}
               />
               <Box ml="2rem">
                 <Typography component="a" href="/" sx={navStyles.appName}>
