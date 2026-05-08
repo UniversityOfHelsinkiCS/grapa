@@ -18,7 +18,7 @@ import DepartmentStatistics from './DepartmentStatistics'
 type DepartmentTab = 'theses' | 'rights' | 'statistics'
 
 const parseDepartmentTab = (tab: string | null): DepartmentTab => {
-  if (tab === 'rights' || tab === 'statistics') {
+  if (tab === 'theses' || tab === 'rights' || tab === 'statistics') {
     return tab
   }
 
