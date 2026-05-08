@@ -90,6 +90,7 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
     },
     {
       field: 'thesisCount.SUGGESTED',
+      headerName: t('thesisStages:suggested'),
       renderHeader: () => (
         <Typography variant="body2">
           {t('thesisStages:suggested') + ` (${totalThesisCounts.SUGGESTED})`}
@@ -102,6 +103,7 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
     },
     {
       field: 'thesisCount.PLANNING',
+      headerName: t('thesisStages:planned'),
       renderHeader: () => (
         <Typography variant="body2">
           {t('thesisStages:planned') + ` (${totalThesisCounts.PLANNING})`}
@@ -114,6 +116,7 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
     },
     {
       field: 'thesisCount.IN_PROGRESS',
+      headerName: t('thesisStages:inProgress'),
       renderHeader: () => (
         <Typography variant="body2">
           {t('thesisStages:inProgress') + ` (${totalThesisCounts.IN_PROGRESS})`}
@@ -126,6 +129,7 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
     },
     {
       field: 'thesisCount.COMPLETED',
+      headerName: t('thesisStages:completed'),
       renderHeader: () => (
         <Typography variant="body2">
           {t('thesisStages:completed') + ` (${totalThesisCounts.COMPLETED})`}
@@ -138,6 +142,7 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
     },
     {
       field: 'thesisCount.CANCELLED',
+      headerName: t('thesisStages:cancelled'),
       renderHeader: () => (
         <Typography variant="body2">
           {t('thesisStages:cancelled') + ` (${totalThesisCounts.CANCELLED})`}
@@ -150,6 +155,7 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
     },
     {
       field: 'thesisCount.STARTED_WITHIN_HALF_YEAR',
+      headerName: t('departmentStatisticsPage:startedWithinHalfYearCount'),
       renderHeader: () => (
         <Tooltip
           title={t('departmentStatisticsPage:startedWithinHalfYearTooltip')}
@@ -193,6 +199,7 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
         rows={filteredDepartmentStatistics}
         columns={columns}
         getRowId={(row) => row.supervisor.id}
+        showToolbar={true}
         slots={{ toolbar: GridToolbar }}
         localeText={
           dataGridLocale.components.MuiDataGrid.defaultProps.localeText
@@ -202,6 +209,7 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
             groupId: t('departmentStatisticsPage:thesisCountHeader'),
             headerAlign: 'center',
             children: [
+              { field: 'thesisCount.SUGGESTED' },
               { field: 'thesisCount.PLANNING' },
               { field: 'thesisCount.IN_PROGRESS' },
               { field: 'thesisCount.COMPLETED' },
