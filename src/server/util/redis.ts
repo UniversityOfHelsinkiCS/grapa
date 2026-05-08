@@ -2,6 +2,7 @@ import { createClient } from 'redis'
 import { RedisStore } from 'connect-redis'
 
 import { REDIS_HOST } from './config'
+import { inTest } from '../../config'
 
 const ttl = 60 * 60 * 24 * 30 // 30 days
 
@@ -9,7 +10,9 @@ export const redis = createClient({
   socket: { host: REDIS_HOST, port: 6379 },
 })
 
-await redis.connect()
+if (!inTest) {
+  await redis.connect()
+}
 
 export const redisStore = new RedisStore({
   client: redis,
