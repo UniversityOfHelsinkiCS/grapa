@@ -4,6 +4,7 @@ import logger from '../util/logger'
 
 import { PATE_URL } from '../util/config'
 import { inProduction, inStaging } from '../../config'
+import * as Sentry from '@sentry/node'
 
 const settings = {
   hideToska: false,
@@ -22,26 +23,36 @@ const pateClient = axios.create({
 })
 
 const sendEmail = async (targets: string[], text: string, subject: string) => {
-  const emails = targets.map((to) => ({ to, subject }))
+  try {
+    const emails = targets.map((to) => ({ to, subject }))
 
-  const mail = {
-    template: {
-      from: 'Prethesis',
+    const mail = {
+      template: {
+        from: 'Prethesis',
+        text,
+      },
+      emails,
+      settings,
+    }
+
+    if (targets.length === 0) {
+      throw new Error('No targets provided')
+    }
+
+    logger.info(`Sending emails to ${targets.length} recipients`, {
+      recipients: targets,
+      subject,
       text,
-    },
-    emails,
-    settings,
-  }
+    })
 
-  logger.info(`Sending emails to ${targets.length} recipients`, {
-    recipients: targets,
-    subject,
-    text,
-  })
-
-  // should mock pate in dev
-  if (process.env.NODE_ENV === 'production') {
-    await pateClient.post('/', mail)
+    // should mock pate in dev
+    if (process.env.NODE_ENV === 'production') {
+      await pateClient.post('/', mail)
+    }
+  } catch (error) {
+    logger.error('Failed to send email', error)
+    Sentry.captureException(error)
+    Sentry.captureMessage('Failed to send email')
   }
 }
 
