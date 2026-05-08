@@ -62,7 +62,7 @@
     "multer": "2.1.1",
     "node-cron": "4.2.1",
     "notistack": "3.0.2",
-    "npm": "10.6.0",
+    "npm": "11.14.1",
     "openid-client": "5.6.5",
     "passport": "0.7.0",
     "pg": "8.11.5",
