@@ -54,9 +54,7 @@ export const safeBulkCreate = async ({
 }
 
 export const clearOffsets = async () => {
-  const keys = await redis.keys('*-offset')
-
-  for (const key of keys) {
+  for await (const key of redis.scanIterator({ MATCH: '*-offset' })) {
     await redis.del(key)
   }
 }
