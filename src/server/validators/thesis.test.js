@@ -61,6 +61,7 @@ describe('validateThesisData', () => {
         ],
         researchPlan: {},
         waysOfWorking: {},
+        waysOfWorkingValidUntil: '2021-12-31',
         startDate: '2021-01-01',
         targetDate: '2021-12-31',
       },
