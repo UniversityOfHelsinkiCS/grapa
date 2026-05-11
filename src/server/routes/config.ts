@@ -11,3 +11,5 @@ export const userFields = [
   'iamGroups',
   'isExternal',
 ]
+
+export const restrictedUserFields = ['id', 'firstName', 'lastName']
