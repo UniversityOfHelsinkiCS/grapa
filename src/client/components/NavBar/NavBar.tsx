@@ -275,7 +275,7 @@ const NavBar = () => {
               )}
               {user?.hasSeminarSupervisions && <SeminarLink />}
               {user?.ethesisAdmin && <EthesisLink />}
-              <MyThesesLink />
+              {user?.hasStudyRight && <MyThesesLink />}
             </Box>
 
             <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 2 }}>
