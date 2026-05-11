@@ -10,6 +10,8 @@ import {
   waitFor,
   within,
 } from '@testing-library/react'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 import initializeI18n from '../../util/il18n'
 
@@ -161,12 +163,14 @@ describe('ThesisEditForm', () => {
       initializeI18n()
 
       render(
-        <ThesisEditForm
-          programs={programs}
-          initialThesis={initialThesis}
-          onClose={mockOnClose}
-          onSubmit={mockOnSubmit}
-        />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <ThesisEditForm
+            programs={programs}
+            initialThesis={initialThesis}
+            onClose={mockOnClose}
+            onSubmit={mockOnSubmit}
+          />
+        </LocalizationProvider>
       )
     })
 
@@ -340,12 +344,14 @@ describe('ThesisEditForm', () => {
       initializeI18n()
 
       render(
-        <ThesisEditForm
-          programs={programs}
-          initialThesis={initialThesis}
-          onClose={mockOnClose}
-          onSubmit={mockOnSubmit}
-        />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <ThesisEditForm
+            programs={programs}
+            initialThesis={initialThesis}
+            onClose={mockOnClose}
+            onSubmit={mockOnSubmit}
+          />
+        </LocalizationProvider>
       )
     }, 10000)
 
