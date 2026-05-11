@@ -1,6 +1,5 @@
 import express, { Response } from 'express'
-import { literal, type Transaction } from 'sequelize'
-import { Literal } from 'sequelize/types/utils'
+import { type Transaction } from 'sequelize'
 
 import {
   ServerDeleteRequest,
@@ -21,22 +20,21 @@ import {
   Approver,
   User,
   EventLog,
-  DepartmentAdmin,
 } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
-import { transformSingleThesis, transformThesisData } from '../util/helpers'
+import { transformSingleThesis } from '../util/helpers'
+import { getPaginatedTheses } from '../services/thesisService'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import {
   getAndCreateExtUsers,
-  getEmployeeTitles,
   getFindThesesOptions,
-  getOrdering,
   handleGradersChangeEventLog,
   handleStatusChangeEmail,
   handleStatusChangeEventLog,
   handleSupervisionsChangeEventLog,
   handleThesisCreationEmail,
+  getGraderTitles,
 } from './thesisHelpers'
 import {
   deleteThesisAttachments,
@@ -46,20 +44,6 @@ import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus'
 import ethesisUserHandler from '../middleware/ethesisUser'
 
 const thesisRouter = express.Router()
-
-const getGraderTitles = async (thesis: ThesisData | Thesis) => {
-  const graderUsernames = thesis.graders
-    .map((grader) => (grader.user.isExternal ? null : grader.user.username))
-    .filter((username) => !!username)
-
-  const graderTitles = []
-  for (const username of graderUsernames) {
-    const titles = await getEmployeeTitles(username)
-    graderTitles.push(titles)
-  }
-
-  return graderTitles
-}
 
 const fetchThesisById = async (
   id: string,
@@ -234,113 +218,32 @@ const deleteThesis = async (id: string, transaction: Transaction) => {
   await Thesis.destroy({ where: { id }, transaction })
 }
 
-const getSortByColumn = (
-  sortBy: string
-): 'status' | 'topic' | Literal | 'startDate' | 'targetDate' => {
-  switch (sortBy) {
-    case 'status':
-      return 'status'
-    case 'topic':
-      return 'topic'
-    case 'programId':
-      return literal(`"program"."name"->>$language`)
-    case 'authors':
-      return literal(`"authors"."last_name"`)
-    case 'startDate':
-      return 'startDate'
-    case 'targetDate':
-      return 'targetDate'
-    default:
-      return undefined
-  }
-}
-
 thesisRouter.get(
   '/paginate',
   ethesisUserHandler,
   getEthesisAdminStatus,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
-    const {
-      onlySupervised,
-      onlySeminarSupervised,
-      limit = 50,
-      offset = 0,
-    } = req.query
-    const currentUser = req.user
-    const language = (req.query.language ?? 'en') as string
-    const programId = req.query.programId as string
-    // These are optional filter query parameters
-    const programNamePartial = req.query.programNamePartial as string
-    const topicPartial = req.query.topicPartial as string
-    const authorsPartial = req.query.authorsPartial as string
-    const status = req.query.status as string
-    const departmentId = req.query.departmentId as string
-    // These are optional sort query parameters
-    const sortBy = req.query.sortBy as string
-    const sortOrder = req.query.sortOrder as 'asc' | 'desc'
-
-    const allowedLanguages = ['en', 'fi', 'sv']
-    if (!allowedLanguages.includes(language)) {
-      throw new Error('Invalid language key')
-    }
-
-    const allowedSortOrder = ['asc', 'desc']
-    if (sortOrder && !allowedSortOrder.includes(sortOrder)) {
-      throw new Error('Invalid sort order')
-    }
-
-    if (departmentId && !currentUser.isAdmin) {
-      const depAdmin = await DepartmentAdmin.findOne({
-        where: { userId: currentUser.id, departmentId },
-      })
-
-      if (!depAdmin) {
-        return res
-          .status(403)
-          .send('Access denied: insufficient permissions for this department')
-      }
-    }
-
-    const sortByColumn = getSortByColumn(sortBy)
-
-    const options = await getFindThesesOptions({
-      programId,
-      departmentId,
-      programNamePartial,
-      topicPartial,
-      authorsPartial,
-      status,
-      language,
-      actionUser: currentUser,
-      onlySupervised: onlySupervised === 'true',
-      onlySeminarSupervised: onlySeminarSupervised === 'true',
+    const result = await getPaginatedTheses({
+      ...req.query,
+      currentUser: req.user,
+      sortOrder: req.query.sortOrder as 'asc' | 'desc',
+      sortBy: req.query.sortBy as string,
+      departmentId: req.query.departmentId as string,
+      status: req.query.status as string,
+      authorsPartial: req.query.authorsPartial as string,
+      topicPartial: req.query.topicPartial as string,
+      programNamePartial: req.query.programNamePartial as string,
+      programId: req.query.programId as string,
+      language: req.query.language as string,
+      onlyAuthored: req.query.onlyAuthored as string,
+      onlySupervised: req.query.onlySupervised as string,
+      onlySeminarSupervised: req.query.onlySeminarSupervised as string,
+      limit: req.query.limit as string,
+      offset: req.query.offset as string,
     })
 
-    const { count, rows } = await Thesis.findAndCountAll({
-      ...options,
-      subQuery: false,
-      offset: Number(offset),
-      limit: Number(limit),
-      order: getOrdering({
-        currentUser,
-        orderBy: sortByColumn,
-        orderDirection: sortOrder,
-      }),
-      distinct: true,
-      bind: { language },
-    })
-
-    const thesesRows = rows.map((t) => t.toJSON()) as ThesisData[]
-    const thesisGraders = []
-    for (const thesis of thesesRows) {
-      const singleThesisGraders = await getGraderTitles(thesis)
-      thesisGraders.push(singleThesisGraders)
-    }
-
-    const theses = transformThesisData(thesesRows, thesisGraders)
-
-    res.send({ theses, totalCount: count })
+    return res.send(result)
   }
 )
 

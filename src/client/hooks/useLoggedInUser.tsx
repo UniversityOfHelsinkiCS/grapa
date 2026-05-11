@@ -15,7 +15,15 @@ const useLoggedInUser = () => {
 
   const { data: user, ...rest } = useQuery({ queryKey, queryFn })
 
-  return { user, ...rest }
+  const hasStaffAccess = Boolean(
+    user?.isAdmin ||
+      user?.hasSeminarSupervisions ||
+      user?.managedProgramIds?.length ||
+      user?.managedDepartmentIds?.length ||
+      user?.ethesisAdmin
+  )
+
+  return { user, hasStaffAccess, ...rest }
 }
 
 export default useLoggedInUser

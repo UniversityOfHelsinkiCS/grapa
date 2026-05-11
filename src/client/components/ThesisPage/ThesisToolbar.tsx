@@ -26,6 +26,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
     noOwnThesesSwitch,
     noAddThesisButton,
     showExportOptions,
+    isStudentView,
   } = props
 
   const handleNewThesis = () => {
@@ -60,7 +61,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
             {t('thesesTableToolbar:newThesisButton')}
           </Button>
         )}
-        {!noOwnThesesSwitch && user?.isAdmin && (
+        {!noOwnThesesSwitch && !isStudentView && user?.isAdmin && (
           <FormControlLabel
             control={
               <Switch
@@ -73,6 +74,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
         )}
         {Boolean(
           !noOwnThesesSwitch &&
+            !isStudentView &&
             !user?.isAdmin &&
             user?.managedProgramIds?.length
         ) && (

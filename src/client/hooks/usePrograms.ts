@@ -7,6 +7,7 @@ import queryClient from '../util/queryClient'
 
 interface UseProgramsParams {
   includeNotManaged?: boolean
+  enabled?: boolean
 }
 
 const usePrograms = (params: UseProgramsParams) => {
@@ -23,7 +24,11 @@ const usePrograms = (params: UseProgramsParams) => {
     return data
   }
 
-  const { data: programs, ...rest } = useQuery({ queryKey, queryFn })
+  const { data: programs, ...rest } = useQuery({
+    queryKey,
+    queryFn,
+    enabled: params?.enabled ?? true,
+  })
 
   return { programs, ...rest }
 }

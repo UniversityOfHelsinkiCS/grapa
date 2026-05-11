@@ -101,6 +101,7 @@ interface FetchThesisProps {
   status?: string
   language?: string
   actionUser: UserType
+  onlyAuthored?: boolean
   onlySupervised?: boolean
   onlySeminarSupervised?: boolean
 }
@@ -114,6 +115,7 @@ export const getFindThesesOptions = async ({
   status,
   language,
   actionUser,
+  onlyAuthored,
   onlySupervised,
   onlySeminarSupervised,
 }: FetchThesisProps) => {
@@ -233,6 +235,7 @@ export const getFindThesesOptions = async ({
 
   if (
     (!departmentId && !actionUser.isAdmin && !actionUser.ethesisAdmin) ||
+    onlyAuthored ||
     onlySupervised ||
     onlySeminarSupervised
   ) {
@@ -283,6 +286,11 @@ export const getFindThesesOptions = async ({
       whereClause = {
         ...whereClause,
         '$seminarSupervisionsForFiltering.user_id$': actionUser.id,
+      }
+    } else if (onlyAuthored) {
+      whereClause = {
+        ...whereClause,
+        '$authors.Author.user_id$': actionUser.id,
       }
     } else {
       whereClause = {
@@ -706,5 +714,39 @@ export const handleSupervisionsChangeEventLog = async (
       },
       { transaction }
     )
+  }
+}
+export const getGraderTitles = async (thesis: ThesisData | Thesis) => {
+  const graderUsernames = thesis.graders
+    .map((grader) => (grader.user.isExternal ? null : grader.user.username))
+    .filter((username) => !!username)
+
+  const graderTitles = []
+  for (const username of graderUsernames) {
+    const titles = await getEmployeeTitles(username)
+    graderTitles.push(titles)
+  }
+
+  return graderTitles
+}
+
+export const getSortByColumn = (
+  sortBy: string
+): 'status' | 'topic' | Literal | 'startDate' | 'targetDate' => {
+  switch (sortBy) {
+    case 'status':
+      return 'status'
+    case 'topic':
+      return 'topic'
+    case 'programId':
+      return literal(`"program"."name"->>$language`)
+    case 'authors':
+      return literal(`"authors"."last_name"`)
+    case 'startDate':
+      return 'startDate'
+    case 'targetDate':
+      return 'targetDate'
+    default:
+      return undefined
   }
 }

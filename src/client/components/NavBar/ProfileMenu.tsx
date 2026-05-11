@@ -24,9 +24,11 @@ import Logout from './Logout'
 
 const UserInformation = () => {
   const { t, i18n } = useTranslation()
-  const { user, isLoading: userLoading } = useLoggedInUser()
+  const { user, isLoading: userLoading, hasStaffAccess } = useLoggedInUser()
+
   const { departments, isLoading: departmentsLoading } = useDepartments({
     includeNotManaged: true,
+    enabled: hasStaffAccess,
   })
 
   if (!user || userLoading || departmentsLoading)
@@ -52,10 +54,11 @@ const UserInformation = () => {
             if (fieldValue === null) return null
 
             if (field === 'departmentId') {
-              const department = departments.find(
+              const department = departments?.find(
                 (dep) => dep.id === fieldValue
               )
-              fieldValue = department?.name[language as keyof TranslatedName]
+              fieldValue =
+                department?.name[language as keyof TranslatedName] || fieldValue
             }
 
             return (

@@ -18,7 +18,7 @@ const App = () => {
   const theme = useTheme()
   const themeWithLocale = createTheme(theme, fiFI)
 
-  const { user, isLoading } = useLoggedInUser()
+  const { user, isLoading, hasStaffAccess } = useLoggedInUser()
 
   if (isLoading) return null
   if (!user?.id) {
@@ -40,7 +40,11 @@ const App = () => {
           >
             <NavBar />
             <Box component="main" style={{ flexGrow: '1', display: 'flex' }}>
-              {!user?.departmentId ? <DepartmentSelector /> : <Outlet />}
+              {!user?.departmentId && hasStaffAccess ? (
+                <DepartmentSelector />
+              ) : (
+                <Outlet />
+              )}
             </Box>
             <Footer />
           </Box>

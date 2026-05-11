@@ -207,11 +207,27 @@ const SeminarLink = () => {
   )
 }
 
+const MyThesesLink = () => {
+  const { t } = useTranslation()
+
+  return (
+    <Button component={NavLink} to="/my-theses" sx={navStyles.link}>
+      {t('navbar:myTheses', 'My Theses')}
+    </Button>
+  )
+}
+
 const NavBar = () => {
   const { t, i18n } = useTranslation()
-  const { user, isLoading } = useLoggedInUser()
-  const { departments } = useDepartments({ includeNotManaged: false })
-  const { programs } = usePrograms({ includeNotManaged: false })
+  const { user, isLoading, hasStaffAccess } = useLoggedInUser()
+  const { departments } = useDepartments({
+    includeNotManaged: false,
+    enabled: hasStaffAccess,
+  })
+  const { programs } = usePrograms({
+    includeNotManaged: false,
+    enabled: hasStaffAccess,
+  })
   const { language } = i18n as { language: TranslationLanguage }
   const sortedPrograms = programs
     ? sortProgramsForMenu(programs, language)
@@ -259,6 +275,7 @@ const NavBar = () => {
               )}
               {user?.hasSeminarSupervisions && <SeminarLink />}
               {user?.ethesisAdmin && <EthesisLink />}
+              <MyThesesLink />
             </Box>
 
             <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 2 }}>
@@ -330,6 +347,11 @@ const NavBar = () => {
             </ListItemButton>
           </ListItem>
         )}
+        <ListItem disablePadding>
+          <ListItemButton component={NavLink} to="/my-theses">
+            <ListItemText primary={t('navbar:myTheses')} />
+          </ListItemButton>
+        </ListItem>
         <Divider />
         <LanguageSelect />
       </MobileMenu>

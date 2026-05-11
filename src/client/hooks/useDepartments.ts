@@ -7,6 +7,7 @@ import { DepartmentData as Department } from '../../server/types'
 
 interface UseDepartmentsParams {
   includeNotManaged?: boolean
+  enabled?: boolean
 }
 
 const useDepartments = (params: UseDepartmentsParams) => {
@@ -23,7 +24,11 @@ const useDepartments = (params: UseDepartmentsParams) => {
     return data
   }
 
-  const { data: departments, ...rest } = useQuery({ queryKey, queryFn })
+  const { data: departments, ...rest } = useQuery({
+    queryKey,
+    queryFn,
+    enabled: params?.enabled ?? true,
+  })
 
   return { departments, ...rest }
 }

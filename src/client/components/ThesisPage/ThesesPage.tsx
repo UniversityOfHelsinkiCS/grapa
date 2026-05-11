@@ -19,6 +19,7 @@ import {
   GridColDef,
   GridFilterModel,
   GridFilterOperator,
+  GridRowId,
   GridRowSelectionModel,
   GridSortModel,
   useGridApiRef,
@@ -60,6 +61,7 @@ interface Props {
   showExportOptions?: boolean
   pageSize?: number
   onlySeminarSupervised?: boolean
+  isStudentView?: boolean
 }
 const ThesesPage = ({
   filteringProgramId,
@@ -69,6 +71,7 @@ const ThesesPage = ({
   showExportOptions,
   pageSize,
   onlySeminarSupervised = false,
+  isStudentView = false,
 }: Props) => {
   pageSize = pageSize ?? DEFAULT_PAGE_SIZE
 
@@ -76,8 +79,11 @@ const ThesesPage = ({
   const footerRef = useRef<HTMLDivElement>(null)
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
-  const { user: currentUser, isLoading: loggedInUserLoading } =
-    useLoggedInUser()
+  const {
+    user: currentUser,
+    isLoading: loggedInUserLoading,
+    hasStaffAccess,
+  } = useLoggedInUser()
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -124,10 +130,12 @@ const ThesesPage = ({
     topicPartial: debouncedFilterTopic,
     authorsPartial: debouncedFilterAuthors,
     programNamePartial: debouncedFilterProgramName,
-    onlySupervised: showOnlyOwnTheses,
+    onlyAuthored: isStudentView,
+    onlySupervised: isStudentView ? false : showOnlyOwnTheses,
     onlySeminarSupervised,
     offset: paginationModel.page * paginationModel.pageSize,
     limit: paginationModel.pageSize,
+    useStudentPath: isStudentView && currentUser?.hasStudyRight,
   })
 
   const showDurationColumn = useMemo(
@@ -152,6 +160,7 @@ const ThesesPage = ({
 
   const { programs, isLoading: isProgramLoading } = usePrograms({
     includeNotManaged: true,
+    enabled: hasStaffAccess,
   })
   const managedPrograms = useMemo(
     () => (programs ?? []).filter((program) => program.isManaged),
@@ -476,6 +485,7 @@ const ThesesPage = ({
               noOwnThesesSwitch,
               noAddThesisButton,
               showExportOptions,
+              isStudentView,
             },
             footer: {
               footerRef,

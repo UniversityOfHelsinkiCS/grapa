@@ -14,6 +14,19 @@ import SeminarPage from './components/Seminar/SeminarPage'
 
 import { BASE_PATH } from '../config'
 import Ethesis from './components/Ethesis'
+import useLoggedInUser from './hooks/useLoggedInUser'
+
+const IndexRoute = () => {
+  const { isLoading, hasStaffAccess } = useLoggedInUser()
+
+  if (isLoading) return null
+
+  if (!hasStaffAccess) {
+    return <Navigate to="/my-theses" replace />
+  }
+
+  return <ThesesPage />
+}
 
 const router = createBrowserRouter(
   [
@@ -28,7 +41,12 @@ const router = createBrowserRouter(
       children: [
         {
           index: true,
-          element: <ThesesPage />,
+          element: <IndexRoute />,
+          errorElement: <RootBoundary />,
+        },
+        {
+          path: '/my-theses',
+          element: <ThesesPage isStudentView />,
           errorElement: <RootBoundary />,
         },
         {

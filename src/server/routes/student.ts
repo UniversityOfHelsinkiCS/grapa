@@ -13,15 +13,31 @@ import {
 } from './usersSearchHelpers'
 
 const USER_FETCH_LIMIT = 100
+import { getPaginatedTheses } from '../services/thesisService'
 
 const studentRouter = express.Router()
 
 studentRouter.use(withStudyRight)
 
-// add student specific routes here. For example:
+studentRouter.get('/theses', async (req: RequestWithUser, res: any) => {
+  const result = await getPaginatedTheses({
+    ...req.query,
+    currentUser: req.user,
+    onlyAuthored: true,
+    sortOrder: req.query.sortOrder as 'asc' | 'desc',
+    sortBy: req.query.sortBy as string,
+    departmentId: req.query.departmentId as string,
+    status: req.query.status as string,
+    authorsPartial: req.query.authorsPartial as string,
+    topicPartial: req.query.topicPartial as string,
+    programNamePartial: req.query.programNamePartial as string,
+    programId: req.query.programId as string,
+    language: req.query.language as string,
+    limit: req.query.limit as string,
+    offset: req.query.offset as string,
+  })
 
-studentRouter.get('/', async (req: RequestWithUser, res: any) => {
-  return res.send({})
+  return res.send(result)
 })
 
 studentRouter.get('/users', async (req: RequestWithUser, res: any) => {
