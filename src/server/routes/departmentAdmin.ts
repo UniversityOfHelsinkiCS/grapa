@@ -173,6 +173,7 @@ departmentAdminRouter.get(
             departmentId: user.departmentId,
           },
           statusCounts: {
+            SUGGESTED: status === 'SUGGESTED' ? 1 : 0,
             PLANNING: status === 'PLANNING' ? 1 : 0,
             IN_PROGRESS: status === 'IN_PROGRESS' ? 1 : 0,
             COMPLETED: status === 'COMPLETED' ? 1 : 0,
