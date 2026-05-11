@@ -19,70 +19,59 @@ interface AttainmentData {
   }
 }
 
-const unfinishedTheses = (await Thesis.findAll({
-  where: {
-    status: { [Op.notIn]: ['COMPLETED', 'CANCELLED'] },
-  },
-  include: [
-    {
-      model: User,
-      as: 'authors',
-      attributes: ['id', 'firstName', 'lastName'],
-    },
-  ],
-})) as unknown as Omit<ThesisData[], 'supervisions' | 'graders'>
+const attainmentsHandler =
+  (unfinishedTheses: Omit<ThesisData[], 'supervisions' | 'graders'>) =>
+  async (attainments: AttainmentData[]) => {
+    const personIdsFromAttainments = attainments.map(
+      (attainment) => attainment.personId
+    )
 
-const attainmentsHandler = async (attainments: AttainmentData[]) => {
-  const personIdsFromAttainments = attainments.map(
-    (attainment) => attainment.personId
-  )
+    // Update each thesis where personId is found in the list of personIdsFromAttainments
+    // with the status "COMPLETED" and the targetDate set to the attainmentDate.
+    await Promise.all(
+      unfinishedTheses.map(async (thesis) => {
+        if (
+          thesis.authors.some((author) =>
+            personIdsFromAttainments.includes(author.id)
+          )
+        ) {
+          logger.info(`Updating thesis ${thesis.id} to COMPLETED`)
 
-  // Update each thesis where personId is found in the list of personIdsFromAttainments
-  // with the status "COMPLETED" and the targetDate set to the attainmentDate.
-  await Promise.all(
-    unfinishedTheses.map(async (thesis) => {
-      if (
-        thesis.authors.some((author) =>
-          personIdsFromAttainments.includes(author.id)
-        )
-      ) {
-        logger.info(`Updating thesis ${thesis.id} to COMPLETED`)
-
-        await sequelize.transaction(async (t) => {
-          const initialThesis = await Thesis.findByPk(thesis.id, {
-            transaction: t,
-          })
-
-          await Thesis.update(
-            {
-              status: 'COMPLETED',
-              targetDate: attainments.find(
-                (attainment) => attainment.personId === thesis.authors[0].id
-              )?.attainmentDate,
-            },
-            {
-              where: {
-                id: thesis.id,
-              },
+          await sequelize.transaction(async (t) => {
+            const initialThesis = await Thesis.findByPk(thesis.id, {
               transaction: t,
-            }
-          )
+            })
 
-          const updatedThesis = await Thesis.findByPk(thesis.id, {
-            transaction: t,
+            await Thesis.update(
+              {
+                status: 'COMPLETED',
+                targetDate: attainments.find(
+                  (attainment) => attainment.personId === thesis.authors[0].id
+                )?.attainmentDate,
+              },
+              {
+                where: {
+                  id: thesis.id,
+                },
+                transaction: t,
+              }
+            )
+
+            const updatedThesis = await Thesis.findByPk(thesis.id, {
+              transaction: t,
+            })
+
+            await handleStatusChangeEventLog(
+              initialThesis as Thesis,
+              updatedThesis as Thesis,
+              null, // No user for the system automation
+              t
+            )
           })
-
-          await handleStatusChangeEventLog(
-            initialThesis as Thesis,
-            updatedThesis as Thesis,
-            null, // No user for the system automation
-            t
-          )
-        })
-      }
-    })
-  )
-}
+        }
+      })
+    )
+  }
 
 const isNumber = (value: any) => !Number.isNaN(parseInt(value, 10))
 
@@ -103,6 +92,19 @@ const normalizeOrganisationCode = (r: string) => {
 }
 
 export const fetchThesesAttainments = async () => {
+  const unfinishedTheses = (await Thesis.findAll({
+    where: {
+      status: { [Op.notIn]: ['COMPLETED', 'CANCELLED'] },
+    },
+    include: [
+      {
+        model: User,
+        as: 'authors',
+        attributes: ['id', 'firstName', 'lastName'],
+      },
+    ],
+  })) as unknown as Omit<ThesisData[], 'supervisions' | 'graders'>
+
   const personIdsPerOrganisation = unfinishedTheses.reduce(
     (acc, thesis) => {
       const organisationCode = normalizeOrganisationCode(thesis.programId)
@@ -119,7 +121,7 @@ export const fetchThesesAttainments = async () => {
     await mangleData({
       url: `masters-attainments/${orgCode}`,
       limit: 10_000,
-      handler: attainmentsHandler,
+      handler: attainmentsHandler(unfinishedTheses),
       queryParams: { personIds },
     })
   }
