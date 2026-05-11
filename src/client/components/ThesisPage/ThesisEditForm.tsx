@@ -28,8 +28,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { DatePicker } from '@mui/x-date-pickers'
 import SupervisorSelect from './SupervisorSelect/SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
 import { useDebounce } from '../../hooks/useDebounce'
@@ -346,7 +345,7 @@ const ThesisEditForm: FC<{
                     data-testid="approver-select-input"
                     required
                     value={
-                      editedThesis.approvers
+                      editedThesis.approvers?.length > 0
                         ? editedThesis.approvers[0]?.id
                         : ''
                     }
@@ -567,90 +566,85 @@ const ThesisEditForm: FC<{
               </FormControl>
             )}
 
-            <LocalizationProvider
-              adapterLocale={language}
-              dateAdapter={AdapterDayjs}
-            >
-              <Grid container rowSpacing={{ xs: 2, md: 0 }}>
-                <Grid
-                  size={{ xs: 12, md: 6 }}
-                  sx={{ paddingLeft: { md: '1rem' } }}
-                >
-                  <DatePicker
-                    label={t('startDateHeader')}
-                    slotProps={{
-                      textField: {
-                        id: 'startDate',
-                        helperText:
-                          t(
-                            formErrors.find(
-                              (error) => error.path[0] === 'startDate'
-                            )?.message
-                          ) || 'DD.MM.YYYY',
-                        fullWidth: true,
-                        error: formErrors.some(
-                          (error) => error.path[0] === 'startDate'
-                        ),
-                      },
-                    }}
-                    name="startDate"
-                    value={dayjs(editedThesis.startDate)}
-                    format="DD.MM.YYYY"
-                    onChange={(date) => {
-                      setEditedThesis((oldThesis) => ({
-                        ...oldThesis,
-                        startDate: date.format('YYYY-MM-DD'),
-                      }))
+            <Grid container rowSpacing={{ xs: 2, md: 0 }}>
+              <Grid
+                size={{ xs: 12, md: 6 }}
+                sx={{ paddingLeft: { md: '1rem' } }}
+              >
+                <DatePicker
+                  label={t('startDateHeader')}
+                  slotProps={{
+                    textField: {
+                      id: 'startDate',
+                      helperText:
+                        t(
+                          formErrors.find(
+                            (error) => error.path[0] === 'startDate'
+                          )?.message
+                        ) || 'DD.MM.YYYY',
+                      fullWidth: true,
+                      error: formErrors.some(
+                        (error) => error.path[0] === 'startDate'
+                      ),
+                    },
+                  }}
+                  name="startDate"
+                  value={dayjs(editedThesis.startDate)}
+                  format="DD.MM.YYYY"
+                  onChange={(date) => {
+                    setEditedThesis((oldThesis) => ({
+                      ...oldThesis,
+                      startDate: date.format('YYYY-MM-DD'),
+                    }))
 
-                      setFormErrors(
-                        formErrors.filter(
-                          (error) => error.path[0] !== 'startDate'
-                        )
+                    setFormErrors(
+                      formErrors.filter(
+                        (error) => error.path[0] !== 'startDate'
                       )
-                    }}
-                  />
-                </Grid>
-                <Grid
-                  size={{ xs: 12, md: 6 }}
-                  sx={{ paddingLeft: { md: '1rem' } }}
-                >
-                  <DatePicker
-                    label={t('targetDateHeader')}
-                    slotProps={{
-                      textField: {
-                        id: 'targetDate',
-                        helperText:
-                          t(
-                            formErrors.find(
-                              (error) => error.path[0] === 'targetDate'
-                            )?.message
-                          ) || 'DD.MM.YYYY',
-                        fullWidth: true,
-                        error: formErrors.some(
-                          (error) => error.path[0] === 'targetDate'
-                        ),
-                      },
-                    }}
-                    name="targetDate"
-                    value={dayjs(editedThesis.targetDate)}
-                    format="DD.MM.YYYY"
-                    minDate={dayjs(editedThesis.startDate)}
-                    onChange={(date) => {
-                      setEditedThesis((oldThesis) => ({
-                        ...oldThesis,
-                        targetDate: date.format('YYYY-MM-DD'),
-                      }))
-
-                      setFormErrors(
-                        formErrors.filter(
-                          (error) => error.path[0] !== 'targetDate'
-                        )
-                      )
-                    }}
-                  />
-                </Grid>
+                    )
+                  }}
+                />
               </Grid>
-            </LocalizationProvider>
+              <Grid
+                size={{ xs: 12, md: 6 }}
+                sx={{ paddingLeft: { md: '1rem' } }}
+              >
+                <DatePicker
+                  label={t('targetDateHeader')}
+                  slotProps={{
+                    textField: {
+                      id: 'targetDate',
+                      helperText:
+                        t(
+                          formErrors.find(
+                            (error) => error.path[0] === 'targetDate'
+                          )?.message
+                        ) || 'DD.MM.YYYY',
+                      fullWidth: true,
+                      error: formErrors.some(
+                        (error) => error.path[0] === 'targetDate'
+                      ),
+                    },
+                  }}
+                  name="targetDate"
+                  value={dayjs(editedThesis.targetDate)}
+                  format="DD.MM.YYYY"
+                  minDate={dayjs(editedThesis.startDate)}
+                  onChange={(date) => {
+                    setEditedThesis((oldThesis) => ({
+                      ...oldThesis,
+                      targetDate: date.format('YYYY-MM-DD'),
+                    }))
+
+                    setFormErrors(
+                      formErrors.filter(
+                        (error) => error.path[0] !== 'targetDate'
+                      )
+                    )
+                  }}
+                />
+              </Grid>
+            </Grid>
           </Stack>
 
           <SupervisorSelect
@@ -789,8 +783,52 @@ const ThesisEditForm: FC<{
                   setEditedThesis((oldThesis) => ({
                     ...oldThesis,
                     waysOfWorking: undefined,
+                    waysOfWorkingValidUntil: null,
                   }))
                 }
+              />
+            )}
+
+            {(Boolean(selectedProgram?.options?.waysOfWorkingRequired) ||
+              Boolean(editedThesis.waysOfWorking)) && (
+              <DatePicker
+                label={`${t('thesisForm:waysOfWorkingValidUntil')}*`}
+                slotProps={{
+                  textField: {
+                    id: 'waysOfWorkingValidUntil',
+                    helperText:
+                      t(
+                        formErrors.find(
+                          (error) => error.path[0] === 'waysOfWorkingValidUntil'
+                        )?.message
+                      ) || 'DD.MM.YYYY',
+                    fullWidth: true,
+                    error: formErrors.some(
+                      (error) => error.path[0] === 'waysOfWorkingValidUntil'
+                    ),
+                  },
+                }}
+                name="waysOfWorkingValidUntil"
+                value={
+                  editedThesis.waysOfWorkingValidUntil
+                    ? dayjs(editedThesis.waysOfWorkingValidUntil)
+                    : null
+                }
+                format="DD.MM.YYYY"
+                onChange={(date) => {
+                  setEditedThesis((oldThesis) => ({
+                    ...oldThesis,
+                    waysOfWorkingValidUntil: date
+                      ? date.format('YYYY-MM-DD')
+                      : null,
+                  }))
+
+                  setFormErrors(
+                    formErrors.filter(
+                      (error) => error.path[0] !== 'waysOfWorkingValidUntil'
+                    )
+                  )
+                }}
               />
             )}
           </Stack>

@@ -2,6 +2,8 @@ import { Outlet } from 'react-router-dom'
 import { Box } from '@mui/material'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { fiFI } from '@mui/x-date-pickers/locales'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { SnackbarProvider } from 'notistack'
 
 import { FULL_URL } from '../config'
@@ -26,22 +28,24 @@ const App = () => {
 
   return (
     <ThemeProvider theme={themeWithLocale}>
-      <SnackbarProvider preventDuplicate>
-        <LoggedInAsBanner />
-        <Box
-          sx={{
-            minHeight: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <NavBar />
-          <Box component="main" style={{ flexGrow: '1', display: 'flex' }}>
-            {!user?.departmentId ? <DepartmentSelector /> : <Outlet />}
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <SnackbarProvider preventDuplicate>
+          <LoggedInAsBanner />
+          <Box
+            sx={{
+              minHeight: '100vh',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <NavBar />
+            <Box component="main" style={{ flexGrow: '1', display: 'flex' }}>
+              {!user?.departmentId ? <DepartmentSelector /> : <Outlet />}
+            </Box>
+            <Footer />
           </Box>
-          <Footer />
-        </Box>
-      </SnackbarProvider>
+        </SnackbarProvider>
+      </LocalizationProvider>
     </ThemeProvider>
   )
 }

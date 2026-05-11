@@ -153,6 +153,7 @@
     "duplicateGraderEmailsContent": "Please check the graders' emails. Graders must have unique email addresses",
     "researchPlan": "Please upload a valid topic description file",
     "waysOfWorking": "Please upload a valid ways of working file",
+    "waysOfWorkingValidUntil": "Please provide the valid until date for the ways of working agreement",
     "startDate": "Start date must be before target date",
     "targetDate": "Target date must be after start date",
     "approver": "Please select a program manager"
@@ -200,6 +201,7 @@
     "waysOfWorking": "Ways of working",
     "editThesisDialog": "Edit thesis",
     "uploadWaysOfWorking": "Upload ways of working",
+    "waysOfWorkingValidUntil": "Ways of working valid until",
     "waysOfWorkingHelperText": "Ways of working file is mandatory if it's required in the programme",
     "uploadResearchPlan": "Upload topic description",
     "selectSupervisorPercentage": "Percentage",

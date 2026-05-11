@@ -245,6 +245,17 @@ export const validateThesisData = async (
     }
   }
 
+  const hasWaysOfWorkingFile =
+    req.files?.waysOfWorking?.length > 0 || Boolean(thesisData.waysOfWorking)
+  if (
+    (waysOfWorkingRequired || hasWaysOfWorkingFile) &&
+    !thesisData.waysOfWorkingValidUntil
+  ) {
+    throw new CustomValidationError('Ways of working valid until is required', {
+      waysOfWorkingValidUntil: ['Ways of working valid until is required'],
+    })
+  }
+
   const seminarSupervisions = thesisData.seminarSupervisions ?? []
 
   if (seminarSupervisionRequired && seminarSupervisions.length === 0) {

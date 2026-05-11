@@ -105,6 +105,7 @@ export interface ThesisData {
   graders: GraderData[]
   researchPlan?: FileData | File
   waysOfWorking?: FileData | File
+  waysOfWorkingValidUntil?: string | null
   ethesisDate?: string
 }
 

@@ -153,6 +153,7 @@
     "duplicateGraderEmailsContent": "Tarkista arvioijien sähköpostiosoitteet. Arvioijien sähköpostiosoitteet tulee olla uniikkeja",
     "researchPlan": "Lataa kelvollinen aihekuvaustiedosto",
     "waysOfWorking": "Lataa kelvollinen työskentelytavat-tiedosto",
+    "waysOfWorkingValidUntil": "Anna työskentelysopimuksen voimassaolopäivä",
     "startDate": "Aloituspäivän on oltava ennen tavoitepäivää",
     "targetDate": "Tavoitepäivän on oltava aloituspäivän jälkeen",
     "approver": "Valitse ohjelmavastaava"
@@ -200,6 +201,7 @@
     "waysOfWorking": "Työskentelytavat",
     "editThesisDialog": "Muokkaa tutkielmaa",
     "uploadWaysOfWorking": "Lataa työskentelysopimus",
+    "waysOfWorkingValidUntil": "Työskentelysopimus voimassa",
     "uploadResearchPlan": "Lataa aihekuvaus",
     "waysOfWorkingHelperText": "Työskentelysopimus on pakollinen, jos se vaaditaan koulutusohjelmassa",
     "selectSupervisorPercentage": "Osuus",

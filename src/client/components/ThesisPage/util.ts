@@ -104,5 +104,19 @@ export const getFormErrors = (
     })
   }
 
+  const hasWaysOfWorkingFile =
+    thesis.waysOfWorking && (thesis.waysOfWorking as any).name
+  if (
+    (waysOfWorkingRequired || hasWaysOfWorkingFile) &&
+    !thesis.waysOfWorkingValidUntil
+  ) {
+    formErrors.push({
+      code: 'custom' as const,
+      message: 'formErrors:waysOfWorkingValidUntil',
+      path: ['waysOfWorkingValidUntil'],
+      params: {},
+    })
+  }
+
   return formErrors
 }
