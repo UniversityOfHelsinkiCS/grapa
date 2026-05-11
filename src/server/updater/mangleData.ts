@@ -51,6 +51,7 @@ export const mangleData = async <T = object>({
 
   let offset = Number(await redis.get(offsetKey))
   let count = 0
+  // eslint-disable-next-line no-useless-assignment
   let currentData = null
   let nextData = null
 
