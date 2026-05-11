@@ -1825,6 +1825,7 @@ describe('thesis router', () => {
     describe('POST /api/theses', () => {
       it('should return 201, create a new thesis and log the event', async () => {
         const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
           programId: 'New program',
           studyTrackId: 'new-test-study-track-id',
           topic: 'New topic',
@@ -1887,6 +1888,7 @@ describe('thesis router', () => {
         }
 
         const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
           programId: 'New program',
           studyTrackId: 'new-test-study-track-id',
           topic: 'New topic',
@@ -1954,6 +1956,7 @@ describe('thesis router', () => {
         }
 
         const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
           programId: 'New program',
           studyTrackId: 'new-test-study-track-id',
           topic: 'New topic',
@@ -2013,6 +2016,7 @@ describe('thesis router', () => {
 
       it('should return 201 with empty studytrack and log the event', async () => {
         const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
           programId: 'New program',
           studyTrackId: null,
           topic: 'New topic',
@@ -2065,6 +2069,7 @@ describe('thesis router', () => {
 
       it('should return 400 and not log the event if the request is missing a required field', async () => {
         const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
           programId: 'New program',
           studyTrackId: 'new-test-study-track-id',
           topic: 'New topic',
@@ -2108,6 +2113,7 @@ describe('thesis router', () => {
 
       it('should return 400 and not log the event if the request is missing the primary supervisor', async () => {
         const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
           programId: 'New program',
           studyTrackId: 'new-test-study-track-id',
           topic: 'New topic',
@@ -2157,6 +2163,7 @@ describe('thesis router', () => {
         describe('when the user is an admin', () => {
           it('should return 201, create the thesis and log the event', async () => {
             const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -2212,6 +2219,7 @@ describe('thesis router', () => {
 
           beforeEach(() => {
             newThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -2320,6 +2328,7 @@ describe('thesis router', () => {
             })
 
             const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -2383,6 +2392,7 @@ describe('thesis router', () => {
         describe('when the user is a teacher and is a supervisor of the thesis', () => {
           it('should return 403 and a correct error message, and not log the event', async () => {
             const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -2447,6 +2457,7 @@ describe('thesis router', () => {
         describe('when the user is an admin', () => {
           it('should return 201, create the thesis and log the event', async () => {
             const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -2502,6 +2513,7 @@ describe('thesis router', () => {
 
           beforeEach(() => {
             newThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -2623,6 +2635,7 @@ describe('thesis router', () => {
         describe('when the user is a teacher and is a supervisor of the thesis', () => {
           it('should return 403 and a correct error message, and not log the event', async () => {
             const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -2686,6 +2699,7 @@ describe('thesis router', () => {
       describe('when the request contains duplicate supervisors', () => {
         it('should return 400 and not log the event', async () => {
           const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
             programId: 'Test program',
             studyTrackId: 'new-test-study-track-id',
             topic: 'Test topic',
@@ -2742,6 +2756,7 @@ describe('thesis router', () => {
       describe('when the request contains duplicate graders', () => {
         it('should return 400 and not log the event', async () => {
           const newThesis = {
+          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
             programId: 'Test program',
             studyTrackId: 'new-test-study-track-id',
             topic: 'Test topic',
@@ -2801,6 +2816,7 @@ describe('thesis router', () => {
         describe('when both attachments are updated', () => {
           it('should return 200 and update the thesis', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -2871,6 +2887,7 @@ describe('thesis router', () => {
         describe('when one attachment is updated and another stays the same', () => {
           it('should return 200 and update the thesis', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -2929,6 +2946,7 @@ describe('thesis router', () => {
         describe('when neither of the attachments are updated', () => {
           it('should return 200 and update the thesis', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -2983,6 +3001,7 @@ describe('thesis router', () => {
         describe('when the request contains duplicate supervisors', () => {
           it('should return 400 and not update the thesis', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -3054,6 +3073,7 @@ describe('thesis router', () => {
         describe('when the request contains duplicate graders', () => {
           it('should return 400 and not update the thesis', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -3130,6 +3150,7 @@ describe('thesis router', () => {
             }
 
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -3218,6 +3239,7 @@ describe('thesis router', () => {
             }
 
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -3316,6 +3338,7 @@ describe('thesis router', () => {
         describe('when the thesis does not exist', () => {
           it('should return 404', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -3372,6 +3395,7 @@ describe('thesis router', () => {
           }
 
           const updatedThesis = {
+            waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
             programId: 'Updated program',
             studyTrackId: 'new-test-study-track-id',
             topic: 'Updated topic',
@@ -3449,6 +3473,7 @@ describe('thesis router', () => {
 
         beforeEach(() => {
           updatedThesis = {
+            waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
             programId: 'Updated program',
             studyTrackId: 'new-test-study-track-id',
             topic: 'Updated topic',
@@ -3553,6 +3578,7 @@ describe('thesis router', () => {
 
         beforeEach(() => {
           updatedThesis = {
+            waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
             programId: 'Testing program',
             studyTrackId: 'new-test-study-track-id',
             topic: 'Updated topic',
@@ -3670,6 +3696,7 @@ describe('thesis router', () => {
         describe('when the user is an admin', () => {
           it('should return 200 and update the thesis', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -3726,6 +3753,7 @@ describe('thesis router', () => {
 
           beforeEach(() => {
             updatedThesis = {
+            waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Testing program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -3832,6 +3860,7 @@ describe('thesis router', () => {
               })
 
               const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -3900,6 +3929,7 @@ describe('thesis router', () => {
               await thesis1.save()
 
               updatedThesis = {
+            waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Testing program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -4008,6 +4038,7 @@ describe('thesis router', () => {
               await thesis1.save()
 
               const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Testing program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -4069,6 +4100,7 @@ describe('thesis router', () => {
           describe('when the thesis has PLANNING status', () => {
             it('should return 403 and a correct error message, and not log status change event', async () => {
               const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -4141,6 +4173,7 @@ describe('thesis router', () => {
 
             it('should return 200, update the thesis and not log status change event', async () => {
               const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -4204,6 +4237,7 @@ describe('thesis router', () => {
 
             it('should return 200, update the thesis and log status change event', async () => {
               const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -4265,6 +4299,7 @@ describe('thesis router', () => {
         describe('when the user is an admin', () => {
           it('should return 200 and update the thesis', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -4321,6 +4356,7 @@ describe('thesis router', () => {
 
           beforeEach(() => {
             updatedThesis = {
+            waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Testing program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -4422,6 +4458,7 @@ describe('thesis router', () => {
           describe('when the thesis has PLANNING status', () => {
             it('should return 403 and a correct error message, and not log status change event', async () => {
               const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -4494,6 +4531,7 @@ describe('thesis router', () => {
 
             it('should return 200, update the thesis and not log status change event', async () => {
               const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -4557,6 +4595,7 @@ describe('thesis router', () => {
 
             it('should return 403 and not log status change event', async () => {
               const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -4628,6 +4667,7 @@ describe('thesis router', () => {
 
           it('adds THESIS_GRADERS_CHANGED event to the event_log table', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -4704,6 +4744,7 @@ describe('thesis router', () => {
 
           it('adds THESIS_GRADERS_CHANGED event to the event_log table', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -4775,6 +4816,7 @@ describe('thesis router', () => {
 
           it('adds THESIS_GRADERS_CHANGED event to the event_log table', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -4845,6 +4887,7 @@ describe('thesis router', () => {
 
           it('does not add THESIS_GRADERS_CHANGED event to the event_log table', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -4910,6 +4953,7 @@ describe('thesis router', () => {
 
           it('adds THESIS_SUPERVISIONS_CHANGED event to the event_log table', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -4988,6 +5032,7 @@ describe('thesis router', () => {
 
           it('adds THESIS_SUPERVISIONS_CHANGED event to the event_log table', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -5062,6 +5107,7 @@ describe('thesis router', () => {
 
           it('adds THESIS_SUPERVISIONS_CHANGED event to the event_log table', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -5140,6 +5186,7 @@ describe('thesis router', () => {
 
           it('adds THESIS_SUPERVISIONS_CHANGED event to the event_log table', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -5212,6 +5259,7 @@ describe('thesis router', () => {
 
           it('does not add THESIS_SUPERVISIONS_CHANGED event to the event_log table', async () => {
             const updatedThesis = {
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Updated program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',

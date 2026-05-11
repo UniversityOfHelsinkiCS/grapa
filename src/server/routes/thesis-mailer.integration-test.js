@@ -210,6 +210,7 @@ describe('Theisis router with mocks', () => {
     describe('when the user is an admin', () => {
       it('should call the sendEmail function and return 200', async () => {
         const updatedThesis = {
+          waysOfWorkingValidUntil: '2070-01-01',
           programId: 'Updated program',
           studyTrackId: 'new-test-study-track-id',
           topic: 'Updated topic',
@@ -268,6 +269,7 @@ describe('Theisis router with mocks', () => {
 
       it('should call the sendEmail function and return 200', async () => {
         const updatedThesis = {
+          waysOfWorkingValidUntil: '2070-01-01',
           programId: 'Testing program',
           studyTrackId: 'test-study-track-id',
           topic: 'test topic',
@@ -320,6 +322,7 @@ describe('Theisis router with mocks', () => {
       // from PLANNING to IN_PROGRESS
       it('should not call the sendEmail function and return 403', async () => {
         const updatedThesis = {
+          waysOfWorkingValidUntil: '2070-01-01',
           programId: 'Testing program',
           studyTrackId: 'test-study-track-id',
           topic: 'test topic',
@@ -367,6 +370,7 @@ describe('Theisis router with mocks', () => {
     describe('when the user is an admin', () => {
       it('setting status to COMPLETED should not call the sendEmail function and return 200', async () => {
         const updatedThesis = {
+          waysOfWorkingValidUntil: '2070-01-01',
           programId: 'Updated program',
           studyTrackId: 'new-test-study-track-id',
           topic: 'Updated topic',
@@ -410,6 +414,7 @@ describe('Theisis router with mocks', () => {
 
       it('setting status to CANCELLED should not call the sendEmail function and return 200', async () => {
         const updatedThesis = {
+          waysOfWorkingValidUntil: '2070-01-01',
           programId: 'Updated program',
           studyTrackId: 'new-test-study-track-id',
           topic: 'Updated topic',
@@ -463,6 +468,7 @@ describe('Theisis router with mocks', () => {
 
       it('setting status to COMPLETED is not allowed, returns 403 and does not call sendEmail function', async () => {
         const updatedThesis = {
+          waysOfWorkingValidUntil: '2070-01-01',
           programId: 'Testing program',
           studyTrackId: 'test-study-track-id',
           topic: 'test topic',
@@ -506,6 +512,7 @@ describe('Theisis router with mocks', () => {
 
       it('setting status to CANCELLED should not call the sendEmail function and return 200', async () => {
         const updatedThesis = {
+          waysOfWorkingValidUntil: '2070-01-01',
           programId: 'Testing program',
           studyTrackId: 'test-study-track-id',
           topic: 'test topic',
