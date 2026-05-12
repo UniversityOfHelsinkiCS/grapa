@@ -1,4 +1,4 @@
-import { ThesisData, SupervisionData, TitleData } from '@backend/types'
+import { ThesisData, SupervisionData, TitleData } from '../types'
 import { titlesGraderGroup } from '../routes/thesisHelpers'
 export const getTotalPercentage = (supervisions: SupervisionData[]) =>
   supervisions.reduce((total, selection) => total + selection.percentage, 0)

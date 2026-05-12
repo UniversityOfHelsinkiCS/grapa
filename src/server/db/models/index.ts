@@ -87,6 +87,8 @@ Thesis.belongsToMany(User, {
   through: Author,
   as: 'authors',
 })
+Thesis.hasMany(Author, { foreignKey: 'thesisId', as: 'authorsForFiltering' })
+Thesis.hasMany(Author, { foreignKey: 'thesisId', as: 'authorsForSearch' })
 
 Approver.belongsTo(User, { as: 'user' })
 Thesis.belongsToMany(User, {

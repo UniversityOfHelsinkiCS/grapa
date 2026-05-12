@@ -493,6 +493,7 @@ const ThesesPage = ({
               handleEditThesis: initializeThesisEdit,
               handleDeleteThesis: initializeThesisDelete,
               handleSubitToEthesis: initializeSubitToEthesis,
+              isStudentView,
             },
             loadingOverlay: {
               variant: 'skeleton',

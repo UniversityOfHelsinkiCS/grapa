@@ -1,14 +1,16 @@
 import { DepartmentAdmin, Thesis } from '../db/models'
+import { Transaction } from 'sequelize'
 import {
   getFindThesesOptions,
   getOrdering,
   getGraderTitles,
   getSortByColumn,
 } from '../routes/thesisHelpers'
-import { transformThesisData } from '../util/helpers'
+import { transformThesisData, transformSingleThesis } from '../util/helpers'
 import { User as UserType, ThesisData } from '../types'
 import CustomValidationError from '../errors/ValidationError'
 import CustomAuthorizationError from '../errors/AuthorizationError'
+import CustomNotFoundError from '../errors/NotFoundError'
 
 export interface GetPaginatedThesesParams {
   currentUser: UserType
@@ -110,4 +112,50 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
   const theses = transformThesisData(thesesRows, thesisGraders)
 
   return { theses, totalCount: count }
+}
+
+export const fetchThesisById = async (
+  id: string,
+  user: UserType,
+  transaction?: Transaction,
+  onlyAuthored?: boolean
+) => {
+  const options = await getFindThesesOptions({
+    thesisId: id,
+    actionUser: user,
+    onlyAuthored,
+  })
+  // We need to use findAll here because we need to include
+  // Supervision model twice (see the explanation comment
+  // inside getFindThesesOptions).
+  // For some reason. findOne does not support that
+
+  const theses = await Thesis.findAll({ ...options, transaction })
+  const thesis = theses.find((t) => t.id === id)
+
+  return thesis
+}
+
+export const getSingleThesis = async (
+  id: string,
+  currentUser: UserType,
+  options: { onlyAuthored: boolean }
+) => {
+  const thesis = await fetchThesisById(
+    id,
+    currentUser,
+    undefined,
+    options.onlyAuthored
+  )
+
+  if (!thesis) throw new CustomNotFoundError('Thesis not found')
+
+  const graderTitles = await getGraderTitles(thesis)
+
+  const thesisData = transformSingleThesis(
+    thesis.toJSON() as ThesisData,
+    graderTitles
+  )
+
+  return thesisData
 }

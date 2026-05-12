@@ -7,7 +7,6 @@ import {
   ServerPostRequest,
   ServerPutRequest,
   ThesisData,
-  User as UserType,
 } from '../types'
 import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMutlipartFormData from '../middleware/attachment'
@@ -23,18 +22,14 @@ import {
 } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
-import { transformSingleThesis } from '../util/helpers'
-import { getPaginatedTheses } from '../services/thesisService'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import {
   getAndCreateExtUsers,
-  getFindThesesOptions,
   handleGradersChangeEventLog,
   handleStatusChangeEmail,
   handleStatusChangeEventLog,
   handleSupervisionsChangeEventLog,
   handleThesisCreationEmail,
-  getGraderTitles,
 } from './thesisHelpers'
 import {
   deleteThesisAttachments,
@@ -42,25 +37,13 @@ import {
 } from './thesisAttachmentHelpers'
 import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus'
 import ethesisUserHandler from '../middleware/ethesisUser'
+import {
+  getPaginatedTheses,
+  fetchThesisById,
+  getSingleThesis,
+} from '../services/thesisService'
 
 const thesisRouter = express.Router()
-
-const fetchThesisById = async (
-  id: string,
-  user: UserType,
-  transaction?: Transaction
-) => {
-  const options = await getFindThesesOptions({ thesisId: id, actionUser: user })
-  // We need to use findAll here because we need to include
-  // Supervision model twice (see the explanation comment
-  // inside getFindThesesOptions).
-  // For some reason. findOne does not support that
-
-  const theses = await Thesis.findAll({ ...options, transaction })
-  const thesis = theses.find((t) => t.id === id)
-
-  return thesis
-}
 
 const createThesis = async (thesisData: ThesisData, t: Transaction) => {
   const createdThesis = await Thesis.create(thesisData, { transaction: t })
@@ -258,16 +241,9 @@ thesisRouter.get(
       return res.status(400).send('Thesis ID is required')
     }
 
-    const thesis = await fetchThesisById(id, req.user)
-
-    if (!thesis) res.status(404).send('Thesis not found')
-
-    const graderTitles = await getGraderTitles(thesis)
-
-    const thesisData = transformSingleThesis(
-      thesis.toJSON() as ThesisData,
-      graderTitles
-    )
+    const thesisData = await getSingleThesis(id, req.user, {
+      onlyAuthored: false,
+    })
     res.send(thesisData)
   }
 )

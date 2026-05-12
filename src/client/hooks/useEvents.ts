@@ -5,9 +5,10 @@ import apiClient from '../util/apiClient'
 
 interface UseEventsParams {
   thesisId: string
+  enabled?: boolean
 }
 
-const useEvents = ({ thesisId }: UseEventsParams) => {
+const useEvents = ({ thesisId, enabled = true }: UseEventsParams) => {
   const queryKey = ['event-log', thesisId]
 
   const queryFn = async (): Promise<EventLogEntry[]> => {
@@ -19,7 +20,7 @@ const useEvents = ({ thesisId }: UseEventsParams) => {
   const { data: events, ...rest } = useQuery({
     queryKey,
     queryFn,
-    enabled: Boolean(thesisId),
+    enabled: enabled && Boolean(thesisId),
   })
 
   return { events, ...rest }

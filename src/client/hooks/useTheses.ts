@@ -78,11 +78,15 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
   return { theses: data?.theses, totalCount: data?.totalCount, ...rest }
 }
 
-export const useSingleThesis = (id: string | GridRowSelectionModel) => {
+export const useSingleThesis = (
+  id: string | GridRowSelectionModel,
+  useStudentPath?: boolean
+) => {
   const queryKey = ['theses', id]
 
   const queryFn = async (): Promise<ThesisData> => {
-    const { data } = await apiClient.get(`/theses/${id}`)
+    const endpoint = useStudentPath ? `/student/theses/${id}` : `/theses/${id}`
+    const { data } = await apiClient.get(endpoint)
 
     return data
   }

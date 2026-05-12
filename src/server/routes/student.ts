@@ -3,7 +3,7 @@ import express from 'express'
 import { RequestWithUser } from '../types'
 import withStudyRight from '../middleware/withStudyRight'
 
-import { getPaginatedTheses } from '../services/thesisService'
+import { getPaginatedTheses, getSingleThesis } from '../services/thesisService'
 
 import { getUsersBySearch } from '../services/userService'
 
@@ -30,6 +30,17 @@ studentRouter.get('/theses', async (req: RequestWithUser, res: any) => {
   })
 
   return res.send(result)
+})
+
+studentRouter.get('/theses/:id', async (req: RequestWithUser, res: any) => {
+  const { id } = req.params
+
+  if (!id || typeof id !== 'string') {
+    return res.status(400).send('Thesis ID is required')
+  }
+
+  const thesisData = await getSingleThesis(id, req.user, { onlyAuthored: true })
+  res.send(thesisData)
 })
 
 studentRouter.get('/users', async (req: RequestWithUser, res: any) => {

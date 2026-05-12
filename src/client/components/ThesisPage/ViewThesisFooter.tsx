@@ -101,20 +101,25 @@ const Authors = ({ authors }: { authors: User[] }) => (
 const ProgramTrack = ({
   programId,
   studyTrackId,
+  isStudentView,
+  thesisProgram,
 }: {
   programId: string
   studyTrackId: string
+  isStudentView?: boolean
+  thesisProgram?: any
 }) => {
   const { i18n } = useTranslation()
   const { programs, isLoading: programsLoading } = usePrograms({
     includeNotManaged: true,
+    enabled: !isStudentView,
   })
 
-  if (!programs || programsLoading) return null
+  if ((!programs && !thesisProgram) || programsLoading) return null
 
   const { language } = i18n
-  const program = programs.find((p) => p.id === programId)
-  const track = program?.studyTracks.find((t) => t.id === studyTrackId)
+  const program = programs?.find((p) => p.id === programId) ?? thesisProgram
+  const track = program?.studyTracks?.find((t: any) => t.id === studyTrackId)
 
   return (
     <Typography
@@ -420,6 +425,7 @@ const ViewThesisFooter = (
     handleEditThesis,
     handleDeleteThesis,
     handleSubitToEthesis,
+    isStudentView,
   } = props
 
   const thesisId = (rowSelectionModel.ids.size > 0
@@ -429,8 +435,11 @@ const ViewThesisFooter = (
   const { t } = useTranslation()
   const { user: currentUser } = useLoggedInUser()
   const [eventLogOpen, setEventLogOpen] = useState(false)
-  const { thesis, isLoading: thesisLoading } = useSingleThesis(thesisId)
-  const { events } = useEvents({ thesisId })
+  const { thesis, isLoading: thesisLoading } = useSingleThesis(
+    thesisId,
+    isStudentView
+  )
+  const { events } = useEvents({ thesisId, enabled: !isStudentView })
   const { mutateAsync: editThesis } = useEditThesisMutation()
 
   const ethesisReady =
@@ -487,8 +496,8 @@ const ViewThesisFooter = (
               <Box sx={{ display: 'flex', gap: 2 }}>
                 {Boolean(
                   thesis.status === THESIS_STATUSES.PLANNING &&
-                    thesis.approvers?.length &&
-                    thesis.approvers[0].id === currentUser?.id
+                  thesis.approvers?.length &&
+                  thesis.approvers[0].id === currentUser?.id
                 ) && (
                   <Button
                     variant="outlined"
@@ -571,7 +580,9 @@ const ViewThesisFooter = (
           <Box sx={{ p: 2 }}>
             <ProgramTrack
               programId={thesis.programId}
-              studyTrackId={thesis.studyTrackId}
+              studyTrackId={thesis.studyTrackId!}
+              isStudentView={isStudentView}
+              thesisProgram={thesis.program}
             />
 
             <Grid

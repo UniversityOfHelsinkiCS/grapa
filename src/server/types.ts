@@ -1,6 +1,6 @@
 import { GridFilterModel } from '@mui/x-data-grid'
 import { Request } from 'express'
-import { VALID_EVENT_LOG_TYPES } from 'src/config'
+import { VALID_EVENT_LOG_TYPES } from '../config'
 
 export interface TranslatedName {
   fi: string
@@ -92,6 +92,7 @@ export interface FileData {
 export interface ThesisData {
   id?: string
   programId: string
+  program?: ProgramData
   studyTrackId?: string
   departmentId?: string
   topic: string

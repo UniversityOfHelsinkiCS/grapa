@@ -13,6 +13,7 @@ import {
   Program,
   StudyTrack,
   EthesisAdmin,
+  Author,
 } from '../db/models'
 import { ThesisData, User as UserType } from '../types'
 import sendEmail from '../mailer/pate'
@@ -22,7 +23,7 @@ import {
   getWhereClauseForTwoWordSearch,
 } from './usersSearchHelpers'
 import { Literal } from 'sequelize/types/utils'
-import { TitleData } from '@backend/types'
+import { TitleData } from '../types'
 import { EMPLOYEE_TOKEN, GW_API_URL } from '../util/config'
 import { inStaging, inTest, inE2EMode } from '../../config'
 
@@ -162,7 +163,6 @@ export const getFindThesesOptions = async ({
       model: User,
       as: 'authors',
       attributes: userFields,
-      where: authorsPartial ? getAuthorsWhereClause(authorsPartial) : undefined,
     },
     {
       model: User,
@@ -186,11 +186,18 @@ export const getFindThesesOptions = async ({
     {
       model: Program,
       as: 'program',
-      attributes: [],
+      attributes: ['id', 'name'],
       where: programNamePartial
         ? getProgramWhereClause(programNamePartial, language)
         : undefined,
       required: true,
+      include: [
+        {
+          model: StudyTrack,
+          as: 'studyTracks',
+          attributes: ['id', 'name'],
+        },
+      ],
     },
   ]
 
@@ -225,6 +232,27 @@ export const getFindThesesOptions = async ({
             where: { departmentId },
             // we need both required: true here and below
             // for the query to work correctly
+            required: true,
+          },
+        ],
+        required: true,
+      },
+    ]
+  }
+
+  if (authorsPartial) {
+    includes = [
+      ...includes,
+      {
+        model: Author,
+        as: 'authorsForSearch',
+        attributes: [],
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: [],
+            where: getAuthorsWhereClause(authorsPartial),
             required: true,
           },
         ],
@@ -280,6 +308,16 @@ export const getFindThesesOptions = async ({
     }
     includes = [...includes, seminarClause]
 
+    includes = [
+      ...includes,
+      {
+        model: Author,
+        as: 'authorsForFiltering',
+        attributes: [],
+        required: false,
+      },
+    ]
+
     const programIds = programManagement.map((pm) => pm.programId)
 
     if (onlySeminarSupervised) {
@@ -290,7 +328,7 @@ export const getFindThesesOptions = async ({
     } else if (onlyAuthored) {
       whereClause = {
         ...whereClause,
-        '$authors.Author.user_id$': actionUser.id,
+        '$authorsForFiltering.user_id$': actionUser.id,
       }
     } else {
       whereClause = {
@@ -302,7 +340,7 @@ export const getFindThesesOptions = async ({
           { '$approvers.Approver.user_id$': actionUser.id },
           // but we also want to show all theses within programs
           // managed by the user
-          programIds?.length ? { programId: programIds } : {},
+          ...(programIds?.length ? [{ programId: programIds }] : []),
         ],
       }
     }

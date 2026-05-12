@@ -6,13 +6,14 @@ import {
   UUIDV4,
   NonAttribute,
 } from 'sequelize'
-import type { ThesisStatus } from '@backend/types'
+import type { ThesisStatus } from '../../types'
 
 import { sequelize } from '../connection'
 import Grader from './Grader'
 import SeminarSupervision from './SeminarSupervision'
 import Supervision from './Supervision'
 import User from './User'
+import Program from './Program'
 
 class Thesis extends Model<
   InferAttributes<Thesis>,
@@ -43,6 +44,8 @@ class Thesis extends Model<
   declare supervisions: NonAttribute<Supervision[]>
 
   declare seminarSupervisions: NonAttribute<SeminarSupervision[]>
+
+  declare program: NonAttribute<Program>
 }
 
 Thesis.init(
