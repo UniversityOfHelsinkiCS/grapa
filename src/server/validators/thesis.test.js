@@ -23,6 +23,7 @@ describe('validateThesisData', () => {
       body: {
         topic: 'Test thesis',
         programId: 'test-program',
+        status: "SUGGESTED",
         supervisions: [
           {
             user: {
