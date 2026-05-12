@@ -4,6 +4,7 @@ import { uniqBy } from 'lodash-es'
 import CustomValidationError from '../errors/ValidationError'
 import { getTotalPercentage } from '../util/helpers'
 import { Program } from '../db/models'
+import { VALID_THESIS_STATUSES } from '../../config'
 
 const validateUser = (user: any) => {
   if (!user) {
@@ -62,6 +63,12 @@ export const validateThesisData = async (
   next: NextFunction
 ) => {
   const thesisData = req.body
+
+  if (!VALID_THESIS_STATUSES.includes(thesisData.status)) {
+    throw new CustomValidationError('Thesis status is not a valid value', {
+      status: ['Thesis status is not a valid value'],
+    })
+  }
 
   if (!thesisData.topic) {
     throw new CustomValidationError('Thesis title is required', {

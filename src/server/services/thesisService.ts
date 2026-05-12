@@ -1,10 +1,20 @@
-import { DepartmentAdmin, Thesis } from '../db/models'
-import { Transaction } from 'sequelize'
+import { type Transaction } from 'sequelize'
+import {
+  DepartmentAdmin,
+  Grader,
+  SeminarSupervision,
+  Thesis,
+  Supervision,
+  Author,
+  Approver,
+  User,
+} from '../db/models'
 import {
   getFindThesesOptions,
   getOrdering,
   getGraderTitles,
   getSortByColumn,
+  getAndCreateExtUsers,
 } from '../routes/thesisHelpers'
 import { transformThesisData, transformSingleThesis } from '../util/helpers'
 import { User as UserType, ThesisData } from '../types'
@@ -112,6 +122,88 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
   const theses = transformThesisData(thesesRows, thesisGraders)
 
   return { theses, totalCount: count }
+}
+
+export const createThesis = async (thesisData: ThesisData, t: Transaction) => {
+  const createdThesis = await Thesis.create(thesisData, { transaction: t })
+
+  const extUsers = await getAndCreateExtUsers(thesisData, t)
+
+  await Supervision.bulkCreate(
+    thesisData.supervisions.map((supervision) => ({
+      userId:
+        supervision.user?.id ??
+        extUsers.find((u) => u.email === supervision.user?.email)?.id,
+      thesisId: createdThesis.id,
+      percentage: supervision.percentage,
+      isPrimarySupervisor: supervision.isPrimarySupervisor,
+    })),
+    { transaction: t, validate: true, individualHooks: true }
+  )
+
+  await SeminarSupervision.bulkCreate(
+    (thesisData.seminarSupervisions ?? [])
+      .filter((seminarSupervision) => Boolean(seminarSupervision.user))
+      .map((seminarSupervision) => ({
+        userId:
+          seminarSupervision.user?.id ??
+          extUsers.find((u) => u.email === seminarSupervision.user?.email)?.id,
+        thesisId: createdThesis.id,
+      })),
+    { transaction: t, validate: true, individualHooks: true }
+  )
+
+  await Author.bulkCreate(
+    thesisData.authors.map((author) => ({
+      userId: author.id,
+      thesisId: createdThesis.id,
+    })),
+    { transaction: t, validate: true, individualHooks: true }
+  )
+
+  // We want to account for the case where approvers array is
+  // sent as undefined from the client
+  if (thesisData.approvers?.length) {
+    await Approver.bulkCreate(
+      thesisData.approvers.map((approver) => ({
+        userId: approver.id,
+        thesisId: createdThesis.id,
+      })),
+      { transaction: t, validate: true, individualHooks: true }
+    )
+  }
+
+  // Create the external users from the graders
+  await User.bulkCreate(
+    thesisData.graders
+      .filter((grader) => grader.isExternal)
+      .map((grader) => ({
+        username: `ext-${grader.user?.email}`,
+        firstName: grader.user?.firstName,
+        lastName: grader.user?.lastName,
+        email: grader.user?.email,
+        isExternal: true,
+      })),
+    {
+      transaction: t,
+      updateOnDuplicate: ['username'],
+      validate: true,
+    }
+  )
+
+  await Grader.bulkCreate(
+    thesisData.graders
+      .filter((x) => Boolean(x?.user))
+      .map((grader) => ({
+        userId:
+          grader.user?.id ??
+          extUsers.find((u) => u.email === grader.user?.email)?.id,
+        thesisId: createdThesis.id,
+        isPrimaryGrader: grader?.isPrimaryGrader,
+      })),
+    { transaction: t, validate: true, individualHooks: true }
+  )
+  return createdThesis
 }
 
 export const fetchThesisById = async (

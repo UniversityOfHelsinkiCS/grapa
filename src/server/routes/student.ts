@@ -1,11 +1,28 @@
 import express from 'express'
+import { ServerPostRequest } from '../types'
+import { sequelize } from '../db/connection'
+
+import { EventLog } from '../db/models'
 
 import { RequestWithUser } from '../types'
 import withStudyRight from '../middleware/withStudyRight'
 
-import { getPaginatedTheses, getSingleThesis } from '../services/thesisService'
+import {
+  getPaginatedTheses,
+  createThesis,
+  getSingleThesis,
+} from '../services/thesisService'
 
 import { getUsersBySearch } from '../services/userService'
+
+import ethesisUserHandler from '../middleware/ethesisUser'
+import parseFormDataJson from '../middleware/parseFormDataJson'
+import parseMutlipartFormData from '../middleware/attachment'
+import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
+import { validateThesisData } from '../validators/thesis'
+
+import { handleAttachmentByLabel } from './thesisAttachmentHelpers'
+import { handleThesisCreationEmail } from './thesisHelpers'
 
 const studentRouter = express.Router()
 
@@ -48,5 +65,50 @@ studentRouter.get('/users', async (req: RequestWithUser, res: any) => {
   const result = await getUsersBySearch(search as string)
   res.send(result)
 })
+
+studentRouter.post(
+  '/',
+  ethesisUserHandler,
+  parseMutlipartFormData,
+  parseFormDataJson,
+  // @ts-expect-error the middleware updates the req object with the parsed JSON
+  validateThesisData,
+  authorizeStatusChange,
+  async (req: ServerPostRequest, res: any) => {
+    const thesisData = req.body
+
+    // Restrict students from creating theses with other statuses than SUGGESTED
+    if (thesisData.status != 'SUGGESTED') {
+      res
+        .status(400)
+        .send(
+          "Student's cannot create theses with other statuses than SUGGESTED"
+        )
+      return
+    }
+
+    const createdThesis = await sequelize.transaction(async (t) => {
+      const newThesis = await createThesis(thesisData, t)
+
+      await handleAttachmentByLabel(req, newThesis.id, 'researchPlan', t)
+      await handleAttachmentByLabel(req, newThesis.id, 'waysOfWorking', t)
+
+      await EventLog.create(
+        {
+          thesisId: newThesis.id,
+          userId: req.user.id,
+          type: 'THESIS_CREATED',
+        },
+        { transaction: t }
+      )
+
+      await handleThesisCreationEmail(thesisData, req.user)
+
+      return newThesis.toJSON()
+    })
+
+    res.status(201).send(createdThesis)
+  }
+)
 
 export default studentRouter

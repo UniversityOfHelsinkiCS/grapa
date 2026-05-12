@@ -33,12 +33,16 @@ export const VALID_EVENT_LOG_TYPES = [
   'THESIS_STATUS_CHANGED',
 ] as const
 
-export const THESIS_STATUSES = {
-  SUGGESTED: 'SUGGESTED',
-  PLANNING: 'PLANNING',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
-  CANCELLED: 'CANCELLED',
-  ETHESIS: 'ETHESIS',
-  ETHESIS_SENT: 'ETHESIS_SENT',
-}
+export const VALID_THESIS_STATUSES = [
+  'SUGGESTED',
+  'PLANNING',
+  'IN_PROGRESS',
+  'COMPLETED',
+  'CANCELLED',
+  'ETHESIS',
+  'ETHESIS_SENT',
+]
+
+export const THESIS_STATUSES = Object.fromEntries(
+  VALID_THESIS_STATUSES.map((status) => [status, status])
+)
