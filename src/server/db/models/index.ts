@@ -96,6 +96,11 @@ Thesis.belongsToMany(User, {
   as: 'approvers',
 })
 
+Thesis.hasMany(Approver, {
+  foreignKey: 'thesisId',
+  as: 'approversForFiltering',
+})
+
 Attachment.belongsTo(Thesis, { as: 'thesis' })
 Thesis.hasOne(Attachment, { as: 'researchPlan', foreignKey: 'thesisId' })
 Thesis.hasOne(Attachment, { as: 'waysOfWorking', foreignKey: 'thesisId' })

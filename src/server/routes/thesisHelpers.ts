@@ -14,6 +14,7 @@ import {
   StudyTrack,
   EthesisAdmin,
   Author,
+  Approver,
 } from '../db/models'
 import { ThesisData, User as UserType } from '../types'
 import sendEmail from '../mailer/pate'
@@ -196,6 +197,7 @@ export const getFindThesesOptions = async ({
           model: StudyTrack,
           as: 'studyTracks',
           attributes: ['id', 'name'],
+          separate: true,
         },
       ],
     },
@@ -316,6 +318,12 @@ export const getFindThesesOptions = async ({
         attributes: [],
         required: false,
       },
+      {
+        model: Approver,
+        as: 'approversForFiltering',
+        attributes: [],
+        required: false,
+      },
     ]
 
     const programIds = programManagement.map((pm) => pm.programId)
@@ -337,7 +345,7 @@ export const getFindThesesOptions = async ({
           // if a user is only a teacher (not admin nor supervisor),
           // they should only see theses they supervise
           { '$supervisionsForFiltering.user_id$': actionUser.id },
-          { '$approvers.Approver.user_id$': actionUser.id },
+          { '$approversForFiltering.user_id$': actionUser.id },
           // but we also want to show all theses within programs
           // managed by the user
           ...(programIds?.length ? [{ programId: programIds }] : []),
@@ -345,6 +353,19 @@ export const getFindThesesOptions = async ({
       }
     }
   }
+
+  const filteringIncludes = includes.filter((inc: any) => {
+    const alias = inc.as || ''
+    return [
+      'program',
+      'approversForFiltering',
+      'supervisionsForDepartmentFiltering',
+      'authorsForSearch',
+      'supervisionsForFiltering',
+      'seminarSupervisionsForFiltering',
+      'authorsForFiltering',
+    ].includes(alias)
+  })
 
   return {
     where: whereClause,
@@ -361,6 +382,7 @@ export const getFindThesesOptions = async ({
       'updatedAt',
     ],
     include: includes,
+    filteringIncludes,
   }
 }
 
