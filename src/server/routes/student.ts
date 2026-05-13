@@ -77,13 +77,11 @@ studentRouter.post(
   async (req: ServerPostRequest, res: any) => {
     const thesisData = req.body
 
-    // Restrict students from creating theses with other statuses than SUGGESTED
-    if (thesisData.status != 'SUGGESTED') {
+    // Restrict students from creating theses with other statuses than DRAFT
+    if (thesisData.status != 'DRAFT') {
       res
         .status(400)
-        .send(
-          "Student's cannot create theses with other statuses than SUGGESTED"
-        )
+        .send("Student's cannot create theses with other statuses than DRAFT")
       return
     }
 

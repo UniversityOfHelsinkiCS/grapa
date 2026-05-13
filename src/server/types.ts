@@ -54,6 +54,7 @@ export interface TitleData {
 }
 
 export type ThesisStatus =
+  | 'DRAFT'
   | 'SUGGESTED'
   | 'PLANNING'
   | 'IN_PROGRESS'

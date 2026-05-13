@@ -34,6 +34,7 @@ export const VALID_EVENT_LOG_TYPES = [
 ] as const
 
 export const VALID_THESIS_STATUSES = [
+  'DRAFT',
   'SUGGESTED',
   'PLANNING',
   'IN_PROGRESS',

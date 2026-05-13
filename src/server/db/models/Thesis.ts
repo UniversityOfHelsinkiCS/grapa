@@ -79,6 +79,7 @@ Thesis.init(
     status: {
       type: DataTypes.ENUM,
       values: [
+        'DRAFT',
         'SUGGESTED',
         'PLANNING',
         'IN_PROGRESS',

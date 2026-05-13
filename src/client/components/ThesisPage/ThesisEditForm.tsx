@@ -134,11 +134,11 @@ const ThesisEditForm: FC<{
   const thesisStatus = initialThesis.status
 
   const showStatusForm =
-    user.isAdmin ||
-    ['SUGGESTED', 'IN_PROGRESS', 'CANCELLED'].includes(thesisStatus)
+    user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(thesisStatus)
 
   const showOption = {
-    SUGGESTED: user.isAdmin || thesisStatus === 'SUGGESTED',
+    DRAFT: user.isAdmin,
+    SUGGESTED: user.isAdmin,
     PLANNING: user.isAdmin,
     IN_PROGRESS:
       user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(thesisStatus),
@@ -508,6 +508,9 @@ const ThesisEditForm: FC<{
                   }}
                   error={formErrors.some((error) => error.path[0] === 'status')}
                 >
+                  {showOption['DRAFT'] && (
+                    <MenuItem value="DRAFT">{t(StatusLocale.DRAFT)}</MenuItem>
+                  )}
                   {showOption['SUGGESTED'] && (
                     <MenuItem value="SUGGESTED">
                       {t(StatusLocale.SUGGESTED)}

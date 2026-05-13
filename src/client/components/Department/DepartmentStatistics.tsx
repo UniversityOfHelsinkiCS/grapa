@@ -62,6 +62,7 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
     },
     {
       startedWithinHalfYearCount: 0,
+      DRAFT: 0,
       SUGGESTED: 0,
       PLANNING: 0,
       IN_PROGRESS: 0,
@@ -87,6 +88,19 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
       headerAlign: 'left',
       flex: 1,
       valueGetter: ({ name }) => name[language],
+    },
+    {
+      field: 'thesisCount.DRAFT',
+      headerName: t('thesisStages:draft'),
+      renderHeader: () => (
+        <Typography variant="body2">
+          {t('thesisStages:draft') + ` (${totalThesisCounts.DRAFT})`}
+        </Typography>
+      ),
+      filterable: false,
+      width: 150,
+      type: 'number',
+      valueGetter: (_, { statusCounts }) => statusCounts.DRAFT,
     },
     {
       field: 'thesisCount.SUGGESTED',
@@ -209,6 +223,7 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
             groupId: t('departmentStatisticsPage:thesisCountHeader'),
             headerAlign: 'center',
             children: [
+              { field: 'thesisCount.DRAFT' },
               { field: 'thesisCount.SUGGESTED' },
               { field: 'thesisCount.PLANNING' },
               { field: 'thesisCount.IN_PROGRESS' },

@@ -220,6 +220,7 @@
     "admin": "admin"
   },
   "thesisStages": {
+    "draft": "Luonnos",
     "suggested": "Ehdotus",
     "planned": "Suunniteltu",
     "inProgress": "Käynnissä",

@@ -240,6 +240,7 @@ describe('department-admins router', () => {
               departmentId: user1.departmentId,
             },
             statusCounts: {
+              DRAFT: 0,
               PLANNING: 1,
               IN_PROGRESS: 0,
               COMPLETED: 0,
@@ -264,6 +265,7 @@ describe('department-admins router', () => {
               departmentId: user2.departmentId,
             },
             statusCounts: {
+              DRAFT: 0,
               PLANNING: 1,
               IN_PROGRESS: 0,
               COMPLETED: 0,
@@ -450,6 +452,7 @@ describe('department-admins router', () => {
               departmentId: user1.departmentId,
             },
             statusCounts: {
+              DRAFT: 0,
               PLANNING: 1,
               IN_PROGRESS: 0,
               COMPLETED: 0,

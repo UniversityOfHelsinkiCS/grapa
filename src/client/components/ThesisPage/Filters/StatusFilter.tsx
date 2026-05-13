@@ -59,6 +59,10 @@ const StatusFilter = (props: GridFilterInputValueProps) => {
             return selectedValues.join(', ')
           }}
         >
+          <MenuItem sx={{ m: 0, p: 0 }} value={THESIS_STATUSES.DRAFT}>
+            <Checkbox checked={itemValue.includes(THESIS_STATUSES.DRAFT)} />
+            <ListItemText primary={t(StatusLocale.DRAFT)} />
+          </MenuItem>
           <MenuItem sx={{ m: 0, p: 0 }} value={THESIS_STATUSES.SUGGESTED}>
             <Checkbox checked={itemValue.includes(THESIS_STATUSES.SUGGESTED)} />
             <ListItemText primary={t(StatusLocale.SUGGESTED)} />
