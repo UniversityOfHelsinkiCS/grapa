@@ -256,10 +256,7 @@ const ThesesPage = ({
       filterOperators: allowedFilterOperators,
       headerName: t('programHeader'),
       width: 250,
-      valueGetter: (_, row) =>
-        (programs ?? []).find((program) => program.id === row.programId)?.name[
-          language
-        ],
+      valueGetter: (_, row) => row.program?.name[language],
     },
     {
       field: 'topic',
