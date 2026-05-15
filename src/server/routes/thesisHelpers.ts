@@ -168,7 +168,6 @@ export const getFindThesesOptions = async ({
       model: User,
       as: 'authors',
       attributes: userFields,
-      where: authorsPartial ? getAuthorsWhereClause(authorsPartial) : undefined,
     },
     {
       model: User,
@@ -201,6 +200,35 @@ export const getFindThesesOptions = async ({
   ]
 
   let whereClause: Record<any, any> = thesisId ? { id: thesisId } : {}
+
+  if (authorsPartial) {
+    const matchingUsers = await User.findAll({
+      attributes: ['id'],
+      where: getAuthorsWhereClause(authorsPartial),
+      raw: true,
+    })
+    const matchingUserIds = matchingUsers.map((u: any) => u.id)
+
+    const matchingAuthorsList = await Author.findAll({
+      attributes: ['thesisId'],
+      where: { userId: { [Op.in]: matchingUserIds } },
+      raw: true,
+    })
+    const matchingThesisIds = matchingAuthorsList.map((a: any) => a.thesisId)
+
+    if (whereClause.id) {
+      whereClause.id = {
+        [Op.and]: [
+          typeof whereClause.id === 'string'
+            ? { [Op.eq]: whereClause.id }
+            : whereClause.id,
+          { [Op.in]: matchingThesisIds },
+        ],
+      }
+    } else {
+      whereClause.id = { [Op.in]: matchingThesisIds }
+    }
+  }
 
   if (programId) {
     whereClause = { ...whereClause, programId }
@@ -725,7 +753,12 @@ export const getSortByColumn = (
       )
     case 'authors':
       return literal(
-        `(SELECT "users"."last_name" FROM "users" INNER JOIN "authors" ON "users"."id" = "authors"."user_id" WHERE "authors"."thesis_id" = "Thesis"."id" LIMIT 1)`
+        `(SELECT "users"."last_name" 
+          FROM "users" 
+          INNER JOIN "authors" ON "users"."id" = "authors"."user_id" 
+          WHERE "authors"."thesis_id" = "Thesis"."id" 
+          ORDER BY "users"."last_name" ASC 
+          LIMIT 1)`
       )
     case 'startDate':
       return 'startDate'

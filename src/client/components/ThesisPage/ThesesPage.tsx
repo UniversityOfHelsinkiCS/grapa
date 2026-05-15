@@ -273,6 +273,7 @@ const ThesesPage = ({
       width: 300,
       valueGetter: (_, row) =>
         row.authors
+          .toSorted((a, b) => a.lastName.localeCompare(b.lastName))
           .map(
             (author) =>
               `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
