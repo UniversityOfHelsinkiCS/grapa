@@ -91,7 +91,7 @@ const UserInformation = () => {
 
 const ProfileMenu = () => {
   const { t } = useTranslation()
-  const { user, isLoading } = useLoggedInUser()
+  const { user, isLoading, hasStaffAccess } = useLoggedInUser()
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
@@ -171,9 +171,13 @@ const ProfileMenu = () => {
         disableAutoFocusItem
       >
         <LanguageSelect />
-        <Divider />
-        <FavoritePrograms />
-        <Divider />
+        {hasStaffAccess && (
+          <>
+            <Divider />
+            <FavoritePrograms />
+            <Divider />
+          </>
+        )}
         <UserInformation />
         <Divider />
         <Logout />
