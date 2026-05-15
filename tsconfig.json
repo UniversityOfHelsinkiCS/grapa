@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "moduleDetection": "force",
     "types": ["jest"],
     "allowJs": true,
@@ -31,15 +31,5 @@
     "setupIntegrationTests.ts",
     "setupTests.ts"
   ],
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "ts-node": {
-    "esm": true,
-    "transpileOnly": true,
-    "files": true,
-    "experimentalResolver": true,
-    "compilerOptions": {
-      "module": "esnext",
-      "resolveJsonModule": false
-    }
-  }
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
