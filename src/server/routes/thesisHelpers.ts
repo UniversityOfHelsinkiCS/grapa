@@ -125,7 +125,7 @@ export const getFindThesesOptions = async ({
   onlySeminarSupervised,
   onlyAuthored,
 }: FetchThesisProps) => {
-  let includes: Includeable[] = [
+  const includes: Includeable[] = [
     {
       model: Supervision,
       as: 'supervisions',
@@ -199,7 +199,9 @@ export const getFindThesesOptions = async ({
     },
   ]
 
-  let whereClause: Record<any, any> = thesisId ? { id: thesisId } : {}
+  const whereClause: Record<any, any> = thesisId ? { id: thesisId } : {}
+
+  const andConditions: any[] = []
 
   if (authorsPartial) {
     const matchingUsers = await User.findAll({
@@ -217,54 +219,39 @@ export const getFindThesesOptions = async ({
     const matchingThesisIds = matchingAuthorsList.map((a: any) => a.thesisId)
 
     if (whereClause.id) {
-      whereClause.id = {
-        [Op.and]: [
-          typeof whereClause.id === 'string'
-            ? { [Op.eq]: whereClause.id }
-            : whereClause.id,
-          { [Op.in]: matchingThesisIds },
-        ],
-      }
+      andConditions.push({
+        id: {
+          [Op.and]: [
+            typeof whereClause.id === 'string'
+              ? { [Op.eq]: whereClause.id }
+              : whereClause.id,
+            { [Op.in]: matchingThesisIds },
+          ],
+        },
+      })
     } else {
       whereClause.id = { [Op.in]: matchingThesisIds }
     }
   }
 
   if (programId) {
-    whereClause = { ...whereClause, programId }
+    whereClause.programId = programId
   }
   if (topicPartial) {
-    whereClause = {
-      ...whereClause,
-      topic: {
-        [Op.iLike]: `%${topicPartial.trim()}%`,
-      },
+    whereClause.topic = {
+      [Op.iLike]: `%${topicPartial.trim()}%`,
     }
   }
   if (status) {
-    whereClause = { ...whereClause, status }
+    whereClause.status = status
   }
+
   if (departmentId) {
-    includes = [
-      ...includes,
-      {
-        model: Supervision,
-        as: 'supervisionsForDepartmentFiltering',
-        attributes: [],
-        include: [
-          {
-            model: User,
-            as: 'userForDepartmentFiltering',
-            attributes: [],
-            where: { departmentId },
-            // we need both required: true here and below
-            // for the query to work correctly
-            required: true,
-          },
-        ],
-        required: true,
-      },
-    ]
+    andConditions.push(
+      literal(
+        `EXISTS (SELECT 1 FROM "${Supervision.tableName}" INNER JOIN "${User.tableName}" ON "${Supervision.tableName}"."user_id" = "${User.tableName}"."id" WHERE "${Supervision.tableName}"."thesis_id" = "Thesis"."id" AND "${User.tableName}"."department_id" = '${departmentId}')`
+      )
+    )
   }
 
   if (
@@ -284,33 +271,32 @@ export const getFindThesesOptions = async ({
     const programIds = programManagement.map((pm) => pm.programId)
 
     if (onlySeminarSupervised) {
-      whereClause = {
-        ...whereClause,
-        [Op.and]: literal(
+      andConditions.push(
+        literal(
           `EXISTS (SELECT 1 FROM "${SeminarSupervision.tableName}" WHERE "${SeminarSupervision.tableName}"."thesis_id" = "Thesis"."id" AND "${SeminarSupervision.tableName}"."user_id" = '${actionUser.id}')`
-        ),
-      }
+        )
+      )
     } else if (onlyAuthored) {
-      whereClause = {
-        ...whereClause,
-        [Op.and]: literal(
+      andConditions.push(
+        literal(
           `EXISTS (SELECT 1 FROM "${Author.tableName}" WHERE "${Author.tableName}"."thesis_id" = "Thesis"."id" AND "${Author.tableName}"."user_id" = '${actionUser.id}')`
-        ),
-      }
+        )
+      )
     } else {
-      whereClause = {
-        ...whereClause,
-        [Op.or]: [
-          literal(
-            `EXISTS (SELECT 1 FROM "${Supervision.tableName}" WHERE "${Supervision.tableName}"."thesis_id" = "Thesis"."id" AND "${Supervision.tableName}"."user_id" = '${actionUser.id}')`
-          ),
-          literal(
-            `EXISTS (SELECT 1 FROM "${Approver.tableName}" WHERE "${Approver.tableName}"."thesis_id" = "Thesis"."id" AND "${Approver.tableName}"."user_id" = '${actionUser.id}')`
-          ),
-          programIds?.length ? { programId: programIds } : {},
-        ],
-      }
+      whereClause[Op.or] = [
+        literal(
+          `EXISTS (SELECT 1 FROM "${Supervision.tableName}" WHERE "${Supervision.tableName}"."thesis_id" = "Thesis"."id" AND "${Supervision.tableName}"."user_id" = '${actionUser.id}')`
+        ),
+        literal(
+          `EXISTS (SELECT 1 FROM "${Approver.tableName}" WHERE "${Approver.tableName}"."thesis_id" = "Thesis"."id" AND "${Approver.tableName}"."user_id" = '${actionUser.id}')`
+        ),
+        programIds?.length ? { programId: programIds } : {},
+      ]
     }
+  }
+
+  if (andConditions.length > 0) {
+    whereClause[Op.and] = andConditions
   }
 
   return {
