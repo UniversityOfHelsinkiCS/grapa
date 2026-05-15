@@ -21,7 +21,6 @@ import {
 
 import { usePaginatedTheses } from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
-import usePrograms from '../../hooks/usePrograms'
 
 import ThesisToolbar from '../ThesisPage/ThesisToolbar'
 import StatusFilter from '../ThesisPage/Filters/StatusFilter'
@@ -100,10 +99,6 @@ const DepartmentTheses = ({
       }))
     )
 
-  const { programs, isLoading: isProgramLoading } = usePrograms({
-    includeNotManaged: true,
-  })
-
   const dataGridLocale = language === 'fi' ? fiFI : enUS
 
   const rowCountRef = useRef(totalCount || 0)
@@ -137,10 +132,7 @@ const DepartmentTheses = ({
       filterOperators: allowedFilterOperators,
       headerName: t('programHeader'),
       width: 250,
-      valueGetter: (_, row) =>
-        (programs ?? []).find((program) => program.id === row.programId)?.name[
-          language
-        ],
+      valueGetter: (_, row) => row.program?.name[language],
     },
     {
       field: 'topic',
@@ -281,7 +273,7 @@ const DepartmentTheses = ({
     }
   }, [])
 
-  const isLoading = loggedInUserLoading || isThesesLoading || isProgramLoading
+  const isLoading = loggedInUserLoading || isThesesLoading
   return (
     <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
       <Box>
