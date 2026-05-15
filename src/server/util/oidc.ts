@@ -51,7 +51,7 @@ const claims = inDevelopment
       },
     }
 
-const scopes = 'openid'
+const scopes = 'openid profile email'
 
 const checkAdmin = (iamGroups: string[]) =>
   iamGroups.some((iamGroup) => ['grp-toska'].includes(iamGroup))

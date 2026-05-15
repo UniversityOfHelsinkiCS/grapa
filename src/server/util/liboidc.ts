@@ -96,6 +96,11 @@ export async function handle_callback(
 
   console.log('Authorization code grant request', response)
 
+  if (!response.ok) {
+    console.log('Response fail', await response.text())
+    throw Error('Server responded with an error during code grant request')
+  }
+
   const result = await oauth.processAuthorizationCodeResponse(
     instance.as,
     instance.client,
