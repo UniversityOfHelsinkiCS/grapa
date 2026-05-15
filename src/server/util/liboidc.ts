@@ -81,6 +81,8 @@ export async function handle_callback(
     request_options[allowInsecureRequests] = true
   }
 
+  console.log('Starting handling callback', request_options)
+
   const response = await oauth.authorizationCodeGrantRequest(
     instance.as,
     instance.client,
@@ -92,6 +94,8 @@ export async function handle_callback(
     request_options
   )
 
+  console.log('Authorization code grant request', response)
+
   const result = await oauth.processAuthorizationCodeResponse(
     instance.as,
     instance.client,
@@ -101,10 +105,14 @@ export async function handle_callback(
     }
   )
 
+  console.log('Processes response', result)
+
   const claims = oauth.getValidatedIdTokenClaims(result)
   const access_token = result['access_token']
   const id_token = result['id_token']
   const sub = claims?.sub
+
+  console.log('Claims', claims)
 
   if (sub == undefined) {
     throw Error('sub field missing from claims')
@@ -116,6 +124,9 @@ export async function handle_callback(
     access_token,
     request_options
   )
+
+  console.log('Userinfo', user_response)
+
   const userinfo = await oauth.processUserInfoResponse(
     instance.as,
     instance.client,
@@ -221,11 +232,13 @@ export class liboidc_strategy extends passport.Strategy {
         req.session.code_verifier = auth_intance.code_verifier
         this.redirect(auth_intance.authorizationUrl.href)
       } else {
+        console.log('Starting callback', current_url, req.session)
         const result = await handle_callback(
           this.oidc_instance,
           current_url.href,
           req.session.code_verifier
         )
+        console.log('Result', result)
 
         this.verify(null, result.userinfo, (error: Error, user: any) => {
           if (error != null) {
