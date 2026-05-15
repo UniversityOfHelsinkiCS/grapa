@@ -22,9 +22,11 @@ export const PATE_URL =
     ? 'https://api-toska.apps.ocp-prod-0.k8s.it.helsinki.fi/pate/'
     : 'https://api-toska.apps.ocp-test-0.k8s.it.helsinki.fi/pate/'
 
-export const OIDC_ISSUER = inProduction
-  ? 'https://login.helsinki.fi/.well-known/openid-configuration'
-  : 'https://login-test.it.helsinki.fi/.well-known/openid-configuration'
+export const OIDC_ISSUER = inDevelopment
+  ? 'http://login.toska.localhost:3001/'
+  : inProduction
+    ? 'https://login.helsinki.fi/'
+    : 'https://login-test.it.helsinki.fi/'
 
 export const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID || ''
 
@@ -43,8 +45,9 @@ export const IMPORTER_URL =
     ? 'https://api-toska.apps.ocp-prod-0.k8s.it.helsinki.fi/importer'
     : 'https://api-toska.apps.ocp-test-0.k8s.it.helsinki.fi/importer'
 
-export const LOGOUT_REDIRECT_URL =
-  inProduction || inDevelopment
+export const LOGOUT_REDIRECT_URL = inDevelopment
+  ? 'http://login.toska.localhost:3001/session/end'
+  : inProduction
     ? 'https://login.helsinki.fi/idp/profile/Logout'
     : 'https://login-test.it.helsinki.fi/idp/profile/Logout'
 

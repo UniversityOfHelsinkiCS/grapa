@@ -6,6 +6,8 @@ export const inProduction = !inStaging && process.env.NODE_ENV === 'production'
 
 export const inTest = process.env.NODE_ENV === 'test'
 
+export const localOIDC = false
+
 export const inE2EMode = process.env.REACT_APP_E2E === 'true'
 
 export const GIT_SHA = process.env.REACT_APP_GIT_SHA || ''
@@ -18,7 +20,9 @@ export const FULL_URL = inProduction
   ? 'https://prethesis.helsinki.fi'
   : inStaging
     ? 'https://grapa.ext.ocp-test-0.k8s.it.helsinki.fi'
-    : 'http://localhost:3000'
+    : inDevelopment
+      ? 'http://prethesis.toska.localhost:3000'
+      : 'http://localhost:3000'
 
 export const SELECTED_LANGUAGE_STORAGE_KEY = 'grapa-admin-selected-language'
 

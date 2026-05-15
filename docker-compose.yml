@@ -28,5 +28,13 @@ services:
     image: redis:7-alpine
     container_name: grapa_redis
 
+  # login.toska.localhost:
+  #   image: hy-oidc-emu
+  #   ports: 
+  #     - 3001:3001
+  #   volumes:
+  #     - ./oidc_emu/accounts.json:/opt/app-root/src/accounts.json
+  #     - ./oidc_emu/configuration.json:/opt/app-root/src/configuration.json
+
 volumes:
   pg_data:

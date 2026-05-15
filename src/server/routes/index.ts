@@ -22,7 +22,7 @@ import ethesisAdminRouter from './ethesisAdmins'
 
 import logoutRouter from './logout'
 
-import { inDevelopment, inE2EMode, inTest } from '../../config'
+import { inDevelopment, inE2EMode, inTest, localOIDC } from '../../config'
 import initializeSentry from '../util/sentry'
 import sentryUserMiddleware from '../middleware/sentry'
 
@@ -33,8 +33,9 @@ initializeSentry()
 router.use(cors())
 router.use(express.json())
 router.use(express.urlencoded({ extended: true }))
-// only use user middleware in development, e2e tests and integration (API) tests
-if (inDevelopment || inE2EMode || inTest) router.use(userMiddleware)
+// only use user middleware in development (when oidc disabled), e2e tests and integration (API) tests
+if (inE2EMode || inTest || (!localOIDC && inDevelopment))
+  router.use(userMiddleware)
 
 // @ts-expect-error req.user is added to the request
 // as part of oidc passport authentication

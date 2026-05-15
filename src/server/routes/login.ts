@@ -5,11 +5,11 @@ import { BASE_PATH } from '../../config'
 
 const loginRouter = express.Router()
 
-loginRouter.get('/', passport.authenticate('oidc'))
+loginRouter.get('/', passport.authenticate('liboidc'))
 
 loginRouter.get(
   '/callback',
-  passport.authenticate('oidc', {
+  passport.authenticate('liboidc', {
     failureRedirect: `${BASE_PATH || ''}/noaccess`,
   }),
   (_, res) => {

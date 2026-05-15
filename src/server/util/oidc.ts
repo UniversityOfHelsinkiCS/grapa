@@ -1,13 +1,13 @@
-import {
-  Issuer,
-  Strategy,
-  TokenSet,
-  UnknownObject,
-  UserinfoResponse,
-} from 'openid-client'
+import { TokenSet, UnknownObject, UserinfoResponse } from 'openid-client'
 import passport from 'passport'
 
-import { inE2EMode } from '../../config'
+import {
+  inE2EMode,
+  inDevelopment,
+  FULL_URL,
+  localOIDC,
+  inStaging,
+} from '../../config'
 import {
   OIDC_ISSUER,
   OIDC_CLIENT_ID,
@@ -16,34 +16,55 @@ import {
 } from './config'
 import type { UserInfo, User as UserType } from '../types'
 import { User } from '../db/models/index'
+import { init_oidc, liboidc_strategy } from './liboidc'
 
-const params = {
-  claims: {
-    id_token: {
-      uid: { essential: true },
-      hyPersonSisuId: { essential: true },
-    },
-    userinfo: {
-      email: { essential: true },
-      hyGroupCn: { essential: true },
-      preferredLanguage: null,
-      given_name: null,
-      family_name: null,
-    },
-  },
-}
+const claims = inDevelopment
+  ? {
+      claims: {
+        id_token: {
+          uid: { essential: true },
+          hyPersonSisuId: { essential: true },
+        },
+        userinfo: {
+          email: { essential: true },
+          hyGroupCn: { essential: true },
+          preferredLanguage: null,
+          given_name: null,
+          family_name: null,
+          dev_overrides: null,
+        },
+      },
+    }
+  : {
+      claims: {
+        id_token: {
+          uid: { essential: true },
+          hyPersonSisuId: { essential: true },
+        },
+        userinfo: {
+          email: { essential: true },
+          hyGroupCn: { essential: true },
+          preferredLanguage: null,
+          given_name: null,
+          family_name: null,
+        },
+      },
+    }
+
+const scopes = 'openid'
 
 const checkAdmin = (iamGroups: string[]) =>
   iamGroups.some((iamGroup) => ['grp-toska'].includes(iamGroup))
 
 const getClient = async () => {
-  const issuer = await Issuer.discover(OIDC_ISSUER)
-
-  const client = new issuer.Client({
+  const client = init_oidc({
     client_id: OIDC_CLIENT_ID,
     client_secret: OIDC_CLIENT_SECRET,
-    redirect_uris: [OIDC_REDIRECT_URI],
-    response_types: ['code'],
+    redirect_uri: OIDC_REDIRECT_URI,
+    issuer: new URL(OIDC_ISSUER),
+    algorithm: 'oidc',
+    code_challenge_method: 'S256',
+    isDevelopement: inDevelopment,
   })
 
   return client
@@ -95,13 +116,25 @@ const verifyLogin = async (
 
   const user = getUser(userinfo as unknown as UserInfo)
 
+  if (inDevelopment) {
+    if (userinfo['dev_overrides'] != undefined) {
+      Object.keys(userinfo['dev_overrides']).forEach((key) => {
+        //@ts-expect-error the override can be any type supported by json
+        user[key] = userinfo['dev_overrides'][key]
+      })
+    }
+  }
+
   const [updatedUser] = await User.upsert(user)
+
+  if (inDevelopment || inStaging) console.log('Loaded from db', updatedUser)
 
   done(null, updatedUser.toJSON())
 }
 
 const setupAuthentication = async () => {
   if (inE2EMode) return
+  if (inDevelopment && !localOIDC) return
 
   const client = await getClient()
 
@@ -121,7 +154,17 @@ const setupAuthentication = async () => {
     }
   )
 
-  passport.use('oidc', new Strategy({ client, params }, verifyLogin))
+  passport.use(
+    'liboidc',
+    //@ts-expect-error passport
+    new liboidc_strategy(
+      client,
+      scopes,
+      claims,
+      new URL(FULL_URL).host,
+      verifyLogin
+    )
+  )
 }
 
 export default setupAuthentication

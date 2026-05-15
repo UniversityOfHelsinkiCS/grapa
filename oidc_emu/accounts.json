@@ -1,0 +1,29 @@
+{
+  "admin": {
+    "claims": {
+      "uid": "testiusername",
+      "hyPersonSisuId": "hy-1",
+      "email": "testiusername@helsinki.fi",
+      "hyGroupCn": ["hy-employees", "grp-toska"],
+      "preferredLanguage": "fi",
+      "given_name": "Testi1",
+      "family_name": "Testi2"
+    }
+  },
+  "opiskelija": {
+    "claims": {
+      "uid": "opiskelija",
+      "hyPersonSisuId": "hy-2",
+      "email": "opiskelija@helsinki.fi",
+      "hyGroupCn": ["hy-ktdk-students"],
+      "preferredLanguage": "fi",
+      "given_name": "opiskelija",
+      "family_name": "sukunimi",
+      "dev_overrides": {
+        "hasStudyRight": true,
+        "studentNumber": "10101010",
+        "testi123": 123
+      }
+    }
+  }
+}
