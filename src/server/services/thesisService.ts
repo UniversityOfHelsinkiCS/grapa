@@ -82,7 +82,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     }
   }
 
-  const sortByColumn = sortBy ? getSortByColumn(sortBy) : undefined
+  const sortByColumn = sortBy ? getSortByColumn(sortBy, language) : undefined
 
   const options = await getFindThesesOptions({
     programId,
@@ -100,7 +100,6 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
 
   const { count, rows } = await Thesis.findAndCountAll({
     ...options,
-    subQuery: false,
     offset: Number(offset),
     limit: Number(limit),
     order: getOrdering({

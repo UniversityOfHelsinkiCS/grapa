@@ -74,7 +74,7 @@ const getOrderLiteralBasedOnThesesApprovals = (currentUser: UserType) =>
 
 interface GetOrderingProps {
   currentUser: UserType
-  orderBy: 'topic' | 'status' | 'startDate' | 'targetDate' | Literal | undefined
+  orderBy: string | any[] | Literal | undefined
   orderDirection: 'asc' | 'desc' | undefined
 }
 export const getOrdering = ({
@@ -83,8 +83,12 @@ export const getOrdering = ({
   orderDirection,
 }: GetOrderingProps): Order => {
   if (orderBy && orderDirection) {
-    return [[orderBy, orderDirection]]
+    if (Array.isArray(orderBy)) {
+      return [[...orderBy, orderDirection]] as Order
+    }
+    return [[orderBy, orderDirection]] as Order
   }
+
   // If no ordering is specified, we want to order the theses
   // based on the current user's approvals and the target date.
   return [
@@ -103,9 +107,9 @@ interface FetchThesisProps {
   status?: string
   language?: string
   actionUser: UserType
-  onlyAuthored?: boolean
   onlySupervised?: boolean
   onlySeminarSupervised?: boolean
+  onlyAuthored?: boolean
 }
 export const getFindThesesOptions = async ({
   thesisId,
@@ -117,9 +121,9 @@ export const getFindThesesOptions = async ({
   status,
   language,
   actionUser,
-  onlyAuthored,
   onlySupervised,
   onlySeminarSupervised,
+  onlyAuthored,
 }: FetchThesisProps) => {
   let includes: Includeable[] = [
     {
@@ -164,6 +168,7 @@ export const getFindThesesOptions = async ({
       model: User,
       as: 'authors',
       attributes: userFields,
+      where: authorsPartial ? getAuthorsWhereClause(authorsPartial) : undefined,
     },
     {
       model: User,
@@ -192,14 +197,6 @@ export const getFindThesesOptions = async ({
         ? getProgramWhereClause(programNamePartial, language)
         : undefined,
       required: true,
-      include: [
-        {
-          model: StudyTrack,
-          as: 'studyTracks',
-          attributes: ['id', 'name'],
-          separate: true,
-        },
-      ],
     },
   ]
 
@@ -242,130 +239,51 @@ export const getFindThesesOptions = async ({
     ]
   }
 
-  if (authorsPartial) {
-    includes = [
-      ...includes,
-      {
-        model: Author,
-        as: 'authorsForSearch',
-        attributes: [],
-        include: [
-          {
-            model: User,
-            as: 'user',
-            attributes: [],
-            where: getAuthorsWhereClause(authorsPartial),
-            required: true,
-          },
-        ],
-        required: true,
-      },
-    ]
-  }
-
   if (
     (!departmentId && !actionUser.isAdmin && !actionUser.ethesisAdmin) ||
-    onlyAuthored ||
     onlySupervised ||
-    onlySeminarSupervised
+    onlySeminarSupervised ||
+    onlyAuthored
   ) {
     const programManagement =
-      onlySupervised || onlySeminarSupervised
+      onlySupervised || onlySeminarSupervised || onlyAuthored
         ? []
         : await ProgramManagement.findAll({
             attributes: ['programId'],
             where: { userId: actionUser.id },
           })
 
-    // We want to include theses where current user is a supervisor
-    // but for the returned theses, we still want to include all
-    // supervisions.
-    // To achieve this, we use 2 Supervision includes, one above
-    // with attribute listed and one below with no attributes.
-    // The only purpose of this include is to be used in filtering.
-    const teacherClause: Includeable = {
-      model: Supervision,
-      as: 'supervisionsForFiltering',
-      attributes: [] as const,
-      // This where clause and required: false are needed to make sure
-      // LIMIT operator works correctly. Otherwise, sequelize would
-      // apply the limit to each SQL row, not the whole result set.
-      // This would make the number of returned theses be smaller than
-      // the LIMIT number.
-      where: {
-        userId: actionUser.id,
-      },
-      required: false,
-    }
-    includes = [...includes, teacherClause]
-
-    const seminarClause: Includeable = {
-      model: SeminarSupervision,
-      as: 'seminarSupervisionsForFiltering',
-      attributes: [] as const,
-      where: {
-        userId: actionUser.id,
-      },
-      required: false,
-    }
-    includes = [...includes, seminarClause]
-
-    includes = [
-      ...includes,
-      {
-        model: Author,
-        as: 'authorsForFiltering',
-        attributes: [],
-        required: false,
-      },
-      {
-        model: Approver,
-        as: 'approversForFiltering',
-        attributes: [],
-        required: false,
-      },
-    ]
-
     const programIds = programManagement.map((pm) => pm.programId)
 
     if (onlySeminarSupervised) {
       whereClause = {
         ...whereClause,
-        '$seminarSupervisionsForFiltering.user_id$': actionUser.id,
+        [Op.and]: literal(
+          `EXISTS (SELECT 1 FROM "${SeminarSupervision.tableName}" WHERE "${SeminarSupervision.tableName}"."thesis_id" = "Thesis"."id" AND "${SeminarSupervision.tableName}"."user_id" = '${actionUser.id}')`
+        ),
       }
     } else if (onlyAuthored) {
       whereClause = {
         ...whereClause,
-        '$authorsForFiltering.user_id$': actionUser.id,
+        [Op.and]: literal(
+          `EXISTS (SELECT 1 FROM "${Author.tableName}" WHERE "${Author.tableName}"."thesis_id" = "Thesis"."id" AND "${Author.tableName}"."user_id" = '${actionUser.id}')`
+        ),
       }
     } else {
       whereClause = {
         ...whereClause,
         [Op.or]: [
-          // if a user is only a teacher (not admin nor supervisor),
-          // they should only see theses they supervise
-          { '$supervisionsForFiltering.user_id$': actionUser.id },
-          { '$approversForFiltering.user_id$': actionUser.id },
-          // but we also want to show all theses within programs
-          // managed by the user
-          ...(programIds?.length ? [{ programId: programIds }] : []),
+          literal(
+            `EXISTS (SELECT 1 FROM "${Supervision.tableName}" WHERE "${Supervision.tableName}"."thesis_id" = "Thesis"."id" AND "${Supervision.tableName}"."user_id" = '${actionUser.id}')`
+          ),
+          literal(
+            `EXISTS (SELECT 1 FROM "${Approver.tableName}" WHERE "${Approver.tableName}"."thesis_id" = "Thesis"."id" AND "${Approver.tableName}"."user_id" = '${actionUser.id}')`
+          ),
+          programIds?.length ? { programId: programIds } : {},
         ],
       }
     }
   }
-
-  const filteringIncludes = includes.filter((inc: any) => {
-    const alias = inc.as || ''
-    return [
-      'program',
-      'approversForFiltering',
-      'supervisionsForDepartmentFiltering',
-      'authorsForSearch',
-      'supervisionsForFiltering',
-      'seminarSupervisionsForFiltering',
-      'authorsForFiltering',
-    ].includes(alias)
-  })
 
   return {
     where: whereClause,
@@ -382,7 +300,6 @@ export const getFindThesesOptions = async ({
       'updatedAt',
     ],
     include: includes,
-    filteringIncludes,
   }
 }
 
@@ -791,7 +708,8 @@ export const getGraderTitles = async (thesis: ThesisData | Thesis) => {
 }
 
 export const getSortByColumn = (
-  sortBy: string
+  sortBy: string,
+  language: string
 ): 'status' | 'topic' | Literal | 'startDate' | 'targetDate' => {
   switch (sortBy) {
     case 'status':
@@ -799,9 +717,16 @@ export const getSortByColumn = (
     case 'topic':
       return 'topic'
     case 'programId':
-      return literal(`"program"."name"->>$language`)
+      return literal(
+        `(SELECT "programs"."name"->>'${language}' 
+          FROM "programs" 
+          INNER JOIN "theses" ON "programs"."id" = "theses"."program_id" 
+          WHERE "theses"."id" = "Thesis"."id")`
+      )
     case 'authors':
-      return literal(`"authors"."last_name"`)
+      return literal(
+        `(SELECT "users"."last_name" FROM "users" INNER JOIN "authors" ON "users"."id" = "authors"."user_id" WHERE "authors"."thesis_id" = "Thesis"."id" LIMIT 1)`
+      )
     case 'startDate':
       return 'startDate'
     case 'targetDate':

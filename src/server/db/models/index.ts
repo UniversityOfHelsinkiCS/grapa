@@ -44,14 +44,6 @@ Thesis.hasMany(SeminarSupervision, {
   foreignKey: 'thesisId',
   as: 'seminarSupervisions',
 })
-Thesis.hasMany(SeminarSupervision, {
-  foreignKey: 'thesisId',
-  as: 'seminarSupervisionsForFiltering',
-})
-Thesis.hasMany(Supervision, {
-  foreignKey: 'thesisId',
-  as: 'supervisionsForFiltering',
-})
 Thesis.hasMany(Supervision, {
   foreignKey: 'thesisId',
   as: 'supervisionsForDepartmentFiltering',
@@ -87,18 +79,11 @@ Thesis.belongsToMany(User, {
   through: Author,
   as: 'authors',
 })
-Thesis.hasMany(Author, { foreignKey: 'thesisId', as: 'authorsForFiltering' })
-Thesis.hasMany(Author, { foreignKey: 'thesisId', as: 'authorsForSearch' })
 
 Approver.belongsTo(User, { as: 'user' })
 Thesis.belongsToMany(User, {
   through: Approver,
   as: 'approvers',
-})
-
-Thesis.hasMany(Approver, {
-  foreignKey: 'thesisId',
-  as: 'approversForFiltering',
 })
 
 Attachment.belongsTo(Thesis, { as: 'thesis' })
