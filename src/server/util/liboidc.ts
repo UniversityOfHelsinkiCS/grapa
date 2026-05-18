@@ -83,6 +83,12 @@ export async function handle_callback(
 
   console.log('Starting handling callback', request_options)
 
+  console.log('URL:', currentUrl)
+  console.log('VERIFIER:', code_verifier)
+  console.log('PARAMS:', params)
+
+  throw Error('Expected error')
+
   const response = await oauth.authorizationCodeGrantRequest(
     instance.as,
     instance.client,
