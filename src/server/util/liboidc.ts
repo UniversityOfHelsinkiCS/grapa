@@ -31,6 +31,7 @@ export interface OIDCInstance {
 export interface OIDCAuthInstance {
   code_verifier: string
   authorizationUrl: URL
+  nonce: string | undefined
 }
 
 export interface OIDCUserData {
@@ -66,7 +67,8 @@ export async function init_oidc(
 export async function handle_callback(
   instance: OIDCInstance,
   fullUrl: string,
-  code_verifier: string
+  code_verifier: string,
+  nonce: string | undefined
 ): Promise<OIDCUserData> {
   const currentUrl = new URL(fullUrl)
   const params = oauth.validateAuthResponse(
@@ -85,9 +87,10 @@ export async function handle_callback(
 
   console.log('URL:', currentUrl)
   console.log('VERIFIER:', code_verifier)
+  console.log('NONCE:', nonce)
   console.log('PARAMS:', params)
 
-  throw Error('Expected error')
+  //   throw Error('Expected error')
 
   const response = await oauth.authorizationCodeGrantRequest(
     instance.as,
@@ -113,6 +116,7 @@ export async function handle_callback(
     response,
     {
       requireIdToken: true,
+      expectedNonce: nonce,
     }
   )
 
@@ -161,6 +165,8 @@ export async function start_auth(
   const code_verifier = oauth.generateRandomCodeVerifier()
   const code_challenge = await oauth.calculatePKCECodeChallenge(code_verifier)
 
+  let nonce
+
   if (instance.as.authorization_endpoint == undefined) {
     throw Error('Authorization endpoint is undefined')
   }
@@ -184,9 +190,15 @@ export async function start_auth(
     instance.configuration.code_challenge_method
   )
 
+  if (instance.as.code_challenge_methods_supported?.includes('S256') !== true) {
+    nonce = oauth.generateRandomNonce()
+    authorizationUrl.searchParams.set('nonce', nonce)
+  }
+
   return {
     code_verifier,
     authorizationUrl,
+    nonce,
   }
 }
 
@@ -241,13 +253,15 @@ export class liboidc_strategy extends passport.Strategy {
           this.scopes
         )
         req.session.code_verifier = auth_intance.code_verifier
+        req.session.nonce = auth_intance.nonce
         this.redirect(auth_intance.authorizationUrl.href)
       } else {
         console.log('Starting callback', current_url, req.session)
         const result = await handle_callback(
           this.oidc_instance,
           current_url.href,
-          req.session.code_verifier
+          req.session.code_verifier,
+          req.session.nonce
         )
         console.log('Result', result)
 
