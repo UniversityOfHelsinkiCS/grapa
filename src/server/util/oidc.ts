@@ -97,6 +97,7 @@ const verifyLogin = async (
     done(null, false)
     return
   }
+  console.log('Userinfo', userinfo)
 
   const user = getUser(userinfo as unknown as UserInfo)
 
