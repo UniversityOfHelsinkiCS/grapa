@@ -65,6 +65,8 @@ export const getUser = (userinfo: UserInfo): UserType => {
     family_name: lastName,
   } = userinfo as unknown as UserInfo
 
+  console.log('USER IS', userinfo)
+
   return {
     username,
     id: id || username,
