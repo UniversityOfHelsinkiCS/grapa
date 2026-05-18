@@ -21,8 +21,7 @@
       "family_name": "sukunimi",
       "dev_overrides": {
         "hasStudyRight": true,
-        "studentNumber": "10101010",
-        "testi123": 123
+        "studentNumber": "10101010"
       }
     }
   }

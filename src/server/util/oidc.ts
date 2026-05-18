@@ -1,13 +1,14 @@
-import { TokenSet, UnknownObject, UserinfoResponse } from 'openid-client'
+import {
+  Issuer,
+  Strategy,
+  TokenSet,
+  UnknownObject,
+  UserinfoResponse,
+} from 'openid-client'
+
 import passport from 'passport'
 
-import {
-  inE2EMode,
-  inDevelopment,
-  FULL_URL,
-  localOIDC,
-  inStaging,
-} from '../../config'
+import { inE2EMode, inDevelopment, localOIDC, inStaging } from '../../config'
 import {
   OIDC_ISSUER,
   OIDC_CLIENT_ID,
@@ -16,7 +17,6 @@ import {
 } from './config'
 import type { UserInfo, User as UserType } from '../types'
 import { User } from '../db/models/index'
-import { init_oidc, liboidc_strategy } from './liboidc'
 
 const claims = inDevelopment
   ? {
@@ -51,24 +51,8 @@ const claims = inDevelopment
       },
     }
 
-const scopes = 'openid profile email'
-
 const checkAdmin = (iamGroups: string[]) =>
   iamGroups.some((iamGroup) => ['grp-toska'].includes(iamGroup))
-
-const getClient = async () => {
-  const client = init_oidc({
-    client_id: OIDC_CLIENT_ID,
-    client_secret: OIDC_CLIENT_SECRET,
-    redirect_uri: OIDC_REDIRECT_URI,
-    issuer: new URL(OIDC_ISSUER),
-    algorithm: 'oidc',
-    code_challenge_method: 'S256',
-    isDevelopement: inDevelopment,
-  })
-
-  return client
-}
 
 export const getUser = (userinfo: UserInfo): UserType => {
   const {
@@ -136,7 +120,14 @@ const setupAuthentication = async () => {
   if (inE2EMode) return
   if (inDevelopment && !localOIDC) return
 
-  const client = await getClient()
+  const issuer = await Issuer.discover(OIDC_ISSUER)
+
+  const client = new issuer.Client({
+    client_id: OIDC_CLIENT_ID,
+    client_secret: OIDC_CLIENT_SECRET,
+    redirect_uris: [OIDC_REDIRECT_URI],
+    response_types: ['code'],
+  })
 
   passport.serializeUser((user, done) => {
     const { id, iamGroups, isAdmin } = user as UserType
@@ -154,17 +145,7 @@ const setupAuthentication = async () => {
     }
   )
 
-  passport.use(
-    'liboidc',
-    //@ts-expect-error passport
-    new liboidc_strategy(
-      client,
-      scopes,
-      claims,
-      new URL(FULL_URL).host,
-      verifyLogin
-    )
-  )
+  passport.use('oidc', new Strategy({ client, claims }, verifyLogin))
 }
 
 export default setupAuthentication
