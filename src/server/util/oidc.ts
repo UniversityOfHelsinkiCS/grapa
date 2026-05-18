@@ -78,7 +78,6 @@ export const getUser = (userinfo: UserInfo): UserType => {
 }
 
 export const isAuthorized = (userinfo: UserInfo) => {
-  console.log('Trying to auth:', userinfo)
   const user = getUser(userinfo)
   // Allow authentication for admins, employees and ktdk students
   return (
@@ -98,7 +97,6 @@ const verifyLogin = async (
     done(null, false)
     return
   }
-  console.log('Userinfo', userinfo)
 
   const user = getUser(userinfo as unknown as UserInfo)
 
@@ -147,7 +145,7 @@ const setupAuthentication = async () => {
     }
   )
 
-  passport.use('oidc', new Strategy({ client, claims }, verifyLogin))
+  passport.use('oidc', new Strategy({ client, params: claims }, verifyLogin))
 }
 
 export default setupAuthentication
