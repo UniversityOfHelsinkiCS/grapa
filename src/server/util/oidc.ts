@@ -65,8 +65,6 @@ export const getUser = (userinfo: UserInfo): UserType => {
     family_name: lastName,
   } = userinfo as unknown as UserInfo
 
-  console.log('USER IS', userinfo)
-
   return {
     username,
     id: id || username,
@@ -80,6 +78,7 @@ export const getUser = (userinfo: UserInfo): UserType => {
 }
 
 export const isAuthorized = (userinfo: UserInfo) => {
+  console.log('Trying to auth:', userinfo)
   const user = getUser(userinfo)
   // Allow authentication for admins, employees and ktdk students
   return (
