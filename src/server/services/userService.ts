@@ -10,7 +10,7 @@ import {
 
 const USER_FETCH_LIMIT = 100
 
-export const getUsersBySearch = async (search: string) => {
+export const getUsersBySearchStudents = async (search: string) => {
   if (!search) {
     throw Error('Search string must be provided as a query parameter')
   }

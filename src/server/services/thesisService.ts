@@ -22,6 +22,39 @@ import CustomValidationError from '../errors/ValidationError'
 import CustomAuthorizationError from '../errors/AuthorizationError'
 import CustomNotFoundError from '../errors/NotFoundError'
 
+export const cleanUserProperties = (user: any) => {
+  const allowed_keys = ['id', 'username', 'email', 'firstName', 'lastName']
+  Object.keys(user).forEach((key) => {
+    if (!allowed_keys.includes(key)) user[key] = null
+  })
+  return user
+}
+
+export const cleanThesisUserData = (thesis: any) => {
+  thesis.authors = thesis.authors.map((user: any) => cleanUserProperties(user))
+  thesis.approvers = thesis.approvers.map((user: any) =>
+    cleanUserProperties(user)
+  )
+  thesis.supervisions.forEach((supervision: any) => {
+    if (supervision.user)
+      supervision.user = cleanUserProperties(supervision.user)
+  })
+  thesis.graders.forEach((grader: any) => {
+    if (grader.user) grader.user = cleanUserProperties(grader.user)
+  })
+  thesis.seminarSupervisions.forEach((supervision: any) => {
+    if (supervision.user)
+      supervision.user = cleanUserProperties(supervision.user)
+  })
+}
+
+export const cleanThesisBulk = (thesisArray: any) => {
+  thesisArray.forEach((thesis: any) => {
+    cleanThesisUserData(thesis)
+  })
+  return thesisArray
+}
+
 export interface GetPaginatedThesesParams {
   currentUser: UserType
   onlyAuthored?: string | boolean
@@ -38,6 +71,7 @@ export interface GetPaginatedThesesParams {
   departmentId?: string
   sortBy?: string
   sortOrder?: 'asc' | 'desc'
+  hideUserProperties?: boolean
 }
 
 export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
@@ -57,6 +91,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     departmentId,
     sortBy,
     sortOrder,
+    hideUserProperties,
   } = params
 
   const allowedLanguages = ['en', 'fi', 'sv']
@@ -119,6 +154,8 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
   }
 
   const theses = transformThesisData(thesesRows, thesisGraders)
+
+  if (hideUserProperties) cleanThesisBulk(theses)
 
   return { theses, totalCount: count }
 }

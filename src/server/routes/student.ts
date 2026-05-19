@@ -13,7 +13,7 @@ import {
   getSingleThesis,
 } from '../services/thesisService'
 
-import { getUsersBySearch } from '../services/userService'
+import { getUsersBySearchStudents } from '../services/userService'
 
 import ethesisUserHandler from '../middleware/ethesisUser'
 import parseFormDataJson from '../middleware/parseFormDataJson'
@@ -23,6 +23,7 @@ import { validateThesisData } from '../validators/thesis'
 
 import { handleAttachmentByLabel } from './thesisAttachmentHelpers'
 import { handleThesisCreationEmail } from './thesisHelpers'
+import { cleanThesisUserData } from '../services/thesisService'
 
 const studentRouter = express.Router()
 
@@ -44,6 +45,7 @@ studentRouter.get('/theses', async (req: RequestWithUser, res: any) => {
     language: req.query.language as string,
     limit: req.query.limit as string,
     offset: req.query.offset as string,
+    hideUserProperties: true,
   })
 
   return res.send(result)
@@ -57,17 +59,12 @@ studentRouter.get('/theses/:id', async (req: RequestWithUser, res: any) => {
   }
 
   const thesisData = await getSingleThesis(id, req.user, { onlyAuthored: true })
+  cleanThesisUserData(thesisData)
   res.send(thesisData)
 })
 
-studentRouter.get('/users', async (req: RequestWithUser, res: any) => {
-  const { search } = req.query
-  const result = await getUsersBySearch(search as string)
-  res.send(result)
-})
-
 studentRouter.post(
-  '/',
+  '/theses',
   ethesisUserHandler,
   parseMutlipartFormData,
   parseFormDataJson,
@@ -104,9 +101,15 @@ studentRouter.post(
 
       return newThesis.toJSON()
     })
-
+    cleanThesisUserData(createThesis)
     res.status(201).send(createdThesis)
   }
 )
+
+studentRouter.get('/users', async (req: RequestWithUser, res: any) => {
+  const { search } = req.query
+  const result = await getUsersBySearchStudents(search as string)
+  res.send(result)
+})
 
 export default studentRouter
