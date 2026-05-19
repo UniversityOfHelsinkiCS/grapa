@@ -78,6 +78,8 @@ export const navStyles = {
     fontWeight: (theme: Theme) => theme.typography.fontWeightMedium,
     '&.active': {
       color: 'primary.main',
+      textDecoration: 'underline',
+      fontWeight: 'bold',
     },
   },
 }

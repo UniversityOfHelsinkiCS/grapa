@@ -492,74 +492,101 @@ const ViewThesisFooter = (
               </Typography>
             </Typography>
 
-            {thesis && currentUser && (
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                {Boolean(
-                  thesis.status === THESIS_STATUSES.PLANNING &&
-                  thesis.approvers?.length &&
-                  thesis.approvers[0].id === currentUser?.id
-                ) && (
+            {thesis &&
+              currentUser &&
+              (isStudentView
+                ? thesis.status === THESIS_STATUSES.DRAFT
+                : true) && (
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  {Boolean(
+                    !isStudentView &&
+                    thesis.status === THESIS_STATUSES.PLANNING &&
+                    thesis.approvers?.length &&
+                    thesis.approvers[0].id === currentUser?.id
+                  ) && (
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        color: '#000',
+                        backgroundColor: '#fcd34d',
+                        fontSize: '12px',
+                        height: 24,
+                        px: 2,
+                        borderRadius: '1rem',
+                        fontWeight: 600,
+                      }}
+                      onClick={() =>
+                        editThesis({
+                          thesisId: thesis.id,
+                          data: {
+                            ...thesis,
+                            status: IN_PROGRESS_STATUS,
+                          },
+                        })
+                      }
+                    >
+                      {t('approveButton')}
+                    </Button>
+                  )}
+                  {isStudentView && (
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        borderColor: '#000',
+                        fontSize: '12px',
+                        color: '#000',
+                        height: 24,
+                        px: 2,
+                        borderRadius: '1rem',
+                        fontWeight: 600,
+                        '&:hover': {
+                          backgroundColor: '#000',
+                          borderColor: '#000',
+                          color: '#FFF',
+                        },
+                      }}
+                      onClick={() => {}}
+                    >
+                      {t('sendDraftButton')}
+                    </Button>
+                  )}
                   <Button
                     variant="outlined"
                     sx={{
-                      color: '#000',
-                      backgroundColor: '#fcd34d',
+                      borderColor: '#000',
                       fontSize: '12px',
+                      color: '#000',
                       height: 24,
                       px: 2,
                       borderRadius: '1rem',
                       fontWeight: 600,
+                      '&:hover': {
+                        backgroundColor: '#000',
+                        borderColor: '#000',
+                        color: '#FFF',
+                      },
                     }}
-                    onClick={() =>
-                      editThesis({
-                        thesisId: thesis.id,
-                        data: {
-                          ...thesis,
-                          status: IN_PROGRESS_STATUS,
-                        },
-                      })
-                    }
+                    onClick={() => handleEditThesis(thesis)}
                   >
-                    {t('approveButton')}
+                    {t('editButton')}
                   </Button>
-                )}
-                <Button
-                  variant="outlined"
-                  sx={{
-                    borderColor: '#000',
-                    fontSize: '12px',
-                    color: '#000',
-                    height: 24,
-                    px: 2,
-                    borderRadius: '1rem',
-                    fontWeight: 600,
-                    '&:hover': {
-                      backgroundColor: '#000',
-                      borderColor: '#000',
-                      color: '#FFF',
-                    },
-                  }}
-                  onClick={() => handleEditThesis(thesis)}
-                >
-                  {t('editButton')}
-                </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  sx={{
-                    fontSize: '12px',
-                    height: 24,
-                    px: 2,
-                    boxShadow: 0,
-                    borderRadius: '1rem',
-                    fontWeight: 600,
-                  }}
-                  onClick={() => handleDeleteThesis(thesis)}
-                >
-                  {t('deleteButton')}
-                </Button>
-              </Box>
-            )}
+                  <Button
+                    variant="contained"
+                    color="error"
+                    sx={{
+                      fontSize: '12px',
+                      height: 24,
+                      px: 2,
+                      boxShadow: 0,
+                      borderRadius: '1rem',
+                      fontWeight: 600,
+                    }}
+                    onClick={() => handleDeleteThesis(thesis)}
+                  >
+                    {t('deleteButton')}
+                  </Button>
+                </Box>
+              )}
           </Stack>
 
           <Typography

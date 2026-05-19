@@ -23,6 +23,7 @@
     "completedDateHeader": "Completed",
     "averageDuration": "Average thesis duration: {{days}} days",
     "editButton": "Edit",
+    "sendDraftButton": "Send draft for review",
     "approveButton": "Approve",
     "deleteButton": "Delete",
     "cancelButton": "Cancel",

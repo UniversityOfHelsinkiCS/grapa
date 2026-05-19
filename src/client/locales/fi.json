@@ -24,6 +24,7 @@
     "averageDuration": "Tutkielman keskimääräinen kesto: {{days}} päivää",
     "approveButton": "Hyväksy",
     "editButton": "Muokkaa",
+    "sendDraftButton": "Lähetä luonnos arvosteltavaksi",
     "deleteButton": "Poista",
     "cancelButton": "Peruuta",
     "submitButton": "Tallenna",
