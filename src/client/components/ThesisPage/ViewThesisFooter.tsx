@@ -526,18 +526,17 @@ const ViewThesisFooter = (
                 <Button
                   variant="outlined"
                   sx={{
-                    color: '#fff',
-                    backgroundColor: '#000',
                     borderColor: '#000',
                     fontSize: '12px',
+                    color: '#000',
                     height: 24,
                     px: 2,
                     borderRadius: '1rem',
                     fontWeight: 600,
                     '&:hover': {
-                      backgroundColor: '#fff',
+                      backgroundColor: '#000',
                       borderColor: '#000',
-                      color: '#000',
+                      color: '#FFF',
                     },
                   }}
                   onClick={() => handleEditThesis(thesis)}
@@ -551,6 +550,7 @@ const ViewThesisFooter = (
                     fontSize: '12px',
                     height: 24,
                     px: 2,
+                    boxShadow: 0,
                     borderRadius: '1rem',
                     fontWeight: 600,
                   }}
@@ -603,7 +603,7 @@ const ViewThesisFooter = (
               researchPlan={thesis?.researchPlan}
               waysOfWorking={thesis?.waysOfWorking}
             />
-            {ethesisReady && (
+            {ethesisReady && !isStudentView && (
               <Box
                 sx={{
                   marginTop: 5,
@@ -641,31 +641,38 @@ const ViewThesisFooter = (
             )}
           </Box>
 
-          {Boolean(events && events.length) && currentUser.isAdmin && (
-            <Paper
-              elevation={1}
-              sx={{ p: 2, mb: 2, border: '1px solid', borderColor: 'divider' }}
-            >
-              <Typography
-                component="legend"
+          {Boolean(events && events.length) &&
+            !isStudentView &&
+            currentUser.isAdmin && (
+              <Paper
+                elevation={1}
                 sx={{
-                  cursor: 'pointer',
-                  color: 'text.primary',
-                  display: 'flex',
-                  alignItems: 'flex-start',
+                  p: 2,
+                  mb: 2,
+                  border: '1px solid',
+                  borderColor: 'divider',
                 }}
-                onClick={() => setEventLogOpen(!eventLogOpen)}
               >
-                <span style={{ marginRight: '0.5rem' }}>
-                  {eventLogOpen ? <ExpandLess /> : <ExpandMore />}
-                </span>
-                {t('eventLog:title')}
-              </Typography>
-              <Collapse in={eventLogOpen}>
-                <EventsView events={events} />
-              </Collapse>
-            </Paper>
-          )}
+                <Typography
+                  component="legend"
+                  sx={{
+                    cursor: 'pointer',
+                    color: 'text.primary',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                  }}
+                  onClick={() => setEventLogOpen(!eventLogOpen)}
+                >
+                  <span style={{ marginRight: '0.5rem' }}>
+                    {eventLogOpen ? <ExpandLess /> : <ExpandMore />}
+                  </span>
+                  {t('eventLog:title')}
+                </Typography>
+                <Collapse in={eventLogOpen}>
+                  <EventsView events={events} />
+                </Collapse>
+              </Paper>
+            )}
         </Box>
       ) : (
         thesisLoading && <PreviewSkeleton />
