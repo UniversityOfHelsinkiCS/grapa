@@ -63,6 +63,9 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     program.options?.allowMultipleSeminarResponsibles
   )
   const allowMultipleAuthors = Boolean(program.options?.allowMultipleAuthors)
+  const allowStudentStartedProcess = Boolean(
+    program.options?.allowStudentStartedProcess
+  )
   const waysOfWorkingRequired = Boolean(program.options?.waysOfWorkingRequired)
   const [pendingSeminarValue, setPendingSeminarValue] = useState<
     boolean | null
@@ -74,6 +77,10 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   const [
     pendingAllowMultipleAuthorsValue,
     setPendingAllowMultipleAuthorsValue,
+  ] = useState<boolean | null>(null)
+  const [
+    pendingAllowStudentStartedProcessValue,
+    setPendingAllowStudentStartedProcessValue,
   ] = useState<boolean | null>(null)
   const [
     pendingWaysOfWorkingRequiredValue,
@@ -164,6 +171,32 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     setPendingAllowMultipleAuthorsValue(null)
   }
 
+  const handleAllowStudentStartedProcessToggle = async (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setPendingAllowStudentStartedProcessValue(event.target.checked)
+  }
+
+  const handleCancelAllowStudentStartedProcessToggle = () => {
+    setPendingAllowStudentStartedProcessValue(null)
+  }
+
+  const handleConfirmAllowStudentStartedProcessToggle = async () => {
+    if (pendingAllowStudentStartedProcessValue === null) {
+      return
+    }
+
+    await updateProgramOptionsMutation.mutateAsync({
+      programId: program.id,
+      options: {
+        ...program.options,
+        allowStudentStartedProcess: pendingAllowStudentStartedProcessValue,
+      },
+    })
+
+    setPendingAllowStudentStartedProcessValue(null)
+  }
+
   const handleWaysOfWorkingRequiredToggle = async (
     event: ChangeEvent<HTMLInputElement>
   ) => {
@@ -236,6 +269,24 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
               title={t('programOverviewPage:allowMultipleAuthorsTooltip')}
             >
               <span>{t('programOverviewPage:allowMultipleAuthorsToggle')}</span>
+            </Tooltip>
+          }
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={allowStudentStartedProcess}
+              onChange={handleAllowStudentStartedProcessToggle}
+              disabled={updateProgramOptionsMutation.isPending}
+            />
+          }
+          label={
+            <Tooltip
+              title={t('programOverviewPage:allowStudentStartedProcessTooltip')}
+            >
+              <span>
+                {t('programOverviewPage:allowStudentStartedProcessToggle')}
+              </span>
             </Tooltip>
           }
         />
@@ -402,6 +453,40 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
             type="button"
             variant="contained"
             onClick={handleConfirmAllowMultipleAuthorsToggle}
+            disabled={updateProgramOptionsMutation.isPending}
+          >
+            {t('submitButton')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={pendingAllowStudentStartedProcessValue !== null}
+        onClose={handleCancelAllowStudentStartedProcessToggle}
+      >
+        <DialogTitle>
+          {t('programOverviewPage:allowStudentStartedProcessConfirmTitle')}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            {t(
+              pendingAllowStudentStartedProcessValue
+                ? 'programOverviewPage:allowStudentStartedProcessEnableConfirmContent'
+                : 'programOverviewPage:allowStudentStartedProcessDisableConfirmContent'
+            )}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            type="button"
+            onClick={handleCancelAllowStudentStartedProcessToggle}
+          >
+            {t('cancelButton')}
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={handleConfirmAllowStudentStartedProcessToggle}
             disabled={updateProgramOptionsMutation.isPending}
           >
             {t('submitButton')}
