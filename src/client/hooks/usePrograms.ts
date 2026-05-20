@@ -8,6 +8,7 @@ import queryClient from '../util/queryClient'
 interface UseProgramsParams {
   includeNotManaged?: boolean
   enabled?: boolean
+  useStudentApi?: boolean
 }
 
 const usePrograms = (params: UseProgramsParams) => {
@@ -16,8 +17,10 @@ const usePrograms = (params: UseProgramsParams) => {
 
   const queryKey = ['programs', params?.includeNotManaged, language]
 
+  const apiPath = params.useStudentApi ? '/student/programs' : '/programs'
+
   const queryFn = async (): Promise<ProgramData[]> => {
-    const { data } = await apiClient.get('/programs', {
+    const { data } = await apiClient.get(apiPath, {
       params: { ...params, language },
     })
 

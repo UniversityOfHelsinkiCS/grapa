@@ -3,7 +3,7 @@ import { ThesisData } from '@backend/types'
 import apiClient from '../util/apiClient'
 import queryClient from '../util/queryClient'
 
-export const useCreateThesisMutation = () => {
+export const useCreateThesisMutation = (isStudentView?: boolean) => {
   const mutationFn = async (data: ThesisData) => {
     const formData = new FormData()
 
@@ -19,7 +19,9 @@ export const useCreateThesisMutation = () => {
       formData.append('waysOfWorking', data.waysOfWorking)
     }
 
-    await apiClient.post(`/theses`, formData)
+    const apiPath = isStudentView ? '/student/thesis' : '/thesis'
+
+    await apiClient.post(apiPath, formData)
   }
 
   const mutation = useMutation({

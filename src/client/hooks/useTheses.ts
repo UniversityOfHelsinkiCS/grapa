@@ -19,7 +19,7 @@ interface UsePaginatedThesesParams {
   onlySeminarSupervised?: boolean
   offset: number
   limit: number
-  useStudentPath?: boolean
+  useStudentApi?: boolean
 }
 
 export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
@@ -42,14 +42,14 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     params.order.sortBy,
     params.order.sortOrder,
     language,
-    params.useStudentPath,
+    params.useStudentApi,
   ]
 
   const queryFn = async (): Promise<{
     theses: ThesisData[]
     totalCount: number
   }> => {
-    const endpoint = params.useStudentPath
+    const endpoint = params.useStudentApi
       ? '/student/theses'
       : '/theses/paginate'
     const { data } = await apiClient.get(endpoint, {
@@ -80,12 +80,12 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
 
 export const useSingleThesis = (
   id: string | GridRowSelectionModel,
-  useStudentPath?: boolean
+  useStudentApi?: boolean
 ) => {
   const queryKey = ['theses', id]
 
   const queryFn = async (): Promise<ThesisData> => {
-    const endpoint = useStudentPath ? `/student/theses/${id}` : `/theses/${id}`
+    const endpoint = useStudentApi ? `/student/theses/${id}` : `/theses/${id}`
     const { data } = await apiClient.get(endpoint)
 
     return data
