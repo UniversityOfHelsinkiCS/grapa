@@ -12,4 +12,10 @@ export const userFields = [
   'isExternal',
 ]
 
-export const restrictedUserFields = ['id', 'firstName', 'lastName']
+export const restrictedUserFields = [
+  'id',
+  'username',
+  'email',
+  'firstName',
+  'lastName',
+]

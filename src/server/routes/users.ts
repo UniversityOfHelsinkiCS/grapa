@@ -8,6 +8,8 @@ import {
   getWhereClauseForTwoWordSearch,
 } from './usersSearchHelpers'
 import ethesisUserHandler from '../middleware/ethesisUser'
+import { getUsersBySearchStudents } from '../services/userService'
+import { has_access } from '../middleware/employeesAndAdmin'
 
 const USER_FETCH_LIMIT = 100
 
@@ -31,8 +33,18 @@ usersRouter.get('/', ethesisUserHandler, async (req, res) => {
     res.status(400).send('Search string must be at least 5 characters long')
     return
   }
-
   const trimmedSearch = search.trim()
+
+  //@ts-expect-error these are defined, because a middleware prevents non-logged in users from even requesting this endpoint
+  if (!has_access(req.user)) {
+    const result = await getUsersBySearchStudents(
+      trimmedSearch as string,
+      onlyWithStudyRight,
+      onlyEmployees
+    )
+    res.send(result)
+    return
+  }
 
   let whereClauses: Record<string, any> = {}
 
