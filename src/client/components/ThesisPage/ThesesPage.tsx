@@ -135,7 +135,7 @@ const ThesesPage = ({
     onlySeminarSupervised,
     offset: paginationModel.page * paginationModel.pageSize,
     limit: paginationModel.pageSize,
-    useStudentPath: isStudentView && currentUser?.hasStudyRight,
+    useStudentApi: isStudentView && currentUser?.hasStudyRight,
   })
 
   const showDurationColumn = useMemo(
@@ -160,16 +160,16 @@ const ThesesPage = ({
 
   const { programs, isLoading: isProgramLoading } = usePrograms({
     includeNotManaged: true,
-    enabled: hasStaffAccess,
+    enabled: hasStaffAccess || isStudentView,
+    useStudentApi: isStudentView,
   })
   const managedPrograms = useMemo(
     () => (programs ?? []).filter((program) => program.isManaged),
     [programs]
   )
-
   const { mutateAsync: editThesis } = useEditThesisMutation()
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
-  const { mutateAsync: createThesis } = useCreateThesisMutation()
+  const { mutateAsync: createThesis } = useCreateThesisMutation(isStudentView)
 
   const dataGridLocale = language === 'fi' ? fiFI : enUS
 
@@ -351,6 +351,23 @@ const ThesesPage = ({
   }))
 
   const initializeNewThesis = () => {
+    if (isStudentView) {
+      setNewThesis({
+        programId: null,
+        studyTrackId: null,
+        supervisions: [],
+        seminarSupervisions: [],
+        authors: [currentUser],
+        approvers: [],
+        graders: [],
+        topic: '',
+        status: 'DRAFT',
+        startDate: dayjs().format('YYYY-MM-DD'),
+        targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
+      })
+      return
+    }
+
     if (!managedPrograms.length) return
 
     const favoritePrograms = managedPrograms.filter(

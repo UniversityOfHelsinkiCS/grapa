@@ -681,7 +681,6 @@ const ThesisEditForm: FC<{
               )}
             />
           )}
-
           <GraderSelect
             errors={formErrors}
             setErrors={(errors) => setFormErrors(errors)}
