@@ -51,14 +51,16 @@ router.get('/error', () => {
 // These routes are available to all users, including students
 router.use('/login', loginRouter)
 router.use('/logout', logoutRouter)
+
+// These have specific restrictions implemented for certain users
 router.use('/user', userRouter)
+router.use('/users', usersRouter)
 
 // These routes are available to those who have active study rights
 router.use('/student', studentRouter)
 
 // These routes should be only available to employees and admin users
 router.use(employeesAndAdminOnly)
-router.use('/users', usersRouter)
 router.use('/theses', thesisRouter)
 router.use('/attachments', attachmentRouter)
 router.use('/programs', programRouter)
