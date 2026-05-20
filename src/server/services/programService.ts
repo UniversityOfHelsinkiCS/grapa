@@ -2,11 +2,24 @@ import { Program, ProgramManagement, StudyTrack } from '../db/models'
 import { Includeable, literal } from 'sequelize'
 
 export const getProgram = async (id: string, language: string) => {
+  const includes: Includeable[] = [
+    {
+      model: StudyTrack,
+      attributes: ['id', 'name', 'programId'],
+      as: 'studyTracks',
+    },
+  ]
+
+  const allowedLanguages = ['en', 'fi', 'sv']
+  if (!allowedLanguages.includes(language)) {
+    throw new Error('Invalid language key')
+  }
   const program = await Program.findOne({
     attributes: ['id', 'name', 'options'],
     where: {
       id: id,
     },
+    include: includes,
     bind: { language },
   })
 

@@ -22,20 +22,7 @@ import CustomValidationError from '../errors/ValidationError'
 import CustomAuthorizationError from '../errors/AuthorizationError'
 import CustomNotFoundError from '../errors/NotFoundError'
 
-export const cleanUserProperties = (user: any) => {
-  const allowed_keys = [
-    'id',
-    'username',
-    'email',
-    'firstName',
-    'lastName',
-    'affiliation',
-  ]
-  Object.keys(user).forEach((key) => {
-    if (!allowed_keys.includes(key)) user[key] = null
-  })
-  return user
-}
+import { cleanUserProperties } from './studentService'
 
 export const cleanThesisUserData = (thesis: any) => {
   thesis.authors = thesis.authors.map((user: any) => cleanUserProperties(user))

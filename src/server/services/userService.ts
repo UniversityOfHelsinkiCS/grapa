@@ -10,21 +10,33 @@ import {
 
 const USER_FETCH_LIMIT = 100
 
-export const getUsersBySearchStudents = async (search: string) => {
-  if (!search) {
-    throw Error('Search string must be provided as a query parameter')
-  }
-
+export const getUsersBySearchStudents = async (
+  search: string,
+  onlyWithStudyRight: boolean,
+  onlyEmployees: boolean
+) => {
   const trimmedSearch: string = search.trim()
 
-  if (trimmedSearch.length < 5) {
-    throw Error('Search string must be at least 5 characters long')
-  }
+  let whereClauses: Record<string, any> = {}
 
-  let whereClauses: Record<string, any> = {
-    hasStudyRight: {
-      [Op.is]: true,
-    },
+  if (onlyWithStudyRight) {
+    whereClauses = {
+      ...whereClauses,
+      hasStudyRight: {
+        [Op.is]: true,
+      },
+    }
+  }
+  if (onlyEmployees) {
+    whereClauses = {
+      ...whereClauses,
+      email: {
+        [Op.not]: null,
+      },
+      employeeNumber: {
+        [Op.not]: null,
+      },
+    }
   }
 
   const searchedWords = trimmedSearch.split(' ')
