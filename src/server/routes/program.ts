@@ -1,15 +1,14 @@
-import { Includeable, literal } from 'sequelize'
 import express, { Response } from 'express'
 import {
   EventLog,
   Program,
   ProgramManagement,
-  StudyTrack,
   Thesis,
   User,
 } from '../db/models'
 import { RequestWithUser } from '../types'
 import ethesisUserHandler from '../middleware/ethesisUser'
+import { getPrograms } from '../services/programService'
 
 const programRouter = express.Router()
 
@@ -30,61 +29,16 @@ programRouter.get(
     const includeDisabled = req.query.includeDisabled === 'true'
     const includeNotManaged = req.query.includeNotManaged === 'true'
     const language = (req.query.language ?? 'en') as string
-
-    const { isAdmin, favoriteProgramIds } = req.user
-
-    const whereClause = {
-      ...(!includeDisabled && { enabled: true }),
-    }
-
-    const includes: Includeable[] = [
-      {
-        model: StudyTrack,
-        attributes: ['id', 'name', 'programId'],
-        as: 'studyTracks',
-      },
-    ]
-
-    if (!isAdmin && !includeNotManaged) {
-      includes.push({
-        model: ProgramManagement,
-        attributes: [],
-        where: { userId: req.user.id },
-        required: true,
-      })
-    }
-
-    // Validate that the language is one of the allowed keys
-    const allowedLanguages = ['en', 'fi', 'sv']
-    if (!allowedLanguages.includes(language)) {
-      throw new Error('Invalid language key')
-    }
-
-    const programs = await Program.findAll({
-      attributes: ['id', 'name', 'options'],
-      where: whereClause,
-      include: includes,
-      order: [[literal(`"Program"."name"->>$language`), 'ASC']],
-      bind: { language },
-    })
-
-    const managedPrograms = await ProgramManagement.findAll({
-      attributes: ['programId'],
-      raw: true,
-    })
-    const managedProgramIds = new Set(
-      managedPrograms.map(
-        (programManagement) => programManagement.programId as string
-      )
+    const { isAdmin, favoriteProgramIds, id } = req.user
+    const result = await getPrograms(
+      includeDisabled,
+      includeNotManaged,
+      isAdmin,
+      language,
+      favoriteProgramIds,
+      id
     )
-
-    const programsWithFavorites = programs.map((program) => ({
-      ...program.toJSON(),
-      isFavorite: favoriteProgramIds.includes(program.id),
-      isManaged: managedProgramIds.has(program.id),
-    }))
-
-    res.send(programsWithFavorites)
+    res.send(result)
   }
 )
 
