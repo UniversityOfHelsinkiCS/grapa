@@ -1,5 +1,5 @@
 import express from 'express'
-import { ServerPostRequest } from '../types'
+import { ServerPostRequest, ThesisData } from '../types'
 import { sequelize } from '../db/connection'
 
 import { EventLog } from '../db/models'
@@ -13,21 +13,47 @@ import {
   getSingleThesis,
 } from '../services/thesisService'
 
-import { getUsersBySearchStudents } from '../services/userService'
-
 import ethesisUserHandler from '../middleware/ethesisUser'
 import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMutlipartFormData from '../middleware/attachment'
-import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import { validateThesisData } from '../validators/thesis'
 
 import { handleAttachmentByLabel } from './thesisAttachmentHelpers'
 import { handleThesisCreationEmail } from './thesisHelpers'
 import { cleanThesisUserData } from '../services/thesisService'
+import { getProgram, getPrograms } from '../services/programService'
 
 const studentRouter = express.Router()
 
 studentRouter.use(withStudyRight)
+
+studentRouter.get('/programs', async (req: RequestWithUser, res: any) => {
+  const language = (req.query.language ?? 'en') as string
+
+  // TODO: not hardcode this when we get the studyRight data from sis-importer
+  const programsWithStudyRights: string[] = []
+  if (req.user.iamGroups.includes('hy-ktdk-students')) {
+    programsWithStudyRights.push('MH60_001')
+  }
+
+  const programs = await getPrograms(
+    false,
+    true,
+    false,
+    language,
+    [],
+    req.user.id
+  )
+
+  const result = programs.filter((program) => {
+    return (
+      program.options.allowStudentStartedProcess &&
+      programsWithStudyRights.includes(program.id)
+    )
+  })
+
+  res.send(result)
+})
 
 studentRouter.get('/theses', async (req: RequestWithUser, res: any) => {
   const result = await getPaginatedTheses({
@@ -48,6 +74,14 @@ studentRouter.get('/theses', async (req: RequestWithUser, res: any) => {
     hideUserProperties: true,
   })
 
+  // This should ideally be done in db, but to do that thesisHelpers would need major modifications
+  const filtered_theses: ThesisData[] = result.theses.filter(
+    (thesis) => thesis.program.options.allowStudentStartedProcess
+  )
+
+  //@ts-expect-error these are the same type
+  result.theses = filtered_theses
+
   return res.send(result)
 })
 
@@ -60,17 +94,22 @@ studentRouter.get('/theses/:id', async (req: RequestWithUser, res: any) => {
 
   const thesisData = await getSingleThesis(id, req.user, { onlyAuthored: true })
   cleanThesisUserData(thesisData)
+
+  if (!thesisData.program.options.allowStudentStartedProcess) {
+    res.status(401).send()
+    return
+  }
+
   res.send(thesisData)
 })
 
 studentRouter.post(
-  '/theses',
+  '/thesis',
   ethesisUserHandler,
   parseMutlipartFormData,
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisData,
-  authorizeStatusChange,
   async (req: ServerPostRequest, res: any) => {
     const thesisData = req.body
 
@@ -80,6 +119,29 @@ studentRouter.post(
         .status(400)
         .send("Student's cannot create theses with other statuses than DRAFT")
       return
+    }
+
+    if (!thesisData.authors.map((author) => author.id).includes(req.user.id)) {
+      res.status(400).send('Student must be an author in thesis')
+      return
+    }
+
+    if (thesisData.programId) {
+      const programId: string = thesisData.programId
+      const program = await getProgram(programId, 'fi')
+
+      if (program == null) {
+        res.status(400).send('Program id does not exist')
+        return
+      }
+      if (!program.options.allowStudentStartedProcess) {
+        res
+          .status(401)
+          .send('Program is not allowing thesis submissions from students')
+        return
+      }
+    } else {
+      res.status(400).send('Program id is required')
     }
 
     const createdThesis = await sequelize.transaction(async (t) => {
@@ -101,15 +163,8 @@ studentRouter.post(
 
       return newThesis.toJSON()
     })
-    cleanThesisUserData(createThesis)
     res.status(201).send(createdThesis)
   }
 )
-
-studentRouter.get('/users', async (req: RequestWithUser, res: any) => {
-  const { search } = req.query
-  const result = await getUsersBySearchStudents(search as string)
-  res.send(result)
-})
 
 export default studentRouter

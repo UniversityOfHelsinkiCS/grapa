@@ -55,6 +55,7 @@ router.use('/logout', logoutRouter)
 // These have specific restrictions implemented for certain users
 router.use('/user', userRouter)
 router.use('/users', usersRouter)
+router.use('/program-managements', programManagementRouter)
 
 // These routes are available to those who have active study rights
 router.use('/student', studentRouter)
@@ -64,7 +65,6 @@ router.use(employeesAndAdminOnly)
 router.use('/theses', thesisRouter)
 router.use('/attachments', attachmentRouter)
 router.use('/programs', programRouter)
-router.use('/program-managements', programManagementRouter)
 router.use('/departments', departmentRouter)
 router.use('/department-admins', departmentAdminRouter)
 router.use('/ethesis-admins', ethesisAdminRouter)

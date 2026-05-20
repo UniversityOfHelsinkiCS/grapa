@@ -4,6 +4,11 @@ import { literal, Op } from 'sequelize'
 import { Program, ProgramManagement, User } from '../db/models'
 import { RequestWithUser } from '../types'
 import ethesisUserHandler from '../middleware/ethesisUser'
+import {
+  employeesAndAdminOnly,
+  has_access,
+} from '../middleware/employeesAndAdmin'
+import { cleanUserProperties } from '../services/studentService'
 
 const programManagementRouter = express.Router()
 
@@ -77,11 +82,25 @@ programManagementRouter.get(
         ['user', 'lastName', 'ASC'],
       ],
       bind: { editorUserId: req.user.id },
+      raw: true,
+      nest: true,
     })
+
+    if (!has_access(req.user)) {
+      const filtered = programs.map((program) => {
+        //@ts-expect-error it exists
+        if (program.user) program.user = cleanUserProperties(program.user)
+        return program
+      })
+      res.send(filtered)
+      return
+    }
 
     res.send(programs)
   }
 )
+
+programManagementRouter.use(employeesAndAdminOnly)
 
 programManagementRouter.delete(
   '/:id',

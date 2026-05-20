@@ -191,7 +191,7 @@ export const getFindThesesOptions = async ({
     {
       model: Program,
       as: 'program',
-      attributes: ['id', 'name'],
+      attributes: ['id', 'name', 'options'],
       where: programNamePartial
         ? getProgramWhereClause(programNamePartial, language)
         : undefined,
