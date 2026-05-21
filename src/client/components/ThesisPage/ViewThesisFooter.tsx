@@ -440,7 +440,7 @@ const ViewThesisFooter = (
     isStudentView
   )
   const { events } = useEvents({ thesisId, enabled: !isStudentView })
-  const { mutateAsync: editThesis } = useEditThesisMutation()
+  const { mutateAsync: editThesis } = useEditThesisMutation(isStudentView)
 
   const ethesisReady =
     currentUser &&
@@ -545,7 +545,15 @@ const ViewThesisFooter = (
                           color: '#FFF',
                         },
                       }}
-                      onClick={() => {}}
+                      onClick={() =>
+                        editThesis({
+                          thesisId: thesis.id,
+                          data: {
+                            ...thesis,
+                            status: 'SUGGESTED',
+                          },
+                        })
+                      }
                     >
                       {t('sendDraftButton')}
                     </Button>

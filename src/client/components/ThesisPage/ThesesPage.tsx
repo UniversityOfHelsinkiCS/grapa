@@ -167,7 +167,7 @@ const ThesesPage = ({
     () => (programs ?? []).filter((program) => program.isManaged),
     [programs]
   )
-  const { mutateAsync: editThesis } = useEditThesisMutation()
+  const { mutateAsync: editThesis } = useEditThesisMutation(isStudentView)
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
   const { mutateAsync: createThesis } = useCreateThesisMutation(isStudentView)
 
