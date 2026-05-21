@@ -35,7 +35,7 @@ export const useCreateThesisMutation = (isStudentView?: boolean) => {
   return mutation
 }
 
-export const useEditThesisMutation = () => {
+export const useEditThesisMutation = (isStudentView?: boolean) => {
   const mutationFn = async ({
     thesisId,
     data,
@@ -57,7 +57,8 @@ export const useEditThesisMutation = () => {
       formData.append('waysOfWorking', data.waysOfWorking)
     }
 
-    await apiClient.put(`/theses/${thesisId}`, formData)
+    const apiPath = isStudentView ? '/student/theses/' : '/theses/'
+    await apiClient.put(apiPath + `${thesisId}`, formData)
   }
 
   const mutation = useMutation({
