@@ -6,26 +6,16 @@ import {
   ServerGetRequest,
   ServerPostRequest,
   ServerPutRequest,
-  ThesisData,
 } from '../types'
 import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMutlipartFormData from '../middleware/attachment'
-import {
-  Grader,
-  SeminarSupervision,
-  Thesis,
-  Supervision,
-  Author,
-  Approver,
-  EventLog,
-} from '../db/models'
+import { Thesis, EventLog } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisData } from '../validators/thesis'
 
 import { getPaginatedTheses, createThesis } from '../services/thesisService'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import {
-  getAndCreateExtUsers,
   handleGradersChangeEventLog,
   handleStatusChangeEmail,
   handleStatusChangeEventLog,
@@ -39,78 +29,9 @@ import {
 import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus'
 import ethesisUserHandler from '../middleware/ethesisUser'
 import { fetchThesisById, getSingleThesis } from '../services/thesisService'
+import { updateThesis } from '../services/thesisService'
 
 const thesisRouter = express.Router()
-
-const updateThesis = async (
-  id: string,
-  thesisData: ThesisData,
-  transaction: Transaction
-) => {
-  await Thesis.update(thesisData, { where: { id }, transaction })
-
-  const extUsers = await getAndCreateExtUsers(thesisData, transaction)
-
-  await Supervision.destroy({ where: { thesisId: id }, transaction })
-  await Supervision.bulkCreate(
-    thesisData.supervisions.map((supervision) => ({
-      userId:
-        supervision.user?.id ??
-        extUsers.find((u) => u.email === supervision.user?.email)?.id,
-      thesisId: id,
-      percentage: supervision.percentage,
-      isPrimarySupervisor: supervision.isPrimarySupervisor,
-    })),
-    { transaction, validate: true, individualHooks: true }
-  )
-
-  await SeminarSupervision.destroy({ where: { thesisId: id }, transaction })
-  await SeminarSupervision.bulkCreate(
-    (thesisData.seminarSupervisions ?? [])
-      .filter((seminarSupervision) => Boolean(seminarSupervision.user))
-      .map((seminarSupervision) => ({
-        userId:
-          seminarSupervision.user?.id ??
-          extUsers.find((u) => u.email === seminarSupervision.user?.email)?.id,
-        thesisId: id,
-      })),
-    { transaction, validate: true, individualHooks: true }
-  )
-
-  await Grader.destroy({ where: { thesisId: id }, transaction })
-  await Grader.bulkCreate(
-    thesisData.graders.map((grader) => ({
-      userId:
-        grader.user?.id ??
-        extUsers.find((u) => u.email === grader.user?.email)?.id,
-      thesisId: id,
-      isPrimaryGrader: grader?.isPrimaryGrader,
-    })),
-    { transaction, validate: true, individualHooks: true }
-  )
-
-  await Author.destroy({ where: { thesisId: id }, transaction })
-  await Author.bulkCreate(
-    thesisData.authors.map((author) => ({
-      userId: author.id,
-      thesisId: id,
-    })),
-    { transaction, validate: true, individualHooks: true }
-  )
-
-  await Approver.destroy({ where: { thesisId: id }, transaction })
-  // We want to account for the case where approvers array is
-  // sent as undefined from the client
-  if (thesisData.approvers?.length) {
-    await Approver.bulkCreate(
-      thesisData.approvers.map((approver) => ({
-        userId: approver.id,
-        thesisId: id,
-      })),
-      { transaction, validate: true, individualHooks: true }
-    )
-  }
-}
 
 const deleteThesis = async (id: string, transaction: Transaction) => {
   await Thesis.destroy({ where: { id }, transaction })
