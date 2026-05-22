@@ -41,6 +41,7 @@ export interface User {
   thesesTableFilters?: GridFilterModel
   ethesisAdmin?: boolean
   hasStudyRight?: boolean | null
+  employeeNumber?: string
 }
 
 export interface RequestWithUser extends Request {
