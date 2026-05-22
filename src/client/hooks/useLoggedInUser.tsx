@@ -17,14 +17,12 @@ const useLoggedInUser = () => {
 
   const hasStaffAccess = Boolean(
     user?.isAdmin ||
-      user?.hasSeminarSupervisions ||
-      user?.managedProgramIds?.length ||
-      user?.managedDepartmentIds?.length ||
-      user?.ethesisAdmin ||
-      user?.employeeNumber != undefined ||
-      user?.iamGroups
-      ? user?.iamGroups.includes('hy-employees')
-      : false
+    user?.hasSeminarSupervisions ||
+    user?.managedProgramIds?.length ||
+    user?.managedDepartmentIds?.length ||
+    user?.ethesisAdmin ||
+    user?.employeeNumber != undefined ||
+    (user?.iamGroups ? user?.iamGroups.includes('hy-employees') : false)
   )
 
   return { user, hasStaffAccess, ...rest }
