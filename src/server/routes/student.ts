@@ -143,7 +143,7 @@ const validateThesisDataStudent = async (
 }
 
 studentRouter.post(
-  '/thesis',
+  '/theses',
   ethesisUserHandler,
   parseMutlipartFormData,
   parseFormDataJson,

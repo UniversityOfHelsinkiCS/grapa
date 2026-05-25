@@ -19,7 +19,7 @@ export const useCreateThesisMutation = (isStudentView?: boolean) => {
       formData.append('waysOfWorking', data.waysOfWorking)
     }
 
-    const apiPath = isStudentView ? '/student/thesis' : '/thesis'
+    const apiPath = isStudentView ? '/student/theses' : '/theses'
 
     await apiClient.post(apiPath, formData)
   }
