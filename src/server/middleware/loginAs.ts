@@ -10,7 +10,7 @@ const loginAsMiddleware = async (
   next: NextFunction
 ) => {
   const loginAsId = req.headers[LOGIN_AS_HEADER_KEY]
-  if (typeof loginAsId === 'string' && req.user.isAdmin) {
+  if (typeof loginAsId === 'string' && req.user && req.user.isAdmin) {
     const loggedInAsUser = await User.findByPk(loginAsId)
     if (loggedInAsUser) {
       req.user = loggedInAsUser.toJSON()
