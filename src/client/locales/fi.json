@@ -100,34 +100,44 @@
   },
   "programOverviewPage": {
     "configurationsTab": "Asetukset",
-    "seminarToggle": "Seminaari",
-    "seminarTooltip": "tutkielman tulee sisältää seminaarin ohjaaja",
-    "seminarConfirmTitle": "Vahvista seminaariasetus",
-    "seminarEnableConfirmContent": "Haluatko varmasti ottaa seminaarivaatimuksen käyttöön?",
-    "seminarDisableConfirmContent": "Haluatko varmasti poistaa seminaarivaatimuksen käytöstä?",
-    "allowMultipleSeminarResponsiblesToggle": "Salli useita seminaarivastaavia",
-    "allowMultipleSeminarResponsiblesTooltip": "Salli tutkielmalla useita seminaarivastaavia",
-    "allowMultipleSeminarResponsiblesConfirmTitle": "Vahvista useiden seminaarivastaavien asetus",
-    "allowMultipleSeminarResponsiblesEnableConfirmContent": "Haluatko varmasti sallia useita seminaarivastaavia?",
-    "allowMultipleSeminarResponsiblesDisableConfirmContent": "Haluatko varmasti sallia vain yhden seminaarivastaavan?",
-    "allowMultipleAuthorsToggle": "Salli useita tekijöitä",
-    "allowMultipleAuthorsTooltip": "Salli lisätä tutkielmaansa useita tekijöitä",
-    "allowMultipleAuthorsConfirmTitle": "Vahvista useiden tekijöiden salliminen",
-    "allowMultipleAuthorsEnableConfirmContent": "Haluatko varmasti sallia useita tekijöitä per tutkielma?",
-    "allowMultipleAuthorsDisableConfirmContent": "Haluatko varmasti sallia vain yhden tekijän per tutkielma? Tämä ei poista olemassa olevia tekijöitä.",
-    "allowStudentStartedProcessToggle": "Salli opiskelijalähtöinen prosessi",
-    "allowStudentStartedProcessTooltip": "Salli opiskelijoiden luoda tutkielmia tilassa ehdotus/luonnos koulutusohjelmassa",
-    "allowStudentStartedProcessConfirmTitle": "Vahvista opiskelijalähtöisen prosessin asetus",
-    "allowStudentStartedProcessEnableConfirmContent": "Haluatko varmasti sallia opiskelijalähtöisen prosessin?",
-    "allowStudentStartedProcessDisableConfirmContent": "Haluatko varmasti kieltää opiskelijalähtöisen prosessin? Tämä ei poista olemassa olevia opiskelijoiden luomia tutkielmia.",
+    "seminar": {
+      "toggle": "Seminaari",
+      "tooltip": "tutkielman tulee sisältää seminaarin ohjaaja",
+      "confirmTitle": "Vahvista seminaariasetus",
+      "enableConfirm": "Haluatko varmasti ottaa seminaarivaatimuksen käyttöön?",
+      "disableConfirm": "Haluatko varmasti poistaa seminaarivaatimuksen käytöstä?"
+    },
+    "allowMultipleSeminarResponsibles": {
+      "toggle": "Salli useita seminaarivastaavia",
+      "tooltip": "Salli tutkielmalla useita seminaarivastaavia",
+      "confirmTitle": "Vahvista useiden seminaarivastaavien asetus",
+      "enableConfirm": "Haluatko varmasti sallia useita seminaarivastaavia?",
+      "disableConfirm": "Haluatko varmasti sallia vain yhden seminaarivastaavan?"
+    },
+    "allowMultipleAuthors": {
+      "toggle": "Salli useita tekijöitä",
+      "tooltip": "Salli lisätä tutkielmaansa useita tekijöitä",
+      "confirmTitle": "Vahvista useiden tekijöiden salliminen",
+      "enableConfirm": "Haluatko varmasti sallia useita tekijöitä per tutkielma?",
+      "disableConfirm": "Haluatko varmasti sallia vain yhden tekijän per tutkielma? Tämä ei poista olemassa olevia tekijöitä."
+    },
+    "allowStudentStartedProcess": {
+      "toggle": "Salli opiskelijalähtöinen prosessi",
+      "tooltip": "Salli opiskelijoiden luoda tutkielmia tilassa ehdotus/luonnos koulutusohjelmassa",
+      "confirmTitle": "Vahvista opiskelijalähtöisen prosessin asetus",
+      "enableConfirm": "Haluatko varmasti sallia opiskelijalähtöisen prosessin?",
+      "disableConfirm": "Haluatko varmasti kieltää opiskelijalähtöisen prosessin? Tämä ei poista olemassa olevia opiskelijoiden luomia tutkielmia."
+    },
+    "waysOfWorkingRequired": {
+      "toggle": "Työskentelysopimus vaaditaan",
+      "tooltip": "Tämän ohjelman tutkielmille vaaditaan työskentelysopimus",
+      "confirmTitle": "Vahvista työskentelysopimuksen asetus",
+      "enableConfirm": "Oletko varma, että haluat vaatia työskentelysopimuksen?",
+      "disableConfirm": "Oletko varma, että haluat poistaa työskentelysopimuksen vaatimuksen?"
+    },
     "numberOfGradersLabel": "Tarkastajien enimmäismäärä",
     "numberOfGradersConfirmTitle": "Vahvista tarkastajien määrän asetus",
-    "numberOfGradersConfirmContent": "Haluatko varmasti muuttaa tarkastajien enimmäismäärän arvoon {{count}}?",
-    "waysOfWorkingRequiredToggle": "Työskentelysopimus vaaditaan",
-    "waysOfWorkingRequiredTooltip": "Tämän ohjelman tutkielmille vaaditaan työskentelysopimus",
-    "waysOfWorkingRequiredConfirmTitle": "Vahvista työskentelysopimuksen asetus",
-    "waysOfWorkingRequiredEnableConfirmContent": "Oletko varma, että haluat vaatia työskentelysopimuksen?",
-    "waysOfWorkingRequiredDisableConfirmContent": "Oletko varma, että haluat poistaa työskentelysopimuksen vaatimuksen?"
+    "numberOfGradersConfirmContent": "Haluatko varmasti muuttaa tarkastajien enimmäismäärän arvoon {{count}}?"
   },
   "dropzone": {
     "uploadText": "Pudota tiedosto tähän tai klikkaa ladataksesi",

@@ -55,37 +55,125 @@ interface ProgramConfigurationsProps {
   program: ProgramData
 }
 
+interface FeatureFlagControlProps {
+  program: ProgramData
+  updateMutation: any
+  feature: string
+  translation: any
+}
+
+const FeatureFlagControl = ({
+  program,
+  updateMutation,
+  feature,
+  translation,
+}: FeatureFlagControlProps) => {
+  const featureStatus = Boolean(
+    program.options ? program.options[feature] == true : false
+  )
+
+  const [pendingValue, setPendingValue] = useState<boolean | null>(null)
+
+  const handleToggle = async (event: ChangeEvent<HTMLInputElement>) => {
+    setPendingValue(event.target.checked)
+  }
+
+  const handleCancelToggle = () => {
+    setPendingValue(null)
+  }
+
+  const handleConfirmToggle = async () => {
+    if (pendingValue === null) {
+      return
+    }
+
+    const options = program.options
+    options[feature] = pendingValue
+
+    await updateMutation.mutateAsync({
+      programId: program.id,
+      options: options,
+    })
+
+    setPendingValue(null)
+  }
+
+  return (
+    <>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={featureStatus}
+            onChange={handleToggle}
+            disabled={updateMutation.isPending}
+          />
+        }
+        label={
+          <Tooltip
+            title={translation(`programOverviewPage:${feature}:tooltip`)}
+          >
+            <span>{translation(`programOverviewPage:${feature}:toggle`)}</span>
+          </Tooltip>
+        }
+      />
+
+      <Dialog open={pendingValue !== null} onClose={handleCancelToggle}>
+        <DialogTitle>
+          {translation(`programOverviewPage:${feature}:confirmTitle`)}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            {translation(
+              pendingValue
+                ? `programOverviewPage:${feature}:enableConfirm`
+                : `programOverviewPage:${feature}:disableConfirm`
+            )}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button type="button" onClick={handleCancelToggle}>
+            {translation('cancelButton')}
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={handleConfirmToggle}
+            disabled={updateMutation.isPending}
+          >
+            {translation('submitButton')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
+}
+
 const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   const { t } = useTranslation()
   const updateProgramOptionsMutation = useUpdateProgramOptionsMutation()
-  const seminarEnabled = Boolean(program.options?.seminar)
-  const allowMultipleSeminarResponsibles = Boolean(
-    program.options?.allowMultipleSeminarResponsibles
-  )
-  const allowMultipleAuthors = Boolean(program.options?.allowMultipleAuthors)
-  const allowStudentStartedProcess = Boolean(
-    program.options?.allowStudentStartedProcess
-  )
-  const waysOfWorkingRequired = Boolean(program.options?.waysOfWorkingRequired)
-  const [pendingSeminarValue, setPendingSeminarValue] = useState<
-    boolean | null
-  >(null)
-  const [
-    pendingAllowMultipleSeminarResponsiblesValue,
-    setPendingAllowMultipleSeminarResponsiblesValue,
-  ] = useState<boolean | null>(null)
-  const [
-    pendingAllowMultipleAuthorsValue,
-    setPendingAllowMultipleAuthorsValue,
-  ] = useState<boolean | null>(null)
-  const [
-    pendingAllowStudentStartedProcessValue,
-    setPendingAllowStudentStartedProcessValue,
-  ] = useState<boolean | null>(null)
-  const [
-    pendingWaysOfWorkingRequiredValue,
-    setPendingWaysOfWorkingRequiredValue,
-  ] = useState<boolean | null>(null)
+
+  const options = {
+    seminar: 'boolean',
+    allowMultipleSeminarResponsibles: 'boolean',
+    allowStudentStartedProcess: 'boolean',
+    waysOfWorkingRequired: 'boolean',
+    allowMultipleAuthors: 'boolean',
+  }
+
+  const featureFlagUI = Object.keys(options).map((feature) => {
+    //@ts-expect-error hardcoded above
+    if (options[feature] == 'boolean') {
+      return (
+        <FeatureFlagControl
+          program={program}
+          updateMutation={updateProgramOptionsMutation}
+          feature={feature}
+          translation={t}
+          key={feature}
+        ></FeatureFlagControl>
+      )
+    }
+  })
   const defaultNumberOfGraders =
     (program.options?.numberOfGraders as number | undefined) ?? 2
   const [draftNumberOfGraders, setDraftNumberOfGraders] = useState<number>(
@@ -93,135 +181,6 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   )
   const [confirmingNumberOfGraders, setConfirmingNumberOfGraders] =
     useState(false)
-
-  const handleSeminarToggle = async (event: ChangeEvent<HTMLInputElement>) => {
-    setPendingSeminarValue(event.target.checked)
-  }
-
-  const handleCancelSeminarToggle = () => {
-    setPendingSeminarValue(null)
-  }
-
-  const handleConfirmSeminarToggle = async () => {
-    if (pendingSeminarValue === null) {
-      return
-    }
-
-    await updateProgramOptionsMutation.mutateAsync({
-      programId: program.id,
-      options: {
-        ...program.options,
-        seminar: pendingSeminarValue,
-      },
-    })
-
-    setPendingSeminarValue(null)
-  }
-
-  const handleAllowMultipleSeminarResponsiblesToggle = async (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    setPendingAllowMultipleSeminarResponsiblesValue(event.target.checked)
-  }
-
-  const handleCancelAllowMultipleSeminarResponsiblesToggle = () => {
-    setPendingAllowMultipleSeminarResponsiblesValue(null)
-  }
-
-  const handleConfirmAllowMultipleSeminarResponsiblesToggle = async () => {
-    if (pendingAllowMultipleSeminarResponsiblesValue === null) {
-      return
-    }
-
-    await updateProgramOptionsMutation.mutateAsync({
-      programId: program.id,
-      options: {
-        ...program.options,
-        allowMultipleSeminarResponsibles:
-          pendingAllowMultipleSeminarResponsiblesValue,
-      },
-    })
-
-    setPendingAllowMultipleSeminarResponsiblesValue(null)
-  }
-
-  const handleAllowMultipleAuthorsToggle = async (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    setPendingAllowMultipleAuthorsValue(event.target.checked)
-  }
-
-  const handleCancelAllowMultipleAuthorsToggle = () => {
-    setPendingAllowMultipleAuthorsValue(null)
-  }
-
-  const handleConfirmAllowMultipleAuthorsToggle = async () => {
-    if (pendingAllowMultipleAuthorsValue === null) {
-      return
-    }
-
-    await updateProgramOptionsMutation.mutateAsync({
-      programId: program.id,
-      options: {
-        ...program.options,
-        allowMultipleAuthors: pendingAllowMultipleAuthorsValue,
-      },
-    })
-
-    setPendingAllowMultipleAuthorsValue(null)
-  }
-
-  const handleAllowStudentStartedProcessToggle = async (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    setPendingAllowStudentStartedProcessValue(event.target.checked)
-  }
-
-  const handleCancelAllowStudentStartedProcessToggle = () => {
-    setPendingAllowStudentStartedProcessValue(null)
-  }
-
-  const handleConfirmAllowStudentStartedProcessToggle = async () => {
-    if (pendingAllowStudentStartedProcessValue === null) {
-      return
-    }
-
-    await updateProgramOptionsMutation.mutateAsync({
-      programId: program.id,
-      options: {
-        ...program.options,
-        allowStudentStartedProcess: pendingAllowStudentStartedProcessValue,
-      },
-    })
-
-    setPendingAllowStudentStartedProcessValue(null)
-  }
-
-  const handleWaysOfWorkingRequiredToggle = async (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    setPendingWaysOfWorkingRequiredValue(event.target.checked)
-  }
-
-  const handleCancelWaysOfWorkingRequiredToggle = () => {
-    setPendingWaysOfWorkingRequiredValue(null)
-  }
-
-  const handleConfirmWaysOfWorkingRequiredToggle = async () => {
-    if (pendingWaysOfWorkingRequiredValue === null) {
-      return
-    }
-
-    await updateProgramOptionsMutation.mutateAsync({
-      programId: program.id,
-      options: {
-        ...program.options,
-        waysOfWorkingRequired: pendingWaysOfWorkingRequiredValue,
-      },
-    })
-
-    setPendingWaysOfWorkingRequiredValue(null)
-  }
 
   const handleCancelNumberOfGradersChange = () => {
     setConfirmingNumberOfGraders(false)
@@ -242,96 +201,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   return (
     <>
       <Stack spacing={2}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={seminarEnabled}
-              onChange={handleSeminarToggle}
-              disabled={updateProgramOptionsMutation.isPending}
-            />
-          }
-          label={
-            <Tooltip title={t('programOverviewPage:seminarTooltip')}>
-              <span>{t('programOverviewPage:seminarToggle')}</span>
-            </Tooltip>
-          }
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={allowMultipleAuthors}
-              onChange={handleAllowMultipleAuthorsToggle}
-              disabled={updateProgramOptionsMutation.isPending}
-            />
-          }
-          label={
-            <Tooltip
-              title={t('programOverviewPage:allowMultipleAuthorsTooltip')}
-            >
-              <span>{t('programOverviewPage:allowMultipleAuthorsToggle')}</span>
-            </Tooltip>
-          }
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={allowStudentStartedProcess}
-              onChange={handleAllowStudentStartedProcessToggle}
-              disabled={updateProgramOptionsMutation.isPending}
-            />
-          }
-          label={
-            <Tooltip
-              title={t('programOverviewPage:allowStudentStartedProcessTooltip')}
-            >
-              <span>
-                {t('programOverviewPage:allowStudentStartedProcessToggle')}
-              </span>
-            </Tooltip>
-          }
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={waysOfWorkingRequired}
-              onChange={handleWaysOfWorkingRequiredToggle}
-              disabled={updateProgramOptionsMutation.isPending}
-            />
-          }
-          label={
-            <Tooltip
-              title={t('programOverviewPage:waysOfWorkingRequiredTooltip')}
-            >
-              <span>
-                {t('programOverviewPage:waysOfWorkingRequiredToggle')}
-              </span>
-            </Tooltip>
-          }
-        />
-        {seminarEnabled && (
-          <FormControlLabel
-            control={
-              <Switch
-                checked={allowMultipleSeminarResponsibles}
-                onChange={handleAllowMultipleSeminarResponsiblesToggle}
-                disabled={updateProgramOptionsMutation.isPending}
-              />
-            }
-            label={
-              <Tooltip
-                title={t(
-                  'programOverviewPage:allowMultipleSeminarResponsiblesTooltip'
-                )}
-              >
-                <span>
-                  {t(
-                    'programOverviewPage:allowMultipleSeminarResponsiblesToggle'
-                  )}
-                </span>
-              </Tooltip>
-            }
-          />
-        )}
+        {featureFlagUI}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, pt: 1 }}>
           <Typography>
             {t('programOverviewPage:numberOfGradersLabel')}
@@ -358,175 +228,6 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
           </Button>
         </Box>
       </Stack>
-
-      <Dialog
-        open={pendingSeminarValue !== null}
-        onClose={handleCancelSeminarToggle}
-      >
-        <DialogTitle>
-          {t('programOverviewPage:seminarConfirmTitle')}
-        </DialogTitle>
-        <DialogContent>
-          <Typography>
-            {t(
-              pendingSeminarValue
-                ? 'programOverviewPage:seminarEnableConfirmContent'
-                : 'programOverviewPage:seminarDisableConfirmContent'
-            )}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button type="button" onClick={handleCancelSeminarToggle}>
-            {t('cancelButton')}
-          </Button>
-          <Button
-            type="button"
-            variant="contained"
-            onClick={handleConfirmSeminarToggle}
-            disabled={updateProgramOptionsMutation.isPending}
-          >
-            {t('submitButton')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={pendingAllowMultipleSeminarResponsiblesValue !== null}
-        onClose={handleCancelAllowMultipleSeminarResponsiblesToggle}
-      >
-        <DialogTitle>
-          {t(
-            'programOverviewPage:allowMultipleSeminarResponsiblesConfirmTitle'
-          )}
-        </DialogTitle>
-        <DialogContent>
-          <Typography>
-            {t(
-              pendingAllowMultipleSeminarResponsiblesValue
-                ? 'programOverviewPage:allowMultipleSeminarResponsiblesEnableConfirmContent'
-                : 'programOverviewPage:allowMultipleSeminarResponsiblesDisableConfirmContent'
-            )}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            type="button"
-            onClick={handleCancelAllowMultipleSeminarResponsiblesToggle}
-          >
-            {t('cancelButton')}
-          </Button>
-          <Button
-            type="button"
-            variant="contained"
-            onClick={handleConfirmAllowMultipleSeminarResponsiblesToggle}
-            disabled={updateProgramOptionsMutation.isPending}
-          >
-            {t('submitButton')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={pendingAllowMultipleAuthorsValue !== null}
-        onClose={handleCancelAllowMultipleAuthorsToggle}
-      >
-        <DialogTitle>
-          {t('programOverviewPage:allowMultipleAuthorsConfirmTitle')}
-        </DialogTitle>
-        <DialogContent>
-          <Typography>
-            {t(
-              pendingAllowMultipleAuthorsValue
-                ? 'programOverviewPage:allowMultipleAuthorsEnableConfirmContent'
-                : 'programOverviewPage:allowMultipleAuthorsDisableConfirmContent'
-            )}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            type="button"
-            onClick={handleCancelAllowMultipleAuthorsToggle}
-          >
-            {t('cancelButton')}
-          </Button>
-          <Button
-            type="button"
-            variant="contained"
-            onClick={handleConfirmAllowMultipleAuthorsToggle}
-            disabled={updateProgramOptionsMutation.isPending}
-          >
-            {t('submitButton')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={pendingAllowStudentStartedProcessValue !== null}
-        onClose={handleCancelAllowStudentStartedProcessToggle}
-      >
-        <DialogTitle>
-          {t('programOverviewPage:allowStudentStartedProcessConfirmTitle')}
-        </DialogTitle>
-        <DialogContent>
-          <Typography>
-            {t(
-              pendingAllowStudentStartedProcessValue
-                ? 'programOverviewPage:allowStudentStartedProcessEnableConfirmContent'
-                : 'programOverviewPage:allowStudentStartedProcessDisableConfirmContent'
-            )}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            type="button"
-            onClick={handleCancelAllowStudentStartedProcessToggle}
-          >
-            {t('cancelButton')}
-          </Button>
-          <Button
-            type="button"
-            variant="contained"
-            onClick={handleConfirmAllowStudentStartedProcessToggle}
-            disabled={updateProgramOptionsMutation.isPending}
-          >
-            {t('submitButton')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={pendingWaysOfWorkingRequiredValue !== null}
-        onClose={handleCancelWaysOfWorkingRequiredToggle}
-      >
-        <DialogTitle>
-          {t('programOverviewPage:waysOfWorkingRequiredConfirmTitle')}
-        </DialogTitle>
-        <DialogContent>
-          <Typography>
-            {t(
-              pendingWaysOfWorkingRequiredValue
-                ? 'programOverviewPage:waysOfWorkingRequiredEnableConfirmContent'
-                : 'programOverviewPage:waysOfWorkingRequiredDisableConfirmContent'
-            )}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            type="button"
-            onClick={handleCancelWaysOfWorkingRequiredToggle}
-          >
-            {t('cancelButton')}
-          </Button>
-          <Button
-            type="button"
-            variant="contained"
-            onClick={handleConfirmWaysOfWorkingRequiredToggle}
-            disabled={updateProgramOptionsMutation.isPending}
-          >
-            {t('submitButton')}
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       <Dialog
         open={confirmingNumberOfGraders}

@@ -100,34 +100,44 @@
   },
   "programOverviewPage": {
     "configurationsTab": "Configurations",
-    "seminarToggle": "Seminar",
-    "seminarTooltip": "The thesis must include a seminar supervisor",
-    "seminarConfirmTitle": "Confirm seminar setting",
-    "seminarEnableConfirmContent": "Are you sure you want to enable the seminar requirement?",
-    "seminarDisableConfirmContent": "Are you sure you want to disable the seminar requirement?",
-    "allowMultipleSeminarResponsiblesToggle": "Allow multiple seminar responsibles",
-    "allowMultipleSeminarResponsiblesTooltip": "Allow theses to have multiple seminar supervisors",
-    "allowMultipleSeminarResponsiblesConfirmTitle": "Confirm multiple seminar responsibles setting",
-    "allowMultipleSeminarResponsiblesEnableConfirmContent": "Are you sure you want to allow multiple seminar responsibles?",
-    "allowMultipleSeminarResponsiblesDisableConfirmContent": "Are you sure you want to allow only one seminar responsible?",
-    "allowMultipleAuthorsToggle": "Allow multiple authors",
-    "allowMultipleAuthorsTooltip": "Allow students to add multiple authors to their thesis",
-    "allowMultipleAuthorsConfirmTitle": "Confirm multiple authors setting",
-    "allowMultipleAuthorsEnableConfirmContent": "Are you sure you want to allow multiple authors per thesis?",
-    "allowMultipleAuthorsDisableConfirmContent": "Are you sure you want to allow only one author per thesis? This will not remove existing authors.",
-    "allowStudentStartedProcessToggle": "Allow student started process",
-    "allowStudentStartedProcessTooltip": "Allow students to create theses in draft/suggested state",
-    "allowStudentStartedProcessConfirmTitle": "Confirm student started process setting",
-    "allowStudentStartedProcessEnableConfirmContent": "Are you sure you want to allow started process?",
-    "allowStudentStartedProcessDisableConfirmContent": "Are you sure you want to disallow started process? This will not remove existing theses.",
+    "seminar": {
+      "toggle": "Seminar",
+      "tooltip": "The thesis must include a seminar supervisor",
+      "confirmTitle": "Confirm seminar setting",
+      "enableConfirm": "Are you sure you want to enable the seminar requirement?",
+      "disableConfirm": "Are you sure you want to disable the seminar requirement?"
+    },
+    "allowMultipleSeminarResponsibles": {
+      "toggle": "Allow multiple seminar responsibles",
+      "tooltip": "Allow theses to have multiple seminar supervisors",
+      "confirmTitle": "Confirm multiple seminar responsibles setting",
+      "enableConfirm": "Are you sure you want to allow multiple seminar responsibles?",
+      "disableConfirm": "Are you sure you want to allow only one seminar responsible?"
+    },
+    "allowMultipleAuthors": {
+      "toggle": "Allow multiple authors",
+      "tooltip": "Allow students to add multiple authors to their thesis",
+      "confirmTitle": "Confirm multiple authors setting",
+      "enableConfirm": "Are you sure you want to allow multiple authors per thesis?",
+      "disableConfirm": "Are you sure you want to allow only one author per thesis? This will not remove existing authors."
+    },
+    "allowStudentStartedProcess": {
+      "toggle": "Allow student started process",
+      "tooltip": "Allow students to create theses in draft/suggested state",
+      "confirmTitle": "Confirm student started process setting",
+      "enableConfirm": "Are you sure you want to allow started process?",
+      "disableConfirm": "Are you sure you want to disallow started process? This will not remove existing theses."
+    },
+    "waysOfWorkingRequired": {
+      "toggle": "Ways of working agreement required",
+      "tooltip": "A ways of working agreement is required for theses in this program",
+      "confirmTitle": "Confirm ways of working agreement setting",
+      "enableConfirm": "Are you sure you want to require a ways of working agreement?",
+      "disableConfirm": "Are you sure you want to disable the ways of working agreement requirement?"
+    },
     "numberOfGradersLabel": "Maximum number of graders",
     "numberOfGradersConfirmTitle": "Confirm number of graders setting",
-    "numberOfGradersConfirmContent": "Are you sure you want to change the maximum number of graders per thesis to {{count}}?",
-    "waysOfWorkingRequiredToggle": "Ways of working agreement required",
-    "waysOfWorkingRequiredTooltip": "A ways of working agreement is required for theses in this program",
-    "waysOfWorkingRequiredConfirmTitle": "Confirm ways of working agreement setting",
-    "waysOfWorkingRequiredEnableConfirmContent": "Are you sure you want to require a ways of working agreement?",
-    "waysOfWorkingRequiredDisableConfirmContent": "Are you sure you want to disable the ways of working agreement requirement?"
+    "numberOfGradersConfirmContent": "Are you sure you want to change the maximum number of graders per thesis to {{count}}?"
   },
   "dropzone": {
     "uploadText": "Drop a file here or click to upload",
