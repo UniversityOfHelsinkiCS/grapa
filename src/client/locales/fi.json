@@ -135,6 +135,13 @@
       "enableConfirm": "Oletko varma, että haluat vaatia työskentelysopimuksen?",
       "disableConfirm": "Oletko varma, että haluat poistaa työskentelysopimuksen vaatimuksen?"
     },
+    "hideSendToEthesis": {
+      "toggle": "Piilota \"Lähetä Ethesikseen\"-toiminnallisuus",
+      "tooltip": "Piilottaa Ethesikseen lähettämisen toiminnallisuuden koulutusohjelmasta",
+      "confirmTitle": "Vahvista \"Lähetä Ethesikseen\" asetus",
+      "enableConfirm": "Oletko varma, että haluat piilottaa \"Lähetä Ethesikseen\"-toiminnallisuuden?",
+      "disableConfirm": "Oletko varma, että haluat näyttää \"Lähetä Ethesikseen\"-toiminnallisuuden?"
+    },
     "numberOfGradersLabel": "Tarkastajien enimmäismäärä",
     "numberOfGradersConfirmTitle": "Vahvista tarkastajien määrän asetus",
     "numberOfGradersConfirmContent": "Haluatko varmasti muuttaa tarkastajien enimmäismäärän arvoon {{count}}?"

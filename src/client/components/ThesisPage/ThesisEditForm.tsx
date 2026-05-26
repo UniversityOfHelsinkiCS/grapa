@@ -139,10 +139,11 @@ const ThesisEditForm: FC<{
   const showOption = {
     DRAFT: user.isAdmin,
     SUGGESTED: user.isAdmin,
-    PLANNING: user.isAdmin,
+    PLANNING:
+      user.isAdmin && !selectedProgram?.options?.allowStudentStartedProcess,
     IN_PROGRESS:
       user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(thesisStatus),
-    ETHESIS_SENT: user.isAdmin,
+    ETHESIS_SENT: user.isAdmin && !selectedProgram?.options?.hideSendToEthesis,
     ETHESIS: user.isAdmin,
     COMPLETED: user.isAdmin,
   }

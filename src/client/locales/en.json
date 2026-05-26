@@ -135,6 +135,13 @@
       "enableConfirm": "Are you sure you want to require a ways of working agreement?",
       "disableConfirm": "Are you sure you want to disable the ways of working agreement requirement?"
     },
+    "hideSendToEthesis": {
+      "toggle": "Hide \"Send to Ethesis\" functionality",
+      "tooltip": "Hides the Send to Ethesis functionality from the degree program",
+      "confirmTitle": "Confirm \"Send to Ethesis\" setting",
+      "enableConfirm": "Are you sure you want to hide the \"Send to Ethesis\" functionality?",
+      "disableConfirm": "Are you sure you want to show the \"Send to Ethesis\" functionality?"
+    },
     "numberOfGradersLabel": "Maximum number of graders",
     "numberOfGradersConfirmTitle": "Confirm number of graders setting",
     "numberOfGradersConfirmContent": "Are you sure you want to change the maximum number of graders per thesis to {{count}}?"

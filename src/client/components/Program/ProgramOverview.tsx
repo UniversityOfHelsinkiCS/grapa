@@ -158,6 +158,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     allowStudentStartedProcess: 'boolean',
     waysOfWorkingRequired: 'boolean',
     allowMultipleAuthors: 'boolean',
+    hideSendToEthesis: 'boolean',
   }
 
   const featureFlagUI = Object.keys(options).map((feature) => {
