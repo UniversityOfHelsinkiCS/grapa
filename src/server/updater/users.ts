@@ -1,4 +1,4 @@
-import { sequelize } from '@backend/db/connection'
+import { sequelize } from '../db/connection'
 import { QueryTypes } from 'sequelize'
 import { User, StudyRight } from '../db/models'
 import { mangleData } from './mangleData'
