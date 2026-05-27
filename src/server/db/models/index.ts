@@ -3,6 +3,7 @@ import SeminarSupervision from './SeminarSupervision'
 import Thesis from './Thesis'
 import Supervision from './Supervision'
 import Author from './Author'
+import StudyRight from './StudyRight'
 import Approver from './Approver'
 import Attachment from './Attachment'
 import Program from './Program'
@@ -74,6 +75,9 @@ Thesis.hasMany(Grader, { foreignKey: 'thesisId', as: 'graders' })
 
 Grader.belongsTo(Thesis, { as: 'thesis' })
 
+StudyRight.belongsTo(User, { as: 'user' })
+StudyRight.belongsTo(Program, { as: 'program' })
+
 Author.belongsTo(User, { as: 'user' })
 Thesis.belongsToMany(User, {
   through: Author,
@@ -117,4 +121,5 @@ export {
   DepartmentAdmin,
   EventLog,
   EthesisAdmin,
+  StudyRight,
 }
