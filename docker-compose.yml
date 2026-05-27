@@ -12,6 +12,8 @@ services:
       - 3000:3000
       - 8000:8000
     container_name: grapa_dev
+    networks:
+      - grapa_internal
 
   db:
     image: postgres:15.10
@@ -23,10 +25,16 @@ services:
     volumes:
       - pg_data:/data
     container_name: grapa_db
+    networks:
+      - grapa_internal
+
 
   redis:
     image: redis:7-alpine
     container_name: grapa_redis
+    networks:
+      - grapa_internal
+
 
   # login.toska.localhost:
   #   image: hy-oidc-emu
@@ -35,6 +43,12 @@ services:
   #   volumes:
   #     - ./oidc_emu/accounts.json:/opt/app-root/src/accounts.json
   #     - ./oidc_emu/configuration.json:/opt/app-root/src/configuration.json
+  #    networks:
+  #      - grapa_internal
 
 volumes:
   pg_data:
+
+networks:
+  grapa_internal:
+    driver: bridge
