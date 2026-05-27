@@ -35,9 +35,13 @@ export type Migration = typeof umzug._types.migration
 export const runMigrations = async () => {
   const migrations = await umzug.up()
 
-  logger.info('Migrations up to date', {
-    migrations,
-  })
+  try {
+    logger.info('Migrations up to date', {
+      migrations,
+    })
+  } catch {
+    logger.info('Logger failed to log migrations, but they are up to date')
+  }
 }
 
 export const resetDatabase = async () => {
