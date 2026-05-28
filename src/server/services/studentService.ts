@@ -1,5 +1,7 @@
 import { User } from '../types'
 
+import { StudyRight } from '../db/models'
+
 export const cleanUserProperties = (user: any) => {
   const allowed_keys = [
     'id',
@@ -16,11 +18,16 @@ export const cleanUserProperties = (user: any) => {
 }
 
 export const getStudentStudyRights = async (user: User) => {
-  // TODO: not hardcode this when we get the studyRight data from sis-importer
-  const programsWithStudyRights: string[] = []
-  if (user.iamGroups.includes('hy-ktdk-students')) {
-    programsWithStudyRights.push('MH60_001')
-  }
+  const studyRights = await StudyRight.findAll({
+    where: {
+      userId: user.id,
+    },
+    raw: true,
+  })
+
+  const programsWithStudyRights: string[] = studyRights.map((studyright) => {
+    return studyright.programCode
+  })
 
   return programsWithStudyRights
 }
