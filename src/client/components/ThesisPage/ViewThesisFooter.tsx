@@ -481,8 +481,6 @@ const ViewThesisFooter = (
                     position: 'absolute',
                     bottom: '4px',
                     left: 0,
-                    height: '6px',
-                    backgroundColor: '#fcd34d',
                     zIndex: -1,
                     width: '100%',
                   },
@@ -561,18 +559,10 @@ const ViewThesisFooter = (
                   <Button
                     variant="outlined"
                     sx={{
-                      borderColor: '#000',
                       fontSize: '12px',
-                      color: '#000',
                       height: 24,
                       px: 2,
-                      borderRadius: '1rem',
                       fontWeight: 600,
-                      '&:hover': {
-                        backgroundColor: '#000',
-                        borderColor: '#000',
-                        color: '#FFF',
-                      },
                     }}
                     onClick={() => handleEditThesis(thesis)}
                   >
@@ -586,7 +576,6 @@ const ViewThesisFooter = (
                       height: 24,
                       px: 2,
                       boxShadow: 0,
-                      borderRadius: '1rem',
                       fontWeight: 600,
                     }}
                     onClick={() => handleDeleteThesis(thesis)}
@@ -682,7 +671,7 @@ const ViewThesisFooter = (
             !isStudentView &&
             currentUser.isAdmin && (
               <Paper
-                elevation={1}
+                elevation={0}
                 sx={{
                   p: 2,
                   mb: 2,
