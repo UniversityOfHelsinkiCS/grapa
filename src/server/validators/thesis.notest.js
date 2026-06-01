@@ -1,7 +1,7 @@
 import { Program } from '../db/models'
 import { validateThesisDataMiddleware } from './thesis'
 
-describe('validateThesisData', () => {
+describe('validateThesisDataMiddleware', () => {
   let req
   let res
   let next
