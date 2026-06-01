@@ -14,6 +14,7 @@ interface PositionedMenuProps {
   handleClose: () => void
   label: string
   children: React.ReactNode
+  sx: any
 }
 
 export const PositionedMenu = ({
@@ -23,6 +24,7 @@ export const PositionedMenu = ({
   handleClose,
   label,
   children,
+  sx,
 }: PositionedMenuProps) => {
   const buttonId = useId()
   const menuId = useId()
@@ -35,7 +37,7 @@ export const PositionedMenu = ({
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
-        sx={{ color: 'text.primary' }}
+        sx={sx ? sx : { color: 'text.primary' }}
       >
         {label} {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
       </Button>
@@ -45,7 +47,6 @@ export const PositionedMenu = ({
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        elevation={1}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',

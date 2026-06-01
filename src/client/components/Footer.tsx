@@ -12,8 +12,7 @@ const Footer = () => {
     <Box
       component="footer"
       sx={(theme) => ({
-        backgroundColor: theme.palette.toskaDark.main,
-        color: theme.palette.toskaDark.contrastText,
+        color: theme.palette.toskaPrimary.contrastText,
       })}
     >
       <Box sx={footerStyles.supportBox}>

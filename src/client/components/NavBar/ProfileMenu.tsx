@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TranslatedName, User } from '@backend/types'
 import {
-  Avatar,
   Box,
   Divider,
-  IconButton,
+  Button,
   ListItem,
   ListSubheader,
   Menu,
@@ -18,9 +17,9 @@ import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useDepartments from '../../hooks/useDepartments'
 
 import LanguageSelect from './LanguageSelect'
-import { stringToColor } from './util'
 import FavoritePrograms from './FavoritePrograms'
 import Logout from './Logout'
+import { PersonOutlineOutlined } from '@mui/icons-material'
 
 const UserInformation = () => {
   const { t, i18n } = useTranslation()
@@ -89,7 +88,8 @@ const UserInformation = () => {
   )
 }
 
-const ProfileMenu = () => {
+const ProfileMenu = (props) => {
+  const { sx } = props
   const { t } = useTranslation()
   const { user, isLoading, hasStaffAccess } = useLoggedInUser()
 
@@ -110,26 +110,16 @@ const ProfileMenu = () => {
   return (
     <>
       <Tooltip title={t('navbar:settings')}>
-        <IconButton
+        <Button
           onClick={handleClick}
-          size="small"
-          sx={{ ml: 2 }}
+          sx={sx}
           aria-controls={open ? 'profile-settings' : undefined}
           aria-haspopup="true"
           aria-expanded={open ? 'true' : false}
         >
-          <Avatar
-            sx={{
-              width: 40,
-              height: 40,
-              cursor: 'pointer',
-              bgcolor: stringToColor(user?.username || ''),
-            }}
-          >
-            {user?.firstName[0]}
-            {user?.lastName[0]}
-          </Avatar>
-        </IconButton>
+          <PersonOutlineOutlined sx={{ mr: 1 }} /> {user?.firstName}{' '}
+          {user?.lastName}
+        </Button>
       </Tooltip>
       <Menu
         anchorEl={anchorEl}

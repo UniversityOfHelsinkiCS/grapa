@@ -19,7 +19,7 @@ import {
   Typography,
 } from '@mui/material'
 
-import hyLogo from '../../assets/hy_logo.svg'
+import hyLogo from '../../assets/hy_logo2.svg'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useDepartments from '../../hooks/useDepartments'
 import usePrograms from '../../hooks/usePrograms'
@@ -33,11 +33,11 @@ import { PositionedMenu, PositionedMenuLinkItem } from './PositionedMenu'
 export const navStyles = {
   appbar: {
     zIndex: (theme: Theme) => theme.zIndex.drawer + 1,
-    backgroundColor: 'rgba(255, 255, 255, 0)',
+    backgroundColor: 'rgb(18, 76, 140)',
     borderRadius: 0,
     borderBottom: '1px solid black',
-    py: '1rem',
-    height: '100px',
+    py: '0.25rem',
+    boxShadow: 2,
   },
   toolbar: {
     display: 'flex',
@@ -47,10 +47,11 @@ export const navStyles = {
     },
     justifyContent: 'space-between',
     padding: '0.2rem 0 0.2rem 0',
+    color: 'white',
   },
   appName: {
     textTransform: 'uppercase',
-    color: 'black',
+    color: 'white',
     fontWeight: 700,
     fontSize: 24,
     userSelect: 'none',
@@ -66,20 +67,30 @@ export const navStyles = {
     padding: '5px 12px',
     backgroundColor: 'rgba(255, 255, 255, 0)',
     transition: 'background-color 0.1s',
-    borderRadius: 3,
+    borderRadius: '0.5rem',
     '&:hover': {
       backgroundColor: 'rgba(255, 255, 255, 0.22)',
     },
   },
   icon: { mr: 1 },
   link: {
-    color: 'black',
     textDecoration: 'none',
     fontWeight: (theme: Theme) => theme.typography.fontWeightMedium,
     '&.active': {
       color: 'primary.main',
       textDecoration: 'underline',
       fontWeight: 'bold',
+    },
+  },
+  navlink: {
+    color: 'white',
+    borderRadius: '0.5rem',
+    fontWeight: 700,
+    '&.active': {
+      backgroundColor: 'rgba(255, 255, 255, 0.22)',
+    },
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.12)',
     },
   },
 }
@@ -137,6 +148,7 @@ const ProgramMenu = () => {
       anchorEl={anchorEl}
       handleClick={handleClick}
       handleClose={handleClose}
+      sx={navStyles.navlink}
     >
       {sortedPrograms?.map((program) => (
         <PositionedMenuLinkItem
@@ -177,6 +189,7 @@ const DepartmentMenu = () => {
       anchorEl={anchorEl}
       handleClick={handleClick}
       handleClose={handleClose}
+      sx={navStyles.navlink}
     >
       {sortedDepartments?.map((department) => (
         <PositionedMenuLinkItem
@@ -193,7 +206,7 @@ const DepartmentMenu = () => {
 
 const EthesisLink = () => {
   return (
-    <Button component={NavLink} to="/ethesis" sx={navStyles.link}>
+    <Button component={NavLink} to="/ethesis" sx={navStyles.navlink}>
       Ethesis
     </Button>
   )
@@ -203,7 +216,7 @@ const SeminarLink = () => {
   const { t } = useTranslation()
 
   return (
-    <Button component={NavLink} to="/seminar" sx={navStyles.link}>
+    <Button component={NavLink} to="/seminar" sx={navStyles.navlink}>
       {t('navbar:seminar')}
     </Button>
   )
@@ -213,7 +226,7 @@ const MyThesesLink = () => {
   const { t } = useTranslation()
 
   return (
-    <Button component={NavLink} to="/my-theses" sx={navStyles.link}>
+    <Button component={NavLink} to="/my-theses" sx={navStyles.navlink}>
       {t('navbar:myTheses', 'My Theses')}
     </Button>
   )
@@ -259,11 +272,11 @@ const NavBar = () => {
                 width="40 px"
                 style={{ marginRight: '0.5rem' }}
               />
-              <Box ml="2rem">
-                <Typography component="a" href="/" sx={navStyles.appName}>
+              <NavLink to="/" style={{ textDecoration: 'none' }}>
+                <Typography component="span" sx={navStyles.appName}>
                   {t('appName')}
                 </Typography>
-              </Box>
+              </NavLink>
             </Box>
             <Box
               component="nav"
@@ -282,12 +295,12 @@ const NavBar = () => {
 
             <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 2 }}>
               {user?.isAdmin && (
-                <Button component={NavLink} to="/admin" sx={navStyles.link}>
+                <Button component={NavLink} to="/admin" sx={navStyles.navlink}>
                   <AdminPanelSettingsOutlined sx={navStyles.icon} />{' '}
                   {t('admin')}
                 </Button>
               )}
-              <ProfileMenu />
+              <ProfileMenu sx={navStyles.navlink} />
             </Box>
             <IconButton
               aria-label={t('navbar:openMobileMenu')}
