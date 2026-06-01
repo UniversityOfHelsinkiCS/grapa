@@ -49,7 +49,15 @@ const ThesisEditForm: FC<{
   initialThesis: ThesisData
   onClose: () => void
   onSubmit: (data: ThesisData) => Promise<void>
-}> = ({ programs, formTitle, initialThesis, onSubmit, onClose }) => {
+  isStudentView: boolean
+}> = ({
+  programs,
+  formTitle,
+  initialThesis,
+  onSubmit,
+  onClose,
+  isStudentView,
+}) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
   const [formErrors, setFormErrors] = useState<ZodIssue[]>([])
@@ -86,7 +94,8 @@ const ThesisEditForm: FC<{
       approvers?.length > 0,
       Boolean(selectedProgram?.options?.seminar),
       Boolean(selectedProgram?.options?.allowMultipleSeminarResponsibles),
-      Boolean(selectedProgram?.options?.waysOfWorkingRequired)
+      Boolean(selectedProgram?.options?.waysOfWorkingRequired),
+      isStudentView
     )
 
     if (thesisErrors.length > 0) {
@@ -214,7 +223,13 @@ const ThesisEditForm: FC<{
               <Select
                 data-testid="program-select-input"
                 required
-                value={editedThesis.programId}
+                value={
+                  editedThesis.programId == null &&
+                  isStudentView &&
+                  programs.length == 1
+                    ? programs[0].id
+                    : editedThesis.programId
+                }
                 id="programId"
                 label="Program"
                 name="programId"
@@ -326,7 +341,7 @@ const ThesisEditForm: FC<{
               </FormControl>
             )}
 
-            {approvers && approvers.length > 0 && (
+            {!isStudentView && approvers && approvers.length > 0 && (
               <>
                 <Alert
                   id="grader-select-instructions"
@@ -651,18 +666,30 @@ const ThesisEditForm: FC<{
             </Grid>
           </Stack>
 
-          <SupervisorSelect
-            errors={formErrors}
-            setErrors={(errors) => setFormErrors(errors)}
-            supervisorSelections={editedThesis.supervisions}
-            setSupervisorSelections={(newSupervisions) =>
-              setEditedThesis((oldThesis) => ({
-                ...oldThesis,
-                supervisions: newSupervisions,
-              }))
+          <Stack
+            sx={
+              isStudentView
+                ? {
+                    '.percentage-input-field': {
+                      display: 'none',
+                    },
+                  }
+                : {}
             }
-            disabledMode={false}
-          />
+          >
+            <SupervisorSelect
+              errors={formErrors}
+              setErrors={(errors) => setFormErrors(errors)}
+              supervisorSelections={editedThesis.supervisions}
+              setSupervisorSelections={(newSupervisions) =>
+                setEditedThesis((oldThesis) => ({
+                  ...oldThesis,
+                  supervisions: newSupervisions,
+                }))
+              }
+              disabledMode={false}
+            />
+          </Stack>
 
           {Boolean(selectedProgram?.options?.seminar) && (
             <SeminarSupervisorSelect
@@ -682,19 +709,22 @@ const ThesisEditForm: FC<{
               )}
             />
           )}
-          <GraderSelect
-            errors={formErrors}
-            setErrors={(errors) => setFormErrors(errors)}
-            graderSelections={editedThesis.graders}
-            setGraderSelections={(newGraders) =>
-              setEditedThesis((oldThesis) => ({
-                ...oldThesis,
-                graders: newGraders,
-              }))
-            }
-            disabledMode={false}
-            maxGraders={Number(maxGraders)}
-          />
+
+          {!isStudentView && (
+            <GraderSelect
+              errors={formErrors}
+              setErrors={(errors) => setFormErrors(errors)}
+              graderSelections={editedThesis.graders}
+              setGraderSelections={(newGraders) =>
+                setEditedThesis((oldThesis) => ({
+                  ...oldThesis,
+                  graders: newGraders,
+                }))
+              }
+              disabledMode={false}
+              maxGraders={Number(maxGraders)}
+            />
+          )}
 
           <Stack
             spacing={3}

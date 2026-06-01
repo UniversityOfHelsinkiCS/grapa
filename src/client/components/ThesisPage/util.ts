@@ -40,7 +40,8 @@ export const getFormErrors = (
   hasApprovers = false,
   seminarSupervisionRequired = false,
   allowMultipleSeminarResponsibles = false,
-  waysOfWorkingRequired = false
+  waysOfWorkingRequired = false,
+  isStudentView = false
 ) => {
   const validatedThesis = ThesisSchema.safeParse(thesis)
   const validatedDates = ThesisDateSchema.safeParse({
@@ -81,6 +82,7 @@ export const getFormErrors = (
 
   // Add custom validation for approvers when they are available
   if (
+    !isStudentView &&
     hasApprovers &&
     (!thesis.approvers || thesis.approvers.length === 0 || !thesis.approvers[0])
   ) {
