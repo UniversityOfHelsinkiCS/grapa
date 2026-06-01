@@ -1,5 +1,5 @@
 import { Program } from '../db/models'
-import { validateThesisData } from './thesis'
+import { validateThesisDataMiddleware } from './thesis'
 
 describe('validateThesisData', () => {
   let req
@@ -7,12 +7,12 @@ describe('validateThesisData', () => {
   let next
 
   const expectValidationError = async (message) => {
-    await expect(validateThesisData(req, res, next)).rejects.toThrow(message)
+    await expect(validateThesisDataMiddleware(req, res, next)).rejects.toThrow(message)
     expect(next).toHaveBeenCalledTimes(0)
   }
 
   const expectNoValidationError = async () => {
-    await expect(validateThesisData(req, res, next)).resolves.toBeUndefined()
+    await expect(validateThesisDataMiddleware(req, res, next)).resolves.toBeUndefined()
     expect(next).toHaveBeenCalledTimes(1)
   }
 

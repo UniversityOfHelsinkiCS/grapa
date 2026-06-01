@@ -16,7 +16,7 @@ import {
 import ethesisUserHandler from '../middleware/ethesisUser'
 import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMutlipartFormData from '../middleware/attachment'
-import { validateThesisData } from '../validators/thesis'
+import { validateThesisDataStudentMiddleware } from '../validators/thesis'
 
 import { handleAttachmentByLabel } from './thesisAttachmentHelpers'
 
@@ -123,6 +123,14 @@ const validateThesisDataStudent = async (
     )
   }
 
+  if (thesisData.approvers?.length > 0) {
+    throw Error("Student's cannot add approvers")
+  }
+
+  if (thesisData.graders?.length > 0) {
+    throw Error("Student's cannot add graders")
+  }
+
   if (thesisData.programId) {
     const programId: string = thesisData.programId
     const program = await getProgram(programId, 'fi')
@@ -148,7 +156,7 @@ studentRouter.post(
   parseMutlipartFormData,
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
-  validateThesisData,
+  validateThesisDataStudentMiddleware,
   async (req: ServerPostRequest, res: any) => {
     const thesisData = req.body
 
@@ -196,7 +204,7 @@ studentRouter.put(
   parseMutlipartFormData,
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
-  validateThesisData,
+  validateThesisDataStudentMiddleware,
   async (req: ServerPostRequest, res: any) => {
     const { id } = req.params
     const user = req.user

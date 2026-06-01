@@ -11,7 +11,7 @@ import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMutlipartFormData from '../middleware/attachment'
 import { Thesis, EventLog } from '../db/models'
 import { sequelize } from '../db/connection'
-import { validateThesisData } from '../validators/thesis'
+import { validateThesisDataMiddleware } from '../validators/thesis'
 
 import { getPaginatedTheses, createThesis } from '../services/thesisService'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
@@ -110,7 +110,7 @@ thesisRouter.post(
   parseMutlipartFormData,
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
-  validateThesisData,
+  validateThesisDataMiddleware,
   authorizeStatusChange,
   async (req: ServerPostRequest, res: Response) => {
     const thesisData = req.body
@@ -145,7 +145,7 @@ thesisRouter.put(
   parseMutlipartFormData,
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
-  validateThesisData,
+  validateThesisDataMiddleware,
   authorizeStatusChange,
   getEthesisAdminStatus,
   async (req: ServerPutRequest, res) => {

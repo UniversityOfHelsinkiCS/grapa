@@ -1,5 +1,5 @@
 import { NextFunction } from 'express'
-import { ServerPostRequest, ServerPutRequest } from '@backend/types'
+import { ServerPostRequest, ServerPutRequest, ThesisData } from '@backend/types'
 import { uniqBy } from 'lodash-es'
 import CustomValidationError from '../errors/ValidationError'
 import { getTotalPercentage } from '../util/helpers'
@@ -57,13 +57,14 @@ const validateExtUser = (user: any) => {
   }
 }
 
-export const validateThesisData = async (
-  req: ServerPostRequest | ServerPutRequest,
-  _: Express.Response,
-  next: NextFunction
+export const thesisDataValidator = async (
+  thesisData: ThesisData,
+  files: {
+    researchPlan?: Express.Multer.File[]
+    waysOfWorking?: Express.Multer.File[]
+  },
+  options: any = {}
 ) => {
-  const thesisData = req.body
-
   if (!VALID_THESIS_STATUSES.includes(thesisData.status)) {
     throw new CustomValidationError('Thesis status is not a valid value', {
       status: ['Thesis status is not a valid value'],
@@ -131,63 +132,65 @@ export const validateThesisData = async (
     validateUser(author)
   })
 
-  if (!thesisData.graders || thesisData.graders.length === 0) {
-    throw new CustomValidationError('At least one grader is required', {
-      graders: ['At least one grader is required'],
-    })
-  }
-
-  if (thesisData.graders.length > 5) {
-    throw new CustomValidationError('Maximum 5 graders are allowed', {
-      graders: ['Maximum 5 graders are allowed'],
-    })
-  }
-
-  const uniqueGraders = uniqBy(
-    thesisData.graders,
-    (grader) => grader.user?.email
-  )
-
-  if (uniqueGraders.length !== thesisData.graders.length) {
-    throw new CustomValidationError('Graders must be unique', {
-      graders: ['Graders must be unique'],
-    })
-  }
-
-  thesisData.graders.forEach(({ user, isExternal }) => {
-    if (isExternal) {
-      validateExtUser(user)
-    } else {
-      validateUser(user)
+  if (!options.isStudent) {
+    if (!thesisData.graders || thesisData.graders.length === 0) {
+      throw new CustomValidationError('At least one grader is required', {
+        graders: ['At least one grader is required'],
+      })
     }
-  })
 
-  // primary grader must be set
-  if (!thesisData.graders.some((grader) => grader.isPrimaryGrader)) {
-    throw new CustomValidationError('Primary grader must be set', {
-      graders: ['Primary grader must be set'],
-    })
-  }
+    if (thesisData.graders.length > 5) {
+      throw new CustomValidationError('Maximum 5 graders are allowed', {
+        graders: ['Maximum 5 graders are allowed'],
+      })
+    }
 
-  if (
-    thesisData.graders.length > 1 &&
-    thesisData.graders.every((grader) => grader.isPrimaryGrader)
-  ) {
-    throw new CustomValidationError('Only one primary grader is allowed', {
-      graders: ['Only one primary grader is allowed'],
-    })
-  }
-
-  const primaryGrader = thesisData.graders.find(
-    (grader) => grader.isPrimaryGrader
-  )
-  if (primaryGrader.isExternal) {
-    throw new CustomValidationError(
-      'Primary grader cannot be an external user',
-      {
-        graders: ['Primary grader cannot be an external user'],
-      }
+    const uniqueGraders = uniqBy(
+      thesisData.graders,
+      (grader) => grader.user?.email
     )
+
+    if (uniqueGraders.length !== thesisData.graders.length) {
+      throw new CustomValidationError('Graders must be unique', {
+        graders: ['Graders must be unique'],
+      })
+    }
+
+    thesisData.graders.forEach(({ user, isExternal }) => {
+      if (isExternal) {
+        validateExtUser(user)
+      } else {
+        validateUser(user)
+      }
+    })
+
+    // primary grader must be set
+    if (!thesisData.graders.some((grader) => grader.isPrimaryGrader)) {
+      throw new CustomValidationError('Primary grader must be set', {
+        graders: ['Primary grader must be set'],
+      })
+    }
+
+    if (
+      thesisData.graders.length > 1 &&
+      thesisData.graders.every((grader) => grader.isPrimaryGrader)
+    ) {
+      throw new CustomValidationError('Only one primary grader is allowed', {
+        graders: ['Only one primary grader is allowed'],
+      })
+    }
+
+    const primaryGrader = thesisData.graders.find(
+      (grader) => grader.isPrimaryGrader
+    )
+    if (primaryGrader.isExternal) {
+      throw new CustomValidationError(
+        'Primary grader cannot be an external user',
+        {
+          graders: ['Primary grader cannot be an external user'],
+        }
+      )
+    }
   }
 
   // sum of supervision percentages must add up to 100
@@ -199,8 +202,8 @@ export const validateThesisData = async (
     )
   }
 
-  const researchPlanFile = req.files.researchPlan
-    ? req.files.researchPlan[0]
+  const researchPlanFile = files.researchPlan
+    ? files.researchPlan[0]
     : thesisData.researchPlan
   if (!researchPlanFile) {
     throw new CustomValidationError('Research plan is required', {
@@ -239,25 +242,16 @@ export const validateThesisData = async (
     program?.options?.allowMultipleSeminarResponsibles
   )
   const waysOfWorkingRequired = Boolean(program?.options?.waysOfWorkingRequired)
+  const hasWaysOfWorkingFile =
+    files?.waysOfWorking?.length > 0 || Boolean(thesisData.waysOfWorking)
 
-  if (waysOfWorkingRequired) {
-    const waysOfWorkingFile = req.files?.waysOfWorking
-      ? req.files.waysOfWorking[0]
-      : thesisData.waysOfWorking
-
-    if (!waysOfWorkingFile) {
-      throw new CustomValidationError('Ways of working is required', {
-        waysOfWorking: ['Ways of working is required'],
-      })
-    }
+  if (waysOfWorkingRequired && !hasWaysOfWorkingFile) {
+    throw new CustomValidationError('Ways of working is required', {
+      waysOfWorking: ['Ways of working is required'],
+    })
   }
 
-  const hasWaysOfWorkingFile =
-    req.files?.waysOfWorking?.length > 0 || Boolean(thesisData.waysOfWorking)
-  if (
-    (waysOfWorkingRequired || hasWaysOfWorkingFile) &&
-    !thesisData.waysOfWorkingValidUntil
-  ) {
+  if (waysOfWorkingRequired && !thesisData.waysOfWorkingValidUntil) {
     throw new CustomValidationError('Ways of working valid until is required', {
       waysOfWorkingValidUntil: ['Ways of working valid until is required'],
     })
@@ -299,6 +293,26 @@ export const validateThesisData = async (
 
     validateUser(seminarSupervision.user)
   }
+}
+
+export const validateThesisDataMiddleware = async (
+  req: ServerPostRequest | ServerPutRequest,
+  _: Express.Response,
+  next: NextFunction
+) => {
+  thesisDataValidator(req.body, req.files)
+
+  next()
+}
+
+export const validateThesisDataStudentMiddleware = async (
+  req: ServerPostRequest | ServerPutRequest,
+  _: Express.Response,
+  next: NextFunction
+) => {
+  thesisDataValidator(req.body, req.files, {
+    isStudent: true,
+  })
 
   next()
 }
