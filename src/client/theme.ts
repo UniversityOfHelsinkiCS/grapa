@@ -25,6 +25,11 @@ declare module '@mui/material/styles' {
   }
 }
 
+const colors = {
+  main: '#005a94',
+  hover: '#003152',
+}
+
 const themeOptions: ThemeOptions = {
   typography: {
     fontFamily: [
@@ -40,7 +45,7 @@ const themeOptions: ThemeOptions = {
 
   palette: {
     primary: {
-      main: '#107eab',
+      main: colors.main,
     },
     toskaDark: {
       main: '#1a202c',
@@ -58,14 +63,27 @@ const themeOptions: ThemeOptions = {
 
   components: {
     MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+      },
       styleOverrides: {
         root: {
           borderRadius: 0,
+          boxShadow: 0,
+          elevation: 0,
+        },
+        contained: {
+          '&:hover': {
+            backgroundColor: colors.hover,
+          },
         },
         outlined: {
           borderWidth: '2px',
+          borderColor: colors.main,
+          color: colors.main,
           ':hover': {
             borderWidth: '2px',
+            boxShadow: 0,
           },
         },
       },
@@ -75,6 +93,83 @@ const themeOptions: ThemeOptions = {
       styleOverrides: {
         root: {
           borderRadius: 5,
+        },
+      },
+    },
+
+    MuiDataGrid: {
+      styleOverrides: {
+        root: {
+          '& .cell.negative': {
+            backgroundColor: '#ffc8c8',
+          },
+          '& .cell.positive': {
+            backgroundColor: '#c8ffcd',
+          },
+        },
+        toolbar: {
+          padding: '0px',
+        },
+      },
+    },
+    MuiList: {
+      styleOverrides: {
+        root: {
+          color: 'black',
+        },
+      },
+    },
+    MuiMenu: {
+      defaultProps: {
+        elevation: 10,
+      },
+      styleOverrides: {
+        paper: {
+          boxShadow: 1,
+          borderRadius: '1rem',
+        },
+      },
+    },
+    MuiPopper: {
+      styleOverrides: {},
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          fontWeight: 700,
+        },
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        h6: {
+          fontWeight: 700,
+        },
+        h1: {
+          fontWeight: 700,
+        },
+        h4: {
+          fontWeight: 700,
+        },
+        h3: {
+          fontWeight: 700,
+        },
+        h2: {
+          fontWeight: 700,
+        },
+        h5: {
+          fontWeight: 700,
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        filled: {
+          backgroundColor: colors.main,
+          color: 'white',
+          ':hover': {
+            backgroundColor: colors.hover,
+          },
         },
       },
     },

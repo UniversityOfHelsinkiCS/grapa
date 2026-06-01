@@ -222,7 +222,6 @@ const footerStyles = {
     flexDirection: 'row',
     alignItems: 'center',
     columnGap: '0.5rem',
-    color: 'white',
   },
 }
 
