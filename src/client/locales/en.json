@@ -256,7 +256,12 @@
     "showAllThesesSwitch": "Show all theses",
     "showManagedProgramsThesesSwitch": "Also show theses of my programs",
     "filterButton": "Filters",
-    "saveFiltersButton": "Save filters"
+    "saveFiltersButton": "Save filters",
+    "filterViews": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "suggested": "Student's thesis suggestions"
+    }
   },
   "thesesPage": {
     "approvalRequiredTooltip": "This thesis has been assigned to you. Your approval is required!"
