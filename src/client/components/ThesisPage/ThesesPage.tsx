@@ -118,6 +118,8 @@ const ThesesPage = ({
 
   const [order, setOrder] = useState({})
 
+  const [currentFilters, setCurrentFilters] = useState(null)
+
   const {
     theses,
     totalCount,
@@ -227,6 +229,7 @@ const ThesesPage = ({
       headerName: '',
       sortable: false,
       filterable: false,
+      width: 50,
       renderCell: (params) => {
         const currUserIsApprover =
           currentUser &&
@@ -264,6 +267,8 @@ const ThesesPage = ({
       filterOperators: allowedFilterOperators,
       headerName: t('topicHeader'),
       width: 300,
+      minWidth: 300,
+      flex: 1,
     },
     {
       field: 'authors',
@@ -285,6 +290,13 @@ const ThesesPage = ({
       headerName: t('statusHeader'),
       width: 100,
       type: 'string',
+      cellClassName: ({ row }) => {
+        return row.updatedAt && row.status == 'IN_PROGRESS'
+          ? dayjs(row.updatedAt).isBefore(dayjs().subtract(1, 'month'))
+            ? 'cell negative'
+            : 'cell positive'
+          : ''
+      },
       valueGetter: (_, row) => t(StatusLocale[row.status]),
       filterOperators: [
         {
@@ -317,7 +329,14 @@ const ThesesPage = ({
         : t('targetDateHeader'),
       description: 'This column has a value getter and is not sortable.',
       filterable: false,
-      flex: 1,
+      cellClassName: ({ row }) => {
+        return row.targetDate
+          ? dayjs(row.targetDate).isBefore(dayjs()) &&
+            row.status == 'IN_PROGRESS'
+            ? 'cell negative'
+            : ''
+          : ''
+      },
       valueGetter: (_, row) => dayjs(row.targetDate).format('YYYY-MM-DD'),
     },
     ...(showDurationColumn
@@ -415,6 +434,8 @@ const ThesesPage = ({
     setFilterAuthors(null)
     setFilterProgramName(null)
 
+    setCurrentFilters(filterModel)
+
     if (filterModel.items.length === 0) {
       return
     }
@@ -451,7 +472,7 @@ const ThesesPage = ({
 
   const isLoading = loggedInUserLoading || isThesesLoading || isProgramLoading
   return (
-    <Stack spacing={3} sx={{ p: '1rem', width: '100%', maxWidth: '1920px' }}>
+    <Stack spacing={3} sx={{ px: 3, width: '100%', maxWidth: '1920px' }}>
       {showDurationColumn && averageDuration != null && (
         <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
           {t('averageDuration', { days: averageDuration })}
@@ -501,6 +522,7 @@ const ThesesPage = ({
               noAddThesisButton,
               showExportOptions,
               isStudentView,
+              currentFilters,
             },
             footer: {
               footerRef,
@@ -549,6 +571,7 @@ const ThesesPage = ({
             setEditedThesis(null)
           }}
           onClose={() => setEditedThesis(null)}
+          isStudentView={isStudentView}
         />
       )}
       {newThesis && (
@@ -561,6 +584,7 @@ const ThesesPage = ({
             setNewThesis(null)
           }}
           onClose={() => setNewThesis(null)}
+          isStudentView={isStudentView}
         />
       )}
       {ethesisTesis && (

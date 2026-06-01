@@ -1,23 +1,77 @@
 import { format } from 'date-fns'
 import { useTranslation } from 'react-i18next'
-import { Button, Box, FormControlLabel, Switch } from '@mui/material'
+import {
+  Button,
+  Box,
+  FormControlLabel,
+  Switch,
+  Chip,
+  Divider,
+} from '@mui/material'
 import {
   GridSlotProps,
   GridToolbarExport,
-  GridToolbarFilterButton,
   Toolbar,
   useGridApiContext,
 } from '@mui/x-data-grid'
 
 import useLoggedInUser from '../../hooks/useLoggedInUser'
-import useUserThesesTableFilterMutation from '../../hooks/useUserThesesTableFilterMutation'
+import { useEffect, useState } from 'react'
 
 const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
   const apiRef = useGridApiContext()
   const { t } = useTranslation()
   const { user } = useLoggedInUser()
 
-  const { mutateAsync: applyFilters } = useUserThesesTableFilterMutation()
+  const [filteredView, setFilteredView] = useState('active')
+  const [usedQuickFilteredView, setUsedQuickFilteredView] = useState(true)
+  const [autoFilterViewIteration, setAutoFilterViewIteration] = useState(0)
+
+  const filterViews = {
+    active: {
+      items: [
+        {
+          field: 'status',
+          operator: 'isAnyOf',
+          value: ['PLANNING', 'SUGGESTED', 'IN_PROGRESS', 'ETHESIS_SENT'],
+        },
+      ],
+    },
+    inactive: {
+      items: [
+        {
+          field: 'status',
+          operator: 'isAnyOf',
+          value: ['COMPLETED', 'CANCELLED'],
+        },
+      ],
+    },
+    suggested: {
+      items: [
+        {
+          field: 'status',
+          operator: 'isAnyOf',
+          value: ['SUGGESTED'],
+        },
+      ],
+    },
+  }
+
+  const filterChips = Object.keys(filterViews).map((view) => (
+    <Chip
+      key={view}
+      label={t(`thesesTableToolbar:filterViews:${view}`)}
+      variant={filteredView == view ? 'filled' : 'outlined'}
+      size="small"
+      sx={{
+        borderRadius: '0.5rem',
+      }}
+      onClick={() => {
+        setFilteredView(view)
+        setUsedQuickFilteredView(true)
+      }}
+    />
+  ))
 
   const {
     createNewThesis,
@@ -27,22 +81,33 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
     noAddThesisButton,
     showExportOptions,
     isStudentView,
+    currentFilters,
   } = props
+
+  // This implementation is a hack, the DataGrid does not expose enough information to implement this normally.
+  // So this uses a incrementing counter to check if the modification to the filters originated from here.
+  useEffect(() => {
+    if (currentFilters == null || isStudentView) {
+      return
+    } else if (usedQuickFilteredView) {
+      apiRef.current.setFilterModel({
+        ...filterViews[filteredView],
+        autoFilteredView: autoFilterViewIteration + 1,
+      })
+      setUsedQuickFilteredView(false)
+    } else if (currentFilters.autoFilteredView == autoFilterViewIteration) {
+      setFilteredView(null)
+    } else if (currentFilters.autoFilteredView > autoFilterViewIteration) {
+      setAutoFilterViewIteration(currentFilters.autoFilteredView)
+    }
+  }, [currentFilters, usedQuickFilteredView])
 
   const handleNewThesis = () => {
     createNewThesis()
   }
 
-  const handleSaveFilters = async () => {
-    const { filter } = apiRef.current.exportState()
-
-    await applyFilters({ thesesTableFilters: filter.filterModel })
-  }
-
   return (
-    <Toolbar
-      sx={{ p: 2, alignItems: 'center', justifyContent: 'space-between' }}
-    >
+    <Toolbar sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
         {!noAddThesisButton && (
           <Button
@@ -52,7 +117,7 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
               fontSize: '12px',
               height: 24,
               px: 2,
-              borderRadius: '1rem',
+              // borderRadius: '1rem',
               fontWeight: 700,
               boxShadow: 0,
             }}
@@ -72,11 +137,18 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
             label={t('thesesTableToolbar:showAllThesesSwitch')}
           />
         )}
+        {((!noOwnThesesSwitch && !isStudentView && user?.isAdmin) ||
+          !noAddThesisButton) && (
+          <Divider orientation="vertical" variant="fullWidth" flexItem />
+        )}
+        {!isStudentView && (
+          <Box sx={{ gap: '0.25rem', display: 'flex' }}>{filterChips}</Box>
+        )}
         {Boolean(
           !noOwnThesesSwitch &&
-            !isStudentView &&
-            !user?.isAdmin &&
-            user?.managedProgramIds?.length
+          !isStudentView &&
+          !user?.isAdmin &&
+          user?.managedProgramIds?.length
         ) && (
           <FormControlLabel
             control={
@@ -98,16 +170,6 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
             }}
           />
         )}
-        <GridToolbarFilterButton />
-        <Button
-          size="small"
-          sx={{
-            fontSize: '12px',
-          }}
-          onClick={handleSaveFilters}
-        >
-          {t('thesesTableToolbar:saveFiltersButton')}
-        </Button>
       </Box>
     </Toolbar>
   )
