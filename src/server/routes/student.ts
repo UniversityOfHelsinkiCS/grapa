@@ -178,10 +178,10 @@ studentRouter.post(
       return
     }
 
-    const theset = (await getOwnActiveTheses(req.user)).map(
+    const theses = (await getOwnActiveTheses(req.user)).map(
       (thesis) => thesis.program_id
     )
-    if (theset.includes(thesisData.programId)) {
+    if (theses.includes(thesisData.programId)) {
       res
         .status(400)
         .send(
