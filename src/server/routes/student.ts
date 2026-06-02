@@ -31,7 +31,10 @@ import {
 import { cleanThesisUserData } from '../services/thesisService'
 import { getProgram, getPrograms } from '../services/programService'
 import { fetchThesisById, updateThesis } from '../services/thesisService'
-import { getStudentStudyRights } from '../services/studentService'
+import {
+  getOwnActiveTheses,
+  getStudentStudyRights,
+} from '../services/studentService'
 
 const studentRouter = express.Router()
 
@@ -172,6 +175,18 @@ studentRouter.post(
       res
         .status(400)
         .send("Student's cannot create theses with other statuses than DRAFT")
+      return
+    }
+
+    const theset = (await getOwnActiveTheses(req.user)).map(
+      (thesis) => thesis.program_id
+    )
+    if (theset.includes(thesisData.programId)) {
+      res
+        .status(400)
+        .send(
+          "Student's cannot create more than one active thesis for studyright"
+        )
       return
     }
 

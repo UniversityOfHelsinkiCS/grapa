@@ -1,6 +1,8 @@
 import { User } from '../types'
 
 import { StudyRight } from '../db/models'
+import { sequelize } from '@backend/db/connection'
+import { QueryTypes } from 'sequelize'
 
 export const cleanUserProperties = (user: any) => {
   const allowed_keys = [
@@ -30,4 +32,18 @@ export const getStudentStudyRights = async (user: User) => {
   })
 
   return programsWithStudyRights
+}
+
+export const getOwnActiveTheses = async (user: User) => {
+  return await sequelize.query(
+    `select T.program_id, T.status, T.id, T.topic from authors 
+     A left join theses T on A.thesis_id = T.id 
+     where A.user_id = :user_id AND T.status = any('{IN_PROGRESS,SUGGESTED,ETHESIS_SENT,PLANNING}')`,
+    {
+      replacements: {
+        user_id: user.id,
+      },
+      type: QueryTypes.SELECT,
+    }
+  )
 }
