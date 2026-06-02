@@ -1,7 +1,7 @@
 import { User } from '../types'
 
 import { StudyRight } from '../db/models'
-import { sequelize } from '@backend/db/connection'
+import { sequelize } from '../db/connection'
 import { QueryTypes } from 'sequelize'
 
 export const cleanUserProperties = (user: any) => {
