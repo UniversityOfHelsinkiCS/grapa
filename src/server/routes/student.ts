@@ -259,6 +259,20 @@ studentRouter.put(
       return
     }
 
+    if (thesisData.status == 'SUGGESTED') {
+      const theses = (await getOwnActiveTheses(req.user)).map(
+        (thesis) => thesis.program_id
+      )
+      if (theses.includes(thesisData.programId)) {
+        res
+          .status(400)
+          .send(
+            "Student's cannot create more than one active thesis for studyright"
+          )
+        return
+      }
+    }
+
     let updatedThesis
     await sequelize.transaction(async (t) => {
       await updateThesis(id as string, thesisData, t)
