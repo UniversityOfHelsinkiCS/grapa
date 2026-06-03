@@ -223,13 +223,7 @@ const ThesisEditForm: FC<{
               <Select
                 data-testid="program-select-input"
                 required
-                value={
-                  editedThesis.programId == null &&
-                  isStudentView &&
-                  programs.length == 1
-                    ? programs[0].id
-                    : editedThesis.programId
-                }
+                value={editedThesis.programId}
                 id="programId"
                 label="Program"
                 name="programId"

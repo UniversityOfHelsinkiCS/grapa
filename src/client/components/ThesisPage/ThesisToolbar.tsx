@@ -29,29 +29,53 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
 
   const filterViews = {
     active: {
-      items: [
+      filterModel: {
+        items: [
+          {
+            field: 'status',
+            operator: 'isAnyOf',
+            value: ['PLANNING', 'SUGGESTED', 'IN_PROGRESS', 'ETHESIS_SENT'],
+          },
+        ],
+      },
+      sortingModel: [
         {
-          field: 'status',
-          operator: 'isAnyOf',
-          value: ['PLANNING', 'SUGGESTED', 'IN_PROGRESS', 'ETHESIS_SENT'],
+          field: 'startDate',
+          sort: 'desc',
         },
       ],
     },
     inactive: {
-      items: [
+      filterModel: {
+        items: [
+          {
+            field: 'status',
+            operator: 'isAnyOf',
+            value: ['COMPLETED', 'CANCELLED'],
+          },
+        ],
+      },
+      sortingModel: [
         {
-          field: 'status',
-          operator: 'isAnyOf',
-          value: ['COMPLETED', 'CANCELLED'],
+          field: 'targetDate',
+          sort: 'desc',
         },
       ],
     },
     suggested: {
-      items: [
+      filterModel: {
+        items: [
+          {
+            field: 'status',
+            operator: 'isAnyOf',
+            value: ['SUGGESTED'],
+          },
+        ],
+      },
+      sortingModel: [
         {
-          field: 'status',
-          operator: 'isAnyOf',
-          value: ['SUGGESTED'],
+          field: 'startDate',
+          sort: 'desc',
         },
       ],
     },
@@ -91,9 +115,10 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
       return
     } else if (usedQuickFilteredView) {
       apiRef.current.setFilterModel({
-        ...filterViews[filteredView],
+        ...filterViews[filteredView].filterModel,
         autoFilteredView: autoFilterViewIteration + 1,
       })
+      apiRef.current.setSortModel(filterViews[filteredView].sortingModel)
       setUsedQuickFilteredView(false)
     } else if (currentFilters.autoFilteredView == autoFilterViewIteration) {
       setFilteredView(null)

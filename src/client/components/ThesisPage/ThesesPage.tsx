@@ -372,7 +372,7 @@ const ThesesPage = ({
   const initializeNewThesis = () => {
     if (isStudentView) {
       setNewThesis({
-        programId: null,
+        programId: managedPrograms.length == 1 ? managedPrograms[0].id : null,
         studyTrackId: null,
         supervisions: [],
         seminarSupervisions: [],
