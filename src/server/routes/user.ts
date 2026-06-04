@@ -42,12 +42,15 @@ userRouter.get(
       await SeminarSupervision.count({ where: { userId: user.id } })
     )
 
+    const thesesTableFilters = { items: <any>[] }
+
     return res.send({
       ...user,
       managedProgramIds,
       managedDepartmentIds,
       approvableProgramIds,
       hasSeminarSupervisions,
+      thesesTableFilters,
     })
   }
 )
