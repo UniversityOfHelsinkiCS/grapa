@@ -142,9 +142,24 @@
       "enableConfirm": "Oletko varma, että haluat piilottaa \"Lähetä Ethesikseen\"-toiminnallisuuden?",
       "disableConfirm": "Oletko varma, että haluat näyttää \"Lähetä Ethesikseen\"-toiminnallisuuden?"
     },
+    "useMilestones": {
+      "toggle": "Käytä etappeja",
+      "tooltip": "Ottaa käyttöön etapit koulutusohjelmassa",
+      "confirmTitle": "Vahvista etappien asetus",
+      "enableConfirm": "Oletko varma, että haluat ottaa etapit käyttöön?",
+      "disableConfirm": "Oletko varma, että haluat poistaa etapit käytöstä?"
+    },
+    "milestones": {
+      "fieldTitle": "Etappi",
+      "title": "Etapit",
+      "confirmTitle": "Vahvista muutokset etappeihin",
+      "enableConfirm": "Haluatko vahvistaa muutoksesis etappeihin?"
+    },
     "numberOfGradersLabel": "Tarkastajien enimmäismäärä",
     "numberOfGradersConfirmTitle": "Vahvista tarkastajien määrän asetus",
-    "numberOfGradersConfirmContent": "Haluatko varmasti muuttaa tarkastajien enimmäismäärän arvoon {{count}}?"
+    "numberOfGradersConfirmContent": "Haluatko varmasti muuttaa tarkastajien enimmäismäärän arvoon {{count}}?",
+    "other": "Muut",
+    "features": "Ominaisuudet"
   },
   "dropzone": {
     "uploadText": "Pudota tiedosto tähän tai klikkaa ladataksesi",
@@ -261,7 +276,7 @@
     "filterViews": {
       "active": "Aktiiviset",
       "inactive": "Epäaktiiviset",
-      "suggested": "Opiskelijoiden tutkielma ehdotukset"
+      "suggested": "Opiskelijoiden tutkielmaehdotukset"
     }
   },
   "thesesPage": {

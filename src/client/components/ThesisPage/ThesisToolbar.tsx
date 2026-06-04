@@ -34,7 +34,14 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
           {
             field: 'status',
             operator: 'isAnyOf',
-            value: ['PLANNING', 'SUGGESTED', 'IN_PROGRESS', 'ETHESIS_SENT'],
+            value: [
+              'DRAFT',
+              'SUGGESTED',
+              'PLANNING',
+              'IN_PROGRESS',
+              'ETHESIS',
+              'ETHESIS_SENT',
+            ],
           },
         ],
       },

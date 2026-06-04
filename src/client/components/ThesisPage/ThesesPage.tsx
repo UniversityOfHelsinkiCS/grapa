@@ -291,7 +291,9 @@ const ThesesPage = ({
       width: 100,
       type: 'string',
       cellClassName: ({ row }) => {
-        return row.updatedAt && row.status == 'IN_PROGRESS'
+        return row.program?.options?.useMilestones &&
+          row.updatedAt &&
+          row.status == 'IN_PROGRESS'
           ? dayjs(row.updatedAt).isBefore(dayjs().subtract(1, 'month'))
             ? 'cell negative'
             : 'cell positive'
