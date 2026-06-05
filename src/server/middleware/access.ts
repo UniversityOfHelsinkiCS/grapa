@@ -12,7 +12,9 @@ const access = morgan as unknown as AccessLogger
 
 const accessLogger = access((tokens, req, res) => {
   const { uid } = req.headers
-
+  const adminLoggedAs = req.headers['x-admin-logged-in-as']
+  const username = req.user?.username
+  const isAdmin = req.user?.isAdmin
   const method = tokens.method(req, res)
   const url = tokens.url(req, res)
   const status = tokens.status(req, res)
@@ -29,6 +31,9 @@ const accessLogger = access((tokens, req, res) => {
         status,
         responseTime,
         userAgent,
+        adminLoggedAs,
+        username,
+        isAdmin,
       }
     : {}
 
