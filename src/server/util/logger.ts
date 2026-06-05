@@ -1,13 +1,14 @@
-import os from 'os'
 import winston from 'winston'
 import LokiTransport from 'winston-loki'
-import { WinstonGelfTransporter } from 'winston-gelf-transporter'
 
 import { inProduction } from '../../config'
 
 const { combine, timestamp, printf, splat } = winston.format
 
-const LOKI_HOST = 'loki-svc.toska-lokki.svc.cluster.local:3100'
+const LOKI_HOST =
+  process.env.LOKI_HOST ??
+  `https://api-toska.apps.ocp-prod-0.k8s.it.helsinki.fi/lokki`
+const LOKI_TOKEN = process.env.LOKI_TOKEN ?? ''
 
 const transports = []
 
@@ -46,23 +47,12 @@ if (!inProduction) {
   transports.push(
     new LokiTransport({
       host: LOKI_HOST,
+      headers: {
+        token: LOKI_TOKEN,
+      },
       labels: {
         app: 'grapa',
         environment: process.env.NODE_ENV || 'production',
-      },
-    })
-  )
-
-  transports.push(
-    new WinstonGelfTransporter({
-      handleExceptions: true,
-      host: 'svm-116.cs.helsinki.fi',
-      port: 9503,
-      protocol: 'udp',
-      hostName: os.hostname(),
-      additional: {
-        app: 'grapa',
-        environment: 'production',
       },
     })
   )
