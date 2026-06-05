@@ -6,8 +6,7 @@ import { inProduction } from '../../config'
 const { combine, timestamp, printf, splat } = winston.format
 
 const LOKI_HOST =
-  process.env.LOKI_HOST ??
-  `https://api-toska.apps.ocp-prod-0.k8s.it.helsinki.fi/lokki`
+  process.env.LOKI_HOST ?? `http://loki-svc.toska-lokki.svc.cluster.local:3100`
 const LOKI_TOKEN = process.env.LOKI_TOKEN ?? ''
 
 const transports = []
