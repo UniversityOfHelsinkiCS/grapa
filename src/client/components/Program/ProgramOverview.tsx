@@ -65,6 +65,7 @@ interface FeatureFlagControlProps {
   updateMutation: any
   feature: string
   translation: any
+  versioned?: boolean
 }
 
 const FeatureFlagControl = ({
@@ -159,9 +160,16 @@ const ListInput = ({
   updateMutation,
   feature,
   translation,
+  versioned,
 }: FeatureFlagControlProps) => {
   const [listValues, setListValues] = useState(
-    program.options && program.options[feature] ? program.options[feature] : []
+    program.options && program.options[feature]
+      ? versioned
+        ? program.options[feature].versions
+          ? program.options[feature].versions.at(-1)
+          : []
+        : program.options[feature]
+      : []
   )
 
   const [pendingValue, setPendingValue] = useState<any | null>(null)
@@ -180,7 +188,10 @@ const ListInput = ({
     }
 
     const options = program.options
-    options[feature] = pendingValue
+    if (versioned && !options[feature]) options[feature] = { versions: [] }
+    if (versioned && !options[feature].versions) options[feature].versions = []
+    if (versioned) options[feature].versions.push(pendingValue)
+    else options[feature] = pendingValue
 
     await updateMutation.mutateAsync({
       programId: program.id,
@@ -379,6 +390,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
         {program.options?.useMilestones && (
           <ListInput
             feature="milestones"
+            versioned={true}
             program={program}
             translation={t}
             updateMutation={updateProgramOptionsMutation}
