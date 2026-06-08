@@ -104,6 +104,20 @@ const ThesisEditForm: FC<{
       return
     }
 
+    const currentProgram = programs.filter(
+      (p) => p.id == editedThesis.programId
+    )
+
+    if (
+      currentProgram.length > 0 &&
+      currentProgram[0].options?.useMilestones &&
+      currentProgram[0].options?.milestones?.versions?.length > 0
+    ) {
+      editedThesis.milestone = 0
+      editedThesis.milestoneVersion =
+        currentProgram[0].options.milestones.versions.length - 1
+    }
+
     await onSubmit(editedThesis)
     setFormErrors([])
 

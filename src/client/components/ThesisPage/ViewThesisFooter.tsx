@@ -39,6 +39,7 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useEditThesisMutation } from '../../hooks/useThesesMutation'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { t } from 'i18next'
+import { ProgressView } from './Progress/ProgressView'
 
 const IN_PROGRESS_STATUS = THESIS_STATUSES.IN_PROGRESS as 'IN_PROGRESS'
 
@@ -428,7 +429,8 @@ const ViewThesisFooter = (
     isStudentView,
   } = props
 
-  const thesisId = (rowSelectionModel.ids.size > 0
+  const thesisId = (rowSelectionModel.ids != undefined &&
+  rowSelectionModel.ids.size > 0
     ? rowSelectionModel.ids.entries().next().value[0]
     : undefined) as unknown as string | undefined
 
@@ -598,6 +600,8 @@ const ViewThesisFooter = (
           </Typography>
 
           <Authors authors={thesis.authors} />
+
+          <ProgressView thesis={thesis} editThesis={editThesis}></ProgressView>
 
           <StatusRow thesis={thesis} />
 
