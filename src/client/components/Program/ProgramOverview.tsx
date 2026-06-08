@@ -1,5 +1,8 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import 'dayjs/locale/fi'
+import dayjs from 'dayjs'
+import { DatePicker } from '@mui/x-date-pickers'
 import {
   Button,
   CircularProgress,
@@ -57,6 +60,7 @@ interface ProgramConfigurationsProps {
 }
 
 interface FeatureFlagControlProps {
+  isDateInput?: boolean
   program: ProgramData
   updateMutation: any
   feature: string
@@ -150,6 +154,7 @@ const FeatureFlagControl = ({
 }
 
 const ListInput = ({
+  isDateInput = false,
   program,
   updateMutation,
   feature,
@@ -205,21 +210,47 @@ const ListInput = ({
               }}
               key={index}
             >
-              <TextField
-                variant="outlined"
-                label={`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
-                value={value.value}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setListValues(
-                    listValues.map((v, i) => {
-                      return i == index ? { value: event.target.value } : v
-                    })
-                  )
-                }}
-                sx={{
-                  width: '100%',
-                }}
-              ></TextField>
+              {isDateInput ? (
+                <DatePicker
+                  label={`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                    },
+                  }}
+                  value={value.value ? dayjs(value.value) : null}
+                  format="DD.MM.YYYY"
+                  onChange={(date) => {
+                    setListValues(
+                      listValues.map((v, i) => {
+                        return i == index
+                          ? { value: date ? date.format('YYYY-MM-DD') : '' }
+                          : v
+                      })
+                    )
+                  }}
+                  sx={{
+                    width: '100%',
+                  }}
+                />
+              ) : (
+                <TextField
+                  variant="outlined"
+                  label={`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
+                  value={value.value}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setListValues(
+                      listValues.map((v, i) => {
+                        return i == index ? { value: event.target.value } : v
+                      })
+                    )
+                  }}
+                  sx={{
+                    width: '100%',
+                  }}
+                ></TextField>
+              )}
+
               <Button
                 variant="contained"
                 color="error"
@@ -353,6 +384,14 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
             updateMutation={updateProgramOptionsMutation}
           ></ListInput>
         )}
+
+        <ListInput
+          isDateInput={true}
+          feature="targetDates"
+          program={program}
+          translation={t}
+          updateMutation={updateProgramOptionsMutation}
+        ></ListInput>
 
         <Typography variant="h5">{t(`programOverviewPage:other`)}</Typography>
 

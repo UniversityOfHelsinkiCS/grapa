@@ -300,9 +300,12 @@ export const validateThesisDataMiddleware = async (
   _: Express.Response,
   next: NextFunction
 ) => {
-  thesisDataValidator(req.body, req.files)
-
-  next()
+  try {
+    await thesisDataValidator(req.body, req.files)
+    next()
+  } catch (error) {
+    next(error)
+  }
 }
 
 export const validateThesisDataStudentMiddleware = async (
@@ -310,9 +313,12 @@ export const validateThesisDataStudentMiddleware = async (
   _: Express.Response,
   next: NextFunction
 ) => {
-  thesisDataValidator(req.body, req.files, {
-    isStudent: true,
-  })
-
-  next()
+  try {
+    await thesisDataValidator(req.body, req.files, {
+      isStudent: true,
+    })
+    next()
+  } catch (error) {
+    next(error)
+  }
 }

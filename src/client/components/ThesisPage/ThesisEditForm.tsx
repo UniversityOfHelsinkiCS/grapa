@@ -42,6 +42,7 @@ import { ProgramData as Program } from '../../../server/types'
 import { StatusLocale } from '../../types'
 import FileDropzone from './Dropzone/Dropzone'
 import FilePreview from './Dropzone/FilePreview'
+import TargetDateSelect from './TargetDateSelect'
 
 const ThesisEditForm: FC<{
   programs: Program[]
@@ -607,7 +608,7 @@ const ThesisEditForm: FC<{
                   onChange={(date) => {
                     setEditedThesis((oldThesis) => ({
                       ...oldThesis,
-                      startDate: date.format('YYYY-MM-DD'),
+                      startDate: date ? date.format('YYYY-MM-DD') : '',
                     }))
 
                     setFormErrors(
@@ -622,33 +623,22 @@ const ThesisEditForm: FC<{
                 size={{ xs: 12, md: 6 }}
                 sx={{ paddingLeft: { md: '1rem' } }}
               >
-                <DatePicker
-                  label={t('targetDateHeader')}
-                  slotProps={{
-                    textField: {
-                      id: 'targetDate',
-                      helperText:
-                        t(
-                          formErrors.find(
-                            (error) => error.path[0] === 'targetDate'
-                          )?.message
-                        ) || 'DD.MM.YYYY',
-                      fullWidth: true,
-                      error: formErrors.some(
-                        (error) => error.path[0] === 'targetDate'
-                      ),
-                    },
-                  }}
-                  name="targetDate"
-                  value={dayjs(editedThesis.targetDate)}
-                  format="DD.MM.YYYY"
-                  minDate={dayjs(editedThesis.startDate)}
+                <TargetDateSelect
+                  targetDates={
+                    (selectedProgram?.options?.targetDates as {
+                      value: string
+                    }[]) || []
+                  }
+                  targetDate={editedThesis.targetDate}
+                  startDate={editedThesis.startDate}
+                  formErrors={formErrors}
                   onChange={(date) => {
                     setEditedThesis((oldThesis) => ({
                       ...oldThesis,
-                      targetDate: date.format('YYYY-MM-DD'),
+                      targetDate: date,
                     }))
-
+                  }}
+                  onClearError={() => {
                     setFormErrors(
                       formErrors.filter(
                         (error) => error.path[0] !== 'targetDate'

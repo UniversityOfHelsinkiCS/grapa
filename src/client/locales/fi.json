@@ -155,6 +155,12 @@
       "confirmTitle": "Vahvista muutokset etappeihin",
       "enableConfirm": "Haluatko vahvistaa muutoksesis etappeihin?"
     },
+    "targetDates": {
+      "fieldTitle": "Tavoitepäivä",
+      "title": "Tavoitepäivät",
+      "confirmTitle": "Vahvista muutokset tavoitepäiviin",
+      "enableConfirm": "Haluatko vahvistaa muutoksesis tavoitepäiviin?"
+    },
     "numberOfGradersLabel": "Tarkastajien enimmäismäärä",
     "numberOfGradersConfirmTitle": "Vahvista tarkastajien määrän asetus",
     "numberOfGradersConfirmContent": "Haluatko varmasti muuttaa tarkastajien enimmäismäärän arvoon {{count}}?",
@@ -255,7 +261,8 @@
     "submitEthesis": "Lähetä tutkielman tiedot Ethesikseen",
     "toSubmitEthesis": "Tutkielman tietojen lähettäminen Ethesikseen",
     "send": "Lähetä",
-    "admin": "admin"
+    "admin": "admin",
+    "customDate": "Muu päivämäärä"
   },
   "thesisStages": {
     "draft": "Luonnos",

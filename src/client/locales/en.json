@@ -155,6 +155,12 @@
       "confirmTitle": "Confirm changes to milestones",
       "enableConfirm": "Are you sure you want to save changes to milestones?"
     },
+    "targetDates": {
+      "fieldTitle": "Target date",
+      "title": "Target dates",
+      "confirmTitle": "Confirm changes to target dates",
+      "enableConfirm": "Are you sure you want to save changes to target dates?"
+    },
     "numberOfGradersLabel": "Maximum number of graders",
     "numberOfGradersConfirmTitle": "Confirm number of graders setting",
     "numberOfGradersConfirmContent": "Are you sure you want to change the maximum number of graders per thesis to {{count}}?",
@@ -254,7 +260,8 @@
     "submitEthesisLabel": "Thesis ready for assesment:",
     "submitEthesis": "Send thesis info to Ethesis",
     "toSubmitEthesis": "Sending the thesis info to Ethesis",
-    "send": "Send"
+    "send": "Send",
+    "customDate": "Custom date"
   },
   "thesisStages": {
     "draft": "Draft",
