@@ -92,6 +92,8 @@ export interface FileData {
 }
 
 export interface ThesisData {
+  milestone?: number
+  milestoneVersion?: number
   id?: string
   programId: string
   program?: ProgramData

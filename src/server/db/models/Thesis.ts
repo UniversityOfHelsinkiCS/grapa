@@ -31,6 +31,10 @@ class Thesis extends Model<
 
   declare startDate: string
 
+  declare milestone: number
+
+  declare milestoneVersion: number
+
   declare targetDate: string | undefined
 
   declare ethesisDate: string | undefined
@@ -75,6 +79,14 @@ Thesis.init(
     topic: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    milestone: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    milestoneVersion: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     status: {
       type: DataTypes.ENUM,
