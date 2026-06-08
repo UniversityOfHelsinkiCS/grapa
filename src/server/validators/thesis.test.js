@@ -7,13 +7,16 @@ describe('validateThesisDataMiddleware', () => {
   let next
 
   const expectValidationError = async (message) => {
-    await expect(validateThesisDataMiddleware(req, res, next)).rejects.toThrow(message)
-    expect(next).toHaveBeenCalledTimes(0)
+    await validateThesisDataMiddleware(req, res, next)
+    expect(next).toHaveBeenCalledTimes(1)
+    expect(next.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(next.mock.calls[0][0].message).toBe(message)
   }
 
   const expectNoValidationError = async () => {
-    await expect(validateThesisDataMiddleware(req, res, next)).resolves.toBeUndefined()
+    await validateThesisDataMiddleware(req, res, next)
     expect(next).toHaveBeenCalledTimes(1)
+    expect(next.mock.calls[0][0]).toBeUndefined()
   }
 
   beforeEach(() => {
