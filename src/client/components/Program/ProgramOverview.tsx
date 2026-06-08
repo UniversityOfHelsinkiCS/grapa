@@ -18,6 +18,7 @@ import {
   Stack,
   Switch,
   Tooltip,
+  TextField,
 } from '@mui/material'
 import usePrograms, {
   useUpdateProgramOptionsMutation,
@@ -148,6 +149,142 @@ const FeatureFlagControl = ({
   )
 }
 
+const ListInput = ({
+  program,
+  updateMutation,
+  feature,
+  translation,
+}: FeatureFlagControlProps) => {
+  const [listValues, setListValues] = useState(
+    program.options && program.options[feature] ? program.options[feature] : []
+  )
+
+  const [pendingValue, setPendingValue] = useState<any | null>(null)
+
+  const handleSave = async () => {
+    setPendingValue(listValues)
+  }
+
+  const handleCancelToggle = () => {
+    setPendingValue(null)
+  }
+
+  const handleConfirmToggle = async () => {
+    if (pendingValue === null) {
+      return
+    }
+
+    const options = program.options
+    options[feature] = pendingValue
+
+    await updateMutation.mutateAsync({
+      programId: program.id,
+      options: options,
+    })
+
+    setPendingValue(null)
+  }
+
+  return (
+    <>
+      <Stack
+        sx={{
+          gap: '1rem',
+          width: '40rem',
+        }}
+      >
+        <Typography variant="h5">
+          {translation(`programOverviewPage:${feature}:title`)}
+        </Typography>
+        {listValues.map((value, index) => {
+          return (
+            <Stack
+              direction="row"
+              sx={{
+                gap: '1rem',
+              }}
+              key={index}
+            >
+              <TextField
+                variant="outlined"
+                label={`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
+                value={value.value}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setListValues(
+                    listValues.map((v, i) => {
+                      return i == index ? { value: event.target.value } : v
+                    })
+                  )
+                }}
+                sx={{
+                  width: '100%',
+                }}
+              ></TextField>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  setListValues(
+                    listValues.filter((_v: any, i: any) => i != index)
+                  )
+                }}
+              >
+                Poista
+              </Button>
+            </Stack>
+          )
+        })}
+        <Stack direction="row" sx={{ gap: '1rem' }}>
+          <Button variant="contained" onClick={handleSave}>
+            Tallenna
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setListValues([
+                ...listValues,
+                {
+                  value: '',
+                },
+              ])
+            }}
+          >
+            Lisää kohde
+          </Button>
+        </Stack>
+      </Stack>
+
+      <Dialog open={pendingValue !== null} onClose={handleCancelToggle}>
+        <DialogTitle>
+          {translation(`programOverviewPage:${feature}:confirmTitle`)}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            {translation(
+              pendingValue
+                ? `programOverviewPage:${feature}:enableConfirm`
+                : `programOverviewPage:${feature}:disableConfirm`
+            )}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button type="button" onClick={handleCancelToggle}>
+            {translation('cancelButton')}
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={handleConfirmToggle}
+            disabled={updateMutation.isPending}
+          >
+            {translation('submitButton')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
+}
+
 const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   const { t } = useTranslation()
   const updateProgramOptionsMutation = useUpdateProgramOptionsMutation()
@@ -159,6 +296,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     waysOfWorkingRequired: 'boolean',
     allowMultipleAuthors: 'boolean',
     hideSendToEthesis: 'boolean',
+    useMilestones: 'boolean',
   }
 
   const featureFlagUI = Object.keys(options).map((feature) => {
@@ -202,7 +340,22 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   return (
     <>
       <Stack spacing={2}>
+        <Typography variant="h5">
+          {t(`programOverviewPage:features`)}
+        </Typography>
+
         {featureFlagUI}
+        {program.options?.useMilestones && (
+          <ListInput
+            feature="milestones"
+            program={program}
+            translation={t}
+            updateMutation={updateProgramOptionsMutation}
+          ></ListInput>
+        )}
+
+        <Typography variant="h5">{t(`programOverviewPage:other`)}</Typography>
+
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, pt: 1 }}>
           <Typography>
             {t('programOverviewPage:numberOfGradersLabel')}
