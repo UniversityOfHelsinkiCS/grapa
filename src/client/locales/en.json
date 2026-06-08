@@ -325,5 +325,12 @@
   "loginAsPage": {
     "title": "Choose a user to log in as",
     "userHeader": "User"
+  },
+  "progressView": {
+    "milestone": "Milestone",
+    "title": "Progress",
+    "doneButton": "Mark milestone {0} as done",
+    "cancelButton": "Cancel",
+    "inProgress": "In progress"
   }
 }

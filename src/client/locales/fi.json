@@ -326,5 +326,12 @@
   "loginAsPage": {
     "title": "Valitse käyttäjä, jona haluat kirjautua",
     "userHeader": "Käyttäjä"
+  },
+  "progressView": {
+    "milestone": "Etappi",
+    "title": "Edistyminen",
+    "doneButton": "Merkitse etappi {0} tehdyksi",
+    "cancelButton": "Peru",
+    "inProgress": "Käynnissä"
   }
 }
