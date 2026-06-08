@@ -306,6 +306,8 @@ export const getFindThesesOptions = async ({
       'topic',
       'status',
       'startDate',
+      'milestone',
+      'milestoneVersion',
       'targetDate',
       'ethesisDate',
       'waysOfWorkingValidUntil',

@@ -116,14 +116,14 @@ const validateThesisDataStudent = async (
   thesisData: ThesisData,
   user: User
 ) => {
-  if (!thesisData.authors.map((author: any) => author.id).includes(user.id)) {
-    throw Error('Student must be an author in thesis')
-  }
-
   if (!['DRAFT', 'SUGGESTED'].includes(thesisData.status)) {
     throw Error(
       "Student's cannot create theses with other statuses than DRAFT or SUGGESTED"
     )
+  }
+
+  if (!thesisData.authors.map((author: any) => author.id).includes(user.id)) {
+    throw Error('Student must be an author in thesis')
   }
 
   if (thesisData.approvers?.length > 0) {
@@ -223,7 +223,11 @@ studentRouter.put(
   async (req: ServerPostRequest, res: any) => {
     const { id } = req.params
     const user = req.user
-    const thesisData = req.body
+    let thesisData = req.body
+
+    // this is only to be used when making minor modifications to the original thesis from backend
+    // and data used for the modification is validated separately!
+    let bypassChecks = false
 
     // fetchThesisById checks user permissions for specific theses, but student routes
     // do the relevant checks by themselves, so isAdmin is just used to override those
@@ -245,18 +249,31 @@ studentRouter.put(
       return
     }
 
-    if (originalThesis.status != 'DRAFT') {
+    if (
+      originalThesis.milestone != thesisData.milestone &&
+      !isNaN(thesisData.milestone)
+    ) {
+      thesisData = {
+        ...originalThesis,
+        milestone: thesisData.milestone,
+      }
+      bypassChecks = true
+    }
+
+    if (!bypassChecks && originalThesis.status != 'DRAFT') {
       res
         .status(400)
         .send("Student's cannot modify theses with other statuses than DRAFT")
       return
     }
 
-    try {
-      validateThesisDataStudent(thesisData, user)
-    } catch {
-      res.status(400).send('Thesis data not valid')
-      return
+    if (!bypassChecks) {
+      try {
+        validateThesisDataStudent(thesisData, user)
+      } catch {
+        res.status(400).send('Thesis data not valid')
+        return
+      }
     }
 
     if (thesisData.status == 'SUGGESTED') {
