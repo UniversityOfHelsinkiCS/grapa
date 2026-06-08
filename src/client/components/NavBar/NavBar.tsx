@@ -35,7 +35,6 @@ export const navStyles = {
     zIndex: (theme: Theme) => theme.zIndex.drawer + 1,
     backgroundColor: 'rgb(18, 76, 140)',
     borderRadius: 0,
-    borderBottom: '1px solid black',
     py: '0.25rem',
     boxShadow: 2,
   },
