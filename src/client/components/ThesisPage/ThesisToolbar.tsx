@@ -1,6 +1,16 @@
 import { format } from 'date-fns'
 import { useTranslation } from 'react-i18next'
-import { Button, Box, FormControlLabel, Switch, Chip } from '@mui/material'
+import {
+  Button,
+  Box,
+  FormControlLabel,
+  Switch,
+  Chip,
+  IconButton,
+  Menu,
+  MenuItem,
+} from '@mui/material'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 import {
   GridSlotProps,
   GridToolbarExport,
@@ -10,15 +20,29 @@ import {
 
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { useEffect, useState } from 'react'
+import usePrograms from '../../hooks/usePrograms'
 
 const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
   const apiRef = useGridApiContext()
   const { t } = useTranslation()
   const { user } = useLoggedInUser()
 
+  const { programs, isLoading: programsLoading } = usePrograms({
+    includeNotManaged: true,
+  })
+
   const [filteredView, setFilteredView] = useState('active')
   const [usedQuickFilteredView, setUsedQuickFilteredView] = useState(true)
   const [autoFilterViewIteration, setAutoFilterViewIteration] = useState(0)
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const openMenu = Boolean(anchorEl)
+  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
 
   const filterViews = {
     active: {
@@ -131,10 +155,19 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
     createNewThesis()
   }
 
+  const favoritePrograms =
+    programs?.filter((p) => user?.favoriteProgramIds?.includes(p.id)) || []
+  const allFavProgramsAllowStudentStarted =
+    favoritePrograms.length > 0 &&
+    favoritePrograms.every((p) => p.options?.allowStudentStartedProcess)
+
+  const showHiddenNewThesisButton =
+    (programsLoading || allFavProgramsAllowStudentStarted) && !isStudentView
+
   return (
     <Toolbar sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-        {!noAddThesisButton && (
+        {!noAddThesisButton && !showHiddenNewThesisButton && (
           <Button
             variant="contained"
             size="small"
@@ -179,6 +212,23 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
               delimiter: ';',
             }}
           />
+        )}
+        {!noAddThesisButton && showHiddenNewThesisButton && (
+          <>
+            <IconButton onClick={handleMenuClick} size="small">
+              <MoreVertIcon />
+            </IconButton>
+            <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
+              <MenuItem
+                onClick={() => {
+                  handleMenuClose()
+                  handleNewThesis()
+                }}
+              >
+                {t('thesesTableToolbar:newThesisButton')}
+              </MenuItem>
+            </Menu>
+          </>
         )}
       </Box>
     </Toolbar>
