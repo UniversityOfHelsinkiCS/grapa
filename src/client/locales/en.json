@@ -209,6 +209,7 @@
     "approverInstructions": "Select a program manager, whose expertise is closest to the topic of the thesis, to manage the process.",
     "errorSummary": "Form contains the following errors",
     "errorSummaryAriaLabel": "Form contains the following errors",
+    "serverError": "Server error",
     "newThesisFormTitle": "Create new thesis",
     "editThesisFormTitle": "Edit thesis",
     "authorMissingError": "An author is required",

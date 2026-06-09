@@ -90,11 +90,33 @@ const graderSchema = z
 // issues on the object. This is why the dates are validated separately.
 export const ThesisDateSchema = z
   .object({
-    startDate: z.string(),
-    targetDate: z.string(),
+    startDate: z.string().min(1, 'formErrors:startDate'),
+    targetDate: z.string().min(1, 'formErrors:targetDate'),
   })
   .superRefine((data, ctx) => {
-    if (new Date(data.startDate) > new Date(data.targetDate)) {
+    const start = new Date(data.startDate)
+    const target = new Date(data.targetDate)
+
+    const isStartInvalid = isNaN(start.getTime())
+    const isTargetInvalid = isNaN(target.getTime())
+
+    if (data.startDate.length > 0 && isStartInvalid) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:startDate',
+        path: ['startDate'],
+      })
+    }
+
+    if (data.targetDate.length > 0 && isTargetInvalid) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:targetDate',
+        path: ['targetDate'],
+      })
+    }
+
+    if (!isStartInvalid && !isTargetInvalid && start > target) {
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:startDate',

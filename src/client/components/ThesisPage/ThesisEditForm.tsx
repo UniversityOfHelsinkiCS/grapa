@@ -118,8 +118,18 @@ const ThesisEditForm: FC<{
         currentProgram[0].options.milestones.versions.length - 1
     }
 
-    await onSubmit(editedThesis)
-    setFormErrors([])
+    try {
+      await onSubmit(editedThesis)
+      setFormErrors([])
+    } catch (e: any) {
+      setFormErrors([
+        {
+          code: 'custom',
+          message: `${t('thesisForm:serverError')} (${e?.response?.status || e?.status || 500})`,
+          path: [],
+        },
+      ])
+    }
 
     // Clear the hash location from the URL
     clearURL()

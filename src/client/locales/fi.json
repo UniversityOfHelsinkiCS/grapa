@@ -209,6 +209,7 @@
     "approverInstructions": "Valitse ohjelmavastaava, joka on lähimpänä tutkielman aihepiiriä, hallinnoimaan prosessia.",
     "errorSummary": "Lomake sisältää seuraavia virheitä",
     "errorSummaryAriaLabel": "Lomake sisältää seuraavia virheitä",
+    "serverError": "Palvelin virhe",
     "newThesisFormTitle": "Uuden tutkielman luonti",
     "editThesisFormTitle": "Tutkielman muokkaus",
     "authorMissingError": "Tekijä puuttuu",
