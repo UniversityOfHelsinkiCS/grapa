@@ -25,7 +25,7 @@ const IndexRoute = () => {
     return <Navigate to="/my-theses" replace />
   }
 
-  return <ThesesPage />
+  return <Navigate to="/supervised-theses" replace />
 }
 
 const router = createBrowserRouter(
@@ -42,6 +42,11 @@ const router = createBrowserRouter(
         {
           index: true,
           element: <IndexRoute />,
+          errorElement: <RootBoundary />,
+        },
+        {
+          path: '/supervised-theses',
+          element: <ThesesPage />,
           errorElement: <RootBoundary />,
         },
         {

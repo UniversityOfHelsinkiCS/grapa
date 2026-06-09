@@ -203,6 +203,15 @@ const DepartmentMenu = () => {
   )
 }
 
+const SupervisedThesesLink = () => {
+  const { t } = useTranslation()
+  return (
+    <Button component={NavLink} to="/supervised-theses" sx={navStyles.navlink}>
+      {t('navbar:supervisedTheses', 'Supervised theses')}
+    </Button>
+  )
+}
+
 const EthesisLink = () => {
   return (
     <Button component={NavLink} to="/ethesis" sx={navStyles.navlink}>
@@ -281,6 +290,7 @@ const NavBar = () => {
               component="nav"
               sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' } }}
             >
+              {hasStaffAccess && <SupervisedThesesLink />}
               {Boolean(user.isAdmin || user.managedProgramIds?.length) && (
                 <ProgramMenu />
               )}
