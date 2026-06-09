@@ -24,12 +24,38 @@ const extUserSchema = z.object({
     .min(1, 'formErrors:affiliation'),
 })
 
-const supervisionSchema = z.object({
-  user: z.object({}).passthrough().nullable(),
-  percentage: z.number().min(0).max(100),
-  isExternal: z.boolean(),
-  isPrimarySupervisor: z.boolean(),
-})
+const supervisionSchema = z
+  .object({
+    user: z.object({}).passthrough().nullable(),
+    percentage: z.number().min(0).max(100),
+    isExternal: z.boolean(),
+    isPrimarySupervisor: z.boolean(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.isExternal && !data.user) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:supervisors',
+        path: ['user'],
+      })
+    }
+
+    if (data.isExternal) {
+      const userData = data.user ?? {
+        firstName: '',
+        lastName: '',
+        email: '',
+        affiliation: '',
+      }
+
+      extUserSchema.safeParse(userData).error?.issues.forEach((issue) => {
+        ctx.addIssue({
+          ...issue,
+          path: ['user', ...issue.path],
+        })
+      })
+    }
+  })
 
 const seminarSupervisionSchema = z
   .object({
@@ -136,43 +162,41 @@ export const ThesisSchema = z.object({
   authors: z.array(userSchema).min(1, 'formErrors:authors'),
   approvers: z.array(userSchema).optional(),
   status: z.string().min(1, 'formErrors:status'),
-  supervisions: z
-    .array(supervisionSchema)
-    .refine(
-      (supervisions) => {
-        const totalPercentage = supervisions.reduce(
-          (total, supervision) => total + supervision.percentage,
-          0
-        )
-        return totalPercentage === 100
-      },
-      {
+  supervisions: z.array(supervisionSchema).superRefine((supervisions, ctx) => {
+    const totalPercentage = supervisions.reduce(
+      (total, supervision) => total + supervision.percentage,
+      0
+    )
+
+    if (totalPercentage !== 100) {
+      ctx.addIssue({
+        code: 'custom',
         message: 'formErrors:supervisorPercentage',
         path: ['general', 'supervisor', 'error'],
-      }
-    )
-    .refine(
-      (supervisors) =>
-        supervisors.some((supervisor) => supervisor.isPrimarySupervisor),
-      {
+      })
+    }
+
+    if (!supervisions.some((supervisor) => supervisor.isPrimarySupervisor)) {
+      ctx.addIssue({
+        code: 'custom',
         message: 'formErrors:primarySupervisor',
         path: ['general', 'supervisor', 'error'],
-      }
-    )
-    .superRefine((supervisions, ctx) => {
-      const nonDuplicateSupervisors = uniqBy(
-        supervisions,
-        (sup) => sup.user?.email
-      )
+      })
+    }
 
-      if (nonDuplicateSupervisors.length !== supervisions.length) {
-        ctx.addIssue({
-          code: 'custom',
-          message: 'formErrors:duplicateSupervisorEmails',
-          path: ['general', 'supervisor', 'error'],
-        })
-      }
-    }),
+    const nonDuplicateSupervisors = uniqBy(
+      supervisions,
+      (sup) => sup.user?.email
+    )
+
+    if (nonDuplicateSupervisors.length !== supervisions.length) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:duplicateSupervisorEmails',
+        path: ['general', 'supervisor', 'error'],
+      })
+    }
+  }),
   seminarSupervisions: z.array(seminarSupervisionSchema).default([]),
   graders: z.array(graderSchema).superRefine((graders, ctx) => {
     const nonDuplicateGraders = uniqBy(graders, (grader) => grader.user?.email)
