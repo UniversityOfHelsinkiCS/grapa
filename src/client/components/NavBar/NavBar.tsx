@@ -212,6 +212,16 @@ const SupervisedThesesLink = () => {
   )
 }
 
+const AllThesesLink = () => {
+  const { t } = useTranslation()
+  return (
+    <Button component={NavLink} to="/all-theses" sx={navStyles.navlink}>
+      <AdminPanelSettingsOutlined sx={navStyles.icon} />{' '}
+      {t('navbar:allTheses', 'All theses')}
+    </Button>
+  )
+}
+
 const EthesisLink = () => {
   return (
     <Button component={NavLink} to="/ethesis" sx={navStyles.navlink}>
@@ -302,11 +312,22 @@ const NavBar = () => {
               {user?.hasStudyRight && <MyThesesLink />}
             </Box>
 
-            <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 2 }}>
+            <Box
+              sx={{
+                display: { xs: 'none', sm: 'flex' },
+                gap: 2,
+                alignItems: 'center',
+              }}
+            >
+              {user?.isAdmin && <AllThesesLink />}
               {user?.isAdmin && (
-                <Button component={NavLink} to="/admin" sx={navStyles.navlink}>
+                <Button
+                  component={NavLink}
+                  to="/login-as"
+                  sx={navStyles.navlink}
+                >
                   <AdminPanelSettingsOutlined sx={navStyles.icon} />{' '}
-                  {t('admin')}
+                  {t('navbar:loginAs')}
                 </Button>
               )}
               <ProfileMenu sx={navStyles.navlink} />
@@ -325,11 +346,18 @@ const NavBar = () => {
       <MobileMenu isOpen={mobileOpen} handleClose={handleMobileToggle}>
         {user?.isAdmin && (
           <ListItem disablePadding>
-            <ListItemButton component={NavLink} to="/admin">
+            <ListItemButton component={NavLink} to="/login-as">
               <ListItemIcon>
                 <AdminPanelSettingsOutlined />
               </ListItemIcon>
-              <ListItemText primary={t('navbar:admin')} />
+              <ListItemText primary={t('navbar:loginAs')} />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {user?.isAdmin && (
+          <ListItem disablePadding>
+            <ListItemButton component={NavLink} to="/all-theses">
+              <ListItemText primary={t('navbar:allTheses', 'All theses')} />
             </ListItemButton>
           </ListItem>
         )}

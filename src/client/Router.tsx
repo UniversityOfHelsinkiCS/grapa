@@ -6,8 +6,7 @@ import RootBoundary from './components/Errors/RootBoundary'
 import NotFound from './components/Errors/NotFound'
 
 import NoAccess from './components/NoAccess'
-import LoginAs from './components/LoginAs'
-import Admin from './components/Admin/Admin'
+import LoginAsPage from './components/LoginAsPage'
 import ProgramOverview from './components/Program/ProgramOverview'
 import DepartmentOverview from './components/Department/DepartmentOverview'
 import SeminarPage from './components/Seminar/SeminarPage'
@@ -46,12 +45,17 @@ const router = createBrowserRouter(
         },
         {
           path: '/supervised-theses',
-          element: <ThesesPage />,
+          element: <ThesesPage key="supervised" />,
+          errorElement: <RootBoundary />,
+        },
+        {
+          path: '/all-theses',
+          element: <ThesesPage key="all" noOwnThesesSwitch />,
           errorElement: <RootBoundary />,
         },
         {
           path: '/my-theses',
-          element: <ThesesPage isStudentView />,
+          element: <ThesesPage key="student" isStudentView />,
           errorElement: <RootBoundary />,
         },
         {
@@ -95,15 +99,8 @@ const router = createBrowserRouter(
           element: <Navigate to="/ethesis?tab=admins" replace />,
         },
         {
-          path: '/admin',
-          element: <Admin />,
-          errorElement: <RootBoundary />,
-          children: [
-            {
-              index: true,
-              element: <LoginAs />,
-            },
-          ],
+          path: '/login-as',
+          element: <LoginAsPage />,
         },
         {
           path: '*',
