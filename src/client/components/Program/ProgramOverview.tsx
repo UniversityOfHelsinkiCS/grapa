@@ -175,7 +175,14 @@ const ListInput = ({
   const [pendingValue, setPendingValue] = useState<any | null>(null)
 
   const handleSave = async () => {
-    setPendingValue(listValues)
+    const validValues = isDateInput
+      ? listValues.filter((v: any) => dayjs(v.value).isValid())
+      : listValues
+
+    if (isDateInput && validValues.length !== listValues.length) {
+      setListValues(validValues)
+    }
+    setPendingValue(validValues)
   }
 
   const handleCancelToggle = () => {
