@@ -25,16 +25,16 @@ export const ProgressView = (things: any) => {
         SUGGESTED: 2,
         IN_PROGRESS: 3,
         COMPLETED: 4,
-        ETHESIS: 5,
-        ETHESIS_SENT: 6,
+        ETHESIS: 6,
+        ETHESIS_SENT: 5,
       }
     : {
         ...base_statuses,
         PLANNING: 1,
         IN_PROGRESS: 2,
         COMPLETED: 5,
-        ETHESIS: 3,
-        ETHESIS_SENT: 4,
+        ETHESIS: 4,
+        ETHESIS_SENT: 3,
       }
 
   const programMilestones = thesis.program.options?.milestones?.versions.at(
@@ -77,12 +77,12 @@ export const ProgressView = (things: any) => {
     ...(!thesis.program.options?.hideSendToEthesis
       ? [
           {
-            name: t('thesisStages:ethesis'),
+            name: t('thesisStages:ethesisSent'),
           },
         ]
       : []),
     {
-      name: t('thesisStages:ethesisSent'),
+      name: t('thesisStages:ethesis'),
     },
     {
       name: t('thesisStages:completed'),
