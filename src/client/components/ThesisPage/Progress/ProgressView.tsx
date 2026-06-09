@@ -206,7 +206,7 @@ export const ProgressView = (things: any) => {
               >
                 {t('progressView:doneButton').replace(
                   '{0}',
-                  steps[step].milestone_index
+                  steps[step].milestone_index ? steps[step].milestone_index : ''
                 )}
               </Button>
               <Button
