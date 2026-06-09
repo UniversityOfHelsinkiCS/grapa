@@ -1,13 +1,6 @@
 import { format } from 'date-fns'
 import { useTranslation } from 'react-i18next'
-import {
-  Button,
-  Box,
-  FormControlLabel,
-  Switch,
-  Chip,
-  Divider,
-} from '@mui/material'
+import { Button, Box, FormControlLabel, Switch, Chip } from '@mui/material'
 import {
   GridSlotProps,
   GridToolbarExport,
@@ -157,21 +150,6 @@ const ThesisToolbar = (props: GridSlotProps['toolbar']) => {
           >
             {t('thesesTableToolbar:newThesisButton')}
           </Button>
-        )}
-        {!noOwnThesesSwitch && !isStudentView && user?.isAdmin && (
-          <FormControlLabel
-            control={
-              <Switch
-                checked={!showOnlyOwnTheses}
-                onChange={toggleShowOnlyOwnTheses}
-              />
-            }
-            label={t('thesesTableToolbar:showAllThesesSwitch')}
-          />
-        )}
-        {((!noOwnThesesSwitch && !isStudentView && user?.isAdmin) ||
-          !noAddThesisButton) && (
-          <Divider orientation="vertical" variant="fullWidth" flexItem />
         )}
         {!isStudentView && (
           <Box sx={{ gap: '0.25rem', display: 'flex' }}>{filterChips}</Box>
