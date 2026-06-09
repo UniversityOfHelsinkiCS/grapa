@@ -170,7 +170,7 @@ const ThesesPage = ({
     [programs]
   )
   const { mutateAsync: editThesis } = useEditThesisMutation(isStudentView)
-  const { mutateAsync: deleteThesis } = useDeleteThesisMutation()
+  const { mutateAsync: deleteThesis } = useDeleteThesisMutation(isStudentView)
   const { mutateAsync: createThesis } = useCreateThesisMutation(isStudentView)
 
   const dataGridLocale = language === 'fi' ? fiFI : enUS

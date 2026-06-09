@@ -2,7 +2,7 @@ import express from 'express'
 import { GraderData, ServerPostRequest, ThesisData, User } from '../types'
 import { sequelize } from '../db/connection'
 
-import { EventLog } from '../db/models'
+import { EventLog, Thesis } from '../db/models'
 
 import { RequestWithUser } from '../types'
 import withStudyRight from '../middleware/withStudyRight'
@@ -35,6 +35,9 @@ import {
   getOwnActiveTheses,
   getStudentStudyRights,
 } from '../services/studentService'
+
+import { deleteThesisAttachments } from './thesisAttachmentHelpers'
+import { type Transaction } from 'sequelize'
 
 const studentRouter = express.Router()
 
@@ -130,9 +133,9 @@ const validateThesisDataStudent = async (
     throw Error("Student's cannot add approvers")
   }
 
-  if (thesisData.graders?.length > 0) {
-    throw Error("Student's cannot add graders")
-  }
+  // if (thesisData.graders?.length > 0) {
+  //   throw Error("Student's cannot add graders")
+  // }
 
   if (thesisData.programId) {
     const programId: string = thesisData.programId
@@ -223,6 +226,50 @@ studentRouter.post(
   }
 )
 
+studentRouter.delete(
+  '/theses/:id',
+  ethesisUserHandler,
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: ServerDeleteRequest, res) => {
+    const deleteThesis = async (id: string, transaction: Transaction) => {
+      await Thesis.destroy({ where: { id }, transaction })
+    }
+
+    const { id } = req.params
+
+    //@ts-expect-error it only need isAdmin in this case
+    const thesis = await fetchThesisById(id as string, {
+      isAdmin: true,
+    })
+
+    if (!thesis) res.status(404).send('Thesis not found')
+
+    if (thesis.status != 'DRAFT')
+      res
+        .status(401)
+        .send("Student's cannot delete theses with other statuses than DRAFT")
+
+    if (!(thesis.authors.filter((a) => a.id == req.user.id).length > 0))
+      res.status(401).send("Student's cannot delete theses they did not author")
+
+    await sequelize.transaction(async (t) => {
+      await deleteThesisAttachments(id as string, t)
+      await deleteThesis(id as string, t)
+
+      await EventLog.create(
+        {
+          userId: req.user.id,
+          type: 'THESIS_DELETED',
+          data: thesis.toJSON(),
+        },
+        { transaction: t }
+      )
+    })
+
+    res.status(204).send(`Deleted thesis with id ${id}`)
+  }
+)
+
 studentRouter.put(
   '/theses/:id',
   ethesisUserHandler,
@@ -298,6 +345,18 @@ studentRouter.put(
           )
         return
       }
+    }
+
+    if (!bypassChecks && ['DRAFT', 'SUGGESTED'].includes(thesisData.status)) {
+      thesisData.graders = thesisData.supervisions
+        .filter((s) => s.isPrimarySupervisor)
+        .map((s) => {
+          return {
+            isPrimaryGrader: true,
+            isExternal: false,
+            user: s.user,
+          }
+        }) as unknown as GraderData[]
     }
 
     let updatedThesis

@@ -76,9 +76,11 @@ export const useEditThesisMutation = (isStudentView?: boolean) => {
   return mutation
 }
 
-export const useDeleteThesisMutation = () => {
+export const useDeleteThesisMutation = (isStudentView?: boolean) => {
   const mutationFn = async (thesisId: string) => {
-    await apiClient.delete(`/theses/${thesisId}`)
+    await apiClient.delete(
+      isStudentView ? `/student/theses/${thesisId}` : `/theses/${thesisId}`
+    )
   }
 
   const mutation = useMutation({
