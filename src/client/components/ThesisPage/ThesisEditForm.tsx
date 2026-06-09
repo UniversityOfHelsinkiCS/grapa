@@ -122,10 +122,14 @@ const ThesisEditForm: FC<{
       await onSubmit(editedThesis)
       setFormErrors([])
     } catch (e: any) {
+      const status = e?.response?.status || e?.status
+      const errorMessage = status
+        ? `${t('thesisForm:serverError')} (${status})`
+        : t('thesisForm:serverUnreachableError')
       setFormErrors([
         {
           code: 'custom',
-          message: `${t('thesisForm:serverError')} (${e?.response?.status || e?.status || 500})`,
+          message: errorMessage,
           path: [],
         },
       ])
