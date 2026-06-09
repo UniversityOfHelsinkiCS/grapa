@@ -116,7 +116,7 @@ export const ThesisDateSchema = z
       })
     }
 
-    if (!isStartInvalid && !isTargetInvalid && start > target) {
+    if (!isStartInvalid && !isTargetInvalid && start >= target) {
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:startDate',
