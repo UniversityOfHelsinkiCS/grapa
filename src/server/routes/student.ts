@@ -1,5 +1,5 @@
 import express from 'express'
-import { ServerPostRequest, ThesisData, User } from '../types'
+import { GraderData, ServerPostRequest, ThesisData, User } from '../types'
 import { sequelize } from '../db/connection'
 
 import { EventLog } from '../db/models'
@@ -189,6 +189,16 @@ studentRouter.post(
         )
       return
     }
+
+    thesisData.graders = thesisData.supervisions
+      .filter((s) => s.isPrimarySupervisor)
+      .map((s) => {
+        return {
+          isPrimaryGrader: true,
+          isExternal: false,
+          user: s.user,
+        }
+      }) as unknown as GraderData[]
 
     const createdThesis = await sequelize.transaction(async (t) => {
       const newThesis = await createThesis(thesisData, t)
