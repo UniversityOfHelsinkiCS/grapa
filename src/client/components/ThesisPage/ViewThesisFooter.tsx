@@ -601,7 +601,10 @@ const ViewThesisFooter = (
 
           <Authors authors={thesis.authors} />
 
-          <ProgressView thesis={thesis} editThesis={editThesis}></ProgressView>
+          <ProgressView
+            thesis={thesis}
+            isStudentView={isStudentView}
+          ></ProgressView>
 
           <StatusRow thesis={thesis} />
 

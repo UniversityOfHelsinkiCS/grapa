@@ -330,6 +330,9 @@
     "userHeader": "User"
   },
   "progressView": {
+    "ethesisConfirmationTitle": "Confirmation",
+    "ethesisConfirmationText": "Are you sure you want to mark this thesis as sent to Ethesis? This action cannot be undone",
+    "markAsSentToEthesis": "Mark as sent to Ethesis",
     "milestone": "Milestone",
     "title": "Progress",
     "doneButton": "Mark milestone {0} as done",

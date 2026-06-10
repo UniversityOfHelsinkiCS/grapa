@@ -306,13 +306,27 @@ studentRouter.put(
       return
     }
 
-    if (
+    // Enforce that milestones can only be changed when IN_PROGRESS
+    if (originalThesis.status !== 'IN_PROGRESS') {
+      thesisData.milestone = originalThesis.milestone
+    }
+
+    const isMilestoneUpdate =
       originalThesis.milestone != thesisData.milestone &&
       !isNaN(thesisData.milestone)
-    ) {
+
+    const isEthesisUpdate =
+      originalThesis.status != thesisData.status &&
+      thesisData.status === 'ETHESIS_SENT'
+
+    if (isMilestoneUpdate || isEthesisUpdate) {
       thesisData = {
         ...originalThesis,
-        milestone: thesisData.milestone,
+        ...(isMilestoneUpdate && { milestone: thesisData.milestone }),
+        ...(isEthesisUpdate && {
+          status: 'ETHESIS_SENT',
+          ethesisDate: thesisData.ethesisDate || new Date().toISOString(),
+        }),
       }
       bypassChecks = true
     }

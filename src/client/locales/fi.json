@@ -331,6 +331,9 @@
     "userHeader": "Käyttäjä"
   },
   "progressView": {
+    "ethesisConfirmationTitle": "Vahvistus",
+    "ethesisConfirmationText": "Oletko varma että haluat merkata tämän lähetetyksi Ethesikseen? Tätä toimintoa ei voi peruuttaa",
+    "markAsSentToEthesis": "Merkitse Ethesikseen lähetetyksi",
     "milestone": "Etappi",
     "title": "Edistyminen",
     "doneButton": "Merkitse etappi {0} tehdyksi",
