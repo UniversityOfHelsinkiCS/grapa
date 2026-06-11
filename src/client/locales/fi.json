@@ -293,13 +293,27 @@
     "filterButton": "Suodattimet",
     "saveFiltersButton": "Tallenna suodattimet",
     "filterViews": {
-      "active": "Aktiiviset",
-      "inactive": "Epäaktiiviset",
-      "suggested": "Opiskelijoiden tutkielmaehdotukset"
+      "active": {
+        "name": "Aktiiviset",
+        "tooltip": "Näyttää keskeneräiset tutkielmat"
+      },
+      "inactive": {
+        "name": "Epäaktiiviset",
+        "tooltip": "Näyttää valmiit ja keskeytetyt tutkielmat"
+      },
+      "suggested": {
+        "name": "Opiskelijoiden tutkielmaehdotukset",
+        "tooltip": "Näyttää opiskelijalähtöisen tutkielmaprosessin tutkielmaehdotukset"
+      },
+      "all": {
+        "name": "Kaikki",
+        "tooltip": "Näyttää kaikki tutkielmat"
+      }
     }
   },
   "thesesPage": {
-    "approvalRequiredTooltip": "Tämä tutkielma on osoitettu sinulle. Hyväksyntäsi tarvitaan!"
+    "approvalRequiredTooltip": "Tämä tutkielma on osoitettu sinulle. Hyväksyntäsi tarvitaan!",
+    "primarySupervisorTooltip": "Olet tämän tutkielman pääohjaaja"
   },
   "customFilters": {
     "valuesLabel": "Arvot"

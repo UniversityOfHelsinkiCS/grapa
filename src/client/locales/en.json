@@ -294,13 +294,27 @@
     "filterButton": "Filters",
     "saveFiltersButton": "Save filters",
     "filterViews": {
-      "active": "Active",
-      "inactive": "Inactive",
-      "suggested": "Student's thesis suggestions"
+      "active": {
+        "name": "Active",
+        "tooltip": "Shows unfinished theses"
+      },
+      "inactive": {
+        "name": "Inactive",
+        "tooltip": "Shows finished and cancelled theses"
+      },
+      "suggested": {
+        "name": "Student's thesis suggestions",
+        "tooltip": "Shows thesis suggestions from programme's with student started process enabled"
+      },
+      "all": {
+        "name": "All",
+        "tooltip": "Shows all theses"
+      }
     }
   },
   "thesesPage": {
-    "approvalRequiredTooltip": "This thesis has been assigned to you. Your approval is required!"
+    "approvalRequiredTooltip": "This thesis has been assigned to you. Your approval is required!",
+    "primarySupervisorTooltip": "You are the primary supervisor of this thesis"
   },
   "customFilters": {
     "valuesLabel": "Values"
