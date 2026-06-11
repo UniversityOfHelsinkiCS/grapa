@@ -1,9 +1,13 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
 import apiClient from '../util/apiClient'
+import queryClient from '../util/queryClient'
 
-import { DepartmentData as Department } from '../../server/types'
+import {
+  DepartmentData as Department,
+  TranslatedName,
+} from '../../server/types'
 
 interface UseDepartmentsParams {
   includeNotManaged?: boolean
@@ -34,3 +38,23 @@ const useDepartments = (params: UseDepartmentsParams) => {
 }
 
 export default useDepartments
+
+interface UpdateDepartmentParams {
+  departmentId: string
+  name: TranslatedName
+}
+
+export const useUpdateDepartmentMutation = () => {
+  const mutationFn = async ({ departmentId, name }: UpdateDepartmentParams) => {
+    await apiClient.put(`/departments/${departmentId}`, { name })
+  }
+
+  return useMutation({
+    mutationFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['departments'],
+      })
+    },
+  })
+}

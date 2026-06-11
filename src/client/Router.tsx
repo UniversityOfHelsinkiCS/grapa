@@ -15,6 +15,7 @@ import { BASE_PATH } from '../config'
 import Ethesis from './components/Ethesis'
 import useLoggedInUser from './hooks/useLoggedInUser'
 import ManageProgramsPage from './components/ManageProgramsPage'
+import ManageDepartmentsPage from './components/ManageDepartmentsPage'
 
 const IndexRoute = () => {
   const { isLoading, hasStaffAccess } = useLoggedInUser()
@@ -97,6 +98,10 @@ const router = createBrowserRouter(
         {
           path: '/manage-programs',
           element: <ManageProgramsPage />,
+        },
+        {
+          path: '/manage-departments',
+          element: <ManageDepartmentsPage />,
         },
         {
           path: '/all-theses',

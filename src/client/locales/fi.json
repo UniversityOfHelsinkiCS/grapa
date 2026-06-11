@@ -28,6 +28,7 @@
     "deleteButton": "Poista",
     "cancelButton": "Peruuta",
     "submitButton": "Tallenna",
+    "saving": "Tallennetaan...",
     "removeButton": "Poista",
     "removeThesisTitle": "Poista tutkielma",
     "removeThesisConfirmationContent": "Haluatko varmasti poistaa tutkielman: {{topic}}?",
@@ -62,6 +63,7 @@
     "program": "Ohjelmat",
     "programManager": "Ohjelmavastaavat",
     "managePrograms": "Ohjelmien hallinta",
+    "manageDepartments": "Osastojen hallinta",
     "programOverview": "Ohjelman yleiskatsaus",
     "supervisedTheses": "Ohjatut tutkielmat",
     "department": "Osastot",
@@ -346,6 +348,10 @@
     "swedishName": "Ruotsinkielinen nimi (SV)",
     "confirmSaveTitle": "Vahvista muutokset",
     "confirmSaveText": "Oletko varma, että haluat tallentaa nämä käännetyt nimet ohjelmalle?"
+  },
+  "manageDepartmentsPage": {
+    "confirmSaveTitle": "Vahvista muutokset",
+    "confirmSaveText": "Oletko varma, että haluat tallentaa nämä käännetyt nimet osastolle?"
   },
   "progressView": {
     "ethesisConfirmationTitle": "Vahvistus",

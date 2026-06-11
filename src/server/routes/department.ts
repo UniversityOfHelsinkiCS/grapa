@@ -43,4 +43,43 @@ departmentRouter.get(
   }
 )
 
+departmentRouter.put(
+  '/:id',
+  ethesisUserHandler,
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: RequestWithUser, res: Response) => {
+    const { id: departmentId } = req.params
+    const { isAdmin } = req.user
+    const { name } = req.body
+
+    if (!departmentId || typeof departmentId !== 'string') {
+      return res.status(400).send({ error: 'Department ID is required' })
+    }
+
+    if (!name || typeof name !== 'object' || Array.isArray(name)) {
+      return res.status(400).send({ error: 'Invalid name payload' })
+    }
+
+    if (!isAdmin) {
+      return res.status(403).send({ error: 'Forbidden' })
+    }
+
+    const department = await Department.findByPk(departmentId)
+
+    if (!department) {
+      return res.status(404).send({ error: 'Department not found' })
+    }
+
+    const [, updatedDepartments] = await Department.update(
+      { name },
+      {
+        where: { id: departmentId },
+        returning: true,
+      }
+    )
+
+    return res.status(200).send(updatedDepartments[0])
+  }
+)
+
 export default departmentRouter

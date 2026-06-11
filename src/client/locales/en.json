@@ -28,6 +28,7 @@
     "deleteButton": "Delete",
     "cancelButton": "Cancel",
     "submitButton": "Submit",
+    "saving": "Saving...",
     "removeThesisTitle": "Delete thesis",
     "removeThesisConfirmationContent": "Are you sure you want to delete the thesis: {{topic}}?",
     "removeConfirmation": "To confirm, type ({{confirmationText}}) in the box below:",
@@ -62,6 +63,7 @@
     "program": "Program",
     "programManager": "Program managers",
     "managePrograms": "Manage programs",
+    "manageDepartments": "Manage departments",
     "programOverview": "Program overview",
     "supervisedTheses": "Supervised theses",
     "department": "Department",
@@ -345,6 +347,10 @@
     "swedishName": "Swedish Name (SV)",
     "confirmSaveTitle": "Confirm changes",
     "confirmSaveText": "Are you sure you want to save these translated names for the program?"
+  },
+  "manageDepartmentsPage": {
+    "confirmSaveTitle": "Confirm changes",
+    "confirmSaveText": "Are you sure you want to save these translated names for the department?"
   },
   "progressView": {
     "ethesisConfirmationTitle": "Confirmation",
