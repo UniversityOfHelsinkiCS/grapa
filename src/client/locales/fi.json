@@ -69,8 +69,6 @@
     "department": "Yksiköt",
     "seminar": "Seminaari",
     "myTheses": "Omat tutkielmat",
-    "departmentAdmin": "Yksiköiden ylläpitäjät",
-    "departmentStatistics": "Yksiköiden tilastot",
     "departmentOverview": "Yksikön yleiskatsaus",
     "loginAs": "Kirjaudu toisella käyttäjällä",
     "allTheses": "Kaikki tutkielmat",
@@ -99,7 +97,7 @@
   },
   "departmentOverviewPage": {
     "supervisionsTab": "Ohjaukset",
-    "departmentAdminsTab": "Yksiköiden ylläpitäjät",
+    "departmentAdminsTab": "Yksikön ylläpitäjät",
     "supervisionStatisticsTab": "Ohjaustilastot"
   },
   "programOverviewPage": {
@@ -322,7 +320,7 @@
     "showNonAdminOnlySwitch": "Näytä vain ei-admin lokit"
   },
   "departmentAdminPage": {
-    "pageTitle": "Yksiköiden ylläpitäjät",
+    "pageTitle": "Yksikön ylläpitäjät",
     "addDepartmentAdmin": "Lisää yksikön ylläpitäjä",
     "departmentHeader": "Yksikkö",
     "adminHeader": "Vastaava",
@@ -330,7 +328,7 @@
     "removeDepartmentAdminContent": "Haluatko varmasti poistaa henkilön {{name}} yksiköltä {{department}}?"
   },
   "departmentStatisticsPage": {
-    "pageTitle": "Yksiköiden tilastot",
+    "pageTitle": "Yksikön tilastot",
     "supervisorHeader": "Ohjaaja",
     "departmentHeader": "Yksikkö",
     "thesisCountHeader": "Tutkielmien määrä",

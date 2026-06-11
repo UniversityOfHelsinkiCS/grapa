@@ -13,11 +13,11 @@ jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
     departments: [
       {
         id: 'department-1',
-        name: { en: 'Department one', fi: 'Osasto yksi' },
+        name: { en: 'Department one', fi: 'Yksikkö yksi' },
       },
       {
         id: 'department-2',
-        name: { en: 'Department two', fi: 'Osasto kaksi' },
+        name: { en: 'Department two', fi: 'Yksikkö kaksi' },
       },
     ],
   }),
@@ -75,7 +75,7 @@ describe('DepartmentOverview', () => {
     expect(screen.getByTestId('department-statistics')).toHaveTextContent(
       'department-2-true'
     )
-    expect(screen.getByText('Osasto kaksi')).toBeInTheDocument()
+    expect(screen.getByText('Yksikkö kaksi')).toBeInTheDocument()
     expect(screen.queryByTestId('department-admin')).not.toBeInTheDocument()
     expect(screen.queryByTestId('department-theses')).not.toBeInTheDocument()
   })
@@ -84,7 +84,7 @@ describe('DepartmentOverview', () => {
     renderDepartmentOverview('/departments/department-2')
 
     const user = userEvent.setup()
-    await user.click(screen.getByRole('tab', { name: 'Osaston ylläpitäjät' }))
+    await user.click(screen.getByRole('tab', { name: 'Yksikön ylläpitäjät' }))
 
     expect(screen.getByTestId('department-admin')).toHaveTextContent(
       'department-2-true'
