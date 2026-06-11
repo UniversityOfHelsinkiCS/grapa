@@ -14,6 +14,7 @@ import SeminarPage from './components/Seminar/SeminarPage'
 import { BASE_PATH } from '../config'
 import Ethesis from './components/Ethesis'
 import useLoggedInUser from './hooks/useLoggedInUser'
+import ManageProgramsPage from './components/ManageProgramsPage'
 
 const IndexRoute = () => {
   const { isLoading, hasStaffAccess } = useLoggedInUser()
@@ -46,11 +47,6 @@ const router = createBrowserRouter(
         {
           path: '/supervised-theses',
           element: <ThesesPage key="supervised" />,
-          errorElement: <RootBoundary />,
-        },
-        {
-          path: '/all-theses',
-          element: <ThesesPage key="all" noOwnThesesSwitch />,
           errorElement: <RootBoundary />,
         },
         {
@@ -97,6 +93,15 @@ const router = createBrowserRouter(
         {
           path: '/ethesis/admin',
           element: <Navigate to="/ethesis?tab=admins" replace />,
+        },
+        {
+          path: '/manage-programs',
+          element: <ManageProgramsPage />,
+        },
+        {
+          path: '/all-theses',
+          element: <ThesesPage key="all" noOwnThesesSwitch />,
+          errorElement: <RootBoundary />,
         },
         {
           path: '/login-as',

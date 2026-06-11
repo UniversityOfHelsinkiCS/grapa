@@ -222,6 +222,17 @@ const AllThesesLink = () => {
   )
 }
 
+const ManageProgramsLink = () => {
+  const { t } = useTranslation()
+
+  return (
+    <Button component={NavLink} to="/manage-programs" sx={navStyles.navlink}>
+      <AdminPanelSettingsOutlined sx={navStyles.icon} />{' '}
+      {t('navbar:managePrograms', 'Manage programs')}
+    </Button>
+  )
+}
+
 const EthesisLink = () => {
   return (
     <Button component={NavLink} to="/ethesis" sx={navStyles.navlink}>
@@ -319,6 +330,7 @@ const NavBar = () => {
                 alignItems: 'center',
               }}
             >
+              {user?.isAdmin && <ManageProgramsLink />}
               {user?.isAdmin && <AllThesesLink />}
               {user?.isAdmin && (
                 <Button

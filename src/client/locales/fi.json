@@ -61,6 +61,7 @@
   "navbar": {
     "program": "Ohjelmat",
     "programManager": "Ohjelmavastaavat",
+    "managePrograms": "Ohjelmien hallinta",
     "programOverview": "Ohjelman yleiskatsaus",
     "supervisedTheses": "Ohjatut tutkielmat",
     "department": "Osastot",
@@ -337,6 +338,14 @@
   "loginAsPage": {
     "title": "Valitse käyttäjä, jona haluat kirjautua",
     "userHeader": "Käyttäjä"
+  },
+  "manageProgramsPage": {
+    "editTranslations": "Muokkaa käännöksiä",
+    "finnishName": "Suomenkielinen nimi (FI)",
+    "englishName": "Englanninkielinen nimi (EN)",
+    "swedishName": "Ruotsinkielinen nimi (SV)",
+    "confirmSaveTitle": "Vahvista muutokset",
+    "confirmSaveText": "Oletko varma, että haluat tallentaa nämä käännetyt nimet ohjelmalle?"
   },
   "progressView": {
     "ethesisConfirmationTitle": "Vahvistus",

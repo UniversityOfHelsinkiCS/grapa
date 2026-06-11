@@ -25,9 +25,7 @@ import {
   TextField,
   Autocomplete,
 } from '@mui/material'
-import usePrograms, {
-  useUpdateProgramOptionsMutation,
-} from '../../hooks/usePrograms'
+import usePrograms, { useUpdateProgramMutation } from '../../hooks/usePrograms'
 import { useTranslation } from 'react-i18next'
 import EventsView from '../EventsView/EventsView'
 import { useProgramEvents } from '../../hooks/useEvents'
@@ -544,7 +542,7 @@ const CombinedStudyTracksInput = ({
 
 const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   const { t } = useTranslation()
-  const updateProgramOptionsMutation = useUpdateProgramOptionsMutation()
+  const updateProgramOptionsMutation = useUpdateProgramMutation()
 
   const options = {
     seminar: 'boolean',

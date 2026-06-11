@@ -49,7 +49,7 @@ programRouter.put(
   async (req: RequestWithUser, res: Response) => {
     const { id: programId } = req.params
     const { isAdmin, id: userId } = req.user
-    const { options } = req.body
+    const { options, name } = req.body
 
     if (!programId || typeof programId !== 'string') {
       return res.status(400).send({ error: 'Program ID is required' })
@@ -57,6 +57,10 @@ programRouter.put(
 
     if (!options || typeof options !== 'object' || Array.isArray(options)) {
       return res.status(400).send({ error: 'Invalid options payload' })
+    }
+
+    if (name && (typeof name !== 'object' || Array.isArray(name))) {
+      return res.status(400).send({ error: 'Invalid name payload' })
     }
 
     if (!isAdmin) {
@@ -73,13 +77,15 @@ programRouter.put(
       return res.status(404).send({ error: 'Program not found' })
     }
 
-    const [, updatedPrograms] = await Program.update(
-      { options },
-      {
-        where: { id: programId },
-        returning: true,
-      }
-    )
+    const updateData: any = { options }
+    if (name) {
+      updateData.name = name
+    }
+
+    const [, updatedPrograms] = await Program.update(updateData, {
+      where: { id: programId },
+      returning: true,
+    })
 
     return res.status(200).send(updatedPrograms[0])
   }

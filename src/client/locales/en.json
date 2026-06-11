@@ -61,6 +61,7 @@
   "navbar": {
     "program": "Program",
     "programManager": "Program managers",
+    "managePrograms": "Manage programs",
     "programOverview": "Program overview",
     "supervisedTheses": "Supervised theses",
     "department": "Department",
@@ -336,6 +337,14 @@
   "loginAsPage": {
     "title": "Choose a user to log in as",
     "userHeader": "User"
+  },
+  "manageProgramsPage": {
+    "editTranslations": "Edit translations",
+    "finnishName": "Finnish Name (FI)",
+    "englishName": "English Name (EN)",
+    "swedishName": "Swedish Name (SV)",
+    "confirmSaveTitle": "Confirm changes",
+    "confirmSaveText": "Are you sure you want to save these translated names for the program?"
   },
   "progressView": {
     "ethesisConfirmationTitle": "Confirmation",

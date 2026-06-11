@@ -25,7 +25,7 @@ jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
       },
     ],
   }),
-  useUpdateProgramOptionsMutation: jest.fn().mockReturnValue({
+  useUpdateProgramMutation: jest.fn().mockReturnValue({
     isPending: false,
     mutateAsync: jest.fn(),
   }),
@@ -61,9 +61,8 @@ jest.unstable_mockModule(
 )
 
 const ProgramOverview = (await import('./ProgramOverview')).default
-const { useUpdateProgramOptionsMutation } = await import(
-  '../../hooks/usePrograms'
-)
+const { useUpdateProgramMutation: useUpdateProgramMutation } =
+  await import('../../hooks/usePrograms')
 
 const renderProgramOverview = (initialEntry) =>
   render(
@@ -111,7 +110,7 @@ describe('ProgramOverview', () => {
     renderProgramOverview('/programs/program-2')
 
     const user = userEvent.setup()
-    const mutation = useUpdateProgramOptionsMutation()
+    const mutation = useUpdateProgramMutation()
 
     await user.click(screen.getByRole('tab', { name: 'Asetukset' }))
 
