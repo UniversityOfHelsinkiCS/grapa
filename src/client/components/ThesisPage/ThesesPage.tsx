@@ -3,28 +3,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { cloneDeep } from 'lodash-es'
 
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
+import { Box, Stack, TextField, Typography } from '@mui/material'
 import {
-  Box,
-  IconButton,
-  Stack,
-  TextField,
-  Tooltip,
-  Typography,
-} from '@mui/material'
-import {
-  DataGrid,
-  DataGridProps,
-  getGridStringOperators,
-  GridColDef,
   GridFilterModel,
-  GridFilterOperator,
   GridRowId,
   GridRowSelectionModel,
   GridSortModel,
-  useGridApiRef,
 } from '@mui/x-data-grid'
-import { fiFI, enUS } from '@mui/x-data-grid/locales'
 
 import {
   ThesisData as Thesis,
@@ -42,15 +27,13 @@ import {
 import usePrograms from '../../hooks/usePrograms'
 
 import ThesisEditForm from './ThesisEditForm'
-import ThesisToolbar from './ThesisToolbar'
 import ViewThesisFooter from './ViewThesisFooter'
-import StatusFilter from './Filters/StatusFilter'
 import DeleteConfirmation from '../Common/DeleteConfirmation'
 
-import { StatusLocale } from '../../types'
 import { useDebounce } from '../../hooks/useDebounce'
 import EthesisConfirmation from '../Common/EthesisConfirmation'
 import { getVisibleStudyTracks } from '../../util/studyTracks'
+import PrethesisTable from '../PrethesisTable/PrethesisTable'
 
 const DEFAULT_PAGE_SIZE = 25
 
@@ -69,14 +52,12 @@ const ThesesPage = ({
   filteringDepartmentId,
   noOwnThesesSwitch,
   noAddThesisButton,
-  showExportOptions,
   pageSize,
   onlySeminarSupervised = false,
   isStudentView = false,
 }: Props) => {
   pageSize = pageSize ?? DEFAULT_PAGE_SIZE
 
-  const apiRef = useGridApiRef()
   const footerRef = useRef<HTMLDivElement>(null)
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -105,7 +86,7 @@ const ThesesPage = ({
   const [ethesisTesis, setEthesisThesis] = useState<Thesis | null>(null)
 
   const [newThesis, setNewThesis] = useState<Thesis | null>(null)
-  const [showOnlyOwnTheses, setShowOnlyOwnTheses] = useState(!noOwnThesesSwitch)
+  const [showOnlyOwnTheses] = useState(!noOwnThesesSwitch)
 
   const [filterStatus, setFilterStatus] = useState<string | null>(null)
   const [filterTopic, setFilterTopic] = useState<string | null>(null)
@@ -119,7 +100,7 @@ const ThesesPage = ({
 
   const [order, setOrder] = useState({})
 
-  const [currentFilters, setCurrentFilters] = useState(null)
+  const [, setCurrentFilters] = useState(null)
 
   const {
     theses,
@@ -174,28 +155,6 @@ const ThesesPage = ({
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation(isStudentView)
   const { mutateAsync: createThesis } = useCreateThesisMutation(isStudentView)
 
-  const dataGridLocale = language === 'fi' ? fiFI : enUS
-
-  const rowCountRef = useRef(totalCount || 0)
-
-  const rowCount = useMemo(() => {
-    if (totalCount !== undefined) {
-      rowCountRef.current = totalCount
-    }
-    return rowCountRef.current
-  }, [totalCount])
-
-  // Restore filters from user settings
-  useEffect(() => {
-    if (currentUser.thesesTableFilters) {
-      apiRef.current.restoreState({
-        filter: {
-          filterModel: currentUser.thesesTableFilters,
-        },
-      })
-    }
-  }, [currentUser.thesesTableFilters])
-
   useEffect(() => {
     if (rowSelectionModel.ids.size > 0) {
       footerRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -217,160 +176,6 @@ const ThesesPage = ({
     setEthesisThesis(thesisToEdit)
     setEthesisDialogOpen(true)
   }
-
-  const stringFilterOperators: GridFilterOperator[] = getGridStringOperators()
-  const allowedFilterOperators = stringFilterOperators.filter(
-    (operator) => operator.value === 'contains'
-  )
-
-  const columns: GridColDef<Thesis>[] = [
-    {
-      field: 'more-actions',
-      type: 'actions',
-      headerName: '',
-      sortable: false,
-      filterable: false,
-      width: 50,
-      renderCell: (params) => {
-        const currUserIsApprover =
-          currentUser &&
-          params.row.approvers.find(
-            (approver) => approver.id === currentUser.id
-          )
-        return (
-          Boolean(currUserIsApprover && params.row.status === 'PLANNING') && (
-            <Tooltip title={t('thesesPage:approvalRequiredTooltip')}>
-              <IconButton
-                aria-label="toggle-thesis-approver"
-                type="button"
-                color="primary"
-                data-testid={`toggle-thesis-approver-button-${params.row.id}`}
-                onClick={() => initializeThesisEdit(params.row)}
-              >
-                <PriorityHighIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          )
-        )
-      },
-    },
-    {
-      field: 'programId',
-      filterable: true,
-      filterOperators: allowedFilterOperators,
-      headerName: t('programHeader'),
-      width: 250,
-      valueGetter: (_, row) => row.program?.name[language],
-    },
-    {
-      field: 'topic',
-      filterable: true,
-      filterOperators: allowedFilterOperators,
-      headerName: t('topicHeader'),
-      width: 300,
-      minWidth: 300,
-      flex: 1,
-    },
-    {
-      field: 'authors',
-      filterable: true,
-      filterOperators: allowedFilterOperators,
-      headerName: t('authorsHeader'),
-      width: 300,
-      valueGetter: (_, row) =>
-        row.authors
-          .toSorted((a, b) => a.lastName.localeCompare(b.lastName))
-          .map(
-            (author) =>
-              `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
-          )
-          .join(', '),
-    },
-    {
-      field: 'status',
-      headerName: t('statusHeader'),
-      width: 100,
-      type: 'string',
-      cellClassName: ({ row }) => {
-        return row.program?.options?.useMilestones &&
-          row.updatedAt &&
-          row.status == 'IN_PROGRESS'
-          ? dayjs(row.updatedAt).isBefore(dayjs().subtract(1, 'month'))
-            ? 'cell negative'
-            : 'cell positive'
-          : ''
-      },
-      valueGetter: (_, row) => t(StatusLocale[row.status]),
-      filterOperators: [
-        {
-          value: 'isAnyOf',
-          getApplyFilterFn: (filterItem) => {
-            if (filterItem.value == null || filterItem.value.length === 0) {
-              return null
-            }
-
-            return (cellValue) =>
-              filterItem.value.some(
-                (filterValue: StatusLocale) => cellValue === t(filterValue) // the filterValue is a locale key
-              )
-          },
-          InputComponent: StatusFilter,
-        },
-      ],
-    },
-    {
-      field: 'startDate',
-      headerName: t('startDateHeader'),
-      filterable: false,
-      width: 140,
-      valueGetter: (_, row) => dayjs(row.startDate).format('YYYY-MM-DD'),
-    },
-    {
-      field: 'targetDate',
-      headerName: showDurationColumn
-        ? t('completedDateHeader')
-        : t('targetDateHeader'),
-      description: 'This column has a value getter and is not sortable.',
-      filterable: false,
-      cellClassName: ({ row }) => {
-        return row.targetDate
-          ? dayjs(row.targetDate).isBefore(dayjs()) &&
-            row.status == 'IN_PROGRESS'
-            ? 'cell negative'
-            : ''
-          : ''
-      },
-      valueGetter: (_, row) => dayjs(row.targetDate).format('YYYY-MM-DD'),
-    },
-    ...(showDurationColumn
-      ? [
-          {
-            field: 'duration',
-            headerName: t('durationHeader'),
-            filterable: false,
-            width: 130,
-            valueGetter: (_: unknown, row: Thesis) =>
-              row.startDate && row.targetDate
-                ? dayjs(row.targetDate).diff(dayjs(row.startDate), 'day')
-                : null,
-          },
-        ]
-      : []),
-  ]
-
-  const skeletonRows: Thesis[] = Array.from({ length: 7 }).map((_, index) => ({
-    programId: '',
-    topic: '',
-    authors: [] as Thesis['authors'],
-    approvers: [] as Thesis['approvers'],
-    status: 'PLANNING',
-    startDate: '',
-    targetDate: '',
-    supervisions: [] as Thesis['supervisions'],
-    seminarSupervisions: [] as Thesis['seminarSupervisions'],
-    graders: [] as Thesis['graders'],
-    id: index.toString(),
-  }))
 
   const initializeNewThesis = () => {
     if (isStudentView) {
@@ -481,88 +286,102 @@ const ThesesPage = ({
           {t('averageDuration', { days: averageDuration })}
         </Typography>
       )}
+
       <Box>
-        <DataGrid
-          // We want to disable virtualization to prevent a bug
-          // that sometimes causes the grid to not render
-          // more than 10 rows after switching the page
-          disableVirtualization
-          showToolbar
-          apiRef={apiRef}
-          loading={isLoading}
-          rows={isLoading ? skeletonRows : theses}
-          rowCount={rowCount}
-          getRowHeight={() => 44}
-          columns={columns}
-          columnHeaderHeight={36}
-          filterMode="server"
-          onFilterModelChange={onFilterChange}
-          sortingMode="server"
-          onSortModelChange={handleSortModelChange}
-          hideFooterSelectedRowCount
-          pageSizeOptions={[pageSize]}
-          paginationMode="server"
-          paginationModel={paginationModel}
-          onPaginationModelChange={(newModel) => setPaginationModel(newModel)}
-          rowSelectionModel={rowSelectionModel}
-          onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
+        <PrethesisTable
+          rows={isLoading ? [] : theses}
+          totalCount={totalCount}
+          selection={rowSelectionModel}
+          onFilterChange={onFilterChange}
+          onPaginationChange={(newModel) => setPaginationModel(newModel)}
+          onSelection={(newSelection: GridRowSelectionModel) => {
             setRowSelectionModel(newSelection)
           }}
-          localeText={
-            dataGridLocale.components.MuiDataGrid.defaultProps.localeText
-          }
-          slots={{
-            toolbar: ThesisToolbar,
-            footer: ViewThesisFooter as DataGridProps['slots']['footer'],
+          onSortingChange={handleSortModelChange}
+          user={currentUser}
+          isStudentView={isStudentView}
+          initializeNewThesis={initializeNewThesis}
+          noAddThesisButton={noAddThesisButton}
+          filterViews={{
+            active: {
+              filterModel: {
+                items: [
+                  {
+                    field: 'status',
+                    operator: 'isAnyOf',
+                    value: [
+                      'DRAFT',
+                      'SUGGESTED',
+                      'PLANNING',
+                      'IN_PROGRESS',
+                      'ETHESIS',
+                      'ETHESIS_SENT',
+                    ],
+                  },
+                ],
+              },
+              sortingModel: [
+                {
+                  field: 'startDate',
+                  sort: 'desc',
+                },
+              ],
+            },
+            inactive: {
+              filterModel: {
+                items: [
+                  {
+                    field: 'status',
+                    operator: 'isAnyOf',
+                    value: ['COMPLETED', 'CANCELLED'],
+                  },
+                ],
+              },
+              sortingModel: [
+                {
+                  field: 'targetDate',
+                  sort: 'desc',
+                },
+              ],
+            },
+            all: {
+              filterModel: {
+                items: [],
+              },
+              sortingModel: [
+                {
+                  field: 'startDate',
+                  sort: 'desc',
+                },
+              ],
+            },
+            suggested: {
+              filterModel: {
+                items: [
+                  {
+                    field: 'status',
+                    operator: 'isAnyOf',
+                    value: ['SUGGESTED'],
+                  },
+                ],
+              },
+              sortingModel: [
+                {
+                  field: 'startDate',
+                  sort: 'desc',
+                },
+              ],
+            },
           }}
-          slotProps={{
-            toolbar: {
-              createNewThesis: initializeNewThesis,
-              toggleShowOnlyOwnTheses: () =>
-                setShowOnlyOwnTheses((prev) => !prev),
-              showOnlyOwnTheses,
-              noOwnThesesSwitch,
-              noAddThesisButton,
-              showExportOptions,
-              isStudentView,
-              currentFilters,
-            },
-            footer: {
-              footerRef,
-              rowSelectionModel,
-              handleEditThesis: initializeThesisEdit,
-              handleDeleteThesis: initializeThesisDelete,
-              handleSubitToEthesis: initializeSubitToEthesis,
-              isStudentView,
-            },
-            loadingOverlay: {
-              variant: 'skeleton',
-              noRowsVariant: 'skeleton',
-            },
-          }}
-          sx={{
-            border: 'none',
-            width: '100%',
-            fontSize: '10pt',
-            '& .MuiDataGrid-columnHeader': {
-              backgroundColor: '#E1E4E8',
-            },
-            '& .MuiDataGrid-filler': {
-              backgroundColor: '#E1E4E8',
-            },
-            '& .MuiDataGrid-columnHeaderTitle': {
-              fontWeight: 500,
-              fontFamily: 'Roboto',
-            },
-            '& .MuiDataGrid-row': {
-              borderLeft: '1px solid #E1E4E8',
-              borderRight: '1px solid #E1E4E8',
-            },
-            '& .MuiDataGrid-row:hover': {
-              cursor: 'pointer',
-            },
-          }}
-        />
+        ></PrethesisTable>
+        <ViewThesisFooter
+          // footerRef={footerRef}
+          rowSelectionModel={rowSelectionModel}
+          handleEditThesis={initializeThesisEdit}
+          handleDeleteThesis={initializeThesisDelete}
+          handleSubitToEthesis={initializeSubitToEthesis}
+          isStudentView={isStudentView}
+        ></ViewThesisFooter>
       </Box>
       {editedTesis && (
         <ThesisEditForm

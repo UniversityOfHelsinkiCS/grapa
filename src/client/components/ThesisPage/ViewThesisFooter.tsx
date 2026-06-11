@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
-import { GridFooter, GridSlotProps } from '@mui/x-data-grid'
+import { GridSlotProps } from '@mui/x-data-grid'
 import {
   Box,
   Button,
@@ -423,7 +423,6 @@ const ViewThesisFooter = (
 ) => {
   const {
     rowSelectionModel,
-    footerRef,
     handleEditThesis,
     handleDeleteThesis,
     handleSubitToEthesis,
@@ -453,7 +452,6 @@ const ViewThesisFooter = (
 
   return (
     <>
-      <GridFooter ref={footerRef} />
       {thesis ? (
         <Box sx={{ m: 2 }}>
           <Stack
