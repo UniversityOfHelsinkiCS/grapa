@@ -166,7 +166,15 @@
     "numberOfGradersConfirmTitle": "Confirm number of graders setting",
     "numberOfGradersConfirmContent": "Are you sure you want to change the maximum number of graders per thesis to {{count}}?",
     "other": "Others",
-    "features": "Features"
+    "features": "Features",
+    "combinedStudyTracks": {
+      "title": "Combine Study Tracks",
+      "description": "You can combine similar study tracks together. Secondary study tracks will be hidden from forms and mapped to the selected primary study track.",
+      "primary": "Primary Study Track (visible)",
+      "secondaries": "Secondary Study Tracks (hidden)",
+      "confirmTitle": "Confirm study track combinations",
+      "confirmContent": "Are you sure you want to save these study track combinations? This will affect which study tracks students and supervisors can select."
+    }
   },
   "dropzone": {
     "uploadText": "Drop a file here or click to upload",

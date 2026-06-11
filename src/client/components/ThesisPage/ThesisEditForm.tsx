@@ -35,6 +35,10 @@ import { useDebounce } from '../../hooks/useDebounce'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useProgramManagements from '../../hooks/useProgramManagements'
 import { getFormErrors } from './util'
+import {
+  getPrimaryStudyTrackId,
+  getVisibleStudyTracks,
+} from '../../util/studyTracks'
 import GraderSelect from './GraderSelect/GraderSelect'
 import SeminarSupervisorSelect from './SeminarSupervisorSelect/SeminarSupervisorSelect'
 import ErrorSummary from '../Common/ErrorSummary'
@@ -62,9 +66,13 @@ const ThesisEditForm: FC<{
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
   const [formErrors, setFormErrors] = useState<ZodIssue[]>([])
-  const [editedThesis, setEditedThesis] = useState<ThesisData | null>(
-    initialThesis
-  )
+  const [editedThesis, setEditedThesis] = useState<ThesisData>(() => {
+    const thesis = { ...initialThesis }
+    const program = programs?.find((p) => p.id === thesis.programId)
+    thesis.studyTrackId =
+      getPrimaryStudyTrackId(program, thesis.studyTrackId) ?? null
+    return thesis
+  })
   const [userSearch, setUserSearch] = useState('')
   const { programManagements: programManagementsOfApprovers } =
     useProgramManagements({
@@ -164,7 +172,7 @@ const ThesisEditForm: FC<{
   const sortedStudyTracks =
     selectedProgram && selectedProgram.studyTracks?.length
       ? sortBy(
-          selectedProgram.studyTracks,
+          getVisibleStudyTracks(selectedProgram),
           (studyTrack) => studyTrack.name[language]
         )
       : []
@@ -268,10 +276,12 @@ const ThesisEditForm: FC<{
                   const newMaxGraders =
                     Number(newProgram?.options?.numberOfGraders) || 2
 
+                  const newStudyTracks = getVisibleStudyTracks(newProgram)
+
                   setEditedThesis((oldThesis) => ({
                     ...oldThesis,
                     programId: newProgramId,
-                    studyTrackId: newProgram?.studyTracks?.[0]?.id,
+                    studyTrackId: newStudyTracks[0]?.id,
                     authors: newAllowMultipleAuthors
                       ? oldThesis.authors
                       : oldThesis.authors.slice(0, 1),

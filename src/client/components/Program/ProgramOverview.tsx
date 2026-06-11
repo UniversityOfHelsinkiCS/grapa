@@ -13,6 +13,7 @@ import {
   DialogTitle,
   FormControl,
   FormControlLabel,
+  InputLabel,
   Select,
   MenuItem,
   Tab,
@@ -22,6 +23,7 @@ import {
   Switch,
   Tooltip,
   TextField,
+  Autocomplete,
 } from '@mui/material'
 import usePrograms, {
   useUpdateProgramOptionsMutation,
@@ -29,7 +31,11 @@ import usePrograms, {
 import { useTranslation } from 'react-i18next'
 import EventsView from '../EventsView/EventsView'
 import { useProgramEvents } from '../../hooks/useEvents'
-import { ProgramData, TranslationLanguage } from '@backend/types'
+import {
+  ProgramData,
+  TranslationLanguage,
+  StudyTrackData,
+} from '@backend/types'
 import ThesesPage from '../ThesisPage/ThesesPage'
 import ProgramManagement from './ProgramManagement'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
@@ -334,6 +340,208 @@ const ListInput = ({
   )
 }
 
+const CombinedStudyTracksInput = ({
+  program,
+  updateMutation,
+  translation,
+}: FeatureFlagControlProps) => {
+  const { i18n } = useTranslation()
+  const { language } = i18n as { language: TranslationLanguage }
+
+  const initialData =
+    (program.options?.combinedStudyTracks as Record<string, string>) || {}
+
+  const [listValues, setListValues] = useState<
+    { primary: string | null; secondaries: StudyTrackData[] }[]
+  >(() => {
+    const map = new Map<string, string[]>()
+    Object.entries(initialData).forEach(([sec, prim]) => {
+      if (!map.has(prim)) map.set(prim, [])
+      map.get(prim)!.push(sec)
+    })
+    return Array.from(map.entries()).map(([primary, secondaries]) => ({
+      primary,
+      secondaries:
+        program.studyTracks?.filter((t) => secondaries.includes(t.id)) || [],
+    }))
+  })
+
+  const [pendingValue, setPendingValue] = useState<Record<
+    string,
+    string
+  > | null>(null)
+
+  const handleSave = async () => {
+    const validValues = listValues.filter(
+      (v) => v.primary && v.secondaries.length > 0
+    )
+    const newCombined: Record<string, string> = {}
+    validValues.forEach((v) => {
+      if (v.primary) {
+        v.secondaries.forEach((sec) => {
+          newCombined[sec.id] = v.primary!
+        })
+      }
+    })
+    setPendingValue(newCombined)
+  }
+
+  const handleCancelToggle = () => {
+    setPendingValue(null)
+  }
+
+  const handleConfirmToggle = async () => {
+    if (pendingValue === null) {
+      return
+    }
+
+    const options = program.options || {}
+    options.combinedStudyTracks = pendingValue
+
+    await updateMutation.mutateAsync({
+      programId: program.id,
+      options: options,
+    })
+
+    setPendingValue(null)
+  }
+
+  const availableStudyTracks = program.studyTracks || []
+
+  return (
+    <>
+      <Stack sx={{ gap: '1rem', width: '40rem' }}>
+        <Typography variant="h5">
+          {translation(`programOverviewPage:combinedStudyTracks:title`)}
+        </Typography>
+        <Typography variant="body2" sx={{ mb: 1 }}>
+          {translation(`programOverviewPage:combinedStudyTracks:description`)}
+        </Typography>
+        {listValues.map((value, index) => {
+          // A secondary study track cannot be selected if it's already used somewhere else
+          // Or if it's the primary track
+          const usedSecondaryIds = new Set(
+            listValues.flatMap((v, i) =>
+              i !== index ? v.secondaries.map((s) => s.id) : []
+            )
+          )
+
+          return (
+            <Stack
+              direction="column"
+              sx={{
+                gap: '1rem',
+                p: 2,
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+              }}
+              key={index}
+            >
+              <FormControl fullWidth>
+                <InputLabel>
+                  {translation(
+                    `programOverviewPage:combinedStudyTracks:primary`
+                  )}
+                </InputLabel>
+                <Select
+                  value={value.primary || ''}
+                  label={translation(
+                    `programOverviewPage:combinedStudyTracks:primary`
+                  )}
+                  onChange={(e) => {
+                    const newValues = [...listValues]
+                    newValues[index].primary = e.target.value as string
+                    setListValues(newValues)
+                  }}
+                >
+                  {availableStudyTracks.map((track) => (
+                    <MenuItem key={track.id} value={track.id}>
+                      {track.name[language]}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <Autocomplete
+                multiple
+                options={availableStudyTracks.filter(
+                  (t) => t.id !== value.primary && !usedSecondaryIds.has(t.id)
+                )}
+                getOptionLabel={(option) => option.name[language]}
+                value={value.secondaries}
+                onChange={(_, newValue) => {
+                  const newValues = [...listValues]
+                  newValues[index].secondaries = newValue
+                  setListValues(newValues)
+                }}
+                isOptionEqualToValue={(option, val) => option.id === val.id}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label={translation(
+                      `programOverviewPage:combinedStudyTracks:secondaries`
+                    )}
+                  />
+                )}
+              />
+
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => {
+                  setListValues(listValues.filter((_, i) => i !== index))
+                }}
+              >
+                {translation('deleteButton', 'Poista')}
+              </Button>
+            </Stack>
+          )
+        })}
+        <Stack direction="row" sx={{ gap: '1rem' }}>
+          <Button variant="contained" onClick={handleSave}>
+            {translation('saveButton', 'Tallenna')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setListValues([...listValues, { primary: null, secondaries: [] }])
+            }}
+          >
+            {translation('addButton', 'Lisää kohde')}
+          </Button>
+        </Stack>
+      </Stack>
+
+      <Dialog open={pendingValue !== null} onClose={handleCancelToggle}>
+        <DialogTitle>
+          {translation(`programOverviewPage:combinedStudyTracks:confirmTitle`)}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            {translation(
+              `programOverviewPage:combinedStudyTracks:confirmContent`
+            )}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button type="button" onClick={handleCancelToggle}>
+            {translation('cancelButton')}
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            onClick={handleConfirmToggle}
+            disabled={updateMutation.isPending}
+          >
+            {translation('submitButton')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
+}
+
 const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   const { t } = useTranslation()
   const updateProgramOptionsMutation = useUpdateProgramOptionsMutation()
@@ -411,6 +619,15 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
           translation={t}
           updateMutation={updateProgramOptionsMutation}
         ></ListInput>
+
+        {Boolean(program.studyTracks?.length) && (
+          <CombinedStudyTracksInput
+            feature="combinedStudyTracks"
+            program={program}
+            translation={t}
+            updateMutation={updateProgramOptionsMutation}
+          />
+        )}
 
         <Typography variant="h5">{t(`programOverviewPage:other`)}</Typography>
 

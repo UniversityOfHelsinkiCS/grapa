@@ -40,6 +40,7 @@ import { useEditThesisMutation } from '../../hooks/useThesesMutation'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { t } from 'i18next'
 import { ProgressView } from './Progress/ProgressView'
+import { getPrimaryStudyTrack } from '../../util/studyTracks'
 
 const IN_PROGRESS_STATUS = THESIS_STATUSES.IN_PROGRESS as 'IN_PROGRESS'
 
@@ -120,7 +121,7 @@ const ProgramTrack = ({
 
   const { language } = i18n
   const program = programs?.find((p) => p.id === programId) ?? thesisProgram
-  const track = program?.studyTracks?.find((t: any) => t.id === studyTrackId)
+  const track = getPrimaryStudyTrack(program, studyTrackId)
 
   return (
     <Typography

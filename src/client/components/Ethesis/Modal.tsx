@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { useEditThesisMutation } from '../../hooks/useThesesMutation'
 import usePrograms from '../../hooks/usePrograms'
 import { TranslatedName } from '@backend/types'
+import { getPrimaryStudyTrack } from '../../util/studyTracks'
 
 interface ThesisModalProps {
   open: boolean
@@ -50,9 +51,7 @@ const ThesisModal = ({ open, onClose, thesis }: ThesisModalProps) => {
     const program = programs.find((p) => p.id === thesis.programId)
     if (!program?.studyTracks) return ''
 
-    const studyTrack = program.studyTracks.find(
-      (track) => track.id === thesis.studyTrackId
-    )
+    const studyTrack = getPrimaryStudyTrack(program, thesis.studyTrackId)
     if (!studyTrack?.name) return ''
 
     const language = i18n.language as keyof typeof studyTrack.name

@@ -50,6 +50,7 @@ import DeleteConfirmation from '../Common/DeleteConfirmation'
 import { StatusLocale } from '../../types'
 import { useDebounce } from '../../hooks/useDebounce'
 import EthesisConfirmation from '../Common/EthesisConfirmation'
+import { getVisibleStudyTracks } from '../../util/studyTracks'
 
 const DEFAULT_PAGE_SIZE = 25
 
@@ -402,7 +403,7 @@ const ThesesPage = ({
 
     setNewThesis({
       programId: programOptions[0].id,
-      studyTrackId: programOptions[0].studyTracks[0]?.id,
+      studyTrackId: getVisibleStudyTracks(programOptions[0])[0]?.id ?? null,
       supervisions: [
         {
           user: currentUser,

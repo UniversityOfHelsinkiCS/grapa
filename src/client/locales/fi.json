@@ -166,7 +166,15 @@
     "numberOfGradersConfirmTitle": "Vahvista tarkastajien määrän asetus",
     "numberOfGradersConfirmContent": "Haluatko varmasti muuttaa tarkastajien enimmäismäärän arvoon {{count}}?",
     "other": "Muut",
-    "features": "Ominaisuudet"
+    "features": "Ominaisuudet",
+    "combinedStudyTracks": {
+      "title": "Yhdistä opintosuunnat",
+      "description": "Voit yhdistää samankaltaisia opintosuuntia toisiinsa. Toissijaiset opintosuunnat piilotetaan lomakkeilta ja ohjataan valittuun ensisijaiseen opintosuuntaan.",
+      "primary": "Ensisijainen opintosuunta (näkyy)",
+      "secondaries": "Toissijaiset opintosuunnat (piilotetaan)",
+      "confirmTitle": "Vahvista opintosuuntien yhdistäminen",
+      "confirmContent": "Haluatko varmasti tallentaa nämä opintosuuntien yhdistämiset? Muutos vaikuttaa siihen, mitä opintosuuntia opiskelijat ja ohjaajat voivat valita."
+    }
   },
   "dropzone": {
     "uploadText": "Pudota tiedosto tähän tai klikkaa ladataksesi",
