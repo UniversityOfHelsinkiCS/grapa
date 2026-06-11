@@ -10,7 +10,7 @@
     "userHeader": "Käyttäjä",
     "programHeader": "Ohjelma",
     "studyTrackHeader": "Opintosuunta",
-    "departmentHeader": "Osasto",
+    "departmentHeader": "Yksikkö",
     "topicHeader": "Aihe",
     "authorsHeader": "Tekijä",
     "statusHeader": "Vaihe",
@@ -63,15 +63,15 @@
     "program": "Ohjelmat",
     "programManager": "Ohjelmavastaavat",
     "managePrograms": "Ohjelmien hallinta",
-    "manageDepartments": "Osastojen hallinta",
+    "manageDepartments": "Yksiköiden hallinta",
     "programOverview": "Ohjelman yleiskatsaus",
     "supervisedTheses": "Ohjatut tutkielmat",
-    "department": "Osastot",
+    "department": "Yksiköt",
     "seminar": "Seminaari",
     "myTheses": "Omat tutkielmat",
-    "departmentAdmin": "Osastojen ylläpitäjät",
-    "departmentStatistics": "Osastojen tilastot",
-    "departmentOverview": "Osaston yleiskatsaus",
+    "departmentAdmin": "Yksiköiden ylläpitäjät",
+    "departmentStatistics": "Yksiköiden tilastot",
+    "departmentOverview": "Yksikön yleiskatsaus",
     "loginAs": "Kirjaudu toisella käyttäjällä",
     "allTheses": "Kaikki tutkielmat",
     "logout": "Kirjaudu ulos",
@@ -89,17 +89,17 @@
   "userInformation": {
     "username": "Käyttäjätunnus",
     "email": "Sähköposti",
-    "departmentId": "Osasto",
+    "departmentId": "Yksikkö",
     "affiliation": "Affiliaatio"
   },
   "departmentSelectPage": {
-    "departmentPlaceholder": "Valitse osasto",
-    "pageTitle": "Valitse osasto",
-    "pageDescription": "Ennen kuin jatkat, valitse osasto missä työskentelet"
+    "departmentPlaceholder": "Valitse yksikkö",
+    "pageTitle": "Valitse yksikkö",
+    "pageDescription": "Ennen kuin jatkat, valitse yksikkö missä työskentelet"
   },
   "departmentOverviewPage": {
     "supervisionsTab": "Ohjaukset",
-    "departmentAdminsTab": "Osaston ylläpitäjät",
+    "departmentAdminsTab": "Yksiköiden ylläpitäjät",
     "supervisionStatisticsTab": "Ohjaustilastot"
   },
   "programOverviewPage": {
@@ -322,17 +322,17 @@
     "showNonAdminOnlySwitch": "Näytä vain ei-admin lokit"
   },
   "departmentAdminPage": {
-    "pageTitle": "Osastojen ylläpitäjät",
-    "addDepartmentAdmin": "Lisää osaston ylläpitäjä",
-    "departmentHeader": "Osasto",
+    "pageTitle": "Yksiköiden ylläpitäjät",
+    "addDepartmentAdmin": "Lisää yksikön ylläpitäjä",
+    "departmentHeader": "Yksikkö",
     "adminHeader": "Vastaava",
-    "removeDepartmentAdminTitle": "Poista osaston ylläpitäjä",
-    "removeDepartmentAdminContent": "Haluatko varmasti poistaa henkilön {{name}} osastolta {{department}}?"
+    "removeDepartmentAdminTitle": "Poista yksikön ylläpitäjä",
+    "removeDepartmentAdminContent": "Haluatko varmasti poistaa henkilön {{name}} yksiköltä {{department}}?"
   },
   "departmentStatisticsPage": {
-    "pageTitle": "Osastojen tilastot",
+    "pageTitle": "Yksiköiden tilastot",
     "supervisorHeader": "Ohjaaja",
-    "departmentHeader": "Osasto",
+    "departmentHeader": "Yksikkö",
     "thesisCountHeader": "Tutkielmien määrä",
     "startedWithinHalfYearCount": "Alkaneet",
     "startedWithinHalfYearTooltip": "Tutkielmat, jotka on aloitettu viimeisen puolen vuoden aikana"
@@ -351,7 +351,7 @@
   },
   "manageDepartmentsPage": {
     "confirmSaveTitle": "Vahvista muutokset",
-    "confirmSaveText": "Oletko varma, että haluat tallentaa nämä käännetyt nimet osastolle?"
+    "confirmSaveText": "Oletko varma, että haluat tallentaa nämä käännetyt nimet yksikölle?"
   },
   "progressView": {
     "ethesisConfirmationTitle": "Vahvistus",
