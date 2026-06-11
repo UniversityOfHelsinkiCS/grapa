@@ -41,6 +41,9 @@ const themeOptions: ThemeOptions = {
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
+    small: {
+      fontSize: 'small',
+    },
   },
 
   palette: {
