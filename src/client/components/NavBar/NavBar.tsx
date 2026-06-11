@@ -36,7 +36,7 @@ export const navStyles = {
     backgroundColor: 'rgb(18, 76, 140)',
     borderRadius: 0,
     py: '0.25rem',
-    boxShadow: 2,
+    boxShadow: 0,
   },
   toolbar: {
     display: 'flex',
@@ -332,7 +332,7 @@ const NavBar = () => {
             </Box>
             <Box
               component="nav"
-              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' } }}
+              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' }, gap: 1 }}
             >
               {hasStaffAccess && <SupervisedThesesLink />}
               {Boolean(user.isAdmin || user.managedProgramIds?.length) && (
