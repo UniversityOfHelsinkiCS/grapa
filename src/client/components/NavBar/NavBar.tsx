@@ -212,35 +212,47 @@ const SupervisedThesesLink = () => {
   )
 }
 
-const AllThesesLink = () => {
-  const { t } = useTranslation()
-  return (
-    <Button component={NavLink} to="/all-theses" sx={navStyles.navlink}>
-      <AdminPanelSettingsOutlined sx={navStyles.icon} />{' '}
-      {t('navbar:allTheses', 'All theses')}
-    </Button>
-  )
-}
-
-const ManageProgramsLink = () => {
+const AdminMenu = () => {
   const { t } = useTranslation()
 
-  return (
-    <Button component={NavLink} to="/manage-programs" sx={navStyles.navlink}>
-      <AdminPanelSettingsOutlined sx={navStyles.icon} />{' '}
-      {t('navbar:managePrograms', 'Manage programs')}
-    </Button>
-  )
-}
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
 
-const ManageDepartmentsLink = () => {
-  const { t } = useTranslation()
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
 
   return (
-    <Button component={NavLink} to="/manage-departments" sx={navStyles.navlink}>
-      <AdminPanelSettingsOutlined sx={navStyles.icon} />{' '}
-      {t('navbar:manageDepartments', 'Manage departments')}
-    </Button>
+    <PositionedMenu
+      label={
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <AdminPanelSettingsOutlined sx={navStyles.icon} />
+          {t('common:admin', 'Admin')}
+        </Box>
+      }
+      open={open}
+      anchorEl={anchorEl}
+      handleClick={handleClick}
+      handleClose={handleClose}
+      sx={navStyles.navlink}
+    >
+      <PositionedMenuLinkItem to="/manage-programs" onClick={handleClose}>
+        {t('navbar:managePrograms', 'Manage programs')}
+      </PositionedMenuLinkItem>
+      <PositionedMenuLinkItem to="/manage-departments" onClick={handleClose}>
+        {t('navbar:manageDepartments', 'Manage departments')}
+      </PositionedMenuLinkItem>
+      <PositionedMenuLinkItem to="/all-theses" onClick={handleClose}>
+        {t('navbar:allTheses', 'All theses')}
+      </PositionedMenuLinkItem>
+      <PositionedMenuLinkItem to="/login-as" onClick={handleClose}>
+        {t('navbar:loginAs', 'Login as')}
+      </PositionedMenuLinkItem>
+    </PositionedMenu>
   )
 }
 
@@ -341,19 +353,7 @@ const NavBar = () => {
                 alignItems: 'center',
               }}
             >
-              {user?.isAdmin && <ManageProgramsLink />}
-              {user?.isAdmin && <ManageDepartmentsLink />}
-              {user?.isAdmin && <AllThesesLink />}
-              {user?.isAdmin && (
-                <Button
-                  component={NavLink}
-                  to="/login-as"
-                  sx={navStyles.navlink}
-                >
-                  <AdminPanelSettingsOutlined sx={navStyles.icon} />{' '}
-                  {t('navbar:loginAs')}
-                </Button>
-              )}
+              {user?.isAdmin && <AdminMenu />}
               <ProfileMenu sx={navStyles.navlink} />
             </Box>
             <IconButton
@@ -381,7 +381,34 @@ const NavBar = () => {
         {user?.isAdmin && (
           <ListItem disablePadding>
             <ListItemButton component={NavLink} to="/all-theses">
+              <ListItemIcon>
+                <AdminPanelSettingsOutlined />
+              </ListItemIcon>
               <ListItemText primary={t('navbar:allTheses', 'All theses')} />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {user?.isAdmin && (
+          <ListItem disablePadding>
+            <ListItemButton component={NavLink} to="/manage-programs">
+              <ListItemIcon>
+                <AdminPanelSettingsOutlined />
+              </ListItemIcon>
+              <ListItemText
+                primary={t('navbar:managePrograms', 'Manage programs')}
+              />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {user?.isAdmin && (
+          <ListItem disablePadding>
+            <ListItemButton component={NavLink} to="/manage-departments">
+              <ListItemIcon>
+                <AdminPanelSettingsOutlined />
+              </ListItemIcon>
+              <ListItemText
+                primary={t('navbar:manageDepartments', 'Manage departments')}
+              />
             </ListItemButton>
           </ListItem>
         )}
