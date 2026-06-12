@@ -148,7 +148,8 @@ const ThesesPage = ({
     useStudentApi: isStudentView,
   })
   const managedPrograms = useMemo(
-    () => (programs ?? []).filter((program) => program.isManaged),
+    () =>
+      (programs ?? []).filter((program) => isStudentView || program.isManaged),
     [programs]
   )
   const { mutateAsync: editThesis } = useEditThesisMutation(isStudentView)
