@@ -387,5 +387,9 @@
     "doneButton": "Mark milestone {0} as done",
     "cancelButton": "Cancel",
     "inProgress": "In progress"
+  },
+  "help": {
+    "table": "LISÄÄ OHJE!",
+    "button": "Help"
   }
 }

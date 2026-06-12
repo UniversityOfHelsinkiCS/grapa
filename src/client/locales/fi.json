@@ -386,5 +386,9 @@
     "doneButton": "Merkitse etappi {0} tehdyksi",
     "cancelButton": "Peru",
     "inProgress": "Käynnissä"
+  },
+  "help": {
+    "table": "LISÄÄ OHJE!",
+    "button": "Ohje"
   }
 }
