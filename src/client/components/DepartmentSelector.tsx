@@ -15,7 +15,13 @@ import useDepartments from '../hooks/useDepartments'
 
 import useUserDepartmentMutation from '../hooks/useUserDepartmentMutation'
 
-const DepartmentSelector: React.FC = () => {
+interface DepartmentSelectorProps {
+  onSuccess?: () => void
+}
+
+const DepartmentSelector: React.FC<DepartmentSelectorProps> = ({
+  onSuccess,
+}) => {
   const { i18n, t } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
   const [selectedDepartment, setSelectedDepartment] = useState('')
@@ -28,6 +34,7 @@ const DepartmentSelector: React.FC = () => {
 
   const handleSubmit = async () => {
     await saveDepartment({ departmentId: selectedDepartment })
+    if (onSuccess) onSuccess()
   }
 
   if (!departments) return null

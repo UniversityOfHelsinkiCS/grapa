@@ -3,8 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { TranslatedName, User } from '@backend/types'
 import {
   Box,
+  Dialog,
+  DialogContent,
   Divider,
   Button,
+  IconButton,
   ListItem,
   ListSubheader,
   Menu,
@@ -19,7 +22,8 @@ import useDepartments from '../../hooks/useDepartments'
 import LanguageSelect from './LanguageSelect'
 import FavoritePrograms from './FavoritePrograms'
 import Logout from './Logout'
-import { PersonOutlineOutlined } from '@mui/icons-material'
+import DepartmentSelector from '../DepartmentSelector'
+import { PersonOutlineOutlined, EditOutlined } from '@mui/icons-material'
 
 const UserInformation = () => {
   const { t, i18n } = useTranslation()
@@ -29,6 +33,8 @@ const UserInformation = () => {
     includeNotManaged: true,
     enabled: hasStaffAccess,
   })
+
+  const [departmentDialogOpen, setDepartmentDialogOpen] = useState(false)
 
   if (!user || userLoading || departmentsLoading)
     return <Skeleton variant="text" width={100} />
@@ -58,6 +64,42 @@ const UserInformation = () => {
               )
               fieldValue =
                 department?.name[language as keyof TranslatedName] || fieldValue
+
+              return (
+                <Box
+                  key={field}
+                  sx={{
+                    display: 'flex',
+                    my: 1,
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <dt>{t(`userInformation:${field}`)}:</dt>
+                  <dd
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      margin: 0,
+                    }}
+                  >
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ textAlign: 'right' }}
+                    >
+                      {fieldValue}
+                    </Typography>
+                    <IconButton
+                      size="small"
+                      onClick={() => setDepartmentDialogOpen(true)}
+                    >
+                      <EditOutlined fontSize="small" />
+                    </IconButton>
+                  </dd>
+                </Box>
+              )
             }
 
             return (
@@ -70,7 +112,7 @@ const UserInformation = () => {
                 }}
               >
                 <dt>{t(`userInformation:${field}`)}:</dt>
-                <dd>
+                <dd style={{ margin: 0 }}>
                   <Typography
                     variant="body2"
                     color="text.secondary"
@@ -84,6 +126,17 @@ const UserInformation = () => {
           })}
         </dl>
       </ListItem>
+      <Dialog
+        open={departmentDialogOpen}
+        onClose={() => setDepartmentDialogOpen(false)}
+        maxWidth="md"
+      >
+        <DialogContent>
+          <DepartmentSelector
+            onSuccess={() => setDepartmentDialogOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
