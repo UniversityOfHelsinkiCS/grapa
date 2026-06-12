@@ -499,9 +499,13 @@ const ViewThesisFooter = (
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   {Boolean(
                     !isStudentView &&
-                    thesis.status === THESIS_STATUSES.PLANNING &&
-                    thesis.approvers?.length &&
-                    thesis.approvers[0].id === currentUser?.id
+                    ((thesis.status === THESIS_STATUSES.PLANNING &&
+                      thesis.approvers?.length &&
+                      thesis.approvers[0].id === currentUser?.id) ||
+                      (thesis.status === THESIS_STATUSES.SUGGESTED &&
+                        thesis.supervisions?.some(
+                          (s) => s.user.id === currentUser?.id
+                        )))
                   ) && (
                     <Button
                       variant="outlined"
