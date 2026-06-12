@@ -37,6 +37,7 @@ import {
   MoreVert as MoreVertIcon,
 } from '@mui/icons-material'
 import usePrograms from '../../hooks/usePrograms'
+import { PrethesisHelp } from '../PrethesisHelp/PrethesisHelp'
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData, TValue> {
@@ -182,20 +183,28 @@ const PrethesisTable = ({
       ),
       meta: {
         getCellContext(context) {
-          const updatedAt = context.row.original.updatedAt
           const status = context.row.original.status
           const useMilestones =
             context.row.original?.program?.options?.useMilestones
 
-          return useMilestones && updatedAt && status == 'IN_PROGRESS'
+          const milestone = context.row.original?.milestone
+          const milestone_version = context.row.original?.milestoneVersion
+
+          const milestone_count =
+            useMilestones && milestone_version != undefined
+              ? context.row.original?.program?.options?.milestones?.versions[
+                  milestone_version
+                ].length
+              : undefined
+
+          return useMilestones &&
+            milestone_count != undefined &&
+            milestone != undefined &&
+            status == 'IN_PROGRESS'
             ? {
                 sx: {
                   div: {
-                    backgroundColor: dayjs(updatedAt).isBefore(
-                      dayjs().subtract(3, 'month')
-                    )
-                      ? '#c8ffcd'
-                      : '#ffc8c8',
+                    backgroundColor: `hsl(100deg,${20 + (milestone / milestone_count) * 80}%,${100 - (milestone / milestone_count) * 60}%)`,
                   },
                 },
               }
@@ -227,14 +236,20 @@ const PrethesisTable = ({
         getCellContext: (context) => {
           const targetDate = context.row.original.targetDate
           const status = context.row.original.status
-
+          const difference =
+            targetDate && dayjs(targetDate).isBefore(dayjs())
+              ? dayjs(targetDate).diff(dayjs(), 'day')
+              : 0
           return {
             sx: {
-              backgroundColor: targetDate
-                ? dayjs(targetDate).isBefore(dayjs()) && status == 'IN_PROGRESS'
-                  ? '#ffc8c8'
-                  : ''
-                : '',
+              backgroundColor:
+                targetDate && status == 'IN_PROGRESS'
+                  ? difference >= 180
+                    ? '#ffc8c8'
+                    : difference >= 30
+                      ? '#fff6c8'
+                      : ''
+                  : '',
             },
           }
         },
@@ -365,6 +380,10 @@ const PrethesisTable = ({
             </Menu>
           </Box>
         )}
+        <PrethesisHelp
+          text={t('help:table')}
+          sx={{ ml: 'auto', height: 24 }}
+        ></PrethesisHelp>
       </Stack>
       <TableContainer>
         <Table
