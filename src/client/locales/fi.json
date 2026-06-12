@@ -313,7 +313,8 @@
   },
   "thesesPage": {
     "approvalRequiredTooltip": "Tämä tutkielma on osoitettu sinulle. Hyväksyntäsi tarvitaan!",
-    "primarySupervisorTooltip": "Olet tämän tutkielman pääohjaaja"
+    "primarySupervisorTooltip": "Olet tämän tutkielman pääohjaaja",
+    "noRows": "Ei rivejä"
   },
   "customFilters": {
     "valuesLabel": "Arvot"

@@ -314,7 +314,8 @@
   },
   "thesesPage": {
     "approvalRequiredTooltip": "This thesis has been assigned to you. Your approval is required!",
-    "primarySupervisorTooltip": "You are the primary supervisor of this thesis"
+    "primarySupervisorTooltip": "You are the primary supervisor of this thesis",
+    "noRows": "No rows"
   },
   "customFilters": {
     "valuesLabel": "Values"

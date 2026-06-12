@@ -367,39 +367,51 @@ const PrethesisTable = ({
             ))}
           </TableHead>
           <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                onClick={() => {
-                  onSelection({
-                    type: 'include',
-                    ids: new Set([row.original.id]),
-                  })
-                }}
-                selected={isSelected(row.original.id)}
-                sx={{
-                  cursor: 'pointer',
-                  ':hover': {
-                    backgroundColor: '#e7e7e7',
-                  },
-                }}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    {...(cell.getContext().cell.column.columnDef.meta && {
-                      ...cell
-                        .getContext()
-                        .cell.column.columnDef.meta.getCellContext(
-                          cell.getContext()
-                        ),
-                    })}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+            {rows.length > 0 ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  onClick={() => {
+                    onSelection({
+                      type: 'include',
+                      ids: new Set([row.original.id]),
+                    })
+                  }}
+                  selected={isSelected(row.original.id)}
+                  sx={{
+                    cursor: 'pointer',
+                    ':hover': {
+                      backgroundColor: '#e7e7e7',
+                    },
+                  }}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      {...(cell.getContext().cell.column.columnDef.meta && {
+                        ...cell
+                          .getContext()
+                          .cell.column.columnDef.meta.getCellContext(
+                            cell.getContext()
+                          ),
+                      })}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={1000} sx={{ textAlign: 'center' }}>
+                  {' '}
+                  <Typography>{t('thesesPage:noRows')}</Typography>
+                </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
