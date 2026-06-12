@@ -96,7 +96,7 @@ departmentRouter.post(
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: RequestWithUser, res: Response) => {
     const { isAdmin } = req.user
-    const { id, name, enabled } = req.body
+    const { name, enabled } = req.body
 
     if (!isAdmin) {
       return res.status(403).send({ error: 'Forbidden' })
@@ -106,14 +106,7 @@ departmentRouter.post(
       return res.status(400).send({ error: 'Invalid name payload' })
     }
 
-    if (id && typeof id !== 'string') {
-      return res.status(400).send({ error: 'Invalid id payload' })
-    }
-
     const newDepartmentData: any = { name }
-    if (id) {
-      newDepartmentData.id = id
-    }
     if (enabled !== undefined) {
       newDepartmentData.enabled = enabled
     }

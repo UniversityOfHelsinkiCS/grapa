@@ -357,6 +357,9 @@
     "userHeader": "Käyttäjä"
   },
   "manageProgramsPage": {
+    "pageTitle": "Hallinnoi ohjelmia",
+    "chooseProgramLabel": "Valitse ohjelma",
+    "noProgramsFound": "Ohjelmia ei löytynyt",
     "editTranslations": "Muokkaa käännöksiä",
     "finnishName": "Suomenkielinen nimi (FI)",
     "englishName": "Englanninkielinen nimi (EN)",
@@ -365,8 +368,14 @@
     "confirmSaveText": "Oletko varma, että haluat tallentaa nämä käännetyt nimet ohjelmalle?"
   },
   "manageDepartmentsPage": {
+    "pageTitle": "Hallinnoi yksiköitä",
+    "chooseDepartmentLabel": "Valitse yksikkö",
+    "noDepartmentsFound": "Yksiköitä ei löytynyt",
     "confirmSaveTitle": "Vahvista muutokset",
-    "confirmSaveText": "Oletko varma, että haluat tallentaa nämä käännetyt nimet yksikölle?"
+    "confirmSaveText": "Oletko varma, että haluat tallentaa nämä käännetyt nimet yksikölle?",
+    "addDepartment": "Lisää yksikkö",
+    "addDepartmentTitle": "Luo uusi yksikkö",
+    "deleteWarning": "Huom: Yksikköä ei voi poistaa luomisen jälkeen"
   },
   "progressView": {
     "ethesisConfirmationTitle": "Vahvistus",

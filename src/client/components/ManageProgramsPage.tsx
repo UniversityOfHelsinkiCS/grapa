@@ -22,9 +22,10 @@ const ManageProgramsPage: React.FC = () => {
 
   return (
     <ManageEntity
-      pageTitle={t('navbar:managePrograms')}
-      autocompleteLabel={t('navbar:program', 'Program')}
-      noOptionsText={t('userSearchNoOptions', 'No programs found')}
+      showEditTranslations={false}
+      pageTitle={t('manageProgramsPage:pageTitle')}
+      autocompleteLabel={t('manageProgramsPage:chooseProgramLabel')}
+      noOptionsText={t('manageProgramsPage:noProgramsFound')}
       items={programs || []}
       isPending={updateProgramMutation.isPending}
       onSave={async (id, name, enabled) => {

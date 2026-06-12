@@ -358,6 +358,9 @@
     "userHeader": "User"
   },
   "manageProgramsPage": {
+    "pageTitle": "Manage Programs",
+    "chooseProgramLabel": "Choose program",
+    "noProgramsFound": "No programs found",
     "editTranslations": "Edit translations",
     "finnishName": "Finnish Name (FI)",
     "englishName": "English Name (EN)",
@@ -366,8 +369,14 @@
     "confirmSaveText": "Are you sure you want to save these translated names for the program?"
   },
   "manageDepartmentsPage": {
+    "pageTitle": "Manage Departments",
+    "chooseDepartmentLabel": "Choose department",
+    "noDepartmentsFound": "No departments found",
     "confirmSaveTitle": "Confirm changes",
-    "confirmSaveText": "Are you sure you want to save these translated names for the department?"
+    "confirmSaveText": "Are you sure you want to save these translated names for the department?",
+    "addDepartment": "Add Department",
+    "addDepartmentTitle": "Create New Department",
+    "deleteWarning": "Note: A department cannot be deleted once created"
   },
   "progressView": {
     "ethesisConfirmationTitle": "Confirmation",

@@ -69,3 +69,23 @@ export const useUpdateDepartmentMutation = () => {
     },
   })
 }
+
+interface CreateDepartmentParams {
+  name: TranslatedName
+  enabled?: boolean
+}
+
+export const useCreateDepartmentMutation = () => {
+  const mutationFn = async (params: CreateDepartmentParams) => {
+    await apiClient.post(`/departments`, params)
+  }
+
+  return useMutation({
+    mutationFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['departments'],
+      })
+    },
+  })
+}

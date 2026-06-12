@@ -24,6 +24,7 @@ export interface ManageableItem {
 }
 
 interface ManageEntityProps<T extends ManageableItem> {
+  showEditTranslations?: boolean
   pageTitle: string
   autocompleteLabel: string
   noOptionsText: string
@@ -35,6 +36,7 @@ interface ManageEntityProps<T extends ManageableItem> {
 }
 
 const ManageEntity = <T extends ManageableItem>({
+  showEditTranslations = true,
   pageTitle,
   autocompleteLabel,
   noOptionsText,
@@ -158,44 +160,60 @@ const ManageEntity = <T extends ManageableItem>({
                 label={t('common:enabled', 'Enabled')}
               />
 
-              <Typography variant="h6" sx={{ mt: 2 }}>
-                {t('manageProgramsPage:editTranslations', 'Edit translations')}
-              </Typography>
-              <TextField
-                label={t('manageProgramsPage:finnishName', 'Finnish Name (FI)')}
-                value={draftName.fi}
-                onChange={(e) =>
-                  setDraftName((prev) => ({ ...prev, fi: e.target.value }))
-                }
-                fullWidth
-              />
-              <TextField
-                label={t('manageProgramsPage:englishName', 'English Name (EN)')}
-                value={draftName.en}
-                onChange={(e) =>
-                  setDraftName((prev) => ({ ...prev, en: e.target.value }))
-                }
-                fullWidth
-              />
-              <TextField
-                label={t('manageProgramsPage:swedishName', 'Swedish Name (SV)')}
-                value={draftName.sv}
-                onChange={(e) =>
-                  setDraftName((prev) => ({ ...prev, sv: e.target.value }))
-                }
-                fullWidth
-              />
+              {showEditTranslations && (
+                <>
+                  <Typography variant="h6" sx={{ mt: 2 }}>
+                    {t(
+                      'manageProgramsPage:editTranslations',
+                      'Edit translations'
+                    )}
+                  </Typography>
+                  <TextField
+                    label={t(
+                      'manageProgramsPage:finnishName',
+                      'Finnish Name (FI)'
+                    )}
+                    value={draftName.fi}
+                    onChange={(e) =>
+                      setDraftName((prev) => ({ ...prev, fi: e.target.value }))
+                    }
+                    fullWidth
+                  />
+                  <TextField
+                    label={t(
+                      'manageProgramsPage:englishName',
+                      'English Name (EN)'
+                    )}
+                    value={draftName.en}
+                    onChange={(e) =>
+                      setDraftName((prev) => ({ ...prev, en: e.target.value }))
+                    }
+                    fullWidth
+                  />
+                  <TextField
+                    label={t(
+                      'manageProgramsPage:swedishName',
+                      'Swedish Name (SV)'
+                    )}
+                    value={draftName.sv}
+                    onChange={(e) =>
+                      setDraftName((prev) => ({ ...prev, sv: e.target.value }))
+                    }
+                    fullWidth
+                  />
 
-              <Button
-                type="button"
-                variant="contained"
-                onClick={handleSaveClick}
-                disabled={isSaveDisabled}
-                fullWidth
-                sx={{ borderRadius: '0.5rem' }}
-              >
-                {t('submitButton', 'Save')}
-              </Button>
+                  <Button
+                    type="button"
+                    variant="contained"
+                    onClick={handleSaveClick}
+                    disabled={isSaveDisabled}
+                    fullWidth
+                    sx={{ borderRadius: '0.5rem' }}
+                  >
+                    {t('submitButton', 'Save')}
+                  </Button>
+                </>
+              )}
             </Box>
           )}
         </Box>
