@@ -4,15 +4,13 @@ import { safeBulkCreate } from './util'
 
 export const fetchPrograms = async () => {
   const allOrgs = await getOrganisationData()
-  const mathScienceDepartment = allOrgs.find((org) => org.code === 'H50')
+  const all = allOrgs.map((org) => org.programmes).flat()
 
-  const programs = mathScienceDepartment.programmes
-    .filter((program) => program.level === 'master')
-    .map((program) => ({
-      ...program,
-      id: program.key,
-      enabled: false,
-    }))
+  const programs = all.map((program) => ({
+    ...program,
+    id: program.key,
+    enabled: false,
+  }))
 
   await safeBulkCreate({
     entityName: 'Program',
