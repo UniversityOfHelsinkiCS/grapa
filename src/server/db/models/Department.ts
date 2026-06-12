@@ -16,6 +16,8 @@ class Department extends Model<
   declare id: string
 
   declare name: TranslatedName
+
+  declare enabled: boolean
 }
 
 Department.init(
@@ -29,6 +31,11 @@ Department.init(
     name: {
       type: DataTypes.JSONB,
       allowNull: false,
+    },
+    enabled: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
     },
   },
   {

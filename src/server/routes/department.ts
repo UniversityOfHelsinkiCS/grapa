@@ -14,6 +14,12 @@ departmentRouter.get(
     const { isAdmin } = req.user
     const language = (req.query.language ?? 'en') as string
     const includeNotManaged = req.query.includeNotManaged === 'true'
+    const includeDisabled = req.query.includeDisabled === 'true'
+
+    const where: any = {}
+    if (!includeDisabled) {
+      where.enabled = true
+    }
 
     const includes: Includeable[] = []
 
@@ -33,7 +39,8 @@ departmentRouter.get(
     }
 
     const departments = await Department.findAll({
-      attributes: ['id', 'name'],
+      where,
+      attributes: ['id', 'name', 'enabled'],
       include: includes,
       order: [[literal(`name->>$language`), 'ASC']],
       bind: { language },
@@ -50,7 +57,7 @@ departmentRouter.put(
   async (req: RequestWithUser, res: Response) => {
     const { id: departmentId } = req.params
     const { isAdmin } = req.user
-    const { name } = req.body
+    const { name, enabled } = req.body
 
     if (!departmentId || typeof departmentId !== 'string') {
       return res.status(400).send({ error: 'Department ID is required' })
@@ -70,15 +77,55 @@ departmentRouter.put(
       return res.status(404).send({ error: 'Department not found' })
     }
 
-    const [, updatedDepartments] = await Department.update(
-      { name },
-      {
-        where: { id: departmentId },
-        returning: true,
-      }
-    )
+    const updateData: any = {}
+    if (name) updateData.name = name
+    if (enabled !== undefined) updateData.enabled = enabled
+
+    const [, updatedDepartments] = await Department.update(updateData, {
+      where: { id: departmentId },
+      returning: true,
+    })
 
     return res.status(200).send(updatedDepartments[0])
+  }
+)
+
+departmentRouter.post(
+  '/',
+  ethesisUserHandler,
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: RequestWithUser, res: Response) => {
+    const { isAdmin } = req.user
+    const { id, name, enabled } = req.body
+
+    if (!isAdmin) {
+      return res.status(403).send({ error: 'Forbidden' })
+    }
+
+    if (!name || typeof name !== 'object' || Array.isArray(name)) {
+      return res.status(400).send({ error: 'Invalid name payload' })
+    }
+
+    if (id && typeof id !== 'string') {
+      return res.status(400).send({ error: 'Invalid id payload' })
+    }
+
+    const newDepartmentData: any = { name }
+    if (id) {
+      newDepartmentData.id = id
+    }
+    if (enabled !== undefined) {
+      newDepartmentData.enabled = enabled
+    }
+
+    try {
+      const department = await Department.create(newDepartmentData)
+      return res.status(201).send(department)
+    } catch (error: any) {
+      return res
+        .status(400)
+        .send({ error: error?.message || 'Failed to create department' })
+    }
   }
 )
 
