@@ -201,19 +201,18 @@ const ManageEntity = <T extends ManageableItem>({
                     }
                     fullWidth
                   />
-
-                  <Button
-                    type="button"
-                    variant="contained"
-                    onClick={handleSaveClick}
-                    disabled={isSaveDisabled}
-                    fullWidth
-                    sx={{ borderRadius: '0.5rem' }}
-                  >
-                    {t('submitButton', 'Save')}
-                  </Button>
                 </>
               )}
+              <Button
+                type="button"
+                variant="contained"
+                onClick={handleSaveClick}
+                disabled={isSaveDisabled}
+                fullWidth
+                sx={{ borderRadius: '0.5rem' }}
+              >
+                {t('submitButton', 'Save')}
+              </Button>
             </Box>
           )}
         </Box>
