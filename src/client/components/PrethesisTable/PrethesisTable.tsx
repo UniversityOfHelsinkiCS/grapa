@@ -18,8 +18,11 @@ import TableHead from '@mui/material/TableHead'
 import Chip from '@mui/material/Chip'
 import TableRow from '@mui/material/TableRow'
 import {
+  Box,
   Button,
   IconButton,
+  Menu,
+  MenuItem,
   Stack,
   TablePagination,
   Tooltip,
@@ -28,7 +31,11 @@ import {
 import { useTranslation } from 'react-i18next'
 import { StatusLocale } from '../../types'
 import dayjs from 'dayjs'
-import { PriorityHigh, Star } from '@mui/icons-material'
+import {
+  PriorityHigh,
+  Star,
+  MoreVert as MoreVertIcon,
+} from '@mui/icons-material'
 import usePrograms from '../../hooks/usePrograms'
 
 declare module '@tanstack/react-table' {
@@ -74,6 +81,15 @@ const PrethesisTable = ({
   /* Pagination */
   const [pageNumber, setPageNumber] = React.useState(0)
   const [pageSize, setPageSize] = React.useState(25)
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const openMenu = Boolean(anchorEl)
+  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
 
   /* FilterView */
   const [activeFilterView, setActiveFilterView] = React.useState(
@@ -330,6 +346,24 @@ const PrethesisTable = ({
               </Tooltip>
             ))}
           </Stack>
+        )}
+
+        {!noAddThesisButton && showHiddenNewThesisButton && (
+          <Box sx={{ ml: 'auto' }}>
+            <IconButton onClick={handleMenuClick} size="small">
+              <MoreVertIcon />
+            </IconButton>
+            <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
+              <MenuItem
+                onClick={() => {
+                  handleMenuClose()
+                  initializeNewThesis()
+                }}
+              >
+                {t('thesesTableToolbar:newThesisButton')}
+              </MenuItem>
+            </Menu>
+          </Box>
         )}
       </Stack>
       <TableContainer>
