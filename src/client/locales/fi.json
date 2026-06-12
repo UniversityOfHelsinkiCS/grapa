@@ -22,6 +22,8 @@
     "durationHeader": "Kesto (pv)",
     "completedDateHeader": "Valmis",
     "averageDuration": "Tutkielman keskimääräinen kesto: {{days}} päivää",
+    "enabled": "Käytössä",
+    "otherSettings": "Muut asetukset",
     "approveButton": "Hyväksy",
     "editButton": "Muokkaa",
     "sendDraftButton": "Lähetä luonnos arvosteltavaksi",

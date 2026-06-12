@@ -5,6 +5,8 @@ import {
   Box,
   Button,
   FormControl,
+  FormControlLabel,
+  Switch,
   TextField,
   Typography,
   Dialog,
@@ -15,23 +17,24 @@ import {
 } from '@mui/material'
 import { TranslatedName, TranslationLanguage } from '@backend/types'
 
-export interface TranslationItem {
+export interface ManageableItem {
   id: string
   name: TranslatedName
+  enabled?: boolean
 }
 
-interface ManageTranslationsProps<T extends TranslationItem> {
+interface ManageEntityProps<T extends ManageableItem> {
   pageTitle: string
   autocompleteLabel: string
   noOptionsText: string
   items: T[]
   isPending: boolean
-  onSave: (id: string, name: TranslatedName) => Promise<void>
+  onSave: (id: string, name: TranslatedName, enabled?: boolean) => Promise<void>
   confirmTitle: string
   confirmText: string
 }
 
-const ManageTranslations = <T extends TranslationItem>({
+const ManageEntity = <T extends ManageableItem>({
   pageTitle,
   autocompleteLabel,
   noOptionsText,
@@ -40,7 +43,7 @@ const ManageTranslations = <T extends TranslationItem>({
   onSave,
   confirmTitle,
   confirmText,
-}: ManageTranslationsProps<T>) => {
+}: ManageEntityProps<T>) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
 
@@ -50,6 +53,7 @@ const ManageTranslations = <T extends TranslationItem>({
     en: '',
     sv: '',
   })
+  const [draftEnabled, setDraftEnabled] = useState<boolean>(true)
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
 
   useEffect(() => {
@@ -59,8 +63,10 @@ const ManageTranslations = <T extends TranslationItem>({
         en: selectedItem.name.en || '',
         sv: selectedItem.name.sv || '',
       })
+      setDraftEnabled(selectedItem.enabled ?? true)
     } else {
       setDraftName({ fi: '', en: '', sv: '' })
+      setDraftEnabled(true)
     }
   }, [selectedItem])
 
@@ -71,11 +77,12 @@ const ManageTranslations = <T extends TranslationItem>({
   const handleConfirmSave = async () => {
     if (!selectedItem) return
 
-    await onSave(selectedItem.id, draftName)
+    await onSave(selectedItem.id, draftName, draftEnabled)
 
     setSelectedItem({
       ...selectedItem,
       name: draftName,
+      enabled: draftEnabled,
     })
 
     setConfirmDialogOpen(false)
@@ -86,7 +93,8 @@ const ManageTranslations = <T extends TranslationItem>({
     !selectedItem ||
     (selectedItem.name.fi === draftName.fi &&
       selectedItem.name.en === draftName.en &&
-      selectedItem.name.sv === draftName.sv)
+      selectedItem.name.sv === draftName.sv &&
+      (selectedItem.enabled ?? true) === draftEnabled)
 
   return (
     <Box
@@ -138,6 +146,19 @@ const ManageTranslations = <T extends TranslationItem>({
               }}
             >
               <Typography variant="h6">
+                {t('common:otherSettings', 'Other settings')}
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={draftEnabled}
+                    onChange={(e) => setDraftEnabled(e.target.checked)}
+                  />
+                }
+                label={t('common:enabled', 'Enabled')}
+              />
+
+              <Typography variant="h6" sx={{ mt: 2 }}>
                 {t('manageProgramsPage:editTranslations', 'Edit translations')}
               </Typography>
               <TextField
@@ -206,4 +227,4 @@ const ManageTranslations = <T extends TranslationItem>({
   )
 }
 
-export default ManageTranslations
+export default ManageEntity

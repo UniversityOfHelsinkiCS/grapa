@@ -15,7 +15,7 @@ export const getProgram = async (id: string, language: string) => {
     throw new Error('Invalid language key')
   }
   const program = await Program.findOne({
-    attributes: ['id', 'name', 'options'],
+    attributes: ['id', 'name', 'options', 'enabled'],
     where: {
       id: id,
     },
@@ -62,7 +62,7 @@ export const getPrograms = async (
   }
 
   const programs = await Program.findAll({
-    attributes: ['id', 'name', 'options'],
+    attributes: ['id', 'name', 'options', 'enabled'],
     where: whereClause,
     include: includes,
     order: [[literal(`"Program"."name"->>$language`), 'ASC']],

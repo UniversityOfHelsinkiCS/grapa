@@ -49,7 +49,7 @@ programRouter.put(
   async (req: RequestWithUser, res: Response) => {
     const { id: programId } = req.params
     const { isAdmin, id: userId } = req.user
-    const { options, name } = req.body
+    const { options, name, enabled } = req.body
 
     if (!programId || typeof programId !== 'string') {
       return res.status(400).send({ error: 'Program ID is required' })
@@ -80,6 +80,9 @@ programRouter.put(
     const updateData: any = { options }
     if (name) {
       updateData.name = name
+    }
+    if (enabled !== undefined) {
+      updateData.enabled = enabled
     }
 
     const [, updatedPrograms] = await Program.update(updateData, {

@@ -22,6 +22,8 @@
     "durationHeader": "Duration (days)",
     "completedDateHeader": "Completed",
     "averageDuration": "Average thesis duration: {{days}} days",
+    "enabled": "Enabled",
+    "otherSettings": "Other settings",
     "editButton": "Edit",
     "sendDraftButton": "Send draft for review",
     "approveButton": "Approve",

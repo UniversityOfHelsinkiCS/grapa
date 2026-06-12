@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import usePrograms, { useUpdateProgramMutation } from '../hooks/usePrograms'
 import useLoggedInUser from '../hooks/useLoggedInUser'
-import ManageTranslations from './Common/ManageTranslations'
+import ManageEntity from './Common/ManageEntity'
 
 const ManageProgramsPage: React.FC = () => {
   const { t } = useTranslation()
@@ -12,6 +12,7 @@ const ManageProgramsPage: React.FC = () => {
 
   const { programs, isLoading: programsLoading } = usePrograms({
     includeNotManaged: true,
+    includeDisabled: true,
   })
 
   const updateProgramMutation = useUpdateProgramMutation()
@@ -20,18 +21,19 @@ const ManageProgramsPage: React.FC = () => {
   if (!user?.isAdmin) return <Navigate to="/" />
 
   return (
-    <ManageTranslations
+    <ManageEntity
       pageTitle={t('navbar:managePrograms')}
       autocompleteLabel={t('navbar:program', 'Program')}
       noOptionsText={t('userSearchNoOptions', 'No programs found')}
       items={programs || []}
       isPending={updateProgramMutation.isPending}
-      onSave={async (id, name) => {
+      onSave={async (id, name, enabled) => {
         const program = programs?.find((p) => p.id === id)
         await updateProgramMutation.mutateAsync({
           programId: id,
           options: program?.options || {},
           name,
+          enabled,
         })
       }}
       confirmTitle={t('manageProgramsPage:confirmSaveTitle')}

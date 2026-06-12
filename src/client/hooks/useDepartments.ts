@@ -11,6 +11,7 @@ import {
 
 interface UseDepartmentsParams {
   includeNotManaged?: boolean
+  includeDisabled?: boolean
   enabled?: boolean
 }
 
@@ -18,7 +19,12 @@ const useDepartments = (params: UseDepartmentsParams) => {
   const { i18n } = useTranslation()
   const { language } = i18n
 
-  const queryKey = ['departments', params?.includeNotManaged, language]
+  const queryKey = [
+    'departments',
+    params?.includeNotManaged,
+    params?.includeDisabled,
+    language,
+  ]
 
   const queryFn = async (): Promise<Department[]> => {
     const { data } = await apiClient.get(`/departments`, {
@@ -42,11 +48,16 @@ export default useDepartments
 interface UpdateDepartmentParams {
   departmentId: string
   name: TranslatedName
+  enabled?: boolean
 }
 
 export const useUpdateDepartmentMutation = () => {
-  const mutationFn = async ({ departmentId, name }: UpdateDepartmentParams) => {
-    await apiClient.put(`/departments/${departmentId}`, { name })
+  const mutationFn = async ({
+    departmentId,
+    name,
+    enabled,
+  }: UpdateDepartmentParams) => {
+    await apiClient.put(`/departments/${departmentId}`, { name, enabled })
   }
 
   return useMutation({

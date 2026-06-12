@@ -7,6 +7,7 @@ import queryClient from '../util/queryClient'
 
 interface UseProgramsParams {
   includeNotManaged?: boolean
+  includeDisabled?: boolean
   enabled?: boolean
   useStudentApi?: boolean
 }
@@ -15,7 +16,12 @@ const usePrograms = (params: UseProgramsParams) => {
   const { i18n } = useTranslation()
   const { language } = i18n
 
-  const queryKey = ['programs', params?.includeNotManaged, language]
+  const queryKey = [
+    'programs',
+    params?.includeNotManaged,
+    params?.includeDisabled,
+    language,
+  ]
 
   const apiPath = params.useStudentApi ? '/student/programs' : '/programs'
 
@@ -40,6 +46,7 @@ interface UpdateProgramParams {
   programId: string
   options: Record<string, unknown>
   name?: TranslatedName
+  enabled?: boolean
 }
 
 export const useUpdateProgramMutation = () => {
@@ -47,12 +54,9 @@ export const useUpdateProgramMutation = () => {
     programId,
     options,
     name,
+    enabled,
   }: UpdateProgramParams) => {
-    const params: UpdateProgramParams = { programId, options }
-    if (name) {
-      params.name = name
-    }
-    await apiClient.put(`/programs/${programId}`, params)
+    await apiClient.put(`/programs/${programId}`, { options, name, enabled })
   }
 
   return useMutation({
