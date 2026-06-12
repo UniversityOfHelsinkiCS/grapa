@@ -143,6 +143,7 @@ describe('program router', () => {
               options: {},
               isFavorite: false,
               isManaged: true,
+              enabled: true,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -171,6 +172,7 @@ describe('program router', () => {
               options: {},
               isFavorite: false,
               isManaged: true,
+              enabled: true,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -199,6 +201,7 @@ describe('program router', () => {
               options: {},
               isFavorite: false,
               isManaged: true,
+              enabled: true,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -214,6 +217,7 @@ describe('program router', () => {
               options: {},
               isFavorite: false,
               isManaged: false,
+              enabled: false,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test3' }),
                 expect.objectContaining({ name: 'test4' }),
@@ -293,6 +297,7 @@ describe('program router', () => {
               options: {},
               isFavorite: false,
               isManaged: true,
+              enabled: true,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
@@ -308,6 +313,7 @@ describe('program router', () => {
               options: {},
               isFavorite: false,
               isManaged: false,
+              enabled: false,
               studyTracks: expect.toIncludeSameMembers([
                 expect.objectContaining({ name: 'test3' }),
                 expect.objectContaining({ name: 'test4' }),

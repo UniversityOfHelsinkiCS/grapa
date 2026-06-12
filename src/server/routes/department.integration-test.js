@@ -15,6 +15,7 @@ describe('department router', () => {
         fi: 'Kemian osasto',
         sv: 'Avdelningen för kemi',
       },
+      enabled: true,
     },
     {
       id: '8fdce98e-2e9e-4cd7-a4c3-6d0176e29d37',
@@ -23,6 +24,7 @@ describe('department router', () => {
         fi: 'Tietojenkäsittelytieteen osasto',
         sv: 'Avdelningen för datavetenskap',
       },
+      enabled: true,
     },
     {
       id: '163a5a00-4571-42ac-89a6-7497dee73cbb',
@@ -31,6 +33,7 @@ describe('department router', () => {
         fi: 'Geotieteiden ja maantieteen osasto',
         sv: 'Avdelningen för geovetenskaper och geografi',
       },
+      enabled: true,
     },
     {
       id: 'c0ce8ca5-6022-471b-a822-5172b1de507d',
@@ -39,6 +42,7 @@ describe('department router', () => {
         fi: 'Matematiikan ja tilastotieteen osasto',
         sv: 'Avdelningen för matematik och statistik',
       },
+      enabled: true,
     },
     {
       id: 'ad8a7f5f-2a54-496a-a30e-c0e512508b5d',
@@ -47,6 +51,7 @@ describe('department router', () => {
         fi: 'Fysiikan osasto',
         sv: 'Avdelningen för fysik',
       },
+      enabled: true,
     },
     {
       id: '305d14cc-6011-4861-b0af-1c9cccb38113',
@@ -55,6 +60,7 @@ describe('department router', () => {
         fi: 'Muu',
         sv: 'Övrig',
       },
+      enabled: true,
     },
   ]
 
@@ -158,6 +164,7 @@ describe('department router', () => {
         {
           id: department1.id,
           name: department1.name,
+          enabled: department1.enabled,
         },
       ])
     })
