@@ -90,10 +90,10 @@ jest.unstable_mockModule(
 )
 
 jest.unstable_mockModule(
-  './src/client/components/ThesisPage/ThesisToolbar',
+  './src/client/components/PrethesisTable/PrethesisTable',
   () => ({
-    default: jest.fn(({ createNewThesis }) => (
-      <button data-testid="create-new-thesis" onClick={createNewThesis}>
+    default: jest.fn(({ initializeNewThesis }) => (
+      <button data-testid="create-new-thesis" onClick={initializeNewThesis}>
         Create new thesis
       </button>
     )),
