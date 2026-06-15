@@ -249,6 +249,9 @@ const AdminMenu = () => {
       <PositionedMenuLinkItem to="/all-theses" onClick={handleClose}>
         {t('navbar:allTheses', 'All theses')}
       </PositionedMenuLinkItem>
+      <PositionedMenuLinkItem to="/admin-other" onClick={handleClose}>
+        {t('navbar:adminOther', 'Admin Tools')}
+      </PositionedMenuLinkItem>
       <PositionedMenuLinkItem to="/login-as" onClick={handleClose}>
         {t('navbar:loginAs', 'Login as')}
       </PositionedMenuLinkItem>
@@ -409,6 +412,16 @@ const NavBar = () => {
               <ListItemText
                 primary={t('navbar:manageDepartments', 'Manage departments')}
               />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {user?.isAdmin && (
+          <ListItem disablePadding>
+            <ListItemButton component={NavLink} to="/admin-other">
+              <ListItemIcon>
+                <AdminPanelSettingsOutlined />
+              </ListItemIcon>
+              <ListItemText primary={t('navbar:adminOther', 'Admin Panel')} />
             </ListItemButton>
           </ListItem>
         )}

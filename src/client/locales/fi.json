@@ -74,6 +74,7 @@
     "departmentOverview": "Yksikön yleiskatsaus",
     "loginAs": "Kirjaudu toisella käyttäjällä",
     "allTheses": "Kaikki tutkielmat",
+    "adminOther": "Ylläpitotyökalut",
     "logout": "Kirjaudu ulos",
     "settings": "Profiilin asetukset",
     "openMobileMenu": "Avaa valikko",
@@ -390,5 +391,16 @@
   "help": {
     "table": "<b>Rajaustyökalut</b><br><br>Taulukon ylälaidassa on valittavana useita rajausvaihtoehtoja, kuten aktiiviset tai epäaktiiviset tutkielmat. Osoittimen vieminen painikkeen päälle näyttää lisätietoja kyseisestä valinnasta.<br><br><b>Tavoitepäivä</b><br><br>Tavoitepäivä-sarake värjäytyy tavoitepäivän ylittyessä. Kun tavoitepäivä ylittyy kuukaudella, sarake värjäytyy keltaiseksi, ja puolen vuoden jälkeen punaiseksi.<br><br><b>Vaihe</b><br><br>Vaihe-sarake värjäytyy sitä vihreämmäksi, mitä pidemmälle tutkielman etapit ovat edenneet. Tämä toiminnallisuus on käytössä vain etappeja käyttävissä koulutusohjelmissa.<br><br><b>Kuvakkeet</b><br><br>Rivin lopussa voi näkyä kuvakkeita. Osoittimen vieminen kuvakkeen päälle näyttää lisätietoja. Tähtikuvake merkitsee, että olet tutkielman pääohjaaja. Huutomerkki ilmaisee, että tutkielma odottaa hyväksyntääsi.",
     "button": "Ohje"
+  },
+  "adminOtherPage": {
+    "pageTitle": "Ylläpitotyökalut",
+    "runUpdaterTitle": "Käynnistä updater",
+    "runUpdaterDescription": "Käynnistä päivitysprosessi manuaalisesti hakeaksesi uusimmat tiedot lähdejärjestelmistä.",
+    "runningUpdater": "Käynnistetään...",
+    "runUpdaterButton": "Käynnistä updater",
+    "updaterSuccess": "Updater suoritettiin onnistuneesti",
+    "updaterFailed": "Updaterin ajo epäonnistui",
+    "confirmRunTitle": "Vahvista updaterin käynnistys",
+    "confirmRunDescription": "Haluatko varmasti käynnistää updaterin manuaalisesti? Tämä hakee uusimmat tiedot lähdejärjestelmistä ja saattaa kestää hetken."
   }
 }

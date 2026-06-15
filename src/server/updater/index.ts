@@ -19,11 +19,12 @@ export const run = async () => {
   try {
     await clearOffsets()
     await runUpdater()
+    logger.info('[UPDATER] Finished updating')
+    return { success: true }
   } catch (error) {
     Sentry.captureException(error)
     Sentry.captureMessage('Updater run failed!')
-    return logger.error('[UPDATER] finished with error', error)
+    logger.error('[UPDATER] finished with error', error)
+    return { success: false, error }
   }
-
-  return logger.info('[UPDATER] Finished updating')
 }

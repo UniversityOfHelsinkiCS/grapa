@@ -19,6 +19,7 @@ import programManagementRouter from './programManagement'
 import departmentRouter from './department'
 import departmentAdminRouter from './departmentAdmin'
 import ethesisAdminRouter from './ethesisAdmins'
+import adminRouter from './admin'
 
 import logoutRouter from './logout'
 
@@ -62,6 +63,7 @@ router.use('/student', studentRouter)
 
 // These routes should be only available to employees and admin users
 router.use(employeesAndAdminOnly)
+router.use('/admin', adminRouter)
 router.use('/theses', thesisRouter)
 router.use('/attachments', attachmentRouter)
 router.use('/programs', programRouter)

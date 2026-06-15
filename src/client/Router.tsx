@@ -16,6 +16,7 @@ import Ethesis from './components/Ethesis'
 import useLoggedInUser from './hooks/useLoggedInUser'
 import ManageProgramsPage from './components/ManageProgramsPage'
 import ManageDepartmentsPage from './components/ManageDepartmentsPage'
+import AdminOtherPage from './components/AdminOtherPage'
 
 const IndexRoute = () => {
   const { isLoading, hasStaffAccess } = useLoggedInUser()
@@ -111,6 +112,10 @@ const router = createBrowserRouter(
         {
           path: '/login-as',
           element: <LoginAsPage />,
+        },
+        {
+          path: '/admin-other',
+          element: <AdminOtherPage />,
         },
         {
           path: '*',
