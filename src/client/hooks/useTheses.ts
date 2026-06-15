@@ -20,6 +20,7 @@ interface UsePaginatedThesesParams {
   offset: number
   limit: number
   useStudentApi?: boolean
+  search?: string
 }
 
 export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
@@ -41,6 +42,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     params.programNamePartial,
     params.order.sortBy,
     params.order.sortOrder,
+    params.search,
     language,
     params.useStudentApi,
   ]
@@ -65,6 +67,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
         topicPartial: params.topicPartial,
         authorsPartial: params.authorsPartial,
         programNamePartial: params.programNamePartial,
+        search: params.search,
         language,
         ...params.order,
       },

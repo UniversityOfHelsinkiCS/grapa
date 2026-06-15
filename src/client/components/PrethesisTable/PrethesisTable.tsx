@@ -25,6 +25,7 @@ import {
   MenuItem,
   Stack,
   TablePagination,
+  TextField,
   Tooltip,
   Typography,
 } from '@mui/material'
@@ -54,6 +55,7 @@ interface Props {
   onSortingChange: any
   onPaginationChange: any
   onSelection: any
+  onSearch: any
   selection: any
   user: User
   filterViews: any
@@ -70,6 +72,7 @@ const PrethesisTable = ({
   onSortingChange,
   onPaginationChange,
   onSelection,
+  onSearch,
   user,
   filterViews,
   noAddThesisButton,
@@ -96,6 +99,8 @@ const PrethesisTable = ({
   const [activeFilterView, setActiveFilterView] = React.useState(
     !isStudentView && filterViews ? Object.keys(filterViews)[0] : null
   )
+
+  const [debounceTimeout, setDebounceTimeout] = React.useState(null)
 
   if (!isStudentView) {
     React.useEffect(() => {
@@ -314,7 +319,7 @@ const PrethesisTable = ({
         p: 2,
       }}
     >
-      <Stack direction="row" sx={{ gap: 2, mb: 2 }}>
+      <Stack direction="row" sx={{ gap: 2, mb: 2, alignItems: 'center' }}>
         {!noAddThesisButton && !showHiddenNewThesisButton && (
           <Button
             variant="contained"
@@ -380,6 +385,23 @@ const PrethesisTable = ({
             </Menu>
           </Box>
         )}
+
+        <TextField
+          size="small"
+          placeholder={t('thesesTableToolbar:search')}
+          variant="outlined"
+          onChange={(e) => {
+            if (debounceTimeout != null) {
+              clearTimeout(debounceTimeout)
+            }
+            setDebounceTimeout(
+              setTimeout(() => {
+                onSearch(e.target.value)
+              }, 400)
+            )
+          }}
+        ></TextField>
+
         <PrethesisHelp
           text={t('help:table')}
           sx={{ ml: 'auto', height: 24 }}

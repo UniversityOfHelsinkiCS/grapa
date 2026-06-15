@@ -98,6 +98,8 @@ const ThesesPage = ({
   const debouncedFilterAuthors = useDebounce(filterAuthors, 500)
   const debouncedFilterProgramName = useDebounce(filterProgramName, 500)
 
+  const [searchQuery, setSearchQuery] = useState('')
+
   const [order, setOrder] = useState({})
 
   const [, setCurrentFilters] = useState(null)
@@ -120,6 +122,7 @@ const ThesesPage = ({
     offset: paginationModel.page * paginationModel.pageSize,
     limit: paginationModel.pageSize,
     useStudentApi: isStudentView && currentUser?.hasStudyRight,
+    search: searchQuery.length > 0 ? searchQuery : undefined,
   })
 
   const showDurationColumn = useMemo(
@@ -297,6 +300,9 @@ const ThesesPage = ({
           onPaginationChange={(newModel) => setPaginationModel(newModel)}
           onSelection={(newSelection: GridRowSelectionModel) => {
             setRowSelectionModel(newSelection)
+          }}
+          onSearch={(value: string) => {
+            setSearchQuery(value)
           }}
           onSortingChange={handleSortModelChange}
           user={currentUser}
