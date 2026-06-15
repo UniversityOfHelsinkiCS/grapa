@@ -60,6 +60,7 @@ thesisRouter.get(
       onlySeminarSupervised: req.query.onlySeminarSupervised as string,
       limit: req.query.limit as string,
       offset: req.query.offset as string,
+      search: req.query.search as string,
     })
 
     return res.send(result)

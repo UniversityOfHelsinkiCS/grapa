@@ -110,6 +110,7 @@ interface FetchThesisProps {
   onlySupervised?: boolean
   onlySeminarSupervised?: boolean
   onlyAuthored?: boolean
+  search?: string
 }
 export const getFindThesesOptions = async ({
   thesisId,
@@ -124,6 +125,7 @@ export const getFindThesesOptions = async ({
   onlySupervised,
   onlySeminarSupervised,
   onlyAuthored,
+  search,
 }: FetchThesisProps) => {
   const includes: Includeable[] = [
     {
@@ -293,6 +295,14 @@ export const getFindThesesOptions = async ({
         programIds?.length ? { programId: programIds } : {},
       ]
     }
+  }
+
+  if (search != undefined) {
+    andConditions.push(
+      literal(
+        `EXISTS (SELECT 1 FROM theses WHERE theses.fts_index @@ websearch_to_tsquery('simple', $search) AND theses.id = "Thesis".id)`
+      )
+    )
   }
 
   if (andConditions.length > 0) {
