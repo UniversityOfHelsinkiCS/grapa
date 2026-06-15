@@ -277,11 +277,16 @@ const ThesisEditForm: FC<{
                     Number(newProgram?.options?.numberOfGraders) || 2
 
                   const newStudyTracks = getVisibleStudyTracks(newProgram)
+                  const disableStudyTracks = Boolean(
+                    newProgram?.options?.disableStudyTracks
+                  )
 
                   setEditedThesis((oldThesis) => ({
                     ...oldThesis,
                     programId: newProgramId,
-                    studyTrackId: newStudyTracks[0]?.id,
+                    studyTrackId: disableStudyTracks
+                      ? undefined
+                      : newStudyTracks[0]?.id,
                     authors: newAllowMultipleAuthors
                       ? oldThesis.authors
                       : oldThesis.authors.slice(0, 1),
@@ -332,7 +337,9 @@ const ThesisEditForm: FC<{
             </FormControl>
 
             {Boolean(
-              selectedProgram && selectedProgram.studyTracks?.length
+              selectedProgram &&
+              selectedProgram.studyTracks?.length &&
+              !selectedProgram.options?.disableStudyTracks
             ) && (
               <FormControl fullWidth>
                 <InputLabel id="study-track-select-label">

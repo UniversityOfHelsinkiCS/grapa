@@ -552,6 +552,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     allowMultipleAuthors: 'boolean',
     hideSendToEthesis: 'boolean',
     useMilestones: 'boolean',
+    disableStudyTracks: 'boolean',
   }
 
   const featureFlagUI = Object.keys(options).map((feature) => {

@@ -160,6 +160,13 @@
       "confirmTitle": "Vahvista muutokset etappeihin",
       "enableConfirm": "Haluatko vahvistaa muutoksesis etappeihin?"
     },
+    "disableStudyTracks": {
+      "toggle": "Poista opintosuunnat käytöstä",
+      "tooltip": "Poistaa opintosuunnat käytöstä koulutusohjelmassa",
+      "confirmTitle": "Vahvista opintosuuntien asetus",
+      "enableConfirm": "Oletko varma, että haluat poistaa opintosuunnat käytöstä?",
+      "disableConfirm": "Oletko varma, että haluat ottaa opintosuunnat käyttöön?"
+    },
     "targetDates": {
       "fieldTitle": "Tavoitepäivä",
       "title": "Tavoitepäivät",

@@ -162,6 +162,13 @@
       "confirmTitle": "Confirm changes to milestones",
       "enableConfirm": "Are you sure you want to save changes to milestones?"
     },
+    "disableStudyTracks": {
+      "toggle": "Disable study tracks",
+      "tooltip": "Disables study tracks in the programme",
+      "confirmTitle": "Confirm study tracks settings",
+      "enableConfirm": "Are you sure you want to disable study tracks?",
+      "disableConfirm": "Are you sure you want to enable study tracks?"
+    },
     "targetDates": {
       "fieldTitle": "Target date",
       "title": "Target dates",
