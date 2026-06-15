@@ -303,6 +303,7 @@
     "showManagedProgramsThesesSwitch": "Also show theses of my programs",
     "filterButton": "Filters",
     "saveFiltersButton": "Save filters",
+    "search": "Search",
     "filterViews": {
       "active": {
         "name": "Active",

@@ -302,6 +302,7 @@
     "showManagedProgramsThesesSwitch": "Tutkielmat ohjelmissani",
     "filterButton": "Suodattimet",
     "saveFiltersButton": "Tallenna suodattimet",
+    "search": "Haku",
     "filterViews": {
       "active": {
         "name": "Aktiiviset",
