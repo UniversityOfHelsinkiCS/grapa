@@ -389,7 +389,7 @@
     "inProgress": "In progress"
   },
   "help": {
-    "table": "LISÄÄ OHJE!",
+    "table": "<b>Filtering Tools</b><br><br>The top of the table offers several filtering options, such as active or inactive theses. Hovering the cursor over a button displays additional information about that selection.<br><br><b>Target Date</b><br><br>The Target Date column is colored when the target date is exceeded. When the target date is exceeded by a month, the column turns yellow, and after six months, it turns red.<br><br><b>Phase</b><br><br>The Phase column becomes greener the further the thesis stages have progressed. This functionality is only available in degree programs that use stages.<br><br><b>Icons</b><br><br>Icons may appear at the end of a row. Hovering the cursor over an icon displays additional information. A star icon indicates that you are the main supervisor of the thesis. An exclamation mark indicates that the thesis is awaiting your approval.",
     "button": "Help"
   }
 }
