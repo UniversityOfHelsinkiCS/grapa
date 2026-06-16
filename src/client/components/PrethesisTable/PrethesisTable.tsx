@@ -36,6 +36,9 @@ import {
   PriorityHigh,
   Star,
   MoreVert as MoreVertIcon,
+  ArrowDownward,
+  ArrowUpward,
+  Sort,
 } from '@mui/icons-material'
 import usePrograms from '../../hooks/usePrograms'
 import { PrethesisHelp } from '../PrethesisHelp/PrethesisHelp'
@@ -108,6 +111,10 @@ const PrethesisTable = ({
       onSortingChange(filterViews[activeFilterView].sortingModel)
     }, [])
   }
+
+  /* Sorting */
+  const [sortedField, setSortedField] = React.useState(null)
+  const [sortedDir, setSortedDir] = React.useState('asc')
 
   /* New thesis button */
   const { programs, isLoading: programsLoading } = !isStudentView
@@ -359,6 +366,12 @@ const PrethesisTable = ({
                   label={t(`thesesTableToolbar:filterViews:${filterView}:name`)}
                   onClick={() => {
                     onFilterChange(filterViews[filterView].filterModel)
+                    setSortedDir(
+                      filterViews[filterView].sortingModel[0]['sort']
+                    )
+                    setSortedField(
+                      filterViews[filterView].sortingModel[0]['field']
+                    )
                     onSortingChange(filterViews[filterView].sortingModel)
                     setActiveFilterView(filterView)
                   }}
@@ -424,7 +437,13 @@ const PrethesisTable = ({
                     key={header.id}
                     style={{ width: `${header.getSize()}px` }}
                   >
-                    <Stack direction="row">
+                    <Stack
+                      direction="row"
+                      sx={{
+                        alignItems: 'center',
+                        gap: 1,
+                      }}
+                    >
                       <Typography
                         sx={{
                           fontWeight: 'bold',
@@ -437,6 +456,42 @@ const PrethesisTable = ({
                               header.getContext()
                             )}
                       </Typography>
+                      {header.id != 'supervisions' && (
+                        <IconButton
+                          sx={{
+                            opacity: sortedField == header.id ? 1 : 0,
+                            ':hover': {
+                              opacity: 0.5,
+                            },
+                          }}
+                          onClick={() => {
+                            const sortingDir =
+                              sortedField == header.id
+                                ? sortedDir == 'asc'
+                                  ? 'desc'
+                                  : 'asc'
+                                : 'asc'
+                            setSortedField(header.id)
+                            setSortedDir(sortingDir)
+                            onSortingChange([
+                              {
+                                field: header.id,
+                                sort: sortingDir,
+                              },
+                            ])
+                          }}
+                        >
+                          {sortedField == header.id ? (
+                            sortedDir == 'desc' ? (
+                              <ArrowDownward></ArrowDownward>
+                            ) : (
+                              <ArrowUpward></ArrowUpward>
+                            )
+                          ) : (
+                            <Sort></Sort>
+                          )}
+                        </IconButton>
+                      )}
                     </Stack>
                   </TableCell>
                 ))}
