@@ -381,14 +381,15 @@ const ThesesPage = ({
             },
           }}
         ></PrethesisTable>
-        <ViewThesisFooter
-          // footerRef={footerRef}
-          rowSelectionModel={rowSelectionModel}
-          handleEditThesis={initializeThesisEdit}
-          handleDeleteThesis={initializeThesisDelete}
-          handleSubitToEthesis={initializeSubitToEthesis}
-          isStudentView={isStudentView}
-        ></ViewThesisFooter>
+        <Box ref={footerRef}>
+          <ViewThesisFooter
+            rowSelectionModel={rowSelectionModel}
+            handleEditThesis={initializeThesisEdit}
+            handleDeleteThesis={initializeThesisDelete}
+            handleSubitToEthesis={initializeSubitToEthesis}
+            isStudentView={isStudentView}
+          ></ViewThesisFooter>
+        </Box>
       </Box>
       {editedTesis && (
         <ThesisEditForm
