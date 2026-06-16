@@ -115,6 +115,17 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
 
   const sortByColumn = sortBy ? getSortByColumn(sortBy, language) : undefined
 
+  let formattedSearch = search
+  if (search) {
+    formattedSearch = search
+      .replace(/['|&!():]/g, ' ')
+      .trim()
+      .split(/\s+/)
+      .filter((word) => word.length > 0)
+      .map((word) => `${word}:*`)
+      .join(' & ')
+  }
+
   const options = await getFindThesesOptions({
     programId,
     departmentId,
@@ -127,7 +138,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     onlyAuthored: String(onlyAuthored) === 'true',
     onlySupervised: String(onlySupervised) === 'true',
     onlySeminarSupervised: String(onlySeminarSupervised) === 'true',
-    search,
+    search: formattedSearch || undefined,
   })
 
   const { count, rows } = await Thesis.findAndCountAll({
@@ -140,7 +151,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
       orderDirection: sortOrder,
     }),
     distinct: true,
-    bind: { language, search },
+    bind: { language, search: formattedSearch },
   })
 
   const thesesRows = rows.map((t) => t.toJSON()) as ThesisData[]

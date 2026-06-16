@@ -300,7 +300,7 @@ export const getFindThesesOptions = async ({
   if (search != undefined) {
     andConditions.push(
       literal(
-        `EXISTS (SELECT 1 FROM theses WHERE theses.fts_index @@ websearch_to_tsquery('simple', $search) AND theses.id = "Thesis".id)`
+        `EXISTS (SELECT 1 FROM theses WHERE theses.fts_index @@ to_tsquery('simple', $search) AND theses.id = "Thesis".id)`
       )
     )
   }
