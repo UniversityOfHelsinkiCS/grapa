@@ -133,7 +133,7 @@ const PrethesisTable = ({
 
   /* Selection */
   const isSelected = (value: string) =>
-    selection.ids.size > 0 ? selection.ids.has(value) : false
+    selection.ids && selection.ids.size > 0 ? selection.ids.has(value) : false
 
   const columns = [
     columnHelper.accessor('program', {

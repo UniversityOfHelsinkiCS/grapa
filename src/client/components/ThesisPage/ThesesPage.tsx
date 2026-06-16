@@ -160,7 +160,7 @@ const ThesesPage = ({
   const { mutateAsync: createThesis } = useCreateThesisMutation(isStudentView)
 
   useEffect(() => {
-    if (rowSelectionModel.ids.size > 0) {
+    if (rowSelectionModel.ids && rowSelectionModel.ids.size > 0) {
       footerRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
   }, [rowSelectionModel])
