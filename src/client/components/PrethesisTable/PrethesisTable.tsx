@@ -386,21 +386,23 @@ const PrethesisTable = ({
           </Box>
         )}
 
-        <TextField
-          size="small"
-          placeholder={t('thesesTableToolbar:search')}
-          variant="outlined"
-          onChange={(e) => {
-            if (debounceTimeout != null) {
-              clearTimeout(debounceTimeout)
-            }
-            setDebounceTimeout(
-              setTimeout(() => {
-                onSearch(e.target.value)
-              }, 400)
-            )
-          }}
-        ></TextField>
+        {!isStudentView && (
+          <TextField
+            size="small"
+            placeholder={t('thesesTableToolbar:search')}
+            variant="outlined"
+            onChange={(e) => {
+              if (debounceTimeout != null) {
+                clearTimeout(debounceTimeout)
+              }
+              setDebounceTimeout(
+                setTimeout(() => {
+                  onSearch(e.target.value)
+                }, 400)
+              )
+            }}
+          ></TextField>
+        )}
 
         <PrethesisHelp
           text={t('help:table')}
