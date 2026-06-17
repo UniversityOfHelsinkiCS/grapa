@@ -250,7 +250,7 @@ const PrethesisTable = ({
           const status = context.row.original.status
           const difference =
             targetDate && dayjs(targetDate).isBefore(dayjs())
-              ? dayjs(targetDate).diff(dayjs(), 'day')
+              ? dayjs(targetDate).diff(dayjs(), 'day') * -1
               : 0
           return {
             sx: {
