@@ -589,7 +589,11 @@ const ThesisEditForm: FC<{
                   )}
                   {showOption['ETHESIS'] && (
                     <MenuItem value="ETHESIS">
-                      {t(StatusLocale.ETHESIS)}
+                      {t(
+                        selectedProgram?.options?.allowStudentStartedProcess
+                          ? 'thesisStages:ethesis_studentstarted'
+                          : StatusLocale.ETHESIS
+                      )}
                     </MenuItem>
                   )}
                   {showOption['COMPLETED'] && (

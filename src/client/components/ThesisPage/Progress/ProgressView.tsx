@@ -31,6 +31,9 @@ export const ProgressView = ({
   const useMilestones =
     thesis.program.options?.useMilestones && thesis.milestoneVersion != null
 
+  const useStudentStartedProcess =
+    thesis.program.options?.allowStudentStartedProcess
+
   const programMilestones = thesis.program.options?.milestones?.versions.at(
     thesis.milestoneVersion ? thesis.milestoneVersion : -1
   )
@@ -61,7 +64,12 @@ export const ProgressView = ({
     ...(!thesis.program.options?.hideSendToEthesis
       ? [{ statusId: 'ETHESIS_SENT', name: t('thesisStages:ethesisSent') }]
       : []),
-    { statusId: 'ETHESIS', name: t('thesisStages:ethesis') },
+    {
+      statusId: 'ETHESIS',
+      name: useStudentStartedProcess
+        ? t('thesisStages:ethesis_studentstarted')
+        : t('thesisStages:ethesis'),
+    },
     { statusId: 'COMPLETED', name: t('thesisStages:completed') },
   ]
 
