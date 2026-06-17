@@ -25,7 +25,7 @@
     "enabled": "Enabled",
     "otherSettings": "Other settings",
     "editButton": "Edit",
-    "sendDraftButton": "Send draft for review",
+    "sendDraftButton": "Send suggestion",
     "approveButton": "Approve",
     "deleteButton": "Delete",
     "cancelButton": "Cancel",
@@ -295,6 +295,7 @@
     "completed": "Completed",
     "cancelled": "Cancelled",
     "ethesis": "Saved to ethesis",
+    "ethesis_studentstarted": "Permission to send",
     "ethesisSent": "Sent to Ethesis"
   },
   "thesesTableToolbar": {
