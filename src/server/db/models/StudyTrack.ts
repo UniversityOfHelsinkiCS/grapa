@@ -18,6 +18,8 @@ class StudyTracks extends Model<
   declare name: TranslatedName
 
   declare programId: string
+
+  declare sisuId: string
 }
 
 StudyTracks.init(
@@ -31,6 +33,10 @@ StudyTracks.init(
     name: {
       type: DataTypes.JSONB,
       allowNull: false,
+    },
+    sisuId: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     programId: {
       type: DataTypes.STRING,
