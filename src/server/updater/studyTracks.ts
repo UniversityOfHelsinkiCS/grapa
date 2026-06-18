@@ -1,7 +1,6 @@
 import { TranslatedName } from '@backend/types'
 import { Program, StudyTrack } from '../db/models'
 import { mangleData } from './mangleData'
-import { safeBulkCreate } from './util'
 
 interface ImporterStudyTrack {
   id: string
@@ -10,20 +9,40 @@ interface ImporterStudyTrack {
 }
 
 const studyTracksHandler = async (studyTracks: ImporterStudyTrack[]) => {
-  const parsedStudyTracks = studyTracks.map(({ name, programCode }) => ({
-    name,
-    programId: programCode,
-  }))
+  const existingTracks = await StudyTrack.findAll()
 
-  await safeBulkCreate({
-    entityName: 'StudyTrack',
-    entities: parsedStudyTracks,
-    bulkCreate: async (e, opt) => StudyTrack.bulkCreate(e, opt),
-    fallbackCreate: async (e, opt) => StudyTrack.upsert(e, opt),
-    options: {
-      ignoreDuplicates: true,
-    },
-  })
+  for (const { name, programCode, id } of studyTracks) {
+    let track = existingTracks.find((t) => t.sisuId === id)
+    let isOld = false
+
+    if (!track) {
+      // Fallback: match by old name & program code to backfill sisuId
+      track = existingTracks.find(
+        (t) =>
+          t.programId === programCode &&
+          t.name?.fi === name?.fi &&
+          t.name?.en === name?.en
+      )
+
+      isOld = track != undefined
+    }
+
+    if (track) {
+      // Update sisuId and name if it changed
+      if (isOld) {
+        await track.update({ sisuId: id })
+      } else {
+        await track.update({ name })
+      }
+    } else {
+      // Create new
+      await StudyTrack.create({
+        name,
+        programId: programCode,
+        sisuId: id,
+      })
+    }
+  }
 }
 
 export const fetchStudyTracks = async () => {
