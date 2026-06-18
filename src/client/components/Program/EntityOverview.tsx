@@ -26,6 +26,7 @@ import {
   Autocomplete,
 } from '@mui/material'
 import usePrograms, { useUpdateProgramMutation } from '../../hooks/usePrograms'
+
 import { useTranslation } from 'react-i18next'
 import EventsView from '../EventsView/EventsView'
 import { useProgramEvents } from '../../hooks/useEvents'
@@ -35,7 +36,7 @@ import {
   StudyTrackData,
 } from '@backend/types'
 import ThesesPage from '../ThesisPage/ThesesPage'
-import ProgramManagement from './ProgramManagement'
+import EntityManagement from './EntityManagement'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 
 interface SingleProgramLogsProps {
@@ -360,7 +361,7 @@ const CombinedStudyTracksInput = ({
     return Array.from(map.entries()).map(([primary, secondaries]) => ({
       primary,
       secondaries:
-        program.studyTracks?.filter((t) => secondaries.includes(t.id)) || [],
+        program.allStudyTracks?.filter((t) => secondaries.includes(t.id)) || [],
     }))
   })
 
@@ -404,7 +405,7 @@ const CombinedStudyTracksInput = ({
     setPendingValue(null)
   }
 
-  const availableStudyTracks = program.studyTracks || []
+  const availableStudyTracks = program.allStudyTracks || []
 
   return (
     <>
@@ -689,60 +690,77 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   )
 }
 
-const ProgramOverview = () => {
+const EntityOverview = () => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
   const navigate = useNavigate()
-  const { programId } = useParams()
+  const { programId, studyTrackId } = useParams()
+
+  const entityType = studyTrackId ? 'studyTrack' : 'program'
+
   const { user } = useLoggedInUser()
-  const { programs: programsUserManages, isLoading: programsAreLoading } =
-    usePrograms({
-      includeNotManaged: false,
-    })
-  const [selectedProgramId, setSelectedProgramId] = useState<string | null>(
-    programId ?? null
+  const { programs: allPrograms, isLoading } = usePrograms({
+    includeNotManaged: true,
+  })
+
+  const programsUserManages =
+    allPrograms?.filter((p) => user?.isAdmin || p.isManaged) || []
+  const studyTracksUserManages =
+    allPrograms
+      ?.flatMap((p) => p.studyTracks)
+      .filter((st) => user?.isAdmin || st.isManaged) || []
+
+  const entities =
+    entityType === 'program' ? programsUserManages : studyTracksUserManages
+
+  const [selectedEntityId, setSelectedEntityId] = useState<string | null>(
+    (entityType === 'program' ? programId : studyTrackId) ?? null
   )
   const [tab, setTab] = useState<
     'theses' | 'rights' | 'configurations' | 'logs'
   >('theses')
 
   useEffect(() => {
-    if (!programsUserManages?.length) {
+    if (!entities?.length) {
       return
     }
 
-    const matchingProgram = programsUserManages.find(
-      (program) => program.id === programId
-    )
+    const currentId = entityType === 'program' ? programId : studyTrackId
 
-    if (matchingProgram) {
-      setSelectedProgramId(matchingProgram.id)
+    const matchingEntity = entities.find((entity) => entity.id === currentId)
+
+    if (matchingEntity) {
+      setSelectedEntityId(matchingEntity.id)
       return
     }
 
-    setSelectedProgramId(programsUserManages[0].id)
-    navigate(`/programs/${programsUserManages[0].id}`, { replace: true })
-  }, [navigate, programId, programsUserManages])
+    setSelectedEntityId(entities[0].id)
+    if (entityType === 'program') {
+      navigate(`/programs/${entities[0].id}`, { replace: true })
+    } else {
+      navigate(`/study-tracks/${entities[0].id}`, { replace: true })
+    }
+  }, [navigate, programId, studyTrackId, entities, entityType])
 
   useEffect(() => {
     setTab('theses')
-  }, [selectedProgramId])
+  }, [selectedEntityId])
 
-  const selectedProgram = programsUserManages?.find(
-    (program) => program.id === selectedProgramId
+  const selectedEntity = entities?.find(
+    (entity) => entity.id === selectedEntityId
   )
 
-  if (programsAreLoading || !selectedProgram) {
+  if (isLoading || !selectedEntity) {
     return <CircularProgress />
   }
 
   return (
     <Box component="section" sx={{ px: '1rem', py: '2rem', width: '100%' }}>
-      {Boolean(selectedProgram) && (
+      {Boolean(selectedEntity) && (
         <>
           <Stack sx={{ px: '1rem', py: '2rem' }} spacing={3}>
             <Typography component="h1" variant="h4">
-              {selectedProgram.name[language]}
+              {selectedEntity.name[language]}
             </Typography>
 
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -758,8 +776,10 @@ const ProgramOverview = () => {
               >
                 <Tab label={t('theses')} value="theses" />
                 <Tab label={t('navbar:programManager')} value="rights" />
-                <Tab label={t('eventLog:title')} value="logs" />
-                {user?.isAdmin && (
+                {entityType === 'program' && (
+                  <Tab label={t('eventLog:title')} value="logs" />
+                )}
+                {user?.isAdmin && entityType === 'program' && (
                   <Tab
                     label={t('programOverviewPage:configurationsTab')}
                     value="configurations"
@@ -771,7 +791,12 @@ const ProgramOverview = () => {
             {tab === 'theses' && (
               <Box>
                 <ThesesPage
-                  filteringProgramId={selectedProgram.id}
+                  filteringProgramId={
+                    entityType === 'program' ? selectedEntity.id : undefined
+                  }
+                  filteringStudyTrackId={
+                    entityType === 'studyTrack' ? selectedEntity.id : undefined
+                  }
                   noOwnThesesSwitch
                   noAddThesisButton
                 />
@@ -780,22 +805,25 @@ const ProgramOverview = () => {
 
             {tab === 'rights' && (
               <Box>
-                <ProgramManagement
-                  filteringProgramId={selectedProgram.id}
+                <EntityManagement
+                  filteringProgramId={selectedEntity.id}
                   hideTitle
+                  entityType={entityType}
                 />
               </Box>
             )}
 
-            {user?.isAdmin && tab === 'configurations' && (
-              <Box>
-                <ProgramConfigurations program={selectedProgram} />
-              </Box>
-            )}
+            {user?.isAdmin &&
+              tab === 'configurations' &&
+              entityType === 'program' && (
+                <Box>
+                  <ProgramConfigurations program={selectedEntity} />
+                </Box>
+              )}
 
-            {tab === 'logs' && (
+            {tab === 'logs' && entityType === 'program' && (
               <Box>
-                <SingleProgramLogs program={selectedProgram} />
+                <SingleProgramLogs program={selectedEntity} />
               </Box>
             )}
           </Stack>
@@ -805,4 +833,4 @@ const ProgramOverview = () => {
   )
 }
 
-export default ProgramOverview
+export default EntityOverview

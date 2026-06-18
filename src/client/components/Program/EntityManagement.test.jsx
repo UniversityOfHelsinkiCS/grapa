@@ -133,9 +133,9 @@ const {
   useDeleteProgramManagementMutation,
   useUpdateProgramManagementMutation,
 } = await import('../../hooks/useProgramManagementMutation')
-const ProgramManagement = (await import('./ProgramManagement')).default
+const EntityManagement = (await import('./EntityManagement')).default
 
-describe('ProgramManagement', () => {
+describe('EntityManagement component', () => {
   let createProgramManagementMock
   let deleteProgramManagementMock
   let updateProgramManagementMock
@@ -159,7 +159,7 @@ describe('ProgramManagement', () => {
   })
 
   it('renders all existing program managements', () => {
-    render(<ProgramManagement />)
+    render(<EntityManagement filteringProgramId="PROG1" hideTitle />)
 
     expect(
       screen.getByTestId('program-manager-select-input')
@@ -172,7 +172,7 @@ describe('ProgramManagement', () => {
 
   describe('when an existing program management is deleted', () => {
     it('calls corresponding hook to delete program management', async () => {
-      render(<ProgramManagement />)
+      render(<EntityManagement />)
 
       const user = userEvent.setup()
 
@@ -196,7 +196,7 @@ describe('ProgramManagement', () => {
 
   describe('when a new program management is created', () => {
     it('calls corresponding hook to create program management', async () => {
-      render(<ProgramManagement />)
+      render(<EntityManagement />)
 
       const managerSelect = screen.getByTestId('program-manager-select-input')
       const managerInput = within(managerSelect).getByRole('combobox')
@@ -223,7 +223,7 @@ describe('ProgramManagement', () => {
 
   describe('when an existing program management is updated', () => {
     it('calls corresponding hook to update program management', async () => {
-      render(<ProgramManagement />)
+      render(<EntityManagement />)
 
       const toggleThesisApproverButton = screen.getByTestId(
         'toggle-thesis-approver-button-1'

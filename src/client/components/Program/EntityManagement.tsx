@@ -33,6 +33,11 @@ import {
   useDeleteProgramManagementMutation,
   useUpdateProgramManagementMutation,
 } from '../../hooks/useProgramManagementMutation'
+import useStudyTrackManagements from '../../hooks/useStudyTrackManagements'
+import {
+  useCreateStudyTrackManagementMutation,
+  useDeleteStudyTrackManagementMutation,
+} from '../../hooks/useStudyTrackManagementMutation'
 
 import DeleteConfirmation from '../Common/DeleteConfirmation'
 
@@ -44,8 +49,13 @@ import {
 interface Props {
   filteringProgramId?: string
   hideTitle?: boolean
+  entityType?: 'program' | 'studyTrack'
 }
-const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
+const EntityManagement = ({
+  filteringProgramId,
+  hideTitle,
+  entityType = 'program',
+}: Props) => {
   const { t, i18n } = useTranslation()
   const { user, isLoading: userLoading } = useLoggedInUser()
   const { language } = i18n as { language: TranslationLanguage }
@@ -57,28 +67,56 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deletedProgramManagement, setDeletedProgramManagement] = useState(null)
 
-  const { programs } = usePrograms({ includeNotManaged: false })
+  const { programs: allPrograms } = usePrograms({ includeNotManaged: true })
+  const programEntities =
+    allPrograms?.filter((p) => user?.isAdmin || p.isManaged) || []
+  const studyTracks =
+    allPrograms
+      ?.flatMap((p) => p.studyTracks)
+      .filter((st) => user?.isAdmin || st.isManaged) || []
+
+  const entities = entityType === 'program' ? programEntities : studyTracks
+
   const { programManagements } = useProgramManagements(
-    filteringProgramId === 'own'
-      ? {
-          programId: undefined,
-          onlyThesisApprovers: false,
-          limitToEditorsPrograms: true,
-        }
-      : filteringProgramId
+    entityType === 'program'
+      ? filteringProgramId === 'own'
         ? {
-            programId: filteringProgramId,
+            programId: undefined,
             onlyThesisApprovers: false,
-            limitToEditorsPrograms: undefined,
+            limitToEditorsPrograms: true,
           }
-        : undefined
+        : filteringProgramId
+          ? {
+              programId: filteringProgramId,
+              onlyThesisApprovers: false,
+              limitToEditorsPrograms: undefined,
+            }
+          : undefined
+      : undefined
   )
+
+  const { studyTrackManagements } = useStudyTrackManagements(
+    entityType === 'studyTrack' &&
+      filteringProgramId &&
+      filteringProgramId !== 'own'
+      ? { studyTrackId: filteringProgramId }
+      : undefined
+  )
+
+  const managements =
+    entityType === 'program' ? programManagements : studyTrackManagements
+
   const { mutateAsync: createProgramManagement } =
     useCreateProgramManagementMutation()
   const { mutateAsync: deleteProgramManagement } =
     useDeleteProgramManagementMutation()
   const { mutateAsync: updateProgramManagement } =
     useUpdateProgramManagementMutation()
+
+  const { mutateAsync: createStudyTrackManagement } =
+    useCreateStudyTrackManagementMutation()
+  const { mutateAsync: deleteStudyTrackManagement } =
+    useDeleteStudyTrackManagementMutation()
 
   const [userSearch, setUserSearch] = useState('')
   const debouncedSearch = useDebounce(userSearch, 700)
@@ -95,19 +133,26 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
 
   const selectablePrograms =
     filteringProgramId && filteringProgramId !== 'own'
-      ? programs?.filter((program) => program.id === filteringProgramId)
-      : programs
+      ? entities?.filter((program) => program.id === filteringProgramId)
+      : entities
   const isSingleProgramView = Boolean(
     filteringProgramId && filteringProgramId !== 'own'
   )
 
   const handleAddProgramManagement = async () => {
     if (managerCandidate && programId) {
-      await createProgramManagement({
-        userId: managerCandidate.id,
-        programId,
-        isThesisApprover,
-      })
+      if (entityType === 'program') {
+        await createProgramManagement({
+          userId: managerCandidate.id,
+          programId,
+          isThesisApprover,
+        })
+      } else {
+        await createStudyTrackManagement({
+          userId: managerCandidate.id,
+          studyTrackId: programId,
+        })
+      }
       setManagerCandidate(null)
       setUserSearch('')
       if (isSingleProgramView) {
@@ -118,68 +163,77 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
     }
   }
 
-  if (!user || userLoading || !programs || !programManagements) return null
+  if (!user || userLoading || !entities || !managements) return null
   if (!user.isAdmin && !user.managedProgramIds?.length)
     return <Navigate to="/" />
 
   const dataGridLocale = language === 'fi' ? fiFI : enUS
 
-  const columns: GridColDef<ProgramManagementData>[] = [
-    {
-      field: 'more-actions',
-      type: 'actions',
-      headerName: t('programManagementPage:toggleApproval'),
-      sortable: false,
-      width: 157,
-      renderCell: (params) => (
-        <Tooltip
-          arrow
-          PopperProps={{
-            sx: {
-              '& .MuiTooltip-tooltip': {
-                fontSize: '0.9rem',
-              },
-            },
-          }}
-          title={
-            params.row.isThesisApprover
-              ? t('programManagementPage:disallowThesisApprovalButton')
-              : t('programManagementPage:allowThesisApprovalButton')
-          }
-        >
-          <IconButton
-            aria-label="toggle-thesis-approver"
-            type="button"
-            onClick={() =>
-              updateProgramManagement({
-                programManagementId: params.row.id,
-                isThesisApprover: !params.row.isThesisApprover,
-              })
-            }
-            color={params.row.isThesisApprover ? 'success' : 'error'}
-            data-testid={`toggle-thesis-approver-button-${params.row.userId}`}
-          >
-            {params.row.isThesisApprover ? (
-              <HowToRegIcon fontSize="large" />
-            ) : (
-              <HowToRegOutlinedIcon fontSize="large" />
-            )}
-          </IconButton>
-        </Tooltip>
-      ),
-    },
+  const columns: GridColDef<any>[] = [
+    ...(entityType === 'program'
+      ? [
+          {
+            field: 'more-actions',
+            type: 'actions' as const,
+            headerName: t('programManagementPage:toggleApproval'),
+            sortable: false,
+            width: 157,
+            renderCell: (params: any) => (
+              <Tooltip
+                arrow
+                PopperProps={{
+                  sx: {
+                    '& .MuiTooltip-tooltip': {
+                      fontSize: '0.9rem',
+                    },
+                  },
+                }}
+                title={
+                  params.row.isThesisApprover
+                    ? t('programManagementPage:disallowThesisApprovalButton')
+                    : t('programManagementPage:allowThesisApprovalButton')
+                }
+              >
+                <IconButton
+                  aria-label="toggle-thesis-approver"
+                  type="button"
+                  onClick={() =>
+                    updateProgramManagement({
+                      programManagementId: params.row.id,
+                      isThesisApprover: !params.row.isThesisApprover,
+                    })
+                  }
+                  color={params.row.isThesisApprover ? 'success' : 'error'}
+                  data-testid={`toggle-thesis-approver-button-${params.row.userId}`}
+                >
+                  {params.row.isThesisApprover ? (
+                    <HowToRegIcon fontSize="large" />
+                  ) : (
+                    <HowToRegOutlinedIcon fontSize="large" />
+                  )}
+                </IconButton>
+              </Tooltip>
+            ),
+          },
+        ]
+      : []),
     {
       field: 'user',
       headerName: t('userHeader'),
       flex: 1,
-      valueGetter: ({ firstName, lastName, email }) =>
-        `${lastName} ${firstName} ${email ? ` (${email})` : ''}`,
+      valueGetter: (value) =>
+        value
+          ? `${value.lastName} ${value.firstName} ${value.email ? ` (${value.email})` : ''}`
+          : '',
     },
     {
-      field: 'program',
-      headerName: t('programHeader'),
+      field: entityType === 'program' ? 'program' : 'studyTrack',
+      headerName:
+        entityType === 'program'
+          ? t('programHeader')
+          : t('studyTrackHeader', 'Study Track'),
       flex: 1,
-      valueGetter: ({ name }) => name[language],
+      valueGetter: (value) => value?.name?.[language] || '',
     },
     {
       field: 'actions',
@@ -221,7 +275,7 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
       )}
       <DataGrid
         sx={{ mt: hideTitle ? 0 : '2rem' }}
-        rows={programManagements}
+        rows={managements}
         columns={columns}
         pageSizeOptions={[100]}
         localeText={
@@ -278,7 +332,11 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
             <Select
               data-testid="program-select-input"
               labelId="program-select-label"
-              label={t('programManagementPage:programHeader')}
+              label={
+                entityType === 'program'
+                  ? t('programManagementPage:programHeader')
+                  : t('studyTrackHeader', 'Study Track')
+              }
               value={programId ?? ''}
               onChange={(e) => setProgramId(e.target.value as string)}
             >
@@ -294,15 +352,17 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
             </Select>
           </FormControl>
         )}
-        <FormControlLabel
-          control={
-            <Switch
-              checked={isThesisApprover}
-              onChange={(e) => setIsThesisApprover(e.target.checked)}
-            />
-          }
-          label={t('programManagementPage:allowThesisApprovalButton')}
-        />
+        {entityType === 'program' && (
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isThesisApprover}
+                onChange={(e) => setIsThesisApprover(e.target.checked)}
+              />
+            }
+            label={t('programManagementPage:allowThesisApprovalButton')}
+          />
+        )}
         <Button
           type="submit"
           variant="contained"
@@ -324,7 +384,11 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
             setDeletedProgramManagement(null)
           }}
           onDelete={async () => {
-            await deleteProgramManagement(deletedProgramManagement.id)
+            if (entityType === 'program') {
+              await deleteProgramManagement(deletedProgramManagement.id)
+            } else {
+              await deleteStudyTrackManagement(deletedProgramManagement.id)
+            }
             setDeleteDialogOpen(false)
             setDeletedProgramManagement(null)
           }}
@@ -333,7 +397,10 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
           <Box>
             {t('programManagementPage:removeProgramManagementContent', {
               name: `${deletedProgramManagement.user.firstName} ${deletedProgramManagement.user.lastName}`,
-              program: deletedProgramManagement.program.name[language],
+              program:
+                entityType === 'program'
+                  ? deletedProgramManagement.program?.name[language]
+                  : deletedProgramManagement.studyTrack?.name[language],
             })}
           </Box>
         </DeleteConfirmation>
@@ -342,4 +409,4 @@ const ProgramManagement = ({ filteringProgramId, hideTitle }: Props) => {
   )
 }
 
-export default ProgramManagement
+export default EntityManagement

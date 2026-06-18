@@ -60,7 +60,7 @@ jest.unstable_mockModule(
   })
 )
 
-const ProgramOverview = (await import('./ProgramOverview')).default
+const EntityOverview = (await import('./EntityOverview')).default
 const { useUpdateProgramMutation: useUpdateProgramMutation } =
   await import('../../hooks/usePrograms')
 
@@ -69,14 +69,14 @@ const renderProgramOverview = (initialEntry) =>
     <MemoryRouter initialEntries={[initialEntry]}>
       <Routes>
         <Route path="/programs">
-          <Route index element={<ProgramOverview />} />
-          <Route path=":programId" element={<ProgramOverview />} />
+          <Route index element={<EntityOverview />} />
+          <Route path=":programId" element={<EntityOverview />} />
         </Route>
       </Routes>
     </MemoryRouter>
   )
 
-describe('ProgramOverview', () => {
+describe('EntityOverview', () => {
   beforeEach(() => {
     initializeI18n()
     useLoggedInUserMock.mockReturnValue({
