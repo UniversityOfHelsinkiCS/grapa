@@ -16,6 +16,7 @@ import thesisRouter from './thesis'
 import attachmentRouter from './attachment'
 import programRouter from './program'
 import programManagementRouter from './programManagement'
+import studyTrackManagementRouter from './studyTrackManagement'
 import departmentRouter from './department'
 import departmentAdminRouter from './departmentAdmin'
 import ethesisAdminRouter from './ethesisAdmins'
@@ -57,6 +58,7 @@ router.use('/logout', logoutRouter)
 router.use('/user', userRouter)
 router.use('/users', usersRouter)
 router.use('/program-managements', programManagementRouter)
+router.use('/study-track-managements', studyTrackManagementRouter)
 
 // These routes are available to those who have active study rights
 router.use('/student', studentRouter)
