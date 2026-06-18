@@ -15,7 +15,9 @@ import {
   EthesisAdmin,
   Author,
   Approver,
+  StudyTrackManagement,
 } from '../db/models'
+import { getSecondaryStudyTrackIds } from '../util/studyTracks'
 import { ThesisData, User as UserType } from '../types'
 import sendEmail from '../mailer/pate'
 import {
@@ -100,6 +102,7 @@ export const getOrdering = ({
 interface FetchThesisProps {
   thesisId?: string
   programId?: string
+  studyTrackId?: string
   departmentId?: string
   programNamePartial?: string
   topicPartial?: string
@@ -115,6 +118,7 @@ interface FetchThesisProps {
 export const getFindThesesOptions = async ({
   thesisId,
   programId,
+  studyTrackId,
   departmentId,
   programNamePartial,
   topicPartial,
@@ -239,6 +243,21 @@ export const getFindThesesOptions = async ({
   if (programId) {
     whereClause.programId = programId
   }
+  if (studyTrackId) {
+    const studyTrack = await StudyTrack.findByPk(studyTrackId, {
+      include: [{ model: Program, as: 'program' }],
+    })
+    const options =
+      (studyTrack as any)?.Program?.options ||
+      (studyTrack as any)?.program?.options
+    const secondaryIds = getSecondaryStudyTrackIds(options, studyTrackId)
+
+    if (secondaryIds.length > 0) {
+      whereClause.studyTrackId = { [Op.in]: [studyTrackId, ...secondaryIds] }
+    } else {
+      whereClause.studyTrackId = studyTrackId
+    }
+  }
   if (topicPartial) {
     whereClause.topic = {
       [Op.iLike]: `%${topicPartial.trim()}%`,
@@ -272,6 +291,31 @@ export const getFindThesesOptions = async ({
 
     const programIds = programManagement.map((pm) => pm.programId)
 
+    const studyTrackManagement =
+      onlySupervised || onlySeminarSupervised || onlyAuthored
+        ? []
+        : await StudyTrackManagement.findAll({
+            attributes: ['studyTrackId'],
+            where: { userId: actionUser.id },
+          })
+
+    const studyTrackIds = studyTrackManagement.map((stm) => stm.studyTrackId)
+
+    const expandedStudyTrackIds = new Set<string>(studyTrackIds)
+    if (studyTrackIds.length > 0) {
+      const studyTracks = await StudyTrack.findAll({
+        where: { id: { [Op.in]: studyTrackIds } },
+        include: [{ model: Program, as: 'program' }],
+      })
+
+      for (const st of studyTracks) {
+        const options =
+          (st as any).Program?.options || (st as any).program?.options
+        const secondaryIds = getSecondaryStudyTrackIds(options, st.id)
+        secondaryIds.forEach((id) => expandedStudyTrackIds.add(id))
+      }
+    }
+
     if (onlySeminarSupervised) {
       andConditions.push(
         literal(
@@ -293,6 +337,9 @@ export const getFindThesesOptions = async ({
           `EXISTS (SELECT 1 FROM "${Approver.tableName}" WHERE "${Approver.tableName}"."thesis_id" = "Thesis"."id" AND "${Approver.tableName}"."user_id" = '${actionUser.id}')`
         ),
         programIds?.length ? { programId: programIds } : {},
+        expandedStudyTrackIds.size
+          ? { studyTrackId: Array.from(expandedStudyTrackIds) }
+          : {},
       ]
     }
   }

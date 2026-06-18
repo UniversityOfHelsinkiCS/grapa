@@ -10,6 +10,7 @@ import Program from './Program'
 import StudyTrack from './StudyTrack'
 import Grader from './Grader'
 import ProgramManagement from './ProgramManagement'
+import StudyTrackManagement from './StudyTrackManagement'
 import Department from './Department'
 import DepartmentAdmin from './DepartmentAdmin'
 import EventLog from './EventLog'
@@ -101,6 +102,10 @@ Program.hasMany(Thesis, { as: 'theses' })
 Program.hasMany(StudyTrack, { as: 'studyTracks' })
 StudyTrack.belongsTo(Program, { as: 'program' })
 
+StudyTrackManagement.belongsTo(User, { as: 'user' })
+StudyTrackManagement.belongsTo(StudyTrack, { as: 'studyTrack' })
+StudyTrack.hasMany(StudyTrackManagement)
+
 EventLog.belongsTo(User, { as: 'user' })
 EventLog.belongsTo(Thesis, { as: 'thesis' })
 Thesis.hasMany(EventLog)
@@ -117,6 +122,7 @@ export {
   StudyTrack,
   Grader,
   ProgramManagement,
+  StudyTrackManagement,
   Department,
   DepartmentAdmin,
   EventLog,

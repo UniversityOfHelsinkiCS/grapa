@@ -9,9 +9,10 @@ import {
 } from '../types'
 import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMutlipartFormData from '../middleware/attachment'
-import { Thesis, EventLog } from '../db/models'
+import { Thesis, EventLog, Program } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisDataMiddleware } from '../validators/thesis'
+import { getPrimaryStudyTrackId } from '../util/studyTracks'
 
 import { getPaginatedTheses, createThesis } from '../services/thesisService'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
@@ -54,6 +55,7 @@ thesisRouter.get(
       topicPartial: req.query.topicPartial as string,
       programNamePartial: req.query.programNamePartial as string,
       programId: req.query.programId as string,
+      studyTrackId: req.query.studyTrackId as string,
       language: req.query.language as string,
       onlyAuthored: req.query.onlyAuthored as string,
       onlySupervised: req.query.onlySupervised as string,
@@ -116,6 +118,13 @@ thesisRouter.post(
   async (req: ServerPostRequest, res: Response) => {
     const thesisData = req.body
 
+    if (thesisData.studyTrackId && thesisData.programId) {
+      const program = await Program.findByPk(thesisData.programId)
+      const options = (program as any)?.options
+      thesisData.studyTrackId =
+        getPrimaryStudyTrackId(options, thesisData.studyTrackId) || undefined
+    }
+
     const createdThesis = await sequelize.transaction(async (t) => {
       const newThesis = await createThesis(thesisData, t)
 
@@ -152,6 +161,13 @@ thesisRouter.put(
   async (req: ServerPutRequest, res) => {
     const { id } = req.params
     const thesisData = req.body
+
+    if (thesisData.studyTrackId && thesisData.programId) {
+      const program = await Program.findByPk(thesisData.programId)
+      const options = (program as any)?.options
+      thesisData.studyTrackId =
+        getPrimaryStudyTrackId(options, thesisData.studyTrackId) || undefined
+    }
 
     const currentUser = req.user
     if (!id) res.status(404).send(' id  not found')

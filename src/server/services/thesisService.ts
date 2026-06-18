@@ -58,6 +58,7 @@ export interface GetPaginatedThesesParams {
   offset?: number | string
   language?: string
   programId?: string
+  studyTrackId?: string
   programNamePartial?: string
   topicPartial?: string
   authorsPartial?: string
@@ -79,6 +80,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     offset = 0,
     language = 'en',
     programId,
+    studyTrackId,
     programNamePartial,
     topicPartial,
     authorsPartial,
@@ -128,6 +130,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
 
   const options = await getFindThesesOptions({
     programId,
+    studyTrackId,
     departmentId,
     programNamePartial,
     topicPartial,

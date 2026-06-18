@@ -2,10 +2,11 @@ import express from 'express'
 import { GraderData, ServerPostRequest, ThesisData, User } from '../types'
 import { sequelize } from '../db/connection'
 
-import { EventLog, Thesis } from '../db/models'
+import { EventLog, Thesis, Program } from '../db/models'
 
 import { RequestWithUser } from '../types'
 import withStudyRight from '../middleware/withStudyRight'
+import { getPrimaryStudyTrackId } from '../util/studyTracks'
 
 import {
   getPaginatedTheses,
@@ -166,6 +167,13 @@ studentRouter.post(
   async (req: ServerPostRequest, res: any) => {
     const thesisData = req.body
 
+    if (thesisData.studyTrackId && thesisData.programId) {
+      const program = await Program.findByPk(thesisData.programId)
+      const options = (program as any)?.options
+      thesisData.studyTrackId =
+        getPrimaryStudyTrackId(options, thesisData.studyTrackId) || undefined
+    }
+
     try {
       validateThesisDataStudent(thesisData, req.user)
     } catch {
@@ -281,6 +289,13 @@ studentRouter.put(
     const { id } = req.params
     const user = req.user
     let thesisData = req.body
+
+    if (thesisData.studyTrackId && thesisData.programId) {
+      const program = await Program.findByPk(thesisData.programId)
+      const options = (program as any)?.options
+      thesisData.studyTrackId =
+        getPrimaryStudyTrackId(options, thesisData.studyTrackId) || undefined
+    }
 
     // this is only to be used when making minor modifications to the original thesis from backend
     // and data used for the modification is validated separately!

@@ -125,6 +125,7 @@ export interface StudyTrackData {
   id: string
   name: TranslatedName
   programId: string
+  isManaged?: boolean
 }
 
 export interface ProgramData {
@@ -132,6 +133,7 @@ export interface ProgramData {
   name: TranslatedName
   options: Record<string, unknown>
   studyTracks: StudyTrackData[]
+  allStudyTracks?: StudyTrackData[]
   isFavorite: boolean
   isManaged: boolean
 }

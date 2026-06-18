@@ -1,5 +1,11 @@
-import { Program, ProgramManagement, StudyTrack } from '../db/models'
+import {
+  Program,
+  ProgramManagement,
+  StudyTrack,
+  StudyTrackManagement,
+} from '../db/models'
 import { Includeable, literal } from 'sequelize'
+import { getVisibleStudyTracks } from '../util/studyTracks'
 
 export const getProgram = async (id: string, language: string) => {
   const includes: Includeable[] = [
@@ -23,7 +29,16 @@ export const getProgram = async (id: string, language: string) => {
     bind: { language },
   })
 
-  return program
+  const jsonProgram = program?.toJSON() as any
+  if (jsonProgram && jsonProgram.studyTracks) {
+    jsonProgram.allStudyTracks = jsonProgram.studyTracks
+    jsonProgram.studyTracks = getVisibleStudyTracks(
+      jsonProgram.options,
+      jsonProgram.studyTracks
+    )
+  }
+
+  return jsonProgram
 }
 
 export const getPrograms = async (
@@ -79,11 +94,32 @@ export const getPrograms = async (
     )
   )
 
-  const programsWithFavorites = programs.map((program) => ({
-    ...program.toJSON(),
-    isFavorite: favoriteProgramIds.includes(program.id),
-    isManaged: managedProgramIds.has(program.id),
-  }))
+  const managedStudyTracks = await StudyTrackManagement.findAll({
+    attributes: ['studyTrackId'],
+    where: { userId },
+    raw: true,
+  })
+  const managedStudyTrackIds = new Set(
+    managedStudyTracks.map((stm) => stm.studyTrackId)
+  )
+
+  const programsWithFavorites = programs.map((program) => {
+    const jsonProgram = program.toJSON() as any
+    return {
+      ...jsonProgram,
+      allStudyTracks: jsonProgram.studyTracks,
+      studyTracks: getVisibleStudyTracks(
+        jsonProgram.options,
+        jsonProgram.studyTracks
+      ).map((st: any) => ({
+        ...st,
+        isManaged:
+          managedProgramIds.has(program.id) || managedStudyTrackIds.has(st.id),
+      })),
+      isFavorite: favoriteProgramIds.includes(program.id),
+      isManaged: managedProgramIds.has(program.id),
+    }
+  })
 
   return programsWithFavorites
 }
