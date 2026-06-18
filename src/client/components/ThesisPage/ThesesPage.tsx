@@ -32,13 +32,14 @@ import DeleteConfirmation from '../Common/DeleteConfirmation'
 
 import { useDebounce } from '../../hooks/useDebounce'
 import EthesisConfirmation from '../Common/EthesisConfirmation'
-import { getVisibleStudyTracks } from '../../util/studyTracks'
+
 import PrethesisTable from '../PrethesisTable/PrethesisTable'
 
 const DEFAULT_PAGE_SIZE = 25
 
 interface Props {
   filteringProgramId?: string
+  filteringStudyTrackId?: string
   filteringDepartmentId?: string
   noOwnThesesSwitch?: boolean
   noAddThesisButton?: boolean
@@ -49,6 +50,7 @@ interface Props {
 }
 const ThesesPage = ({
   filteringProgramId,
+  filteringStudyTrackId,
   filteringDepartmentId,
   noOwnThesesSwitch,
   noAddThesisButton,
@@ -111,6 +113,7 @@ const ThesesPage = ({
   } = usePaginatedTheses({
     order,
     programId: filteringProgramId,
+    studyTrackId: filteringStudyTrackId,
     departmentId: filteringDepartmentId,
     status: filterStatus,
     topicPartial: debouncedFilterTopic,
@@ -212,7 +215,7 @@ const ThesesPage = ({
 
     setNewThesis({
       programId: programOptions[0].id,
-      studyTrackId: getVisibleStudyTracks(programOptions[0])[0]?.id ?? null,
+      studyTrackId: programOptions[0]?.studyTracks?.[0]?.id ?? null,
       supervisions: [
         {
           user: currentUser,

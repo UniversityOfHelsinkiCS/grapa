@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 interface UsePaginatedThesesParams {
   order: { sortBy?: string; sortOrder?: 'asc' | 'desc' }
   programId?: string
+  studyTrackId?: string
   departmentId?: string
   programNamePartial?: string
   topicPartial?: string
@@ -35,6 +36,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     params.offset,
     params.limit,
     params.programId,
+    params.studyTrackId,
     params.departmentId,
     params.status,
     params.topicPartial,
@@ -62,6 +64,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
         offset: params.offset,
         limit: params.limit,
         programId: params.programId,
+        studyTrackId: params.studyTrackId,
         departmentId: params.departmentId,
         status: params.status,
         topicPartial: params.topicPartial,

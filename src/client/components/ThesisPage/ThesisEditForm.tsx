@@ -35,10 +35,7 @@ import { useDebounce } from '../../hooks/useDebounce'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useProgramManagements from '../../hooks/useProgramManagements'
 import { getFormErrors } from './util'
-import {
-  getPrimaryStudyTrackId,
-  getVisibleStudyTracks,
-} from '../../util/studyTracks'
+
 import GraderSelect from './GraderSelect/GraderSelect'
 import SeminarSupervisorSelect from './SeminarSupervisorSelect/SeminarSupervisorSelect'
 import ErrorSummary from '../Common/ErrorSummary'
@@ -67,11 +64,7 @@ const ThesisEditForm: FC<{
   const { language } = i18n as { language: TranslationLanguage }
   const [formErrors, setFormErrors] = useState<ZodIssue[]>([])
   const [editedThesis, setEditedThesis] = useState<ThesisData>(() => {
-    const thesis = { ...initialThesis }
-    const program = programs?.find((p) => p.id === thesis.programId)
-    thesis.studyTrackId =
-      getPrimaryStudyTrackId(program, thesis.studyTrackId) ?? null
-    return thesis
+    return { ...initialThesis }
   })
   const [userSearch, setUserSearch] = useState('')
   const { programManagements: programManagementsOfApprovers } =
@@ -172,7 +165,7 @@ const ThesisEditForm: FC<{
   const sortedStudyTracks =
     selectedProgram && selectedProgram.studyTracks?.length
       ? sortBy(
-          getVisibleStudyTracks(selectedProgram),
+          selectedProgram?.studyTracks,
           (studyTrack) => studyTrack.name[language]
         )
       : []
@@ -276,7 +269,7 @@ const ThesisEditForm: FC<{
                   const newMaxGraders =
                     Number(newProgram?.options?.numberOfGraders) || 2
 
-                  const newStudyTracks = getVisibleStudyTracks(newProgram)
+                  const newStudyTracks = newProgram?.studyTracks || []
                   const disableStudyTracks = Boolean(
                     newProgram?.options?.disableStudyTracks
                   )
