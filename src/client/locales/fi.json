@@ -104,6 +104,8 @@
     "supervisionStatisticsTab": "Ohjaustilastot"
   },
   "programOverviewPage": {
+    "configurationsWarning": "Ole varovainen muokatessasi näitä asetuksia. Ne vaikuttavat kaikkiin ohjelman käyttäjiin ja tutkielmalomakkeisiin.",
+    "configurationsAcknowledge": "Olen ymmärtänyt varoituksen ja haluan muokata asetuksia",
     "configurationsTab": "Asetukset",
     "seminar": {
       "toggle": "Seminaari",

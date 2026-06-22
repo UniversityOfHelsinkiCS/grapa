@@ -114,6 +114,9 @@ describe('EntityOverview', () => {
 
     await user.click(screen.getByRole('tab', { name: 'Asetukset' }))
 
+    const ackButton = screen.getByTestId('acknowledge-configurations-warning')
+    await user.click(ackButton)
+
     const seminarToggle = screen.getByRole('switch', {
       name: 'tutkielman tulee sisältää seminaarin ohjaaja',
     })

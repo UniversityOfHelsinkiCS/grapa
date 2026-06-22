@@ -24,6 +24,7 @@ import {
   Tooltip,
   TextField,
   Autocomplete,
+  Alert,
 } from '@mui/material'
 import usePrograms, { useUpdateProgramMutation } from '../../hooks/usePrograms'
 
@@ -719,6 +720,8 @@ const EntityOverview = () => {
   const [tab, setTab] = useState<
     'theses' | 'rights' | 'configurations' | 'logs'
   >('theses')
+  const [configurationsAcknowledged, setConfigurationsAcknowledged] =
+    useState(false)
 
   useEffect(() => {
     if (!entities?.length) {
@@ -815,7 +818,23 @@ const EntityOverview = () => {
 
             {tab === 'configurations' && entityType === 'program' && (
               <Box>
-                <ProgramConfigurations program={selectedEntity} />
+                <Alert severity="warning" sx={{ mb: 2 }}>
+                  <Box sx={{ mb: !configurationsAcknowledged ? 2 : 0 }}>
+                    {t('programOverviewPage:configurationsWarning')}
+                  </Box>
+                  {!configurationsAcknowledged && (
+                    <Button
+                      variant="contained"
+                      onClick={() => setConfigurationsAcknowledged(true)}
+                      data-testid="acknowledge-configurations-warning"
+                    >
+                      {t('programOverviewPage:configurationsAcknowledge')}
+                    </Button>
+                  )}
+                </Alert>
+                {configurationsAcknowledged && (
+                  <ProgramConfigurations program={selectedEntity} />
+                )}
               </Box>
             )}
 

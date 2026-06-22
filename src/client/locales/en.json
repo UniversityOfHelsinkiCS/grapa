@@ -106,6 +106,8 @@
     "supervisionStatisticsTab": "Supervision statistics"
   },
   "programOverviewPage": {
+    "configurationsWarning": "Please be careful when modifying these configurations. They affect all users and thesis forms within the program.",
+    "configurationsAcknowledge": "I understand the risks and want to modify configurations",
     "configurationsTab": "Configurations",
     "seminar": {
       "toggle": "Seminar",
