@@ -37,6 +37,7 @@ StudyTracks.init(
     sisuId: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
     },
     programId: {
       type: DataTypes.STRING,

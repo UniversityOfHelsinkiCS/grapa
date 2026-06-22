@@ -18,6 +18,12 @@ class StudyRight extends Model<
 
   declare userId: string
 
+  declare studyTrackId: string
+
+  declare studyTrackCode: string
+
+  declare baseId: string
+
   declare startDate: string
 
   declare endDate: string
@@ -54,6 +60,23 @@ StudyRight.init(
         key: 'id',
       },
       onDelete: 'CASCADE',
+    },
+    studyTrackId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      references: {
+        model: 'study_tracks',
+        key: 'sisu_id',
+      },
+      onDelete: 'CASCADE',
+    },
+    studyTrackCode: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    baseId: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     startDate: {
       type: DataTypes.DATE,
