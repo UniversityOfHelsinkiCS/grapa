@@ -14,6 +14,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useEditThesisMutation } from '../../../hooks/useThesesMutation'
 import { useState } from 'react'
+import { TranslationLanguage } from '@backend/types'
 
 interface ProgressViewProps {
   thesis: any
@@ -24,7 +25,8 @@ export const ProgressView = ({
   thesis,
   isStudentView = false,
 }: ProgressViewProps) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { language } = i18n as { language: TranslationLanguage }
   const editThesisMutation = useEditThesisMutation(isStudentView)
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
 
@@ -35,14 +37,18 @@ export const ProgressView = ({
     thesis.program.options?.allowStudentStartedProcess
 
   const programMilestones = thesis.program.options?.milestones?.versions.at(
-    thesis.milestoneVersion ? thesis.milestoneVersion : -1
+    thesis.milestoneVersion != null ? thesis.milestoneVersion : -1
   )
 
   const milestones =
     useMilestones && programMilestones
       ? programMilestones.map((milestone: { value: any }, index: number) => {
+          const val = milestone.value
+          const description =
+            typeof val === 'string' ? val : val[language] || val.en || ''
+
           return {
-            description: milestone.value,
+            description,
             milestone_index: index + 1,
             milestone: true,
             name: `${t('progressView:milestone')} ${index + 1}`,

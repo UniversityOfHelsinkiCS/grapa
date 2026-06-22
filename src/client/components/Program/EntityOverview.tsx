@@ -72,6 +72,7 @@ interface FeatureFlagControlProps {
   feature: string
   translation: any
   versioned?: boolean
+  isMultilingualInput?: boolean
 }
 
 const FeatureFlagControl = ({
@@ -167,16 +168,29 @@ const ListInput = ({
   feature,
   translation,
   versioned,
+  isMultilingualInput = false,
 }: FeatureFlagControlProps) => {
-  const [listValues, setListValues] = useState(
-    program.options && program.options[feature]
-      ? versioned
-        ? program.options[feature].versions
-          ? program.options[feature].versions.at(-1)
-          : []
-        : program.options[feature]
-      : []
-  )
+  const [listValues, setListValues] = useState(() => {
+    let initial =
+      program.options && program.options[feature]
+        ? versioned
+          ? program.options[feature].versions
+            ? program.options[feature].versions.at(-1)
+            : []
+          : program.options[feature]
+        : []
+
+    if (isMultilingualInput) {
+      initial = initial.map((item: any) => {
+        const val = item.value
+        if (typeof val === 'string') {
+          return { value: { fi: val, en: val, sv: val } }
+        }
+        return item
+      })
+    }
+    return initial
+  })
 
   const [pendingValue, setPendingValue] = useState<any | null>(null)
 
@@ -257,6 +271,39 @@ const ListInput = ({
                     width: '100%',
                   }}
                 />
+              ) : isMultilingualInput ? (
+                <Stack direction="column" sx={{ width: '100%', gap: 1 }}>
+                  <Typography variant="subtitle2">
+                    {`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
+                  </Typography>
+                  {['fi', 'en', 'sv'].map((lang) => (
+                    <TextField
+                      key={lang}
+                      size="small"
+                      variant="outlined"
+                      label={lang.toUpperCase()}
+                      value={value.value?.[lang] || ''}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        setListValues(
+                          listValues.map((v: any, i: number) => {
+                            if (i === index) {
+                              return {
+                                ...v,
+                                value: {
+                                  ...v.value,
+                                  [lang]: event.target.value,
+                                },
+                              }
+                            }
+                            return v
+                          })
+                        )
+                      }}
+                    />
+                  ))}
+                </Stack>
               ) : (
                 <TextField
                   variant="outlined"
@@ -264,7 +311,7 @@ const ListInput = ({
                   value={value.value}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                     setListValues(
-                      listValues.map((v, i) => {
+                      listValues.map((v: any, i: number) => {
                         return i == index ? { value: event.target.value } : v
                       })
                     )
@@ -284,27 +331,29 @@ const ListInput = ({
                   )
                 }}
               >
-                Poista
+                {translation('common:removeButton')}
               </Button>
             </Stack>
           )
         })}
         <Stack direction="row" sx={{ gap: '1rem' }}>
           <Button variant="contained" onClick={handleSave}>
-            Tallenna
+            {translation('common:submitButton')}
           </Button>
           <Button
             variant="contained"
             onClick={() => {
               setListValues([
                 ...listValues,
-                {
-                  value: '',
-                },
+                isDateInput
+                  ? { value: null }
+                  : isMultilingualInput
+                    ? { value: { fi: '', en: '', sv: '' } }
+                    : { value: '' },
               ])
             }}
           >
-            Lisää kohde
+            {translation('common:addItem')}
           </Button>
         </Stack>
       </Stack>
@@ -606,10 +655,11 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
         {program.options?.useMilestones && (
           <ListInput
             feature="milestones"
-            versioned={true}
+            isMultilingualInput
             program={program}
-            translation={t}
             updateMutation={updateProgramOptionsMutation}
+            translation={t}
+            versioned
           ></ListInput>
         )}
 
