@@ -72,7 +72,7 @@ const EntityManagement = ({
     allPrograms?.filter((p) => user?.isAdmin || p.isManaged) || []
   const studyTracks =
     allPrograms
-      ?.flatMap((p) => p.studyTracks)
+      ?.flatMap((p) => p.studyTracks || [])
       .filter((st) => user?.isAdmin || st.isManaged) || []
 
   const entities = entityType === 'program' ? programEntities : studyTracks

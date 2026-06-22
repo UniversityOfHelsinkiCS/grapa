@@ -52,10 +52,10 @@ jest.unstable_mockModule(
 )
 
 jest.unstable_mockModule(
-  './src/client/components/Program/ProgramManagement',
+  './src/client/components/Program/EntityManagement',
   () => ({
     default: jest.fn(({ filteringProgramId, hideTitle }) => (
-      <div data-testid="program-management">{`${filteringProgramId}-${String(hideTitle)}`}</div>
+      <div data-testid="entity-management">{`${filteringProgramId}-${String(hideTitle)}`}</div>
     )),
   })
 )
@@ -91,7 +91,7 @@ describe('EntityOverview', () => {
     expect(screen.queryByTestId('program-select-input')).not.toBeInTheDocument()
     expect(screen.getByTestId('theses-page')).toHaveTextContent('program-2')
     expect(screen.getByText('Ohjelma kaksi')).toBeInTheDocument()
-    expect(screen.queryByTestId('program-management')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('entity-management')).not.toBeInTheDocument()
   })
 
   it('shows the embedded rights view in its own tab', async () => {
@@ -100,7 +100,7 @@ describe('EntityOverview', () => {
     const user = userEvent.setup()
     await user.click(screen.getByRole('tab', { name: 'Ohjelmavastaavat' }))
 
-    expect(screen.getByTestId('program-management')).toHaveTextContent(
+    expect(screen.getByTestId('entity-management')).toHaveTextContent(
       'program-2-true'
     )
     expect(screen.queryByTestId('theses-page')).not.toBeInTheDocument()

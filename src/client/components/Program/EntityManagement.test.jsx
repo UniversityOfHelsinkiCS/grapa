@@ -52,6 +52,7 @@ jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
     programs: [
       {
         id: 1,
+        isManaged: true,
         name: {
           en: "Bachelor's Programme in Mathematical Sciences",
           fi: "Bachelor's Programme in Mathematical Sciences",
@@ -103,6 +104,32 @@ jest.unstable_mockModule('./src/client/hooks/useProgramManagements', () => ({
   }),
 }))
 
+jest.unstable_mockModule('./src/client/hooks/useStudyTrackManagements', () => ({
+  default: jest.fn().mockReturnValue({
+    studyTrackManagements: [
+      {
+        id: 1,
+        studyTrackId: 'test-study-track1',
+        userId: 1,
+        isThesisApprover: false,
+        studyTrack: {
+          id: 'test-study-track1',
+          name: {
+            en: 'Test Track 1',
+            fi: 'Testi opintosuunta 1',
+          },
+        },
+        user: {
+          id: 1,
+          firstName: 'John',
+          lastName: 'Doe',
+          username: 'johndoe',
+        },
+      },
+    ],
+  }),
+}))
+
 jest.unstable_mockModule(
   './src/client/hooks/useProgramManagementMutation',
   () => ({
@@ -113,6 +140,21 @@ jest.unstable_mockModule(
       mutateAsync: jest.fn(),
     }),
     useUpdateProgramManagementMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+  })
+)
+
+jest.unstable_mockModule(
+  './src/client/hooks/useStudyTrackManagementMutation',
+  () => ({
+    useCreateStudyTrackManagementMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+    useDeleteStudyTrackManagementMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+    useUpdateStudyTrackManagementMutation: jest.fn().mockReturnValue({
       mutateAsync: jest.fn(),
     }),
   })
@@ -214,7 +256,7 @@ describe('EntityManagement component', () => {
 
       const createButton = screen.getByTestId('add-program-management-button')
       expect(createButton).toBeInTheDocument()
-      expect(createButton).toBeEnabled()
+      await waitFor(() => expect(createButton).toBeEnabled())
       await userEvent.click(createButton)
 
       expect(createProgramManagementMock).toHaveBeenCalledTimes(1)

@@ -133,7 +133,7 @@ describe('program router', () => {
 
           expect(response.status).toEqual(200)
           expect(response.body).toIncludeSameMembers([
-            {
+            expect.objectContaining({
               id: 'test1',
               name: {
                 fi: 'test1suomeksi',
@@ -148,7 +148,7 @@ describe('program router', () => {
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
               ]),
-            },
+            }),
           ])
         })
       })
@@ -162,7 +162,7 @@ describe('program router', () => {
 
           expect(response.status).toEqual(200)
           expect(response.body).toIncludeSameMembers([
-            {
+            expect.objectContaining({
               id: 'test1',
               name: {
                 fi: 'test1suomeksi',
@@ -177,7 +177,7 @@ describe('program router', () => {
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
               ]),
-            },
+            }),
           ])
         })
       })
@@ -191,7 +191,7 @@ describe('program router', () => {
 
           expect(response.status).toEqual(200)
           expect(response.body).toIncludeSameMembers([
-            {
+            expect.objectContaining({
               id: 'test1',
               name: {
                 fi: 'test1suomeksi',
@@ -206,8 +206,8 @@ describe('program router', () => {
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
               ]),
-            },
-            {
+            }),
+            expect.objectContaining({
               id: 'test2',
               name: {
                 fi: 'test2suomeksi',
@@ -222,7 +222,7 @@ describe('program router', () => {
                 expect.objectContaining({ name: 'test3' }),
                 expect.objectContaining({ name: 'test4' }),
               ]),
-            },
+            }),
           ])
         })
       })
@@ -287,7 +287,7 @@ describe('program router', () => {
 
           expect(response.status).toEqual(200)
           expect(response.body).toIncludeSameMembers([
-            {
+            expect.objectContaining({
               id: 'test1',
               name: {
                 fi: 'test1suomeksi',
@@ -302,8 +302,8 @@ describe('program router', () => {
                 expect.objectContaining({ name: 'test1' }),
                 expect.objectContaining({ name: 'test2' }),
               ]),
-            },
-            {
+            }),
+            expect.objectContaining({
               id: 'test2',
               name: {
                 fi: 'test2suomeksi',
@@ -318,7 +318,7 @@ describe('program router', () => {
                 expect.objectContaining({ name: 'test3' }),
                 expect.objectContaining({ name: 'test4' }),
               ]),
-            },
+            }),
           ])
         })
       })

@@ -707,8 +707,8 @@ const EntityOverview = () => {
     allPrograms?.filter((p) => user?.isAdmin || p.isManaged) || []
   const studyTracksUserManages =
     allPrograms
-      ?.flatMap((p) => p.studyTracks)
-      .filter((st) => user?.isAdmin || st.isManaged) || []
+      ?.flatMap((p) => p.studyTracks || [])
+      .filter((st) => st && (user?.isAdmin || st.isManaged)) || []
 
   const entities =
     entityType === 'program' ? programsUserManages : studyTracksUserManages
