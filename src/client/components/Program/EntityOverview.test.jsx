@@ -141,17 +141,4 @@ describe('EntityOverview', () => {
       expect(screen.getByTestId('theses-page')).toHaveTextContent('program-1')
     })
   })
-
-  it('hides the configurations tab for non-admin users', () => {
-    useLoggedInUserMock.mockReturnValue({
-      user: { isAdmin: false },
-      isLoading: false,
-    })
-
-    renderProgramOverview('/programs/program-2')
-
-    expect(
-      screen.queryByRole('tab', { name: 'Asetukset' })
-    ).not.toBeInTheDocument()
-  })
 })

@@ -779,7 +779,7 @@ const EntityOverview = () => {
                 {entityType === 'program' && (
                   <Tab label={t('eventLog:title')} value="logs" />
                 )}
-                {user?.isAdmin && entityType === 'program' && (
+                {entityType === 'program' && (
                   <Tab
                     label={t('programOverviewPage:configurationsTab')}
                     value="configurations"
@@ -813,13 +813,11 @@ const EntityOverview = () => {
               </Box>
             )}
 
-            {user?.isAdmin &&
-              tab === 'configurations' &&
-              entityType === 'program' && (
-                <Box>
-                  <ProgramConfigurations program={selectedEntity} />
-                </Box>
-              )}
+            {tab === 'configurations' && entityType === 'program' && (
+              <Box>
+                <ProgramConfigurations program={selectedEntity} />
+              </Box>
+            )}
 
             {tab === 'logs' && entityType === 'program' && (
               <Box>
