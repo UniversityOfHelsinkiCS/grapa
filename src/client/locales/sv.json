@@ -1,0 +1,420 @@
+{
+  "common": {
+    "appName": "Prethesis",
+    "author": "Skribent",
+    "contactInfo": "Kontaktuppgifter",
+    "grader": "Bedömare {{index}}",
+    "supervisor": "Handledare {{index}}",
+    "userSearchNoOptions": "Skriv minst 5 tecken för att söka efter användare",
+    "userSearchExtPersonHint": "Hittade du inte personen du letade efter? Lägg till dem som en extern person",
+    "userHeader": "Användare",
+    "programHeader": "Utbildningsprogram",
+    "studyTrackHeader": "Studieinriktning",
+    "departmentHeader": "Avdelning",
+    "topicHeader": "Ämne",
+    "authorsHeader": "Skribent",
+    "statusHeader": "Skede",
+    "startDateHeader": "Startdatum",
+    "supervisorHeader": "Handledare",
+    "supervisionPercentageHeader": "Handledningsprocent",
+    "supervisionsTable": "Handledningar",
+    "targetDateHeader": "Måldatum",
+    "durationHeader": "Längd (dagar)",
+    "completedDateHeader": "Färdig",
+    "averageDuration": "Avhandlingens genomsnittliga längd: {{days}} dagar",
+    "enabled": "Aktiverad",
+    "otherSettings": "Andra inställningar",
+    "editButton": "Redigera",
+    "sendDraftButton": "Skicka förslag",
+    "approveButton": "Godkänn",
+    "deleteButton": "Ta bort",
+    "cancelButton": "Avbryt",
+    "submitButton": "Skicka in",
+    "saving": "Sparar...",
+    "saveButton": "Spara",
+    "addItem": "Lägg till",
+    "removeThesisTitle": "Ta bort avhandling",
+    "removeThesisConfirmationContent": "Är du säker på att du vill ta bort avhandlingen: {{topic}}?",
+    "removeConfirmation": "För att bekräfta, skriv ({{confirmationText}}) i fältet nedan:",
+    "removeButton": "Ta bort",
+    "error": "Fel",
+    "thesisPreview": "Förhandsgranskning av avhandling",
+    "theses": "Avhandlingar",
+    "none": "Ingen studieinriktning",
+    "admin": "admin"
+  },
+  "eventLog": {
+    "thesis": "Avhandling",
+    "title": "Händelselogg",
+    "changedBy": "Ändrad av",
+    "createdBy": "Skapad av",
+    "deletedBy": "Borttagen av",
+    "thesisCreated": "Avhandling skapad",
+    "thesisDeleted": "Avhandling borttagen",
+    "supervisorsUpdated": "Handledare uppdaterade",
+    "gradersUpdated": "Bedömare uppdaterade",
+    "thesisStatusUpdated": "Avhandlingens skede uppdaterat",
+    "diffView": {
+      "before": "Före ändring",
+      "after": "Efter ändring",
+      "diff": "Skillnad"
+    }
+  },
+  "admin": {
+    "indexTab": "Logga in som"
+  },
+  "navbar": {
+    "program": "Utbildningsprogram",
+    "programManager": "Programansvariga",
+    "managePrograms": "Hantera utbildningsprogram",
+    "manageDepartments": "Hantera avdelningar",
+    "programOverview": "Översikt av utbildningsprogram",
+    "supervisedTheses": "Handledda avhandlingar",
+    "department": "Avdelning",
+    "seminar": "Seminarium",
+    "myTheses": "Mina avhandlingar",
+    "departmentAdmin": "Avdelningsadministratörer",
+    "departmentStatistics": "Avdelningsstatistik",
+    "departmentOverview": "Översikt av avdelning",
+    "loginAs": "Logga in som",
+    "allTheses": "Alla avhandlingar",
+    "adminOther": "Administratörsverktyg",
+    "logout": "Logga ut",
+    "settings": "Profilinställningar",
+    "openMobileMenu": "Öppna menyn",
+    "languageSubHeader": "Byt språk",
+    "favProgramsSubHeader": "Välj de utbildningsprogram där du handleder avhandlingar",
+    "userInfoSubHeader": "Din information",
+    "logoutSubHeader": "Loggar ut",
+    "addToFavorites": "Lägg till programmet i favoriter",
+    "removeFromFavorites": "Ta bort programmet från favoriter",
+    "favoriteProgramsUpdated": "Favoritprogrammen har uppdaterats",
+    "favoriteProgramsUpdateFailed": "Misslyckades med att uppdatera favoritprogrammen"
+  },
+  "userInformation": {
+    "username": "Användarnamn",
+    "email": "E-post",
+    "departmentId": "Avdelning",
+    "affiliation": "Anknytning"
+  },
+  "departmentSelectPage": {
+    "departmentPlaceholder": "Välj avdelning",
+    "pageTitle": "Välj avdelning",
+    "pageDescription": "Innan du fortsätter måste du välja den avdelning du tillhör"
+  },
+  "departmentOverviewPage": {
+    "supervisionsTab": "Handledningar",
+    "departmentAdminsTab": "Avdelningsadministratörer",
+    "supervisionStatisticsTab": "Handledningsstatistik"
+  },
+  "programOverviewPage": {
+    "configurationsWarning": "Var försiktig när du ändrar dessa inställningar. De påverkar alla användare och avhandlingsblanketter i programmet.",
+    "configurationsAcknowledge": "Jag förstår riskerna och vill ändra inställningarna",
+    "configurationsTab": "Inställningar",
+    "seminar": {
+      "toggle": "Seminarium",
+      "tooltip": "Avhandlingen måste ha en seminariehandledare",
+      "confirmTitle": "Bekräfta seminarieinställning",
+      "enableConfirm": "Är du säker på att du vill aktivera seminariekravet?",
+      "disableConfirm": "Är du säker på att du vill inaktivera seminariekravet?"
+    },
+    "allowMultipleSeminarResponsibles": {
+      "toggle": "Tillåt flera seminarieansvariga",
+      "tooltip": "Tillåt att avhandlingar har flera seminariehandledare",
+      "confirmTitle": "Bekräfta inställning för flera seminarieansvariga",
+      "enableConfirm": "Är du säker på att du vill tillåta flera seminarieansvariga?",
+      "disableConfirm": "Är du säker på att du bara vill tillåta en seminarieansvarig?"
+    },
+    "allowMultipleAuthors": {
+      "toggle": "Tillåt flera skribenter",
+      "tooltip": "Tillåt studerande att lägga till flera skribenter till sin avhandling",
+      "confirmTitle": "Bekräfta inställning för flera skribenter",
+      "enableConfirm": "Är du säker på att du vill tillåta flera skribenter per avhandling?",
+      "disableConfirm": "Är du säker på att du bara vill tillåta en skribent per avhandling? Detta kommer inte att ta bort befintliga skribenter."
+    },
+    "allowStudentStartedProcess": {
+      "toggle": "Tillåt studerande att starta processen",
+      "tooltip": "Tillåt studerande att skapa avhandlingar som utkast eller förslag",
+      "confirmTitle": "Bekräfta inställning för att starta processen",
+      "enableConfirm": "Är du säker på att du vill tillåta studerande att starta processen?",
+      "disableConfirm": "Är du säker på att du vill förbjuda studerande att starta processen? Detta kommer inte att ta bort befintliga avhandlingar."
+    },
+    "waysOfWorkingRequired": {
+      "toggle": "Överenskommelse om handledning krävs",
+      "tooltip": "En överenskommelse om handledning krävs för avhandlingar i detta program",
+      "confirmTitle": "Bekräfta inställning för överenskommelse om handledning",
+      "enableConfirm": "Är du säker på att du vill kräva en överenskommelse om handledning?",
+      "disableConfirm": "Är du säker på att du vill inaktivera kravet på en överenskommelse om handledning?"
+    },
+    "hideSendToEthesis": {
+      "toggle": "Dölj \"Skicka till E-thesis\" funktionen",
+      "tooltip": "Döljer funktionen för att skicka till E-thesis från utbildningsprogrammet",
+      "confirmTitle": "Bekräfta \"Skicka till E-thesis\" inställning",
+      "enableConfirm": "Är du säker på att du vill dölja funktionen?",
+      "disableConfirm": "Är du säker på att du vill visa funktionen?"
+    },
+    "useMilestones": {
+      "toggle": "Använd milstolpar",
+      "tooltip": "Aktiverar milstolpar i programmet",
+      "confirmTitle": "Bekräfta milstolpsinställningar",
+      "enableConfirm": "Är du säker på att du vill aktivera milstolpar?",
+      "disableConfirm": "Är du säker på att du vill inaktivera milstolpar?"
+    },
+    "milestones": {
+      "fieldTitle": "Milstolpe",
+      "title": "Milstolpar",
+      "confirmTitle": "Bekräfta ändringar för milstolpar",
+      "enableConfirm": "Är du säker på att du vill spara ändringar för milstolpar?"
+    },
+    "disableStudyTracks": {
+      "toggle": "Inaktivera studieinriktningar",
+      "tooltip": "Inaktiverar studieinriktningar i programmet",
+      "confirmTitle": "Bekräfta inställningar för studieinriktningar",
+      "enableConfirm": "Är du säker på att du vill inaktivera studieinriktningar?",
+      "disableConfirm": "Är du säker på att du vill aktivera studieinriktningar?"
+    },
+    "targetDates": {
+      "fieldTitle": "Måldatum",
+      "title": "Måldatum",
+      "confirmTitle": "Bekräfta ändringar för måldatum",
+      "enableConfirm": "Är du säker på att du vill spara ändringar för måldatum?"
+    },
+    "numberOfGradersLabel": "Maximalt antal bedömare",
+    "numberOfGradersConfirmTitle": "Bekräfta inställning för antal bedömare",
+    "numberOfGradersConfirmContent": "Är du säker på att du vill ändra det maximala antalet bedömare per avhandling till {{count}}?",
+    "other": "Andra",
+    "features": "Funktioner",
+    "combinedStudyTracks": {
+      "title": "Kombinera studieinriktningar",
+      "description": "Du kan kombinera liknande studieinriktningar. Sekundära studieinriktningar döljs från blanketterna och omdirigeras till den valda primära studieinriktningen.",
+      "primary": "Primär studieinriktning (synlig)",
+      "secondaries": "Sekundära studieinriktningar (dolda)",
+      "confirmTitle": "Bekräfta kombinationer av studieinriktningar",
+      "confirmContent": "Är du säker på att du vill spara dessa kombinationer av studieinriktningar? Detta påverkar vilka studieinriktningar studerande och handledare kan välja."
+    }
+  },
+  "dropzone": {
+    "uploadText": "Dra och släpp en fil här eller klicka för att ladda upp",
+    "uploadSuccessText": "Filen har laddats upp framgångsrikt"
+  },
+  "formErrors": {
+    "topic": "Vänligen ange ett ämne för avhandlingen",
+    "program": "Vänligen välj ett program",
+    "status": "Vänligen välj en status för avhandlingen",
+    "firstName": "Vänligen ange förnamn",
+    "lastName": "Vänligen ange efternamn",
+    "email": "Vänligen ange en giltig e-postadress",
+    "affiliation": "Vänligen ange anknytning",
+    "authors": "Vänligen ange information om skribenten",
+    "supervisors": "Vänligen ange information om handledaren",
+    "seminarSupervisors": "Vänligen ange information om seminariehandledaren",
+    "supervisorGeneralErrorsTitle": "Fel vid tillägg av handledare",
+    "seminarSupervisorRequired": "Vänligen välj en seminariehandledare",
+    "singleSeminarSupervisor": "Endast en seminariehandledare är tillåten",
+    "seminarSupervisorInternalOnly": "Seminariehandledaren måste vara personal",
+    "supervisorPercentage": "Handledningsprocenten måste uppgå till 100%",
+    "supervisorPercentageContent": "Ställ in handledningsprocenten så att summan blir 100%",
+    "primarySupervisor": "Vänligen välj en av handledarna som huvudhandledare",
+    "primarySupervisorContent": "Avhandlingen måste ha en huvudhandledare. Ställ in en av handledarna som huvudhandledare genom att klicka på stjärnikonen bredvid handledaren. Huvudhandledaren kan inte vara en extern handledare.",
+    "duplicateSupervisorEmails": "Handledarnas e-postadresser måste vara unika",
+    "duplicateSupervisorEmailsContent": "Vänligen kontrollera handledarnas e-postadresser. Handledarna måste ha unika e-postadresser",
+    "graders": "Vänligen ange information om den primära bedömaren",
+    "graderGeneralErrorsTitle": "Fel vid tillägg av bedömare",
+    "duplicateGraderEmails": "Bedömarnas e-postadresser måste vara unika",
+    "duplicateGraderEmailsContent": "Vänligen kontrollera bedömarnas e-postadresser. Bedömarna måste ha unika e-postadresser",
+    "researchPlan": "Vänligen ladda upp en giltig ämnesbeskrivning (PDF)",
+    "waysOfWorking": "Vänligen ladda upp ett giltigt dokument för överenskommelse om handledning",
+    "waysOfWorkingValidUntil": "Vänligen ange giltighetsdatum för överenskommelsen om handledning",
+    "startDate": "Startdatum måste vara före måldatumet",
+    "targetDate": "Måldatum måste vara efter startdatumet",
+    "approver": "Vänligen välj en programdirektör"
+  },
+  "thesisForm": {
+    "approverHeader": "Ansvarig",
+    "approverInstructions": "Välj den programansvariga vars expertis ligger närmast avhandlingens ämne för att hantera processen.",
+    "errorSummary": "Blanketten innehåller följande fel",
+    "errorSummaryAriaLabel": "Blanketten innehåller följande fel",
+    "serverError": "Serverfel",
+    "serverUnreachableError": "Det gick inte att nå servern, vänligen försök igen senare",
+    "newThesisFormTitle": "Skapa ny avhandling",
+    "editThesisFormTitle": "Redigera avhandling",
+    "authorMissingError": "En skribent krävs",
+    "supervisionPercentageError": "Se till att handledarnas totala procentandelar uppgår till 100",
+    "researchPlanMissingError": "Se till att du laddar upp en ämnesbeskrivning (PDF)",
+    "waysOfWorkingMissingError": "Se till att du laddar upp en överenskommelse om handledning (PDF)",
+    "basicInfo": "Grundläggande information",
+    "graders": "Bedömare",
+    "graderInstructions": {
+      "title": "Instruktioner för att fylla i bedömare",
+      "content": "Bedömare 1 måste vara en professor, biträdande professor, forskningsdirektör, äldre universitetslektor eller universitetslektor vid Helsingfors universitet.\n\n Bedömare 2 måste vara doktor. Bedömare 2 kan vara en person utanför Helsingfors universitet.",
+      "primaryGrader": "Professor eller annan lämplig",
+      "secondaryGrader": "Doktor"
+    },
+    "addPrimaryGrader": "Lägg till bedömare",
+    "addSecondaryGrader": "Lägg till extern bedömare",
+    "supervisors": "Handledare",
+    "seminarSupervisor": "Seminariehandledare",
+    "seminarSupervisorsLabel": "Seminariehandledare",
+    "appendices": "Bilagor",
+    "removeAppendixConfirmationTitle": "Ta bort bilaga",
+    "removeAppendixConfirmationContent": "Är du säker på att du vill ta bort bilagan: {{name}}?",
+    "supervisorButtonGroupAriaLabel": "Handledaråtgärder",
+    "addSupervisor": "Lägg till handledare",
+    "addExternalSupervisor": "Lägg till extern handledare",
+    "seminar-supervisorButtonGroupAriaLabel": "Seminariehandledaråtgärder",
+    "addSeminarSupervisor": "Lägg till seminariehandledare",
+    "primarySupervisor": "Huvudhandledare",
+    "setPrimarySupervisor": "Sätt som huvudhandledare",
+    "primarySupervisorDeleteError": "Huvudhandledaren kan inte tas bort",
+    "firstName": "Förnamn",
+    "lastName": "Efternamn",
+    "email": "E-post",
+    "affiliation": "Anknytning",
+    "researchPlan": "Ämnesbeskrivning",
+    "waysOfWorking": "Överenskommelse om handledning",
+    "editThesisDialog": "Redigera avhandling",
+    "uploadWaysOfWorking": "Ladda upp överenskommelse om handledning",
+    "waysOfWorkingValidUntil": "Överenskommelse om handledning giltig till",
+    "waysOfWorkingHelperText": "Överenskommelse om handledning är obligatorisk om den krävs i programmet",
+    "uploadResearchPlan": "Ladda upp ämnesbeskrivning",
+    "selectSupervisorPercentage": "Procent",
+    "totalSupervisionPercentage": "Total handledningsprocent: {{totalPercentage}} %",
+    "removeSupervisorConfirmationTitle": "Ta bort handledare",
+    "removeSupervisorConfirmationContent": "Är du säker på att du vill ta bort handledaren: {{name}}?",
+    "removeSupervisorConfirmationNoName": "Är du säker på att du vill ta bort handledare {{index}}?",
+    "removeGraderConfirmationTitle": "Ta bort bedömare",
+    "removeGraderConfirmationContent": "Är du säker på att du vill ta bort bedömaren: {{name}}?",
+    "removeGraderConfirmationNoName": "Är du säker på att du vill ta bort bedömare {{index}}?",
+    "submitEthesisLabel": "Avhandlingen är klar för bedömning:",
+    "submitEthesis": "Skicka avhandlingsinformation till E-thesis",
+    "toSubmitEthesis": "Skickar avhandlingsinformationen till E-thesis",
+    "send": "Skicka",
+    "customDate": "Anpassat datum"
+  },
+  "thesisStages": {
+    "draft": "Utkast",
+    "suggested": "Förslag",
+    "planned": "Planerad",
+    "inProgress": "Pågår",
+    "completed": "Färdig",
+    "cancelled": "Avbruten",
+    "ethesis": "Sparad i E-thesis",
+    "ethesis_studentstarted": "Tillstånd att skicka in",
+    "ethesisSent": "Skickad till E-thesis"
+  },
+  "thesesTableToolbar": {
+    "newThesisButton": "Ny avhandling",
+    "showAllThesesSwitch": "Visa alla avhandlingar",
+    "showManagedProgramsThesesSwitch": "Visa även avhandlingar i mina program",
+    "filterButton": "Filtrera",
+    "saveFiltersButton": "Spara filter",
+    "search": "Sök",
+    "filterViews": {
+      "active": {
+        "name": "Aktiva",
+        "tooltip": "Visar ofärdiga avhandlingar"
+      },
+      "inactive": {
+        "name": "Inaktiva",
+        "tooltip": "Visar färdiga och avbrutna avhandlingar"
+      },
+      "suggested": {
+        "name": "Studerandes avhandlingsförslag",
+        "tooltip": "Visar avhandlingsförslag från program som tillåter studerande att starta processen"
+      },
+      "all": {
+        "name": "Alla",
+        "tooltip": "Visar alla avhandlingar"
+      }
+    }
+  },
+  "thesesPage": {
+    "approvalRequiredTooltip": "Denna avhandling har tilldelats dig. Ditt godkännande krävs!",
+    "primarySupervisorTooltip": "Du är huvudhandledare för denna avhandling",
+    "noRows": "Inga rader"
+  },
+  "customFilters": {
+    "valuesLabel": "Värden"
+  },
+  "programManagementPage": {
+    "pageTitle": "Programledningar",
+    "addProgramManagement": "Lägg till programledning",
+    "programHeader": "Program",
+    "managerHeader": "Direktör",
+    "toggleApproval": "Godkännanderättigheter",
+    "allowThesisApprovalButton": "Tillåt godkännande av avhandling",
+    "disallowThesisApprovalButton": "Tillåt inte godkännande av avhandling",
+    "removeProgramManagementTitle": "Ta bort programledning",
+    "removeProgramManagementContent": "Är du säker på att du vill ta bort {{name}} från {{program}}?"
+  },
+  "programLogsPage": {
+    "pageTitle": "Programloggar",
+    "showNonAdminOnlySwitch": "Visa endast icke-administratörsloggar"
+  },
+  "departmentAdminPage": {
+    "pageTitle": "Avdelningsadministratörer",
+    "addDepartmentAdmin": "Lägg till avdelningsadministratör",
+    "departmentHeader": "Avdelning",
+    "adminHeader": "Administratör",
+    "removeDepartmentAdminTitle": "Ta bort avdelningsadministratör",
+    "removeDepartmentAdminContent": "Är du säker på att du vill ta bort {{name}} från {{department}}?"
+  },
+  "departmentStatisticsPage": {
+    "pageTitle": "Avdelningsstatistik",
+    "supervisorHeader": "Handledare",
+    "departmentHeader": "Avdelning",
+    "thesisCountHeader": "Antal avhandlingar",
+    "startedWithinHalfYearCount": "Påbörjade",
+    "startedWithinHalfYearTooltip": "Avhandlingar som har påbörjats inom de senaste sex månaderna"
+  },
+  "loginAsPage": {
+    "title": "Välj en användare att logga in som",
+    "userHeader": "Användare"
+  },
+  "manageProgramsPage": {
+    "pageTitle": "Hantera utbildningsprogram",
+    "chooseProgramLabel": "Välj program",
+    "noProgramsFound": "Inga program hittades",
+    "editTranslations": "Redigera översättningar",
+    "finnishName": "Finskt namn (FI)",
+    "englishName": "Engelskt namn (EN)",
+    "swedishName": "Svenskt namn (SV)",
+    "confirmSaveTitle": "Bekräfta ändringar",
+    "confirmSaveText": "Är du säker på att du vill spara dessa översatta namn för programmet?"
+  },
+  "manageDepartmentsPage": {
+    "pageTitle": "Hantera avdelningar",
+    "chooseDepartmentLabel": "Välj avdelning",
+    "noDepartmentsFound": "Inga avdelningar hittades",
+    "confirmSaveTitle": "Bekräfta ändringar",
+    "confirmSaveText": "Är du säker på att du vill spara dessa översatta namn för avdelningen?",
+    "addDepartment": "Lägg till avdelning",
+    "addDepartmentTitle": "Skapa ny avdelning",
+    "deleteWarning": "Obs: En avdelning kan inte tas bort när den väl har skapats"
+  },
+  "progressView": {
+    "ethesisConfirmationTitle": "Bekräftelse",
+    "ethesisConfirmationText": "Är du säker på att du vill markera denna avhandling som skickad till E-thesis? Detta kan inte ångras.",
+    "markAsSentToEthesis": "Markera som skickad till E-thesis",
+    "milestone": "Milstolpe",
+    "title": "Framsteg",
+    "doneButton": "Markera milstolpe {0} som klar",
+    "cancelButton": "Avbryt",
+    "inProgress": "Pågår"
+  },
+  "help": {
+    "table": "<b>Filtreringsverktyg</b><br><br>Högst upp i tabellen finns flera filtreringsalternativ, till exempel aktiva eller inaktiva avhandlingar. Om du håller muspekaren över en knapp visas mer information om valet.<br><br><b>Måldatum</b><br><br>Kolumnen Måldatum färgas när måldatumet överskrids. När måldatumet överskrids med en månad blir kolumnen gul, och efter sex månader blir den röd.<br><br><b>Fas</b><br><br>Kolumnen Fas blir grönare ju längre avhandlingens faser har fortskridit. Denna funktion är endast tillgänglig i utbildningsprogram som använder faser.<br><br><b>Ikoner</b><br><br>Ikoner kan visas i slutet av en rad. Om du håller muspekaren över en ikon visas mer information. En stjärnikon anger att du är huvudhandledare för avhandlingen. Ett utropstecken anger att avhandlingen väntar på ditt godkännande.",
+    "button": "Hjälp"
+  },
+  "adminOtherPage": {
+    "pageTitle": "Administratörsverktyg",
+    "runUpdaterTitle": "Kör uppdaterare",
+    "runUpdaterDescription": "Starta uppdateringsprocessen manuellt för att hämta den senaste datan från de underliggande systemen.",
+    "runningUpdater": "Körs...",
+    "runUpdaterButton": "Kör uppdaterare",
+    "updaterSuccess": "Uppdateraren slutfördes framgångsrikt",
+    "updaterFailed": "Misslyckades med att köra uppdateraren",
+    "confirmRunTitle": "Bekräfta körning av uppdaterare",
+    "confirmRunDescription": "Är du säker på att du vill köra uppdateraren manuellt? Detta hämtar den senaste datan från de underliggande systemen och kan ta lite tid."
+  }
+}
