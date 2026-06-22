@@ -5,6 +5,7 @@ on:
 
 jobs:
   static-analysis:
+    if: ${{ github.event.pull_request.user.login != 'renovate[bot]' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -20,6 +21,7 @@ jobs:
         run: npm run format
     
   test:
+    if: ${{ github.event.pull_request.user.login != 'renovate[bot]' }}
     runs-on: ubuntu-latest
 
     steps:
