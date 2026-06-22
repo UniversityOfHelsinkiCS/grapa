@@ -32,7 +32,7 @@ const studyTracksHandler = async (studyTracks: ImporterStudyTrack[]) => {
       if (isOld) {
         await track.update({ sisuId: id })
       } else {
-        await track.update({ name })
+        // await track.update({ name })
       }
     } else {
       // Create new
