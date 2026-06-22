@@ -7,7 +7,7 @@ import NotFound from './components/Errors/NotFound'
 
 import NoAccess from './components/NoAccess'
 import LoginAsPage from './components/LoginAsPage'
-import ProgramOverview from './components/Program/ProgramOverview'
+import EntityOverview from './components/Program/EntityOverview'
 import DepartmentOverview from './components/Department/DepartmentOverview'
 import SeminarPage from './components/Seminar/SeminarPage'
 
@@ -62,11 +62,15 @@ const router = createBrowserRouter(
         },
         {
           path: '/programs',
-          element: <ProgramOverview />,
+          element: <EntityOverview />,
         },
         {
           path: '/programs/:programId',
-          element: <ProgramOverview />,
+          element: <EntityOverview />,
+        },
+        {
+          path: '/study-tracks/:studyTrackId',
+          element: <EntityOverview />,
         },
         {
           path: '/department-admins',

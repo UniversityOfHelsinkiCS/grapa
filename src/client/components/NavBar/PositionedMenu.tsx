@@ -66,14 +66,21 @@ interface PositionedMenuLinkItemProps {
   to: string
   onClick: () => void
   children: React.ReactNode
+  indented?: boolean
 }
 
 export const PositionedMenuLinkItem = ({
   to,
   onClick,
   children,
+  indented,
 }: PositionedMenuLinkItemProps) => (
-  <MenuItem component={NavLink} to={to} sx={navStyles.link} onClick={onClick}>
+  <MenuItem
+    component={NavLink}
+    to={to}
+    sx={{ ...navStyles.link, pl: indented ? 4 : undefined }}
+    onClick={onClick}
+  >
     <Typography
       sx={{ display: 'flex', gap: 2, textTransform: 'uppercase' }}
       variant="body2"

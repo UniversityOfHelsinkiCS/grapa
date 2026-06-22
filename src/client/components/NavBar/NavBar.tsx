@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 import { AdminPanelSettingsOutlined } from '@mui/icons-material'
@@ -150,13 +150,24 @@ const ProgramMenu = () => {
       sx={navStyles.navlink}
     >
       {sortedPrograms?.map((program) => (
-        <PositionedMenuLinkItem
-          key={program.id}
-          to={`/programs/${program.id}`}
-          onClick={handleClose}
-        >
-          {program.name[language]}
-        </PositionedMenuLinkItem>
+        <Fragment key={program.id}>
+          <PositionedMenuLinkItem
+            to={`/programs/${program.id}`}
+            onClick={handleClose}
+          >
+            {program.name[language]}
+          </PositionedMenuLinkItem>
+          {program.studyTracks?.map((st: any) => (
+            <PositionedMenuLinkItem
+              key={st.id}
+              to={`/study-tracks/${st.id}`}
+              onClick={handleClose}
+              indented
+            >
+              {st.name[language]}
+            </PositionedMenuLinkItem>
+          ))}
+        </Fragment>
       ))}
     </PositionedMenu>
   )
