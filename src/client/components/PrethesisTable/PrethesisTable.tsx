@@ -113,8 +113,16 @@ const PrethesisTable = ({
   }
 
   /* Sorting */
-  const [sortedField, setSortedField] = React.useState(null)
-  const [sortedDir, setSortedDir] = React.useState('asc')
+  const [sortedField, setSortedField] = React.useState(
+    !isStudentView && filterViews && activeFilterView
+      ? filterViews[activeFilterView].sortingModel[0]?.field || null
+      : null
+  )
+  const [sortedDir, setSortedDir] = React.useState(
+    !isStudentView && filterViews && activeFilterView
+      ? filterViews[activeFilterView].sortingModel[0]?.sort || 'asc'
+      : 'asc'
+  )
 
   /* New thesis button */
   const { programs, isLoading: programsLoading } = !isStudentView
@@ -456,10 +464,10 @@ const PrethesisTable = ({
                               header.getContext()
                             )}
                       </Typography>
-                      {header.id != 'supervisions' && (
+                      {header.id != 'supervisions' && !isStudentView && (
                         <IconButton
                           sx={{
-                            opacity: sortedField == header.id ? 1 : 0,
+                            opacity: sortedField == header.id ? 1 : 0.3,
                             ':hover': {
                               opacity: 0.5,
                             },
