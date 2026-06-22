@@ -51,25 +51,62 @@ const usersHandler = async (users: SisuUser[]) => {
     }
   )
 
+  // const programs = await Program.findAll()
+  const studytracksQuery = await sequelize.query(
+    'SELECT DISTINCT sisu_id FROM study_tracks',
+    {
+      type: QueryTypes.SELECT,
+    }
+  )
+
   //@ts-expect-error it is there
   const programs = new Set(programsQuery.map((program) => program.id))
+  const studyTracks = new Set(
+    //@ts-expect-error it is there
+    studytracksQuery.map((studyTrack) => studyTrack['sisu_id'])
+  )
 
   const parsedStudyRights = []
 
   for (const user_index in users) {
     const user = users[user_index]
     if (user.studyRights) {
-      for (const index in user.studyRights) {
+      for (const studyRight_index in user.studyRights) {
         //@ts-expect-error it's just a json object
-        const studyRight = user.studyRights[index]
-        parsedStudyRights.push({
-          id: studyRight.id,
-          programId: programs.has(studyRight.code) ? studyRight.code : null,
-          programCode: studyRight.code,
-          userId: user.id,
-          startDate: studyRight.start_date,
-          endDate: studyRight.end_date,
-        })
+        const studyRight = user.studyRights[studyRight_index]
+        if (studyRight.selections.length > 0) {
+          for (const selection_index in studyRight.selections) {
+            const selection = studyRight.selections[selection_index]
+            parsedStudyRights.push({
+              id: selection.id,
+              baseId: studyRight.id,
+              programId: programs.has(selection.code) ? selection.code : null,
+              programCode: selection.code,
+              userId: user.id,
+              startDate: studyRight.start_date,
+              endDate: studyRight.end_date,
+              studyTrackId:
+                selection.studyTrack &&
+                studyTracks.has(selection.studyTrack.moduleId)
+                  ? selection.studyTrack.moduleId
+                  : null,
+              studyTrackCode:
+                selection.studyTrack &&
+                studyTracks.has(selection.studyTrack.moduleId)
+                  ? selection.studyTrack.code
+                  : null,
+            })
+          }
+        } else {
+          parsedStudyRights.push({
+            id: studyRight.id,
+            programId: programs.has(studyRight.code) ? studyRight.code : null,
+            programCode: studyRight.code,
+            userId: user.id,
+            startDate: studyRight.start_date,
+            endDate: studyRight.end_date,
+          })
+        }
       }
     }
   }
