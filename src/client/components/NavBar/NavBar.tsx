@@ -157,16 +157,17 @@ const ProgramMenu = () => {
           >
             {program.name[language]}
           </PositionedMenuLinkItem>
-          {program.studyTracks?.map((st: any) => (
-            <PositionedMenuLinkItem
-              key={st.id}
-              to={`/study-tracks/${st.id}`}
-              onClick={handleClose}
-              indented
-            >
-              {st.name[language]}
-            </PositionedMenuLinkItem>
-          ))}
+          {!program.options?.disableStudyTracks &&
+            program.studyTracks?.map((st: any) => (
+              <PositionedMenuLinkItem
+                key={st.id}
+                to={`/study-tracks/${st.id}`}
+                onClick={handleClose}
+                indented
+              >
+                {st.name[language]}
+              </PositionedMenuLinkItem>
+            ))}
         </Fragment>
       ))}
     </PositionedMenu>
