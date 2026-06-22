@@ -338,7 +338,7 @@ const ListInput = ({
         })}
         <Stack direction="row" sx={{ gap: '1rem' }}>
           <Button variant="contained" onClick={handleSave}>
-            {translation('common:submitButton')}
+            {translation('common:saveButton')}
           </Button>
           <Button
             variant="contained"
@@ -549,7 +549,7 @@ const CombinedStudyTracksInput = ({
         })}
         <Stack direction="row" sx={{ gap: '1rem' }}>
           <Button variant="contained" onClick={handleSave}>
-            {translation('saveButton', 'Tallenna')}
+            {translation('common:submitButton')}
           </Button>
           <Button
             variant="contained"
@@ -557,7 +557,7 @@ const CombinedStudyTracksInput = ({
               setListValues([...listValues, { primary: null, secondaries: [] }])
             }}
           >
-            {translation('addButton', 'Lisää kohde')}
+            {translation('common:addItem')}
           </Button>
         </Stack>
       </Stack>

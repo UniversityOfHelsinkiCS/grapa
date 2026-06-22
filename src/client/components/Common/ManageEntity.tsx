@@ -211,7 +211,7 @@ const ManageEntity = <T extends ManageableItem>({
                 fullWidth
                 sx={{ borderRadius: '0.5rem' }}
               >
-                {t('submitButton', 'Save')}
+                {t('common:saveButton', 'Save')}
               </Button>
             </Box>
           )}
@@ -236,7 +236,7 @@ const ManageEntity = <T extends ManageableItem>({
             color="primary"
             disabled={isPending}
           >
-            {isPending ? t('saving') : t('submitButton')}
+            {isPending ? t('common:saving') : t('common:saveButton')}
           </Button>
         </DialogActions>
       </Dialog>

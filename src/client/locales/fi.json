@@ -31,6 +31,8 @@
     "cancelButton": "Peruuta",
     "submitButton": "Tallenna",
     "saving": "Tallennetaan...",
+    "saveButton": "Tallenna",
+    "addItem": "Lisää kohde",
     "removeButton": "Poista",
     "removeThesisTitle": "Poista tutkielma",
     "removeThesisConfirmationContent": "Haluatko varmasti poistaa tutkielman: {{topic}}?",

@@ -31,6 +31,8 @@
     "cancelButton": "Cancel",
     "submitButton": "Submit",
     "saving": "Saving...",
+    "saveButton": "Save",
+    "addItem": "Add item",
     "removeThesisTitle": "Delete thesis",
     "removeThesisConfirmationContent": "Are you sure you want to delete the thesis: {{topic}}?",
     "removeConfirmation": "To confirm, type ({{confirmationText}}) in the box below:",
