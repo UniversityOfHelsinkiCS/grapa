@@ -42,11 +42,17 @@ const LOCALES_DIR_NAME = 'locales'
 const LOCALES_PATH = './src/client/locales'
 const EXTENSION_MATCHER = /.+\.ts/
 // matches 'asd:asd'
-const TRANSLATION_KEY_REFERENCE_MATCHER = new RegExp(/['"`]\w+(?::\w+)+['"`]/, 'g')
+const TRANSLATION_KEY_REFERENCE_MATCHER = new RegExp(
+  /['"`]\w+(?::\w+)+['"`]/,
+  'g'
+)
 // matches t('asd'
-const TRANSLATION_KEY_REFERENCE_MATCHER_2 = new RegExp(/\bt\(['"`]\w+(?::\w+)*['"`]/, 'g')
+const TRANSLATION_KEY_REFERENCE_MATCHER_2 = new RegExp(
+  /\bt\(['"`]\w+(?::\w+)*['"`]/,
+  'g'
+)
 
-const LANGUAGES = ['fi', 'en']
+const LANGUAGES = ['fi', 'en', 'sv']
 
 const log0 = (...msg) => {
   if (!args.quiet) {
@@ -83,7 +89,7 @@ const log = (...msg) => {
       ;[...line.matchAll(TRANSLATION_KEY_REFERENCE_MATCHER)]
         .concat([...line.matchAll(TRANSLATION_KEY_REFERENCE_MATCHER_2)])
         .flat()
-        .forEach(match => {
+        .forEach((match) => {
           const t = match.startsWith('t')
           const common = !match.includes(':')
           const location = new Location(file, lineNumber)
@@ -98,7 +104,9 @@ const log = (...msg) => {
       lineNumber += 1
     }
   }
-  log0(`Found ${translationKeyReferences.size} references in ${fileCount} files`)
+  log0(
+    `Found ${translationKeyReferences.size} references in ${fileCount} files`
+  )
 
   const locales = {}
 
@@ -118,7 +126,7 @@ const log = (...msg) => {
    */
   const findKeysRecursively = (obj, path) => {
     const keys = []
-    Object.keys(obj).forEach(k => {
+    Object.keys(obj).forEach((k) => {
       if (typeof obj[k] === 'object') {
         keys.push(...findKeysRecursively(obj[k], `${path}:${k}`)) // Go deeper...
       } else if (typeof obj[k] === 'string' && obj[k].trim().length > 0) {
@@ -130,7 +138,9 @@ const log = (...msg) => {
 
   // Collect all translation keys from the loaded locales
   Object.entries(locales).forEach(([_, t]) => {
-    findKeysRecursively(t, '').forEach(k => translationsNotUsed.add(k.slice(1)))
+    findKeysRecursively(t, '').forEach((k) =>
+      translationsNotUsed.add(k.slice(1))
+    )
   })
 
   const numberOfTranslations = translationsNotUsed.size
@@ -143,7 +153,7 @@ const log = (...msg) => {
   })
 
   let missingCount = 0
-  const missingByLang = Object.fromEntries(argLangs.map(l => [l, []]))
+  const missingByLang = Object.fromEntries(argLangs.map((l) => [l, []]))
 
   // Check for missing translations
   translationKeyReferences.forEach((v, k) => {
@@ -163,14 +173,16 @@ const log = (...msg) => {
       }
     })
 
-    if (missing.length > 0 && missing.some(l => argLangs.includes(l))) {
+    if (missing.length > 0 && missing.some((l) => argLangs.includes(l))) {
       missingCount += printMissing(k, v, missing, longestKey)
-      missing.forEach(l => argLangs.includes(l) && missingByLang[l].push(k))
+      missing.forEach((l) => argLangs.includes(l) && missingByLang[l].push(k))
     }
   })
 
   if (missingCount > 0) {
-    log(`\n${FgRed}${Bright}Error:${Reset} ${missingCount} translations missing\n`)
+    log(
+      `\n${FgRed}${Bright}Error:${Reset} ${missingCount} translations missing\n`
+    )
     const langsOpt = args.lang ? `--lang ${argLangs.join(',')}` : ''
     const recommendedCmd = `${FgCyan}npm run translations -- --create ${langsOpt}${Reset}`
     log(`Run to populate missing translations now:\n> ${recommendedCmd}\n`)
@@ -201,7 +213,12 @@ const log = (...msg) => {
  * @param {number} longestKey - The length of the longest key for padding.
  * @returns {number} The number of missing languages.
  */
-const printMissing = (translationKey, referenceLocations, missingLangs, longestKey) => {
+const printMissing = (
+  translationKey,
+  referenceLocations,
+  missingLangs,
+  longestKey
+) => {
   let msg = translationKey
   // Add padding
   for (let i = 0; i < longestKey - translationKey.length; i++) {
@@ -209,7 +226,11 @@ const printMissing = (translationKey, referenceLocations, missingLangs, longestK
   }
 
   msg += ['fi', 'en']
-    .map(l => (missingLangs.includes(l) ? `${FgRed}${l}${Reset}` : `${FgGreen}${l}${Reset}`))
+    .map((l) =>
+      missingLangs.includes(l)
+        ? `${FgRed}${l}${Reset}`
+        : `${FgGreen}${l}${Reset}`
+    )
     .join(', ')
 
   if (args.detailed) {
@@ -230,21 +251,26 @@ const printUnused = (translationsNotUsed, numberOfTranslations) => {
   console.log(
     `${Underscore}Potentially unused translations (${translationsNotUsed.size}/${numberOfTranslations}): ${Reset}`
   )
-  console.log(`${FgMagenta}please check if they are used before deleting${Reset}`)
-  translationsNotUsed.forEach(t => console.log(`  ${t.split(':').join(`${FgMagenta}:${Reset}`)}`))
+  console.log(
+    `${FgMagenta}please check if they are used before deleting${Reset}`
+  )
+  translationsNotUsed.forEach((t) =>
+    console.log(`  ${t.split(':').join(`${FgMagenta}:${Reset}`)}`)
+  )
 }
 
 /**
  * Prompts the user to create missing translations and writes them to files.
  * @param {Object} missingByLang - Object mapping languages to missing keys.
  */
-const createMissingTranslations = async missingByLang => {
+const createMissingTranslations = async (missingByLang) => {
   const rl = createInterface({
     input: process.stdin,
     output: process.stdout,
   })
 
-  const prompt = query => new Promise(resolve => rl.question(query, resolve))
+  const prompt = (query) =>
+    new Promise((resolve) => rl.question(query, resolve))
 
   rl.on('close', () => {
     console.log('Cancelled')
@@ -255,7 +281,7 @@ const createMissingTranslations = async missingByLang => {
 
   // Group missing keys by language
   Object.entries(missingByLang).forEach(([lang, missingKeys]) => {
-    missingKeys.forEach(k => {
+    missingKeys.forEach((k) => {
       if (!promptInfosByKeys[k]) {
         promptInfosByKeys[k] = []
       }
@@ -280,7 +306,7 @@ const createMissingTranslations = async missingByLang => {
 
   // Organize new translations into a nested structure
   Object.entries(promptInfosByKeys).forEach(([k, info]) => {
-    info.forEach(i => {
+    info.forEach((i) => {
       if (!i.value) {
         return
       }
