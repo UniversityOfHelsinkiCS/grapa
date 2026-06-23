@@ -1,4 +1,4 @@
-import { sequelize } from '@backend/db/connection'
+import { sequelize } from '../db/connection'
 import { NextFunction, Response } from 'express'
 import path from 'path'
 
