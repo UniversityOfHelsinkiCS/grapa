@@ -227,6 +227,9 @@ const ListInput = ({
         <Typography variant="h5">
           {translation(`programOverviewPage:${feature}:title`)}
         </Typography>
+        <Typography variant="body1">
+          {translation(`programOverviewPage:${feature}:description`)}
+        </Typography>
         {listValues.map((value, index) => {
           return (
             <Stack
@@ -449,6 +452,9 @@ const CombinedStudyTracksInput = ({
         <Typography variant="h5">
           {translation(`programOverviewPage:combinedStudyTracks:title`)}
         </Typography>
+        <Typography variant="body1">
+          {translation(`programOverviewPage:combinedStudyTracks:description`)}
+        </Typography>
 
         <Stack direction="column" sx={{ gap: '0.5rem', mt: 1, mb: 1 }}>
           <Typography variant="subtitle2">
@@ -462,9 +468,6 @@ const CombinedStudyTracksInput = ({
             ))}
           </Box>
         </Stack>
-        <Typography variant="body2" sx={{ mb: 1 }}>
-          {translation(`programOverviewPage:combinedStudyTracks:description`)}
-        </Typography>
         {listValues.map((value, index) => {
           // A secondary study track cannot be selected if it's already used somewhere else
           // Or if it's the primary track
@@ -657,11 +660,6 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   return (
     <>
       <Stack spacing={2}>
-        <Typography variant="h5">
-          {t(`programOverviewPage:features`)}
-        </Typography>
-
-        {featureFlagUI}
         {program.options?.useMilestones && (
           <ListInput
             feature="milestones"
@@ -717,6 +715,15 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
             {t('submitButton')}
           </Button>
         </Box>
+
+        <Typography variant="h5">
+          {t(`programOverviewPage:features`)}
+        </Typography>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          <Box>{t('programOverviewPage:featureFlagWarning')}</Box>
+        </Alert>
+
+        {featureFlagUI}
       </Stack>
 
       <Popup

@@ -114,6 +114,7 @@
   "programOverviewPage": {
     "configurationsWarning": "Var försiktig när du ändrar dessa inställningar. De påverkar alla användare och avhandlingsblanketter i programmet.",
     "configurationsAcknowledge": "Jag förstår riskerna och vill ändra inställningarna",
+    "featureFlagWarning": "Dessa inställningar påverkar tillgängligheten för funktioner i utbildningsprogrammet. Att ändra dem kan leda till problem med befintliga examensarbeten.",
     "configurationsTab": "Inställningar",
     "seminar": {
       "toggle": "Seminarium",
@@ -167,6 +168,7 @@
     "milestones": {
       "fieldTitle": "Milstolpe",
       "title": "Milstolpar",
+      "description": "Etapper aktiveras endast för examensarbeten som skapas efter att etapperna har sparats. För äldre examensarbeten förblir etapperna i sitt tidigare tillstånd. En etapp kan markeras som slutförd av studenten och handledarna för examensarbetet (inklusive eventuella seminariehandledare). Handledare, samt andra med tillgång till information om examensarbetet, kan följa etappernas framsteg. Etapperna är specifika för utbildningsprogrammet och kan inte konfigureras separat för studieinriktningar.",
       "confirmTitle": "Bekräfta ändringar för milstolpar",
       "enableConfirm": "Är du säker på att du vill spara ändringar för milstolpar?"
     },
@@ -180,6 +182,7 @@
     "targetDates": {
       "fieldTitle": "Måldatum",
       "title": "Måldatum",
+      "description": "Denna inställning gör det möjligt för utbildningsprogrammet att definiera standardalternativ för måldatumet i examensarbetsformuläret. Detta hindrar inte användare från att ange ett annat datum.",
       "confirmTitle": "Bekräfta ändringar för måldatum",
       "enableConfirm": "Är du säker på att du vill spara ändringar för måldatum?"
     },

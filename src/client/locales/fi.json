@@ -112,6 +112,7 @@
   "programOverviewPage": {
     "configurationsWarning": "Ole varovainen muokatessasi näitä asetuksia. Ne vaikuttavat kaikkiin ohjelman käyttäjiin ja tutkielmalomakkeisiin.",
     "configurationsAcknowledge": "Olen ymmärtänyt varoituksen ja haluan muokata asetuksia",
+    "featureFlagWarning": "Nämä asetukset vaikuttavat ominaisuuksien saatavuuteen koulutusohjelmassa, muokkaaminen saattaa johtaa ongelmatilanteisiin olemassaolevien tutkielmien kanssa.",
     "configurationsTab": "Asetukset",
     "seminar": {
       "toggle": "Seminaari",
@@ -165,6 +166,7 @@
     "milestones": {
       "fieldTitle": "Etappi",
       "title": "Etapit",
+      "description": "Etapit otetaan käyttöön vain tutkielmissa, jotka on luotu etappien tallentamisen jälkeen. Vanhemmissa tutkielmissa etapit säilyvät samassa tilassa. Etapin voi merkitä suoritetuksi opiskelija, sekä tutkielman ohjaajat (myös mahdolliset seminaariohjaajat). Ohjaajat, sekä muut joilla pääsy tutkielman tietoihin voivat seurata etappien edistymistä. Etapit ovat koulutusohjelmakohtaisia, eikä niitä voi määrittää erikseen opintosuunnille. ",
       "confirmTitle": "Vahvista muutokset etappeihin",
       "enableConfirm": "Haluatko vahvistaa muutoksesis etappeihin?"
     },
@@ -179,7 +181,8 @@
       "fieldTitle": "Tavoitepäivä",
       "title": "Tavoitepäivät",
       "confirmTitle": "Vahvista muutokset tavoitepäiviin",
-      "enableConfirm": "Haluatko vahvistaa muutoksesis tavoitepäiviin?"
+      "enableConfirm": "Haluatko vahvistaa muutoksesis tavoitepäiviin?",
+      "description": "Asetuksella koulutusohjelmassa voidaan määritellä tutkielmalomakkeeseen oletusvaihtoehtoja tavoitepäivälle. Tämä ei estä käyttäjiä asettamasta muuta päivämäärää."
     },
     "numberOfGradersLabel": "Tarkastajien enimmäismäärä",
     "numberOfGradersConfirmTitle": "Vahvista tarkastajien määrän asetus",

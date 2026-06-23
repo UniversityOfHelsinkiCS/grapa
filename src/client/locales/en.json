@@ -114,6 +114,7 @@
   "programOverviewPage": {
     "configurationsWarning": "Please be careful when modifying these configurations. They affect all users and thesis forms within the program.",
     "configurationsAcknowledge": "I understand the risks and want to modify configurations",
+    "featureFlagWarning": "These settings affect the availability of features in the study programme. Modifying them may lead to problems with existing theses.",
     "configurationsTab": "Configurations",
     "seminar": {
       "toggle": "Seminar",
@@ -167,6 +168,7 @@
     "milestones": {
       "fieldTitle": "Milestone",
       "title": "Milestones",
+      "description": "New milestones are only applied to theses created after the new milestones have been saved. For older theses, the milestones will remain in their previous state. A milestone can be marked as completed by student's and thesis supervisors (including any seminar supervisors). Supervisors, as well as others with access to the thesis information, can monitor the progress of the milestones. The milestones are specific to the study programme and cannot be configured separately for study tracks.",
       "confirmTitle": "Confirm changes to milestones",
       "enableConfirm": "Are you sure you want to save changes to milestones?"
     },
@@ -181,7 +183,8 @@
       "fieldTitle": "Target date",
       "title": "Target dates",
       "confirmTitle": "Confirm changes to target dates",
-      "enableConfirm": "Are you sure you want to save changes to target dates?"
+      "enableConfirm": "Are you sure you want to save changes to target dates?",
+      "description": "This setting allows the study programme to define default options for the target date on the thesis form. This does not prevent users from setting a different date."
     },
     "numberOfGradersLabel": "Maximum number of graders",
     "numberOfGradersConfirmTitle": "Confirm number of graders setting",
