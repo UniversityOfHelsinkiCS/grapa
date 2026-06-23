@@ -4,12 +4,9 @@ import {
   Button,
   Card,
   Stack,
-  Dialog,
-  DialogActions,
-  DialogContent,
   DialogContentText,
-  DialogTitle,
 } from '@mui/material'
+import Popup from '../../Common/Popup'
 
 import { useTranslation } from 'react-i18next'
 import { useEditThesisMutation } from '../../../hooks/useThesesMutation'
@@ -255,34 +252,20 @@ export const ProgressView = ({
             </Stack>
           )}
       </Card>
-      <Dialog
+      <Popup
         open={confirmDialogOpen}
         onClose={handleCancelConfirmation}
-        aria-labelledby="confirm-dialog-title"
-        aria-describedby="confirm-dialog-description"
+        title={t('progressView:ethesisConfirmationTitle')}
+        onSubmit={handleConfirmSetEthesisSent}
+        submitText={t('common:approveButton')}
+        submitColor="primary"
+        submitDisabled={editThesisMutation.isPending}
+        cancelText={t('common:cancelButton')}
       >
-        <DialogTitle id="confirm-dialog-title">
-          {t('progressView:ethesisConfirmationTitle')}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="confirm-dialog-description">
-            {t('progressView:ethesisConfirmationText')}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelConfirmation} color="inherit">
-            {t('common:cancelButton')}
-          </Button>
-          <Button
-            onClick={handleConfirmSetEthesisSent}
-            color="primary"
-            variant="contained"
-            disabled={editThesisMutation.isPending}
-          >
-            {t('common:approveButton')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <DialogContentText id="confirm-dialog-description">
+          {t('progressView:ethesisConfirmationText')}
+        </DialogContentText>
+      </Popup>
     </Box>
   )
 }

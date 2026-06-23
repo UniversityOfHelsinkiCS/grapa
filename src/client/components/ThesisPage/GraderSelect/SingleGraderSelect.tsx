@@ -14,7 +14,7 @@ import { User, GraderData } from '@backend/types'
 import { useTranslation } from 'react-i18next'
 import { useDebounce } from '../../../hooks/useDebounce'
 import useUsers from '../../../hooks/useUsers'
-import DeleteConfirmation from '../../Common/DeleteConfirmation'
+import Popup from '../../Common/Popup'
 
 interface SingleGraderSelectProps {
   index: number
@@ -88,15 +88,17 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
           >
             <DeleteIcon />
           </IconButton>
-          <DeleteConfirmation
+          <Popup
             open={deleteDialogOpen}
-            setOpen={setDeleteDialogOpen}
             onClose={() => setDeleteDialogOpen(false)}
-            onDelete={() => {
+            onSubmit={() => {
               setDeleteDialogOpen(false)
               handleRemoveGrader()
             }}
             title={t('thesisForm:removeGraderConfirmationTitle')}
+            submitText={t('common:deleteButton')}
+            submitColor="error"
+            cancelText={t('common:cancelButton')}
           >
             <Box>
               {selection.user
@@ -107,7 +109,7 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
                     index: index + 1,
                   })}
             </Box>
-          </DeleteConfirmation>
+          </Popup>
         </>
       )}
     </Stack>

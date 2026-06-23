@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { TranslatedName, User } from '@backend/types'
 import {
   Box,
-  Dialog,
-  DialogContent,
   Divider,
   Button,
   IconButton,
@@ -24,6 +22,7 @@ import FavoritePrograms from './FavoritePrograms'
 import Logout from './Logout'
 import DepartmentSelector from '../DepartmentSelector'
 import { PersonOutlineOutlined, EditOutlined } from '@mui/icons-material'
+import Popup from '../Common/Popup'
 
 const UserInformation = () => {
   const { t, i18n } = useTranslation()
@@ -126,17 +125,14 @@ const UserInformation = () => {
           })}
         </dl>
       </ListItem>
-      <Dialog
+      <Popup
         open={departmentDialogOpen}
         onClose={() => setDepartmentDialogOpen(false)}
         maxWidth="md"
+        actions={null} // Disable default Popup buttons since it's just a selector
       >
-        <DialogContent>
-          <DepartmentSelector
-            onSuccess={() => setDepartmentDialogOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
+        <DepartmentSelector onSuccess={() => setDepartmentDialogOpen(false)} />
+      </Popup>
     </>
   )
 }

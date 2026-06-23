@@ -3,12 +3,9 @@ import {
   Box,
   Typography,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
   DialogContentText,
-  DialogTitle,
 } from '@mui/material'
+import Popup from '../Common/Popup'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useEditThesisMutation } from '../../hooks/useThesesMutation'
@@ -177,33 +174,20 @@ const ThesisModal = ({ open, onClose, thesis }: ThesisModalProps) => {
         </Box>
       </Modal>
 
-      <Dialog
+      <Popup
         open={confirmDialogOpen}
         onClose={handleCancelConfirmation}
-        aria-labelledby="confirm-dialog-title"
-        aria-describedby="confirm-dialog-description"
+        title="Confirmation"
+        onSubmit={handleConfirmSetEthesis}
+        submitText={editThesisMutation.isPending ? 'Saving...' : 'Yes'}
+        submitColor="warning"
+        submitDisabled={editThesisMutation.isPending}
+        cancelText="Cancel"
       >
-        <DialogTitle id="confirm-dialog-title">Confirmation</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="confirm-dialog-description">
-            Are you sure you want to mark that this thesis has been saved
-            Ethesis?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelConfirmation} color="inherit">
-            Cancel
-          </Button>
-          <Button
-            onClick={handleConfirmSetEthesis}
-            color="warning"
-            variant="contained"
-            disabled={editThesisMutation.isPending}
-          >
-            {editThesisMutation.isPending ? 'Saving...' : 'Yes'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <DialogContentText id="confirm-dialog-description">
+          Are you sure you want to mark that this thesis has been saved Ethesis?
+        </DialogContentText>
+      </Popup>
     </>
   )
 }

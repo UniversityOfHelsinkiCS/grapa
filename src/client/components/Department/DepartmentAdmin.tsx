@@ -29,7 +29,7 @@ import {
   useDeleteDepartmentAdminMutation,
 } from '../../hooks/useDepartmentAdminMutation'
 
-import DeleteConfirmation from '../Common/DeleteConfirmation'
+import Popup from '../Common/Popup'
 
 interface Props {
   filteringDepartmentId?: string
@@ -246,19 +246,21 @@ const DepartmentAdmin = ({ filteringDepartmentId, hideTitle }: Props) => {
         </Button>
       </Box>
       {deletedDepartmentAdmin && (
-        <DeleteConfirmation
+        <Popup
           open={deleteDialogOpen}
-          setOpen={setDeleteDialogOpen}
           onClose={() => {
             setDeleteDialogOpen(false)
             setDeletedDepartmentAdmin(null)
           }}
-          onDelete={async () => {
+          onSubmit={async () => {
             await deleteDepartmentAdmin(deletedDepartmentAdmin.id)
             setDeleteDialogOpen(false)
             setDeletedDepartmentAdmin(null)
           }}
           title={t('departmentAdminPage:removeDepartmentAdminTitle')}
+          submitText={t('deleteButton')}
+          submitColor="error"
+          cancelText={t('cancelButton')}
         >
           <Box>
             {t('departmentAdminPage:removeDepartmentAdminContent', {
@@ -266,7 +268,7 @@ const DepartmentAdmin = ({ filteringDepartmentId, hideTitle }: Props) => {
               department: deletedDepartmentAdmin.department.name[language],
             })}
           </Box>
-        </DeleteConfirmation>
+        </Popup>
       )}
     </Box>
   )

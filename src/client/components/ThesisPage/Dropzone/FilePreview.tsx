@@ -5,7 +5,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile'
 
 import { FileData } from '@backend/types'
 
-import DeleteConfirmation from '../../Common/DeleteConfirmation'
+import Popup from '../../Common/Popup'
 
 import { BASE_PATH } from '../../../../config'
 
@@ -35,18 +35,20 @@ const FilePreview = ({ file, onDelete }: FilePreviewProps) => {
         sx={{ maxWidth: 200 }}
         onDelete={() => setDeleteDialogOpen(true)}
       />
-      <DeleteConfirmation
+      <Popup
         open={deleteDialogOpen}
-        setOpen={setDeleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-        onDelete={() => {
+        onSubmit={() => {
           setDeleteDialogOpen(false)
           onDelete()
         }}
         title={t('thesisForm:removeAppendixConfirmationTitle')}
+        submitText={t('common:deleteButton')}
+        submitColor="error"
+        cancelText={t('common:cancelButton')}
       >
         {t('thesisForm:removeAppendixConfirmationContent', { name: file.name })}
-      </DeleteConfirmation>
+      </Popup>
     </>
   )
 }

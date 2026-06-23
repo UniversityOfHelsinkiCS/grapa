@@ -8,12 +8,9 @@ import {
   Card,
   CardContent,
   CardActions,
-  Dialog,
-  DialogTitle,
-  DialogContent,
   DialogContentText,
-  DialogActions as MuiDialogActions,
 } from '@mui/material'
+import Popup from './Common/Popup'
 
 import useLoggedInUser from '../hooks/useLoggedInUser'
 import { useRunUpdaterMutation } from '../hooks/useAdmin'
@@ -76,26 +73,18 @@ const AdminOtherPage: React.FC = () => {
         </Box>
       </Box>
 
-      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-        <DialogTitle>{t('adminOtherPage:confirmRunTitle')}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {t('adminOtherPage:confirmRunDescription')}
-          </DialogContentText>
-        </DialogContent>
-        <MuiDialogActions>
-          <Button onClick={() => setConfirmOpen(false)}>
-            {t('cancelButton', 'Cancel')}
-          </Button>
-          <Button
-            onClick={handleConfirmRun}
-            variant="contained"
-            color="primary"
-          >
-            {t('adminOtherPage:runUpdaterButton')}
-          </Button>
-        </MuiDialogActions>
-      </Dialog>
+      <Popup
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        title={t('adminOtherPage:confirmRunTitle')}
+        onSubmit={handleConfirmRun}
+        submitText={t('adminOtherPage:runUpdaterButton')}
+        cancelText={t('cancelButton', 'Cancel')}
+      >
+        <DialogContentText>
+          {t('adminOtherPage:confirmRunDescription')}
+        </DialogContentText>
+      </Popup>
     </Box>
   )
 }

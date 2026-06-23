@@ -11,10 +11,6 @@ import {
   TableRow,
   Paper,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   TextField,
   Box,
   IconButton,
@@ -23,6 +19,7 @@ import {
 import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import apiClient from '../../util/apiClient'
+import Popup from '../Common/Popup'
 
 interface EthesisAdmin {
   id: string
@@ -239,105 +236,89 @@ const EthesisAdminPage = ({
       </TableContainer>
 
       {/* Add Admin Dialog */}
-      <Dialog
+      <Popup
         open={addDialogOpen}
         onClose={() => setAddDialogOpen(false)}
-        maxWidth="sm"
+        title="Add Ethesis Administrator"
         fullWidth
+        maxWidth="sm"
+        onSubmit={handleAddAdmin}
+        submitText={addAdminMutation.isPending ? 'Adding...' : 'Add Admin'}
+        submitDisabled={!selectedUser || addAdminMutation.isPending}
+        cancelText="Cancel"
       >
-        <DialogTitle>Add Ethesis Administrator</DialogTitle>
-        <DialogContent>
-          <Box sx={{ mt: 2 }}>
-            <TextField
-              fullWidth
-              label="Search Users"
-              value={userSearch}
-              onChange={(e) => handleUserSearchChange(e.target.value)}
-              placeholder="Type at least 5 characters to search..."
-            />
+        <Box sx={{ mt: 2 }}>
+          <TextField
+            fullWidth
+            label="Search Users"
+            value={userSearch}
+            onChange={(e) => handleUserSearchChange(e.target.value)}
+            placeholder="Type at least 5 characters to search..."
+          />
 
-            {searchResults.length > 0 && (
-              <Paper sx={{ mt: 1, maxHeight: 200, overflow: 'auto' }}>
-                {searchResults.map((user) => (
-                  <Box
-                    key={user.id}
-                    sx={{
-                      p: 2,
-                      cursor: 'pointer',
-                      '&:hover': { backgroundColor: 'grey.100' },
-                      borderBottom: '1px solid #eee',
-                    }}
-                    onClick={() => handleUserSelect(user)}
-                  >
-                    <Typography variant="body1">
-                      {user.firstName} {user.lastName}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {user.email}
-                    </Typography>
-                  </Box>
-                ))}
-              </Paper>
-            )}
+          {searchResults.length > 0 && (
+            <Paper sx={{ mt: 1, maxHeight: 200, overflow: 'auto' }}>
+              {searchResults.map((user) => (
+                <Box
+                  key={user.id}
+                  sx={{
+                    p: 2,
+                    cursor: 'pointer',
+                    '&:hover': { backgroundColor: 'grey.100' },
+                    borderBottom: '1px solid #eee',
+                  }}
+                  onClick={() => handleUserSelect(user)}
+                >
+                  <Typography variant="body1">
+                    {user.firstName} {user.lastName}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {user.email}
+                  </Typography>
+                </Box>
+              ))}
+            </Paper>
+          )}
 
-            {selectedUser && (
-              <Box
-                sx={{
-                  mt: 2,
-                  p: 2,
-                  backgroundColor: 'grey.50',
-                  borderRadius: 1,
-                }}
-              >
-                <Typography variant="body1">
-                  Selected: {selectedUser.firstName} {selectedUser.lastName}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {selectedUser.email}
-                </Typography>
-              </Box>
-            )}
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setAddDialogOpen(false)}>Cancel</Button>
-          <Button
-            onClick={handleAddAdmin}
-            variant="contained"
-            disabled={!selectedUser || addAdminMutation.isPending}
-          >
-            {addAdminMutation.isPending ? 'Adding...' : 'Add Admin'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+          {selectedUser && (
+            <Box
+              sx={{
+                mt: 2,
+                p: 2,
+                backgroundColor: 'grey.50',
+                borderRadius: 1,
+              }}
+            >
+              <Typography variant="body1">
+                Selected: {selectedUser.firstName} {selectedUser.lastName}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                {selectedUser.email}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      </Popup>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog
+      <Popup
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
+        title="Confirm Delete"
+        onSubmit={handleDeleteAdmin}
+        submitText={deleteAdminMutation.isPending ? 'Removing...' : 'Remove'}
+        submitColor="error"
+        submitDisabled={deleteAdminMutation.isPending}
+        cancelText="Cancel"
       >
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Are you sure you want to remove{' '}
-            <strong>
-              {selectedAdmin?.user.firstName} {selectedAdmin?.user.lastName}
-            </strong>{' '}
-            from Ethesis administrators?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <Button
-            onClick={handleDeleteAdmin}
-            color="error"
-            variant="contained"
-            disabled={deleteAdminMutation.isPending}
-          >
-            {deleteAdminMutation.isPending ? 'Removing...' : 'Remove'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Typography>
+          Are you sure you want to remove{' '}
+          <strong>
+            {selectedAdmin?.user.firstName} {selectedAdmin?.user.lastName}
+          </strong>{' '}
+          from Ethesis administrators?
+        </Typography>
+      </Popup>
     </>
   )
 

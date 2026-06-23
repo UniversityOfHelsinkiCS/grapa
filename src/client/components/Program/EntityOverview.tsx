@@ -7,10 +7,6 @@ import {
   Button,
   CircularProgress,
   Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormControl,
   FormControlLabel,
   InputLabel,
@@ -27,6 +23,7 @@ import {
   Alert,
   Chip,
 } from '@mui/material'
+import Popup from '../Common/Popup'
 import usePrograms, { useUpdateProgramMutation } from '../../hooks/usePrograms'
 
 import { useTranslation } from 'react-i18next'
@@ -131,33 +128,23 @@ const FeatureFlagControl = ({
         }
       />
 
-      <Dialog open={pendingValue !== null} onClose={handleCancelToggle}>
-        <DialogTitle>
-          {translation(`programOverviewPage:${feature}:confirmTitle`)}
-        </DialogTitle>
-        <DialogContent>
-          <Typography>
-            {translation(
-              pendingValue
-                ? `programOverviewPage:${feature}:enableConfirm`
-                : `programOverviewPage:${feature}:disableConfirm`
-            )}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button type="button" onClick={handleCancelToggle}>
-            {translation('cancelButton')}
-          </Button>
-          <Button
-            type="button"
-            variant="contained"
-            onClick={handleConfirmToggle}
-            disabled={updateMutation.isPending}
-          >
-            {translation('submitButton')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <Popup
+        open={pendingValue !== null}
+        onClose={handleCancelToggle}
+        title={translation(`programOverviewPage:${feature}:confirmTitle`)}
+        onSubmit={handleConfirmToggle}
+        submitText={translation('submitButton')}
+        submitDisabled={updateMutation.isPending}
+        cancelText={translation('cancelButton')}
+      >
+        <Typography>
+          {translation(
+            pendingValue
+              ? `programOverviewPage:${feature}:enableConfirm`
+              : `programOverviewPage:${feature}:disableConfirm`
+          )}
+        </Typography>
+      </Popup>
     </>
   )
 }
@@ -359,33 +346,23 @@ const ListInput = ({
         </Stack>
       </Stack>
 
-      <Dialog open={pendingValue !== null} onClose={handleCancelToggle}>
-        <DialogTitle>
-          {translation(`programOverviewPage:${feature}:confirmTitle`)}
-        </DialogTitle>
-        <DialogContent>
-          <Typography>
-            {translation(
-              pendingValue
-                ? `programOverviewPage:${feature}:enableConfirm`
-                : `programOverviewPage:${feature}:disableConfirm`
-            )}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button type="button" onClick={handleCancelToggle}>
-            {translation('cancelButton')}
-          </Button>
-          <Button
-            type="button"
-            variant="contained"
-            onClick={handleConfirmToggle}
-            disabled={updateMutation.isPending}
-          >
-            {translation('submitButton')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <Popup
+        open={pendingValue !== null}
+        onClose={handleCancelToggle}
+        title={translation(`programOverviewPage:${feature}:confirmTitle`)}
+        onSubmit={handleConfirmToggle}
+        submitText={translation('submitButton')}
+        submitDisabled={updateMutation.isPending}
+        cancelText={translation('cancelButton')}
+      >
+        <Typography>
+          {translation(
+            pendingValue
+              ? `programOverviewPage:${feature}:enableConfirm`
+              : `programOverviewPage:${feature}:disableConfirm`
+          )}
+        </Typography>
+      </Popup>
     </>
   )
 }
@@ -603,31 +580,23 @@ const CombinedStudyTracksInput = ({
         </Stack>
       </Stack>
 
-      <Dialog open={pendingValue !== null} onClose={handleCancelToggle}>
-        <DialogTitle>
-          {translation(`programOverviewPage:combinedStudyTracks:confirmTitle`)}
-        </DialogTitle>
-        <DialogContent>
-          <Typography>
-            {translation(
-              `programOverviewPage:combinedStudyTracks:confirmContent`
-            )}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button type="button" onClick={handleCancelToggle}>
-            {translation('cancelButton')}
-          </Button>
-          <Button
-            type="button"
-            variant="contained"
-            onClick={handleConfirmToggle}
-            disabled={updateMutation.isPending}
-          >
-            {translation('submitButton')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <Popup
+        open={pendingValue !== null}
+        onClose={handleCancelToggle}
+        title={translation(
+          `programOverviewPage:combinedStudyTracks:confirmTitle`
+        )}
+        onSubmit={handleConfirmToggle}
+        submitText={translation('submitButton')}
+        submitDisabled={updateMutation.isPending}
+        cancelText={translation('cancelButton')}
+      >
+        <Typography>
+          {translation(
+            `programOverviewPage:combinedStudyTracks:confirmContent`
+          )}
+        </Typography>
+      </Popup>
     </>
   )
 }
@@ -750,34 +719,21 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
         </Box>
       </Stack>
 
-      <Dialog
+      <Popup
         open={confirmingNumberOfGraders}
         onClose={handleCancelNumberOfGradersChange}
+        title={t('programOverviewPage:numberOfGradersConfirmTitle')}
+        onSubmit={handleConfirmNumberOfGradersChange}
+        submitText={t('submitButton')}
+        submitDisabled={updateProgramOptionsMutation.isPending}
+        cancelText={t('cancelButton')}
       >
-        <DialogTitle>
-          {t('programOverviewPage:numberOfGradersConfirmTitle')}
-        </DialogTitle>
-        <DialogContent>
-          <Typography>
-            {t('programOverviewPage:numberOfGradersConfirmContent', {
-              count: draftNumberOfGraders,
-            })}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button type="button" onClick={handleCancelNumberOfGradersChange}>
-            {t('cancelButton')}
-          </Button>
-          <Button
-            type="button"
-            variant="contained"
-            onClick={handleConfirmNumberOfGradersChange}
-            disabled={updateProgramOptionsMutation.isPending}
-          >
-            {t('submitButton')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Typography>
+          {t('programOverviewPage:numberOfGradersConfirmContent', {
+            count: draftNumberOfGraders,
+          })}
+        </Typography>
+      </Popup>
     </>
   )
 }

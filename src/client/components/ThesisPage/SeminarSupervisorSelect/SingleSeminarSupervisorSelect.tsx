@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next'
 import DeleteIcon from '@mui/icons-material/Delete'
 import useUsers from '../../../hooks/useUsers'
 import { useDebounce } from '../../../hooks/useDebounce'
-import DeleteConfirmation from '../../Common/DeleteConfirmation'
+import Popup from '../../Common/Popup'
 
 interface SingleSeminarSupervisorSelectProps {
   index: number
@@ -92,11 +92,28 @@ const SingleSeminarSupervisorSelect: React.FC<
         </Box>
       </Tooltip>
 
-      <DeleteConfirmation
+      <Popup
         open={deleteDialogOpen}
-        setOpen={setDeleteDialogOpen}
-        onConfirm={handleRemoveSeminarSupervisor}
-      />
+        onClose={() => setDeleteDialogOpen(false)}
+        onSubmit={() => {
+          setDeleteDialogOpen(false)
+          handleRemoveSeminarSupervisor()
+        }}
+        title={t('thesisForm:removeSeminarSupervisorConfirmationTitle')}
+        submitText={t('common:deleteButton')}
+        submitColor="error"
+        cancelText={t('common:cancelButton')}
+      >
+        <Box>
+          {selection.user
+            ? t('thesisForm:removeSeminarSupervisorConfirmationContent', {
+                name: `${selection.user.firstName} ${selection.user.lastName}`,
+              })
+            : t('thesisForm:removeSeminarSupervisorConfirmationNoName', {
+                index: index + 1,
+              })}
+        </Box>
+      </Popup>
     </Stack>
   )
 }

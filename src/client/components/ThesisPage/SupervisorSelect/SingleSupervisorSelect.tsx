@@ -19,7 +19,7 @@ import Star from '@mui/icons-material/Star'
 import StarOutline from '@mui/icons-material/StarBorder'
 import useUsers from '../../../hooks/useUsers'
 import { useDebounce } from '../../../hooks/useDebounce'
-import DeleteConfirmation from '../../Common/DeleteConfirmation'
+import Popup from '../../Common/Popup'
 import PercentageInput from '../PercentageInput'
 
 interface SingleSupervisorSelectProps {
@@ -153,12 +153,14 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
         </Box>
       </Tooltip>
 
-      <DeleteConfirmation
+      <Popup
         open={deleteDialogOpen}
-        setOpen={setDeleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-        onDelete={handleRemoveSupervisor}
+        onSubmit={handleRemoveSupervisor}
         title={t('thesisForm:removeSupervisorConfirmationTitle')}
+        submitText={t('common:deleteButton')}
+        submitColor="error"
+        cancelText={t('common:cancelButton')}
       >
         <Box>
           {selection.user
@@ -169,7 +171,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
                 index: index + 1,
               })}
         </Box>
-      </DeleteConfirmation>
+      </Popup>
     </Stack>
   )
 }

@@ -9,12 +9,9 @@ import {
   Switch,
   TextField,
   Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
   DialogContentText,
-  DialogTitle,
 } from '@mui/material'
+import Popup from './Popup'
 import { TranslatedName, TranslationLanguage } from '@backend/types'
 
 export interface ManageableItem {
@@ -218,28 +215,17 @@ const ManageEntity = <T extends ManageableItem>({
         </Box>
       </Box>
 
-      <Dialog
+      <Popup
         open={confirmDialogOpen}
         onClose={() => setConfirmDialogOpen(false)}
+        title={confirmTitle}
+        onSubmit={handleConfirmSave}
+        submitText={isPending ? t('common:saving') : t('common:saveButton')}
+        submitDisabled={isPending}
+        cancelText={t('cancelButton', 'Cancel')}
       >
-        <DialogTitle>{confirmTitle}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{confirmText}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmDialogOpen(false)}>
-            {t('cancelButton', 'Cancel')}
-          </Button>
-          <Button
-            onClick={handleConfirmSave}
-            variant="contained"
-            color="primary"
-            disabled={isPending}
-          >
-            {isPending ? t('common:saving') : t('common:saveButton')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <DialogContentText>{confirmText}</DialogContentText>
+      </Popup>
     </Box>
   )
 }

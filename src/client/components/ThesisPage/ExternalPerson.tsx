@@ -12,7 +12,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete'
 
 import { useTranslation } from 'react-i18next'
-import DeleteConfirmation from '../Common/DeleteConfirmation'
+import Popup from '../Common/Popup'
 import PercentageInput from './PercentageInput'
 
 type ExternalPersonInputErrors = {
@@ -50,8 +50,7 @@ interface BaseExternalPersonInputProps {
   editDisabled?: boolean // The fields should be disabled in edit mode. Only way to update external person is to delete and create new.
 }
 
-interface SupervisionsExternalPersonInputProps
-  extends BaseExternalPersonInputProps {
+interface SupervisionsExternalPersonInputProps extends BaseExternalPersonInputProps {
   inputGroup: 'supervisions'
   handlePercentageChange: (percentage: number) => void
   percentageInputProps: TextFieldProps
@@ -63,8 +62,7 @@ interface GradersExternalPersonInputProps extends BaseExternalPersonInputProps {
   percentageInputProps?: never
 }
 
-interface SeminarSupervisionsExternalPersonInputProps
-  extends BaseExternalPersonInputProps {
+interface SeminarSupervisionsExternalPersonInputProps extends BaseExternalPersonInputProps {
   inputGroup: 'seminarSupervisions'
   handlePercentageChange?: never
   percentageInputProps?: never
@@ -244,12 +242,14 @@ const ExternalPersonInput = ({
         <DeleteIcon />
       </IconButton>
 
-      <DeleteConfirmation
+      <Popup
         open={deleteDialogOpen}
-        setOpen={setDeleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-        onDelete={handleRemovePerson}
+        onSubmit={handleRemovePerson}
         title={t(`thesisForm:${deleteConfirmationTitleLocKey}`)}
+        submitText={t('deleteButton')}
+        submitColor="error"
+        cancelText={t('cancelButton')}
       >
         <Box>
           {selection.user?.firstName || selection.user?.lastName
@@ -260,7 +260,7 @@ const ExternalPersonInput = ({
                 index: index + 1,
               })}
         </Box>
-      </DeleteConfirmation>
+      </Popup>
     </Stack>
   )
 }

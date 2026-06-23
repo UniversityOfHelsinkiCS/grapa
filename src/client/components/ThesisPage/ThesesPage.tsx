@@ -28,10 +28,8 @@ import usePrograms from '../../hooks/usePrograms'
 
 import ThesisEditForm from './ThesisEditForm'
 import ViewThesisFooter from './ViewThesisFooter'
-import DeleteConfirmation from '../Common/DeleteConfirmation'
-
+import Popup from '../Common/Popup'
 import { useDebounce } from '../../hooks/useDebounce'
-import EthesisConfirmation from '../Common/EthesisConfirmation'
 
 import PrethesisTable from '../PrethesisTable/PrethesisTable'
 
@@ -424,9 +422,8 @@ const ThesesPage = ({
         />
       )}
       {ethesisTesis && (
-        <EthesisConfirmation
+        <Popup
           open={ethesisDialogOpen}
-          setOpen={setEthesisDialogOpen}
           onClose={() => {
             setEthesisDialogOpen(false)
             setEthesisThesis(null)
@@ -441,6 +438,8 @@ const ThesesPage = ({
             setEthesisThesis(null)
           }}
           title={t('thesisForm:toSubmitEthesis')}
+          submitText={t('common:submitButton')}
+          cancelText={t('common:cancelButton')}
         >
           <Box>
             {ethesisTesis.topic}
@@ -467,18 +466,17 @@ const ThesesPage = ({
               </Typography>
             </Box>
           </Box>
-        </EthesisConfirmation>
+        </Popup>
       )}
       {deletedThesis && (
-        <DeleteConfirmation
+        <Popup
           open={deleteDialogOpen}
-          setOpen={setDeleteDialogOpen}
           onClose={() => {
             setDeleteDialogOpen(false)
             setDeletedThesis(null)
             setDeleteConfirmation('')
           }}
-          onDelete={async () => {
+          onSubmit={async () => {
             setDeleteDialogOpen(false)
             setDeletedThesis(null)
             setDeleteConfirmation('')
@@ -488,7 +486,10 @@ const ThesesPage = ({
             await deleteThesis(deletedThesis.id)
           }}
           title={t('removeThesisTitle')}
-          deleteDisabled={
+          submitText={t('common:deleteButton')}
+          submitColor="error"
+          cancelText={t('common:cancelButton')}
+          submitDisabled={
             deleteConfirmation?.toLowerCase() !==
             deletedThesis.topic.toLowerCase()
           }
@@ -518,7 +519,7 @@ const ThesesPage = ({
               />
             </Box>
           </Box>
-        </DeleteConfirmation>
+        </Popup>
       )}
     </Stack>
   )

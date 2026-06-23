@@ -39,7 +39,7 @@ import {
   useDeleteStudyTrackManagementMutation,
 } from '../../hooks/useStudyTrackManagementMutation'
 
-import DeleteConfirmation from '../Common/DeleteConfirmation'
+import Popup from '../Common/Popup'
 
 import {
   ProgramManagementData,
@@ -376,14 +376,13 @@ const EntityManagement = ({
         </Button>
       </Box>
       {deletedProgramManagement && (
-        <DeleteConfirmation
+        <Popup
           open={deleteDialogOpen}
-          setOpen={setDeleteDialogOpen}
           onClose={() => {
             setDeleteDialogOpen(false)
             setDeletedProgramManagement(null)
           }}
-          onDelete={async () => {
+          onSubmit={async () => {
             if (entityType === 'program') {
               await deleteProgramManagement(deletedProgramManagement.id)
             } else {
@@ -393,6 +392,9 @@ const EntityManagement = ({
             setDeletedProgramManagement(null)
           }}
           title={t('programManagementPage:removeProgramManagementTitle')}
+          submitText={t('deleteButton')}
+          submitColor="error"
+          cancelText={t('cancelButton')}
         >
           <Box>
             {t('programManagementPage:removeProgramManagementContent', {
@@ -403,7 +405,7 @@ const EntityManagement = ({
                   : deletedProgramManagement.studyTrack?.name[language],
             })}
           </Box>
-        </DeleteConfirmation>
+        </Popup>
       )}
     </Box>
   )

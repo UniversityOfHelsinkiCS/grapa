@@ -114,19 +114,7 @@ jest.unstable_mockModule(
   })
 )
 
-jest.unstable_mockModule(
-  './src/client/components/Common/DeleteConfirmation',
-  () => ({
-    default: jest.fn(() => null),
-  })
-)
 
-jest.unstable_mockModule(
-  './src/client/components/Common/EthesisConfirmation',
-  () => ({
-    default: jest.fn(() => null),
-  })
-)
 
 jest.unstable_mockModule('@mui/x-data-grid', () => ({
   DataGrid: jest.fn(({ slots, slotProps }) => {

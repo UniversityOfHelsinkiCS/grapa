@@ -3,10 +3,6 @@ import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   TextField,
   Box,
   FormControlLabel,
@@ -21,6 +17,7 @@ import useDepartments, {
 import useLoggedInUser from '../hooks/useLoggedInUser'
 import ManageEntity from './Common/ManageEntity'
 import { TranslatedName } from '@backend/types'
+import Popup from './Common/Popup'
 
 const ManageDepartmentsPage: React.FC = () => {
   const { t } = useTranslation()
@@ -89,18 +86,20 @@ const ManageDepartmentsPage: React.FC = () => {
         </Button>
       </Box>
 
-      <Dialog
+      <Popup
         open={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
+        title={t('manageDepartmentsPage:addDepartmentTitle')}
         fullWidth
         maxWidth="sm"
+        onSubmit={handleCreateSave}
+        submitText={
+          createDepartmentMutation.isPending ? t('saving') : t('submitButton')
+        }
+        submitDisabled={isCreateDisabled}
+        cancelText={t('cancelButton')}
       >
-        <DialogTitle>
-          {t('manageDepartmentsPage:addDepartmentTitle')}
-        </DialogTitle>
-        <DialogContent
-          sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}
-        >
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <Alert severity="warning">
             {t('manageDepartmentsPage:deleteWarning')}
           </Alert>
@@ -154,23 +153,8 @@ const ManageDepartmentsPage: React.FC = () => {
             }
             label={t('common:enabled')}
           />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setCreateDialogOpen(false)}>
-            {t('cancelButton')}
-          </Button>
-          <Button
-            onClick={handleCreateSave}
-            variant="contained"
-            color="primary"
-            disabled={isCreateDisabled}
-          >
-            {createDepartmentMutation.isPending
-              ? t('saving')
-              : t('submitButton')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        </Box>
+      </Popup>
     </Box>
   )
 }

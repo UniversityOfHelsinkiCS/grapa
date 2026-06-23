@@ -14,11 +14,8 @@ import {
   Skeleton,
   Stack,
   Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from '@mui/material'
+import Popup from '../Common/Popup'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 
 import {
@@ -706,59 +703,49 @@ const ViewThesisFooter = (
       )}
 
       {thesis && (
-        <Dialog
+        <Popup
           open={pendingAction !== null}
           onClose={() => setPendingAction(null)}
-        >
-          <DialogTitle>
-            {pendingAction === 'approve'
+          title={
+            pendingAction === 'approve'
               ? t('approveButtonConfirmTitle', 'Confirm Approval')
-              : t('sendDraftButtonConfirmTitle', 'Confirm Send Draft')}
-          </DialogTitle>
-          <DialogContent>
-            <Typography>
-              {pendingAction === 'approve'
-                ? t(
-                    'approveButtonConfirmContent',
-                    'Are you sure you want to approve this thesis plan?'
-                  )
-                : t(
-                    'sendDraftButtonConfirmContent',
-                    'Are you sure you want to send this draft as a suggestion?'
-                  )}
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setPendingAction(null)}>
-              {t('cancelButton')}
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => {
-                if (pendingAction === 'approve') {
-                  editThesis({
-                    thesisId: thesis.id,
-                    data: {
-                      ...thesis,
-                      status: IN_PROGRESS_STATUS,
-                    },
-                  })
-                } else if (pendingAction === 'sendDraft') {
-                  editThesis({
-                    thesisId: thesis.id,
-                    data: {
-                      ...thesis,
-                      status: 'SUGGESTED',
-                    },
-                  })
-                }
-                setPendingAction(null)
-              }}
-            >
-              {t('submitButton')}
-            </Button>
-          </DialogActions>
-        </Dialog>
+              : t('sendDraftButtonConfirmTitle', 'Confirm Send Draft')
+          }
+          onSubmit={() => {
+            if (pendingAction === 'approve') {
+              editThesis({
+                thesisId: thesis.id,
+                data: {
+                  ...thesis,
+                  status: IN_PROGRESS_STATUS,
+                },
+              })
+            } else if (pendingAction === 'sendDraft') {
+              editThesis({
+                thesisId: thesis.id,
+                data: {
+                  ...thesis,
+                  status: 'SUGGESTED',
+                },
+              })
+            }
+            setPendingAction(null)
+          }}
+          submitText={t('submitButton')}
+          cancelText={t('cancelButton')}
+        >
+          <Typography>
+            {pendingAction === 'approve'
+              ? t(
+                  'approveButtonConfirmContent',
+                  'Are you sure you want to approve this thesis plan?'
+                )
+              : t(
+                  'sendDraftButtonConfirmContent',
+                  'Are you sure you want to send this draft as a suggestion?'
+                )}
+          </Typography>
+        </Popup>
       )}
     </>
   )
