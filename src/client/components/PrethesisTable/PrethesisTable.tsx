@@ -65,6 +65,7 @@ interface Props {
   initializeNewThesis: any
   isStudentView: boolean
   noAddThesisButton: boolean
+  showSupervisors?: boolean
 }
 
 const PrethesisTable = ({
@@ -81,6 +82,7 @@ const PrethesisTable = ({
   noAddThesisButton,
   initializeNewThesis,
   isStudentView,
+  showSupervisors,
 }: Props) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -192,6 +194,41 @@ const PrethesisTable = ({
       header: t('authorsHeader'),
       enableResizing: true,
     }),
+    ...(showSupervisors
+      ? [
+          columnHelper.accessor('supervisions', {
+            id: 'supervisor',
+            size: 250,
+            cell: (info) => (
+              <Typography variant="small">
+                {info
+                  .getValue()
+                  .map(
+                    (supervision) =>
+                      `${supervision.user?.lastName} ${supervision.user?.firstName}`
+                  )
+                  .join(', ')}
+              </Typography>
+            ),
+            header: t('supervisorHeader'),
+            enableResizing: true,
+          }),
+          columnHelper.accessor('supervisions', {
+            id: 'supervisionPercentage',
+            size: 100,
+            cell: (info) => (
+              <Typography variant="small">
+                {info
+                  .getValue()
+                  .map((supervision) => `${supervision.percentage}%`)
+                  .join(', ')}
+              </Typography>
+            ),
+            header: t('supervisionPercentageHeader'),
+            enableResizing: true,
+          }),
+        ]
+      : []),
     columnHelper.accessor('status', {
       size: 50,
       cell: (info) => (

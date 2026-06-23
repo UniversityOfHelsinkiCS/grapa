@@ -11,7 +11,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { TranslationLanguage } from '@backend/types'
 import useDepartments from '../../hooks/useDepartments'
-import DepartmentTheses from './DepartmentTheses'
+import ThesesPage from '../ThesisPage/ThesesPage'
 import DepartmentAdmin from './DepartmentAdmin'
 import DepartmentStatistics from './DepartmentStatistics'
 
@@ -115,11 +115,12 @@ const DepartmentOverview = () => {
 
           {tab === 'theses' && (
             <Box>
-              <DepartmentTheses
+              <ThesesPage
                 filteringDepartmentId={selectedDepartmentId}
                 noOwnThesesSwitch
                 noAddThesisButton
                 showExportOptions
+                showSupervisors
                 pageSize={100}
               />
             </Box>

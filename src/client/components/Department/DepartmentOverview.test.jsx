@@ -24,10 +24,10 @@ jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
 }))
 
 jest.unstable_mockModule(
-  './src/client/components/Department/DepartmentTheses',
+  './src/client/components/ThesisPage/ThesesPage',
   () => ({
     default: jest.fn(({ filteringDepartmentId }) => (
-      <div data-testid="department-theses">{filteringDepartmentId}</div>
+      <div data-testid="theses-page">{filteringDepartmentId}</div>
     )),
   })
 )
@@ -77,7 +77,7 @@ describe('DepartmentOverview', () => {
     )
     expect(screen.getByText('Yksikkö kaksi')).toBeInTheDocument()
     expect(screen.queryByTestId('department-admin')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('department-theses')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('theses-page')).not.toBeInTheDocument()
   })
 
   it('shows the embedded department admin view in its own tab', async () => {
@@ -89,7 +89,7 @@ describe('DepartmentOverview', () => {
     expect(screen.getByTestId('department-admin')).toHaveTextContent(
       'department-2-true'
     )
-    expect(screen.queryByTestId('department-theses')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('theses-page')).not.toBeInTheDocument()
   })
 
   it('shows the embedded department statistics view when opened from the statistics tab URL', async () => {

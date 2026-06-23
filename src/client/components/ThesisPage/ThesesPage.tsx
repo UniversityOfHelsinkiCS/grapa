@@ -47,6 +47,7 @@ interface Props {
   pageSize?: number
   onlySeminarSupervised?: boolean
   isStudentView?: boolean
+  showSupervisors?: boolean
 }
 const ThesesPage = ({
   filteringProgramId,
@@ -57,6 +58,7 @@ const ThesesPage = ({
   pageSize,
   onlySeminarSupervised = false,
   isStudentView = false,
+  showSupervisors = false,
 }: Props) => {
   pageSize = pageSize ?? DEFAULT_PAGE_SIZE
 
@@ -312,6 +314,7 @@ const ThesesPage = ({
           isStudentView={isStudentView}
           initializeNewThesis={initializeNewThesis}
           noAddThesisButton={noAddThesisButton}
+          showSupervisors={showSupervisors}
           filterViews={{
             active: {
               filterModel: {
