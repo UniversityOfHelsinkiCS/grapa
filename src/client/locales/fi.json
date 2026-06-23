@@ -187,6 +187,7 @@
       "description": "Voit yhdistää samankaltaisia opintosuuntia toisiinsa. Toissijaiset opintosuunnat piilotetaan lomakkeilta ja ohjataan valittuun ensisijaiseen opintosuuntaan.",
       "primary": "Ensisijainen opintosuunta (näkyy)",
       "secondaries": "Toissijaiset opintosuunnat (piilotetaan)",
+      "previewTitle": "Esikatselu: Näkyvät opintosuunnat",
       "confirmTitle": "Vahvista opintosuuntien yhdistäminen",
       "confirmContent": "Haluatko varmasti tallentaa nämä opintosuuntien yhdistämiset? Muutos vaikuttaa siihen, mitä opintosuuntia opiskelijat ja ohjaajat voivat valita."
     }

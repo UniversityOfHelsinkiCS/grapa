@@ -189,6 +189,7 @@
       "description": "Du kan kombinera liknande studieinriktningar. Sekundära studieinriktningar döljs från blanketterna och omdirigeras till den valda primära studieinriktningen.",
       "primary": "Primär studieinriktning (synlig)",
       "secondaries": "Sekundära studieinriktningar (dolda)",
+      "previewTitle": "Förhandsgranskning: Synliga studieinriktningar",
       "confirmTitle": "Bekräfta kombinationer av studieinriktningar",
       "confirmContent": "Är du säker på att du vill spara dessa kombinationer av studieinriktningar? Detta påverkar vilka studieinriktningar studerande och handledare kan välja."
     }

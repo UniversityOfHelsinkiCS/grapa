@@ -25,6 +25,7 @@ import {
   TextField,
   Autocomplete,
   Alert,
+  Chip,
 } from '@mui/material'
 import usePrograms, { useUpdateProgramMutation } from '../../hooks/usePrograms'
 
@@ -457,12 +458,33 @@ const CombinedStudyTracksInput = ({
 
   const availableStudyTracks = program.allStudyTracks || []
 
+  const hiddenStudyTracks = new Set(
+    listValues.flatMap((v) => v.secondaries.map((s) => s.id))
+  )
+
+  const visibleStudyTracks = availableStudyTracks.filter(
+    (t) => !hiddenStudyTracks.has(t.id)
+  )
+
   return (
     <>
       <Stack sx={{ gap: '1rem', width: '40rem' }}>
         <Typography variant="h5">
           {translation(`programOverviewPage:combinedStudyTracks:title`)}
         </Typography>
+
+        <Stack direction="column" sx={{ gap: '0.5rem', mt: 1, mb: 1 }}>
+          <Typography variant="subtitle2">
+            {translation(
+              `programOverviewPage:combinedStudyTracks:previewTitle`
+            )}
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {visibleStudyTracks.map((track) => (
+              <Chip key={track.id} label={track.name[language]} size="small" />
+            ))}
+          </Box>
+        </Stack>
         <Typography variant="body2" sx={{ mb: 1 }}>
           {translation(`programOverviewPage:combinedStudyTracks:description`)}
         </Typography>
@@ -473,6 +495,17 @@ const CombinedStudyTracksInput = ({
             listValues.flatMap((v, i) =>
               i !== index ? v.secondaries.map((s) => s.id) : []
             )
+          )
+          const usedPrimaryIds = new Set(
+            listValues.flatMap((v, i) =>
+              i !== index && v.primary ? [v.primary] : []
+            )
+          )
+          const allPrimaryIds = new Set(
+            listValues.flatMap((v) => (v.primary ? [v.primary] : []))
+          )
+          const allSecondaryIds = new Set(
+            listValues.flatMap((v) => v.secondaries.map((s) => s.id))
           )
 
           return (
@@ -504,7 +537,14 @@ const CombinedStudyTracksInput = ({
                   }}
                 >
                   {availableStudyTracks.map((track) => (
-                    <MenuItem key={track.id} value={track.id}>
+                    <MenuItem
+                      key={track.id}
+                      value={track.id}
+                      disabled={
+                        usedPrimaryIds.has(track.id) ||
+                        allSecondaryIds.has(track.id)
+                      }
+                    >
                       {track.name[language]}
                     </MenuItem>
                   ))}
@@ -514,7 +554,7 @@ const CombinedStudyTracksInput = ({
               <Autocomplete
                 multiple
                 options={availableStudyTracks.filter(
-                  (t) => t.id !== value.primary && !usedSecondaryIds.has(t.id)
+                  (t) => !allPrimaryIds.has(t.id) && !usedSecondaryIds.has(t.id)
                 )}
                 getOptionLabel={(option) => option.name[language]}
                 value={value.secondaries}
@@ -547,6 +587,7 @@ const CombinedStudyTracksInput = ({
             </Stack>
           )
         })}
+
         <Stack direction="row" sx={{ gap: '1rem' }}>
           <Button variant="contained" onClick={handleSave}>
             {translation('common:submitButton')}
