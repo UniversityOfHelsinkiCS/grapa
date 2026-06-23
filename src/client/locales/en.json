@@ -300,7 +300,8 @@
     "submitEthesis": "Send thesis info to Ethesis",
     "toSubmitEthesis": "Sending the thesis info to Ethesis",
     "send": "Send",
-    "customDate": "Custom date"
+    "customDate": "Custom date",
+    "notInCurrentProgram": " (Not part of the current program)"
   },
   "thesisStages": {
     "draft": "Draft",

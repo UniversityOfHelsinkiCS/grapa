@@ -300,7 +300,8 @@
     "submitEthesis": "Skicka avhandlingsinformation till E-thesis",
     "toSubmitEthesis": "Skickar avhandlingsinformationen till E-thesis",
     "send": "Skicka",
-    "customDate": "Anpassat datum"
+    "customDate": "Anpassat datum",
+    "notInCurrentProgram": " (Inte en del av det aktuella programmet)"
   },
   "thesisStages": {
     "draft": "Utkast",

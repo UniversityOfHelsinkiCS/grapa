@@ -172,15 +172,45 @@ const ThesisEditForm: FC<{
     user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(thesisStatus)
 
   const showOption = {
-    DRAFT: user.isAdmin,
-    SUGGESTED: user.isAdmin,
+    DRAFT:
+      (user.isAdmin && selectedProgram?.options?.allowStudentStartedProcess) ||
+      thesisStatus === 'DRAFT',
+    SUGGESTED:
+      (user.isAdmin && selectedProgram?.options?.allowStudentStartedProcess) ||
+      thesisStatus === 'SUGGESTED',
     PLANNING:
-      user.isAdmin && !selectedProgram?.options?.allowStudentStartedProcess,
+      (user.isAdmin && !selectedProgram?.options?.allowStudentStartedProcess) ||
+      thesisStatus === 'PLANNING',
     IN_PROGRESS:
-      user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(thesisStatus),
-    ETHESIS_SENT: user.isAdmin && !selectedProgram?.options?.hideSendToEthesis,
-    ETHESIS: user.isAdmin,
-    COMPLETED: user.isAdmin,
+      user.isAdmin ||
+      ['IN_PROGRESS', 'CANCELLED'].includes(thesisStatus) ||
+      thesisStatus === 'IN_PROGRESS',
+    ETHESIS_SENT:
+      (user.isAdmin && !selectedProgram?.options?.hideSendToEthesis) ||
+      thesisStatus === 'ETHESIS_SENT',
+    ETHESIS: user.isAdmin || thesisStatus === 'ETHESIS',
+    COMPLETED: user.isAdmin || thesisStatus === 'COMPLETED',
+  }
+
+  const isOptionNative = {
+    DRAFT: Boolean(
+      user.isAdmin && selectedProgram?.options?.allowStudentStartedProcess
+    ),
+    SUGGESTED: Boolean(
+      user.isAdmin && selectedProgram?.options?.allowStudentStartedProcess
+    ),
+    PLANNING: Boolean(
+      user.isAdmin && !selectedProgram?.options?.allowStudentStartedProcess
+    ),
+    IN_PROGRESS: Boolean(
+      user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(thesisStatus)
+    ),
+    ETHESIS_SENT: Boolean(
+      user.isAdmin && !selectedProgram?.options?.hideSendToEthesis
+    ),
+    ETHESIS: Boolean(user.isAdmin),
+    COMPLETED: Boolean(user.isAdmin),
+    CANCELLED: true,
   }
 
   return (
@@ -281,9 +311,15 @@ const ThesisEditForm: FC<{
                   newProgram?.options?.disableStudyTracks
                 )
 
+                const firstAvailableStatus = newProgram?.options
+                  ?.allowStudentStartedProcess
+                  ? 'DRAFT'
+                  : 'PLANNING'
+
                 setEditedThesis((oldThesis) => ({
                   ...oldThesis,
                   programId: newProgramId,
+                  status: firstAvailableStatus,
                   studyTrackId: disableStudyTracks
                     ? undefined
                     : newStudyTracks[0]?.id,
@@ -555,26 +591,38 @@ const ThesisEditForm: FC<{
                 error={formErrors.some((error) => error.path[0] === 'status')}
               >
                 {showOption['DRAFT'] && (
-                  <MenuItem value="DRAFT">{t(StatusLocale.DRAFT)}</MenuItem>
+                  <MenuItem value="DRAFT">
+                    {t(StatusLocale.DRAFT)}
+                    {!isOptionNative['DRAFT'] &&
+                      t('thesisForm:notInCurrentProgram')}
+                  </MenuItem>
                 )}
                 {showOption['SUGGESTED'] && (
                   <MenuItem value="SUGGESTED">
                     {t(StatusLocale.SUGGESTED)}
+                    {!isOptionNative['SUGGESTED'] &&
+                      t('thesisForm:notInCurrentProgram')}
                   </MenuItem>
                 )}
                 {showOption['PLANNING'] && (
                   <MenuItem value="PLANNING">
                     {t(StatusLocale.PLANNING)}
+                    {!isOptionNative['PLANNING'] &&
+                      t('thesisForm:notInCurrentProgram')}
                   </MenuItem>
                 )}
                 {showOption['IN_PROGRESS'] && (
                   <MenuItem value="IN_PROGRESS">
                     {t(StatusLocale.IN_PROGRESS)}
+                    {!isOptionNative['IN_PROGRESS'] &&
+                      t('thesisForm:notInCurrentProgram')}
                   </MenuItem>
                 )}
                 {showOption['ETHESIS_SENT'] && (
                   <MenuItem value="ETHESIS_SENT">
                     {t(StatusLocale.ETHESIS_SENT)}
+                    {!isOptionNative['ETHESIS_SENT'] &&
+                      t('thesisForm:notInCurrentProgram')}
                   </MenuItem>
                 )}
                 {showOption['ETHESIS'] && (
@@ -584,11 +632,15 @@ const ThesisEditForm: FC<{
                         ? 'thesisStages:ethesis_studentstarted'
                         : StatusLocale.ETHESIS
                     )}
+                    {!isOptionNative['ETHESIS'] &&
+                      t('thesisForm:notInCurrentProgram')}
                   </MenuItem>
                 )}
                 {showOption['COMPLETED'] && (
                   <MenuItem value="COMPLETED">
                     {t(StatusLocale.COMPLETED)}
+                    {!isOptionNative['COMPLETED'] &&
+                      t('thesisForm:notInCurrentProgram')}
                   </MenuItem>
                 )}
                 <MenuItem value="CANCELLED">

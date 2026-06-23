@@ -299,7 +299,8 @@
     "toSubmitEthesis": "Tutkielman tietojen lähettäminen Ethesikseen",
     "send": "Lähetä",
     "admin": "admin",
-    "customDate": "Muu päivämäärä"
+    "customDate": "Muu päivämäärä",
+    "notInCurrentProgram": " (Ei osana nykyistä ohjelmaa)"
   },
   "thesisStages": {
     "draft": "Luonnos",
