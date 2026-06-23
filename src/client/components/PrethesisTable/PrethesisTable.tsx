@@ -335,11 +335,19 @@ const PrethesisTable = ({
             </Tooltip>
           ) : null}
 
-          {user &&
-          info.row.original.approvers.find(
-            (approver) =>
-              approver.id === user.id && info.row.original.status == 'PLANNING'
-          ) ? (
+          {(user &&
+            info.row.original.approvers.find(
+              (approver) =>
+                approver.id === user.id &&
+                info.row.original.status == 'PLANNING'
+            )) ||
+          ((info.row.original.supervisions.find(
+            (supervisor) => supervisor.user?.id === user.id
+          ) ||
+            info.row.original.seminarSupervisions?.find(
+              (supervisor) => supervisor.user?.id === user.id
+            )) &&
+            info.row.original.status == 'SUGGESTED') ? (
             <Tooltip title={t('thesesPage:approvalRequiredTooltip')}>
               <IconButton>
                 <PriorityHigh
