@@ -14,6 +14,10 @@ import {
   Skeleton,
   Stack,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 
@@ -443,6 +447,10 @@ const ViewThesisFooter = (
   const { events } = useEvents({ thesisId, enabled: !isStudentView })
   const { mutateAsync: editThesis } = useEditThesisMutation(isStudentView)
 
+  const [pendingAction, setPendingAction] = useState<
+    'approve' | 'sendDraft' | null
+  >(null)
+
   const ethesisReady =
     currentUser &&
     thesis &&
@@ -517,15 +525,7 @@ const ViewThesisFooter = (
                         borderRadius: '1rem',
                         fontWeight: 600,
                       }}
-                      onClick={() =>
-                        editThesis({
-                          thesisId: thesis.id,
-                          data: {
-                            ...thesis,
-                            status: IN_PROGRESS_STATUS,
-                          },
-                        })
-                      }
+                      onClick={() => setPendingAction('approve')}
                     >
                       {t('approveButton')}
                     </Button>
@@ -547,15 +547,7 @@ const ViewThesisFooter = (
                           color: '#FFF',
                         },
                       }}
-                      onClick={() =>
-                        editThesis({
-                          thesisId: thesis.id,
-                          data: {
-                            ...thesis,
-                            status: 'SUGGESTED',
-                          },
-                        })
-                      }
+                      onClick={() => setPendingAction('sendDraft')}
                     >
                       {t('sendDraftButton')}
                     </Button>
@@ -711,6 +703,62 @@ const ViewThesisFooter = (
         </Box>
       ) : (
         thesisLoading && <PreviewSkeleton />
+      )}
+
+      {thesis && (
+        <Dialog
+          open={pendingAction !== null}
+          onClose={() => setPendingAction(null)}
+        >
+          <DialogTitle>
+            {pendingAction === 'approve'
+              ? t('approveButtonConfirmTitle', 'Confirm Approval')
+              : t('sendDraftButtonConfirmTitle', 'Confirm Send Draft')}
+          </DialogTitle>
+          <DialogContent>
+            <Typography>
+              {pendingAction === 'approve'
+                ? t(
+                    'approveButtonConfirmContent',
+                    'Are you sure you want to approve this thesis plan?'
+                  )
+                : t(
+                    'sendDraftButtonConfirmContent',
+                    'Are you sure you want to send this draft as a suggestion?'
+                  )}
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setPendingAction(null)}>
+              {t('cancelButton')}
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => {
+                if (pendingAction === 'approve') {
+                  editThesis({
+                    thesisId: thesis.id,
+                    data: {
+                      ...thesis,
+                      status: IN_PROGRESS_STATUS,
+                    },
+                  })
+                } else if (pendingAction === 'sendDraft') {
+                  editThesis({
+                    thesisId: thesis.id,
+                    data: {
+                      ...thesis,
+                      status: 'SUGGESTED',
+                    },
+                  })
+                }
+                setPendingAction(null)
+              }}
+            >
+              {t('submitButton')}
+            </Button>
+          </DialogActions>
+        </Dialog>
       )}
     </>
   )
