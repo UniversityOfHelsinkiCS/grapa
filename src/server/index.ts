@@ -15,6 +15,7 @@ import setupAuthentication from './util/oidc'
 import { connectToDatabase } from './db/connection'
 import seed from './db/seeders'
 import setupCron from './util/cron'
+import maintenanceMode from './middleware/maintenanceMode'
 
 const app = express()
 
@@ -29,6 +30,8 @@ app.use(
 
 app.use(passport.initialize())
 app.use(passport.session())
+
+app.use(maintenanceMode)
 
 app.use(['/api', '/api'], (req, res, next) => router(req, res, next))
 app.use(['/api', '/api'], (_, res) => {
