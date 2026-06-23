@@ -155,10 +155,12 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
 
       <Popup
         open={deleteDialogOpen}
+        testId="delete-confirm"
         onClose={() => setDeleteDialogOpen(false)}
         onSubmit={handleRemoveSupervisor}
         title={t('thesisForm:removeSupervisorConfirmationTitle')}
         submitText={t('common:deleteButton')}
+        submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
         submitColor="error"
         cancelText={t('common:cancelButton')}
       >

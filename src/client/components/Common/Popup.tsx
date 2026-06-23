@@ -16,11 +16,13 @@ interface PopupProps extends Omit<
   open: boolean
   onClose: () => void
   title?: ReactNode
+  titleProps?: any
   children: ReactNode
   actions?: ReactNode
   onSubmit?: () => void
   onCancel?: () => void
   submitText?: ReactNode
+  submitButtonProps?: ButtonProps
   cancelText?: ReactNode
   submitColor?: ButtonProps['color']
   submitDisabled?: boolean
@@ -37,11 +39,13 @@ const Popup = ({ open, onClose, testId = 'popup', ...props }: PopupProps) => {
 
   const {
     title,
+    titleProps,
     children,
     actions,
     onSubmit,
     onCancel,
     submitText,
+    submitButtonProps,
     cancelText,
     submitColor = 'primary',
     submitDisabled = false,
@@ -55,8 +59,10 @@ const Popup = ({ open, onClose, testId = 'popup', ...props }: PopupProps) => {
       onClose={onClose}
       {...dialogProps}
     >
-      {title && (
-        <DialogTitle data-testid={`${testId}-title`}>{title}</DialogTitle>
+      {(title || titleProps) && (
+        <DialogTitle data-testid={`${testId}-title`} {...titleProps}>
+          {title}
+        </DialogTitle>
       )}
       <DialogContent data-testid={`${testId}-content`}>
         {children}
@@ -80,6 +86,7 @@ const Popup = ({ open, onClose, testId = 'popup', ...props }: PopupProps) => {
                 variant={submitVariant}
                 disabled={submitDisabled}
                 sx={{ borderRadius: '0.5rem' }}
+                {...submitButtonProps}
               >
                 {submitText || 'Submit'}
               </Button>

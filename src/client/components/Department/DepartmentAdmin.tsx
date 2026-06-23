@@ -248,6 +248,7 @@ const DepartmentAdmin = ({ filteringDepartmentId, hideTitle }: Props) => {
       {deletedDepartmentAdmin && (
         <Popup
           open={deleteDialogOpen}
+          testId="delete-confirm"
           onClose={() => {
             setDeleteDialogOpen(false)
             setDeletedDepartmentAdmin(null)
@@ -259,6 +260,7 @@ const DepartmentAdmin = ({ filteringDepartmentId, hideTitle }: Props) => {
           }}
           title={t('departmentAdminPage:removeDepartmentAdminTitle')}
           submitText={t('deleteButton')}
+          submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
           submitColor="error"
           cancelText={t('cancelButton')}
         >

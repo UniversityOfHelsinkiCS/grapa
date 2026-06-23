@@ -378,6 +378,7 @@ const EntityManagement = ({
       {deletedProgramManagement && (
         <Popup
           open={deleteDialogOpen}
+          testId="delete-confirm"
           onClose={() => {
             setDeleteDialogOpen(false)
             setDeletedProgramManagement(null)
@@ -393,6 +394,7 @@ const EntityManagement = ({
           }}
           title={t('programManagementPage:removeProgramManagementTitle')}
           submitText={t('deleteButton')}
+          submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
           submitColor="error"
           cancelText={t('cancelButton')}
         >

@@ -244,10 +244,12 @@ const ExternalPersonInput = ({
 
       <Popup
         open={deleteDialogOpen}
+        testId="delete-confirm"
         onClose={() => setDeleteDialogOpen(false)}
         onSubmit={handleRemovePerson}
         title={t(`thesisForm:${deleteConfirmationTitleLocKey}`)}
         submitText={t('deleteButton')}
+        submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
         submitColor="error"
         cancelText={t('cancelButton')}
       >

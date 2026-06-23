@@ -94,6 +94,7 @@ const SingleSeminarSupervisorSelect: React.FC<
 
       <Popup
         open={deleteDialogOpen}
+        testId="delete-confirm"
         onClose={() => setDeleteDialogOpen(false)}
         onSubmit={() => {
           setDeleteDialogOpen(false)
@@ -101,6 +102,7 @@ const SingleSeminarSupervisorSelect: React.FC<
         }}
         title={t('thesisForm:removeSeminarSupervisorConfirmationTitle')}
         submitText={t('common:deleteButton')}
+        submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
         submitColor="error"
         cancelText={t('common:cancelButton')}
       >

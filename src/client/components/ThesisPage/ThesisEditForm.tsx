@@ -193,6 +193,7 @@ const ThesisEditForm: FC<{
       titleProps={{ 'data-testid': 'thesis-form-title' }}
       onSubmit={handleSubmit}
       submitText={t('submitButton')}
+      submitButtonProps={{ 'data-testid': 'submit-button' }}
       cancelText={t('cancelButton')}
       onCancel={() => {
         clearURL()

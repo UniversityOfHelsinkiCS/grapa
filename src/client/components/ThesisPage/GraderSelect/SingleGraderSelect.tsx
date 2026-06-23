@@ -90,6 +90,7 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
           </IconButton>
           <Popup
             open={deleteDialogOpen}
+            testId="delete-confirm"
             onClose={() => setDeleteDialogOpen(false)}
             onSubmit={() => {
               setDeleteDialogOpen(false)
@@ -97,6 +98,7 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
             }}
             title={t('thesisForm:removeGraderConfirmationTitle')}
             submitText={t('common:deleteButton')}
+            submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
             submitColor="error"
             cancelText={t('common:cancelButton')}
           >
