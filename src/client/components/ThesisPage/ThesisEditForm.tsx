@@ -166,31 +166,10 @@ const ThesisEditForm: FC<{
         )
       : []
 
-  const thesisStatus = initialThesis.status
-
   const showStatusForm =
-    user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(thesisStatus)
+    user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(initialThesis.status)
 
-  const showOption = {
-    DRAFT:
-      (user.isAdmin && selectedProgram?.options?.allowStudentStartedProcess) ||
-      thesisStatus === 'DRAFT',
-    SUGGESTED:
-      (user.isAdmin && selectedProgram?.options?.allowStudentStartedProcess) ||
-      thesisStatus === 'SUGGESTED',
-    PLANNING:
-      (user.isAdmin && !selectedProgram?.options?.allowStudentStartedProcess) ||
-      thesisStatus === 'PLANNING',
-    IN_PROGRESS:
-      user.isAdmin ||
-      ['IN_PROGRESS', 'CANCELLED'].includes(thesisStatus) ||
-      thesisStatus === 'IN_PROGRESS',
-    ETHESIS_SENT:
-      (user.isAdmin && !selectedProgram?.options?.hideSendToEthesis) ||
-      thesisStatus === 'ETHESIS_SENT',
-    ETHESIS: user.isAdmin || thesisStatus === 'ETHESIS',
-    COMPLETED: user.isAdmin || thesisStatus === 'COMPLETED',
-  }
+  const currentStatus = editedThesis.status
 
   const isOptionNative = {
     DRAFT: Boolean(
@@ -203,7 +182,7 @@ const ThesisEditForm: FC<{
       user.isAdmin && !selectedProgram?.options?.allowStudentStartedProcess
     ),
     IN_PROGRESS: Boolean(
-      user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(thesisStatus)
+      user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(currentStatus)
     ),
     ETHESIS_SENT: Boolean(
       user.isAdmin && !selectedProgram?.options?.hideSendToEthesis
@@ -211,6 +190,17 @@ const ThesisEditForm: FC<{
     ETHESIS: Boolean(user.isAdmin),
     COMPLETED: Boolean(user.isAdmin),
     CANCELLED: true,
+  }
+
+  const showOption = {
+    DRAFT: isOptionNative.DRAFT || currentStatus === 'DRAFT',
+    SUGGESTED: isOptionNative.SUGGESTED || currentStatus === 'SUGGESTED',
+    PLANNING: isOptionNative.PLANNING || currentStatus === 'PLANNING',
+    IN_PROGRESS: isOptionNative.IN_PROGRESS || currentStatus === 'IN_PROGRESS',
+    ETHESIS_SENT:
+      isOptionNative.ETHESIS_SENT || currentStatus === 'ETHESIS_SENT',
+    ETHESIS: isOptionNative.ETHESIS || currentStatus === 'ETHESIS',
+    COMPLETED: isOptionNative.COMPLETED || currentStatus === 'COMPLETED',
   }
 
   return (
