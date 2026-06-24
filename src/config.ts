@@ -46,7 +46,7 @@ export const VALID_THESIS_STATUSES = [
   'CANCELLED',
   'ETHESIS',
   'ETHESIS_SENT',
-]
+] as const
 
 export const THESIS_STATUSES = Object.fromEntries(
   VALID_THESIS_STATUSES.map((status) => [status, status])

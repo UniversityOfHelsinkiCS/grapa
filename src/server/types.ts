@@ -1,6 +1,6 @@
 import { GridFilterModel } from '@mui/x-data-grid'
 import { Request } from 'express'
-import { VALID_EVENT_LOG_TYPES } from '../config'
+import { VALID_EVENT_LOG_TYPES, VALID_THESIS_STATUSES } from '../config'
 
 export interface TranslatedName {
   fi: string
@@ -54,15 +54,7 @@ export interface TitleData {
   titles: TranslatedName[]
 }
 
-export type ThesisStatus =
-  | 'DRAFT'
-  | 'SUGGESTED'
-  | 'PLANNING'
-  | 'IN_PROGRESS'
-  | 'ETHESIS_SENT'
-  | 'ETHESIS'
-  | 'COMPLETED'
-  | 'CANCELLED'
+export type ThesisStatus = (typeof VALID_THESIS_STATUSES)[number]
 
 export interface SupervisionData {
   user: Partial<User>

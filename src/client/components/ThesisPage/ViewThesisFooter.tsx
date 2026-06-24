@@ -42,8 +42,6 @@ import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { t } from 'i18next'
 import { ProgressView } from './Progress/ProgressView'
 
-const IN_PROGRESS_STATUS = THESIS_STATUSES.IN_PROGRESS as 'IN_PROGRESS'
-
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
     sx={{
@@ -452,7 +450,7 @@ const ViewThesisFooter = (
     currentUser &&
     thesis &&
     thesis.graders.length === 2 &&
-    thesis.status === 'IN_PROGRESS'
+    thesis.status === THESIS_STATUSES.IN_PROGRESS
 
   return (
     <>
@@ -717,7 +715,7 @@ const ViewThesisFooter = (
                 thesisId: thesis.id,
                 data: {
                   ...thesis,
-                  status: IN_PROGRESS_STATUS,
+                  status: THESIS_STATUSES.IN_PROGRESS,
                 },
               })
             } else if (pendingAction === 'sendDraft') {
@@ -725,7 +723,7 @@ const ViewThesisFooter = (
                 thesisId: thesis.id,
                 data: {
                   ...thesis,
-                  status: 'SUGGESTED',
+                  status: THESIS_STATUSES.SUGGESTED,
                 },
               })
             }
