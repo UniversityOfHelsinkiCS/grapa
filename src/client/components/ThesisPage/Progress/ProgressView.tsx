@@ -42,7 +42,7 @@ export const ProgressView = ({
       ? programMilestones.map((milestone: { value: any }, index: number) => {
           const val = milestone.value
           const description =
-            typeof val === 'string' ? val : val[language] || val.en || ''
+            typeof val === 'string' ? val : val[language] || val.fi || ''
 
           return {
             description,
@@ -87,6 +87,24 @@ export const ProgressView = ({
     const idx = steps.findIndex((s) => s.statusId === thesis.status)
 
     return idx !== -1 ? idx + 1 : 0
+  }
+
+  const inProgressIndex = steps.findIndex((s) => s.statusId === 'IN_PROGRESS')
+
+  const getVisibleStep = (index: number) => {
+    if (useMilestones && steps[index].milestone) {
+      if (inProgressIndex < index) {
+        return inProgressIndex !== -1
+          ? inProgressIndex + 1 + '.' + Math.abs(inProgressIndex - index)
+          : '?'
+      }
+    }
+
+    if (index > inProgressIndex && useMilestones) {
+      return index - programMilestones.length + 1
+    }
+
+    return index + 1
   }
 
   const milestoneStep = thesis.milestone || 0
@@ -157,8 +175,7 @@ export const ProgressView = ({
                   step > index || (step == index && steps[step].milestone)
                     ? 'black'
                     : '#9e9e9e',
-                backgroundColor:
-                  step == index && steps[step].milestone ? '#cfe0eb' : null,
+                backgroundColor: step - 1 == index ? '#cfe0eb' : null,
               }}
             >
               <Box
@@ -174,7 +191,7 @@ export const ProgressView = ({
                   mb: 1,
                 }}
               >
-                {index + 1}
+                {getVisibleStep(index)}
               </Box>
               <Typography
                 variant="subtitle2"
@@ -182,17 +199,7 @@ export const ProgressView = ({
                   fontWeight: 'bold',
                 }}
               >
-                {label.name}{' '}
-                {index == step && steps[step].milestone && (
-                  <Typography
-                    sx={{
-                      fontSize: 'small',
-                      color: 'primary.main',
-                    }}
-                  >
-                    {t('progressView:inProgress')}
-                  </Typography>
-                )}
+                {!label.milestone ? label.name + ' ' : null}
               </Typography>
               <Typography
                 sx={{
@@ -233,7 +240,7 @@ export const ProgressView = ({
                   {t('progressView:doneButton').replace(
                     '{0}',
                     steps[step]?.milestone_index
-                      ? steps[step].milestone_index
+                      ? inProgressIndex + 1 + '.' + steps[step].milestone_index
                       : ''
                   )}
                 </Button>
