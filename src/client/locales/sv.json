@@ -31,6 +31,7 @@
     "approveButton": "Godkänn",
     "approveButtonConfirmTitle": "Bekräfta godkännande",
     "approveButtonConfirmContent": "Är du säker på att du vill godkänna denna avhandlingsplan?",
+    "approveBulkButtonConfirmContent": "Är du säker på att du vill godkänna dessa avhandlingsplaner?",
     "deleteButton": "Ta bort",
     "cancelButton": "Avbryt",
     "submitButton": "Skicka in",

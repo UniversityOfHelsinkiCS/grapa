@@ -20,7 +20,11 @@ import TableRow from '@mui/material/TableRow'
 import {
   Box,
   Button,
+  Checkbox,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Menu,
   MenuItem,
   Stack,
@@ -42,6 +46,19 @@ import {
 } from '@mui/icons-material'
 import usePrograms from '../../hooks/usePrograms'
 import { PrethesisHelp } from '../PrethesisHelp/PrethesisHelp'
+import { useChangeThesisStatusMutation } from '../../hooks/useThesesMutation'
+import { THESIS_STATUSES } from '../../../config'
+import Popup from '../Common/Popup'
+
+const canApprove = (thesis: Thesis, user: User) =>
+  Boolean(
+    user &&
+    ((thesis.status === THESIS_STATUSES.PLANNING &&
+      thesis.approvers?.length &&
+      thesis.approvers[0].id === user.id) ||
+      (thesis.status === THESIS_STATUSES.SUGGESTED &&
+        thesis.supervisions?.some((s) => s.user?.id === user.id)))
+  )
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData, TValue> {
@@ -90,6 +107,23 @@ const PrethesisTable = ({
   /* Pagination */
   const [pageNumber, setPageNumber] = React.useState(0)
   const [pageSize, setPageSize] = React.useState(25)
+
+  const changePage = React.useCallback(
+    (page: number) => {
+      setPageNumber(page)
+      onPaginationChange({ page, pageSize })
+    },
+    [pageSize, onPaginationChange]
+  )
+
+  const { mutateAsync: changeThesisStatus } =
+    useChangeThesisStatusMutation(isStudentView)
+  const [pendingAction, setPendingAction] = React.useState<'approve' | null>(
+    null
+  )
+  const [bulkSelection, setBulkSelection] = React.useState<Map<string, Thesis>>(
+    new Map()
+  )
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const openMenu = Boolean(anchorEl)
@@ -145,8 +179,82 @@ const PrethesisTable = ({
   const isSelected = (value: string) =>
     selection.ids && selection.ids.size > 0 ? selection.ids.has(value) : false
 
+  const eligibleRows = React.useMemo(() => {
+    return rows.filter((row) => canApprove(row, user))
+  }, [rows, user])
+
   const columns = [
+    ...(isStudentView || (eligibleRows.length === 0 && bulkSelection.size === 0)
+      ? []
+      : [
+          columnHelper.display({
+            id: 'select',
+            size: 50,
+            header: () => {
+              const allSelected =
+                eligibleRows.length > 0 &&
+                eligibleRows.every((row) => bulkSelection.has(row.id))
+              const someSelected =
+                eligibleRows.some((row) => bulkSelection.has(row.id)) &&
+                !allSelected
+
+              return eligibleRows.length > 0 || bulkSelection.size > 0 ? (
+                <Checkbox
+                  size="small"
+                  checked={
+                    allSelected ||
+                    (eligibleRows.length === 0 && bulkSelection.size > 0)
+                  }
+                  indeterminate={
+                    someSelected ||
+                    (eligibleRows.length === 0 && bulkSelection.size > 0)
+                  }
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      const newSelection = new Map(bulkSelection)
+                      eligibleRows.forEach((row) =>
+                        newSelection.set(row.id, row)
+                      )
+                      setBulkSelection(newSelection)
+                    } else {
+                      if (eligibleRows.length === 0) {
+                        setBulkSelection(new Map())
+                      } else {
+                        const newSelection = new Map(bulkSelection)
+                        eligibleRows.forEach((row) =>
+                          newSelection.delete(row.id)
+                        )
+                        setBulkSelection(newSelection)
+                      }
+                    }
+                  }}
+                />
+              ) : null
+            },
+            cell: ({ row }) => {
+              const isEligible = canApprove(row.original, user)
+              if (!isEligible) return null
+              return (
+                <Checkbox
+                  size="small"
+                  checked={bulkSelection.has(row.original.id)}
+                  onChange={(e) => {
+                    const newSelection = new Map(bulkSelection)
+                    if (e.target.checked) {
+                      newSelection.set(row.original.id, row.original)
+                    } else {
+                      newSelection.delete(row.original.id)
+                    }
+                    setBulkSelection(newSelection)
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              )
+            },
+          }),
+        ]),
     columnHelper.accessor('program', {
+      id: 'programId',
       size: 5,
       cell: (info) => {
         const data = info.getValue()
@@ -372,6 +480,9 @@ const PrethesisTable = ({
     columnResizeMode: 'onChange',
   })
 
+  const selectedTheses = Array.from(bulkSelection.values())
+  const selectedApprovable = selectedTheses.filter((t) => canApprove(t, user))
+
   return (
     <Stack
       sx={{
@@ -380,6 +491,24 @@ const PrethesisTable = ({
       }}
     >
       <Stack direction="row" sx={{ gap: 2, mb: 2, alignItems: 'center' }}>
+        {selectedApprovable.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{
+              fontSize: '12px',
+              height: 24,
+              px: 2,
+              fontWeight: 700,
+              boxShadow: 0,
+            }}
+            onClick={() => setPendingAction('approve')}
+          >
+            {t('approveButton', 'Approve')} ({selectedApprovable.length})
+          </Button>
+        )}
+
         {!noAddThesisButton && !showHiddenNewThesisButton && (
           <Button
             variant="contained"
@@ -427,6 +556,7 @@ const PrethesisTable = ({
                     )
                     onSortingChange(filterViews[filterView].sortingModel)
                     setActiveFilterView(filterView)
+                    changePage(0)
                   }}
                 ></Chip>
               </Tooltip>
@@ -464,6 +594,7 @@ const PrethesisTable = ({
               setDebounceTimeout(
                 setTimeout(() => {
                   onSearch(e.target.value)
+                  changePage(0)
                 }, 400)
               )
             }}
@@ -509,42 +640,48 @@ const PrethesisTable = ({
                               header.getContext()
                             )}
                       </Typography>
-                      {header.id != 'supervisions' && !isStudentView && (
-                        <IconButton
-                          sx={{
-                            opacity: sortedField == header.id ? 1 : 0.3,
-                            ':hover': {
-                              opacity: 0.5,
-                            },
-                          }}
-                          onClick={() => {
-                            const sortingDir =
-                              sortedField == header.id
-                                ? sortedDir == 'asc'
-                                  ? 'desc'
-                                  : 'asc'
-                                : 'asc'
-                            setSortedField(header.id)
-                            setSortedDir(sortingDir)
-                            onSortingChange([
-                              {
-                                field: header.id,
-                                sort: sortingDir,
+                      {![
+                        'supervisions',
+                        'supervisor',
+                        'supervisionPercentage',
+                        'select',
+                      ].includes(header.id) &&
+                        !isStudentView && (
+                          <IconButton
+                            sx={{
+                              opacity: sortedField == header.id ? 1 : 0.3,
+                              ':hover': {
+                                opacity: 0.5,
                               },
-                            ])
-                          }}
-                        >
-                          {sortedField == header.id ? (
-                            sortedDir == 'desc' ? (
-                              <ArrowDownward></ArrowDownward>
+                            }}
+                            onClick={() => {
+                              const sortingDir =
+                                sortedField == header.id
+                                  ? sortedDir == 'asc'
+                                    ? 'desc'
+                                    : 'asc'
+                                  : 'asc'
+                              setSortedField(header.id)
+                              setSortedDir(sortingDir)
+                              onSortingChange([
+                                {
+                                  field: header.id,
+                                  sort: sortingDir,
+                                },
+                              ])
+                            }}
+                          >
+                            {sortedField == header.id ? (
+                              sortedDir == 'desc' ? (
+                                <ArrowDownward></ArrowDownward>
+                              ) : (
+                                <ArrowUpward></ArrowUpward>
+                              )
                             ) : (
-                              <ArrowUpward></ArrowUpward>
-                            )
-                          ) : (
-                            <Sort></Sort>
-                          )}
-                        </IconButton>
-                      )}
+                              <Sort></Sort>
+                            )}
+                          </IconButton>
+                        )}
                     </Stack>
                   </TableCell>
                 ))}
@@ -562,7 +699,10 @@ const PrethesisTable = ({
                       ids: new Set([row.original.id]),
                     })
                   }}
-                  selected={isSelected(row.original.id)}
+                  selected={
+                    isSelected(row.original.id) ||
+                    bulkSelection.has(row.original.id)
+                  }
                   sx={{
                     cursor: 'pointer',
                     ':hover': {
@@ -605,8 +745,7 @@ const PrethesisTable = ({
         rowsPerPage={pageSize}
         page={pageNumber}
         onPageChange={(_event, page) => {
-          onPaginationChange({ page: page, pageSize: pageSize })
-          setPageNumber(page)
+          changePage(page)
         }}
         onRowsPerPageChange={(_e: any, element: { props: { value: any } }) => {
           try {
@@ -618,7 +757,56 @@ const PrethesisTable = ({
           }
         }}
         component="div"
-      ></TablePagination>
+      />
+      <Popup
+        open={pendingAction !== null}
+        onClose={() => setPendingAction(null)}
+        title={t('approveButtonConfirmTitle', 'Confirm Approval')}
+        onSubmit={async () => {
+          if (pendingAction === 'approve') {
+            await changeThesisStatus({
+              theses: selectedApprovable,
+              status: THESIS_STATUSES.IN_PROGRESS,
+            })
+            setBulkSelection(
+              new Map(
+                Array.from(bulkSelection.entries()).filter(
+                  ([id]) => !selectedApprovable.find((t) => t.id === id)
+                )
+              )
+            )
+          }
+          setPendingAction(null)
+        }}
+        submitText={t('submitButton')}
+        cancelText={t('cancelButton')}
+      >
+        <Typography>{t('approveBulkButtonConfirmContent')}</Typography>
+        <Box sx={{ mt: 2, maxHeight: 300, overflowY: 'auto' }}>
+          <List dense disablePadding>
+            {selectedApprovable.map((thesis) => (
+              <ListItem
+                key={thesis.id}
+                disableGutters
+                sx={{ alignItems: 'flex-start' }}
+              >
+                <ListItemText
+                  primary={thesis.topic}
+                  secondary={thesis.authors
+                    .toSorted((a, b) => a.lastName.localeCompare(b.lastName))
+                    .map(
+                      (author) =>
+                        `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
+                    )
+                    .join(', ')}
+                  primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
+                  secondaryTypographyProps={{ variant: 'caption' }}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Popup>
     </Stack>
   )
 }

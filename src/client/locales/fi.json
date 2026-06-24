@@ -27,6 +27,7 @@
     "approveButton": "Hyväksy",
     "approveButtonConfirmTitle": "Vahvista hyväksyntä",
     "approveButtonConfirmContent": "Oletko varma, että haluat hyväksyä tämän tutkielmasuunnitelman?",
+    "approveBulkButtonConfirmContent": "Oletko varma, että haluat hyväksyä nämä tutkielmasuunnitelmat?",
     "editButton": "Muokkaa",
     "sendDraftButton": "Lähetä ehdotuksena",
     "sendDraftButtonConfirmTitle": "Vahvista ehdotuksen lähetys",

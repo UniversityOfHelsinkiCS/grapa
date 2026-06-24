@@ -31,6 +31,7 @@
     "approveButton": "Approve",
     "approveButtonConfirmTitle": "Confirm Approval",
     "approveButtonConfirmContent": "Are you sure you want to approve this thesis plan?",
+    "approveBulkButtonConfirmContent": "Are you sure you want to approve these thesis plans?",
     "deleteButton": "Delete",
     "cancelButton": "Cancel",
     "submitButton": "Submit",

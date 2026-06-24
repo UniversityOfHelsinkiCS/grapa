@@ -76,6 +76,48 @@ export const useEditThesisMutation = (isStudentView?: boolean) => {
   return mutation
 }
 
+export const useChangeThesisStatusMutation = (isStudentView?: boolean) => {
+  const mutationFn = async ({
+    theses,
+    status,
+  }: {
+    theses: ThesisData[]
+    status: ThesisData['status']
+  }) => {
+    await Promise.all(
+      theses.map(async (thesis) => {
+        const formData = new FormData()
+
+        if (thesis.studyTrackId === '') {
+          thesis.studyTrackId = null
+        }
+
+        const updatedThesis = { ...thesis, status }
+        formData.append('json', JSON.stringify(updatedThesis))
+
+        const apiPath = isStudentView ? '/student/theses/' : '/theses/'
+        await apiClient.put(apiPath + `${thesis.id}`, formData)
+      })
+    )
+  }
+
+  const mutation = useMutation({
+    mutationFn,
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['theses'],
+      })
+      variables.theses.forEach((thesis) => {
+        queryClient.invalidateQueries({
+          queryKey: ['event-log', thesis.id],
+        })
+      })
+    },
+  })
+
+  return mutation
+}
+
 export const useDeleteThesisMutation = (isStudentView?: boolean) => {
   const mutationFn = async (thesisId: string) => {
     await apiClient.delete(

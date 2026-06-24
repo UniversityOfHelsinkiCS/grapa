@@ -37,7 +37,7 @@ import { BASE_PATH, THESIS_STATUSES } from '../../../config'
 import EventsView from '../EventsView/EventsView'
 import { useState } from 'react'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
-import { useEditThesisMutation } from '../../hooks/useThesesMutation'
+import { useChangeThesisStatusMutation } from '../../hooks/useThesesMutation'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { t } from 'i18next'
 import { ProgressView } from './Progress/ProgressView'
@@ -440,7 +440,8 @@ const ViewThesisFooter = (
     isStudentView
   )
   const { events } = useEvents({ thesisId, enabled: !isStudentView })
-  const { mutateAsync: editThesis } = useEditThesisMutation(isStudentView)
+  const { mutateAsync: changeThesisStatus } =
+    useChangeThesisStatusMutation(isStudentView)
 
   const [pendingAction, setPendingAction] = useState<
     'approve' | 'sendDraft' | null
@@ -711,20 +712,14 @@ const ViewThesisFooter = (
           }
           onSubmit={() => {
             if (pendingAction === 'approve') {
-              editThesis({
-                thesisId: thesis.id,
-                data: {
-                  ...thesis,
-                  status: THESIS_STATUSES.IN_PROGRESS,
-                },
+              changeThesisStatus({
+                theses: [thesis],
+                status: THESIS_STATUSES.IN_PROGRESS,
               })
             } else if (pendingAction === 'sendDraft') {
-              editThesis({
-                thesisId: thesis.id,
-                data: {
-                  ...thesis,
-                  status: THESIS_STATUSES.SUGGESTED,
-                },
+              changeThesisStatus({
+                theses: [thesis],
+                status: THESIS_STATUSES.SUGGESTED,
               })
             }
             setPendingAction(null)
@@ -734,14 +729,8 @@ const ViewThesisFooter = (
         >
           <Typography>
             {pendingAction === 'approve'
-              ? t(
-                  'approveButtonConfirmContent',
-                  'Are you sure you want to approve this thesis plan?'
-                )
-              : t(
-                  'sendDraftButtonConfirmContent',
-                  'Are you sure you want to send this draft as a suggestion?'
-                )}
+              ? t('approveButtonConfirmContent')
+              : t('sendDraftButtonConfirmContent')}
           </Typography>
         </Popup>
       )}
