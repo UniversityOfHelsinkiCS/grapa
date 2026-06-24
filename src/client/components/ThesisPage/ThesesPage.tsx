@@ -63,11 +63,7 @@ const ThesesPage = ({
   const footerRef = useRef<HTMLDivElement>(null)
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
-  const {
-    user: currentUser,
-    isLoading: loggedInUserLoading,
-    hasStaffAccess,
-  } = useLoggedInUser()
+  const { user: currentUser, hasStaffAccess } = useLoggedInUser()
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -148,7 +144,7 @@ const ThesesPage = ({
       : null
   }, [theses, showDurationColumn])
 
-  const { programs, isLoading: isProgramLoading } = usePrograms({
+  const { programs } = usePrograms({
     includeNotManaged: true,
     enabled: hasStaffAccess || isStudentView,
     useStudentApi: isStudentView,
@@ -285,7 +281,6 @@ const ThesesPage = ({
     }
   }, [])
 
-  const isLoading = loggedInUserLoading || isThesesLoading || isProgramLoading
   return (
     <Stack spacing={3} sx={{ px: 3, width: '100%', maxWidth: '1920px' }}>
       {showDurationColumn && averageDuration != null && (
@@ -296,7 +291,8 @@ const ThesesPage = ({
 
       <Box>
         <PrethesisTable
-          rows={isLoading ? [] : theses}
+          rows={theses ?? []}
+          isLoading={isThesesLoading}
           totalCount={totalCount}
           selection={rowSelectionModel}
           onFilterChange={onFilterChange}

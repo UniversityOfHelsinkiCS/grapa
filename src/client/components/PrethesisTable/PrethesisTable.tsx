@@ -27,6 +27,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Skeleton,
   Stack,
   TablePagination,
   TextField,
@@ -70,6 +71,7 @@ const columnHelper = createColumnHelper<Thesis>()
 
 interface Props {
   rows: Thesis[]
+  isLoading?: boolean
   totalCount: number
   onFilterChange: any
   onSortingChange: any
@@ -87,6 +89,7 @@ interface Props {
 
 const PrethesisTable = ({
   rows,
+  isLoading,
   totalCount,
   selection,
   onFilterChange,
@@ -183,8 +186,36 @@ const PrethesisTable = ({
     return rows.filter((row) => canApprove(row, user))
   }, [rows, user])
 
+  const previousData = React.useRef({
+    rowCount: pageSize,
+    totalCount: totalCount || 0,
+    eligibleRowsLength: 0,
+    rows: [] as Thesis[],
+  })
+
+  React.useEffect(() => {
+    if (!isLoading) {
+      previousData.current.rowCount = rows.length
+      previousData.current.eligibleRowsLength = eligibleRows.length
+      if (rows.length > 0) {
+        previousData.current.rows = rows
+      }
+    }
+    if (totalCount !== undefined) {
+      previousData.current.totalCount = totalCount
+    }
+  }, [isLoading, rows.length, eligibleRows.length, totalCount])
+
+  const skeletonCount =
+    rows.length > 0 ? rows.length : Math.max(1, previousData.current.rowCount)
+
+  const hasEligibleRowsToDisplay =
+    isLoading && rows.length === 0
+      ? previousData.current.eligibleRowsLength > 0
+      : eligibleRows.length > 0
+
   const columns = [
-    ...(isStudentView || (eligibleRows.length === 0 && bulkSelection.size === 0)
+    ...(isStudentView || (!hasEligibleRowsToDisplay && bulkSelection.size === 0)
       ? []
       : [
           columnHelper.display({
@@ -473,8 +504,11 @@ const PrethesisTable = ({
     }),
   ]
 
+  const tableData =
+    isLoading && rows.length === 0 ? previousData.current.rows : rows
+
   const table = useReactTable({
-    data: rows,
+    data: tableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     columnResizeMode: 'onChange',
@@ -689,7 +723,70 @@ const PrethesisTable = ({
             ))}
           </TableHead>
           <TableBody>
-            {rows.length > 0 ? (
+            {isLoading ? (
+              table.getRowModel().rows.length > 0 ? (
+                table.getRowModel().rows.map((row, index) => (
+                  <TableRow key={index}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} sx={{ position: 'relative' }}>
+                        <Box sx={{ visibility: 'hidden' }}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </Box>
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            bottom: 0,
+                            left: 16,
+                            right: 16,
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          {cell.column.id === 'select' ? (
+                            <Checkbox
+                              size="small"
+                              sx={{ visibility: 'hidden' }}
+                            />
+                          ) : (
+                            <Skeleton
+                              variant="rectangular"
+                              height={32}
+                              width="100%"
+                              sx={{ borderRadius: 1 }}
+                            />
+                          )}
+                        </Box>
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                Array.from(new Array(skeletonCount)).map((_, index) => (
+                  <TableRow key={index}>
+                    {table.getVisibleLeafColumns().map((column) => (
+                      <TableCell key={column.id}>
+                        {column.id === 'select' ? (
+                          <Checkbox
+                            size="small"
+                            sx={{ visibility: 'hidden' }}
+                          />
+                        ) : (
+                          <Skeleton
+                            variant="rectangular"
+                            height={32}
+                            sx={{ borderRadius: 1 }}
+                          />
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              )
+            ) : rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -741,7 +838,7 @@ const PrethesisTable = ({
         </Table>
       </TableContainer>
       <TablePagination
-        count={totalCount}
+        count={totalCount ?? previousData.current.totalCount}
         rowsPerPage={pageSize}
         page={pageNumber}
         onPageChange={(_event, page) => {
