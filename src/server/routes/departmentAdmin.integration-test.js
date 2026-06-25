@@ -250,6 +250,12 @@ describe('department-admins router', () => {
               SUGGESTED: 0,
             },
             startedWithinHalfYearCount: 0,
+            primarySupervisionsCount: 0,
+            lateSupervisions: 0,
+            lateSupervisionsCount: 0,
+            avgLateSupervision: 0,
+            avgCompletedSupervision: 0,
+            completedSupervisions: [],
           },
           {
             department: {
@@ -275,6 +281,12 @@ describe('department-admins router', () => {
               SUGGESTED: 0,
             },
             startedWithinHalfYearCount: 0,
+            primarySupervisionsCount: 0,
+            lateSupervisions: 0,
+            lateSupervisionsCount: 0,
+            avgLateSupervision: 0,
+            avgCompletedSupervision: 0,
+            completedSupervisions: [],
           },
         ])
       })
@@ -462,6 +474,12 @@ describe('department-admins router', () => {
               SUGGESTED: 0,
             },
             startedWithinHalfYearCount: 0,
+            primarySupervisionsCount: 0,
+            lateSupervisions: 0,
+            lateSupervisionsCount: 0,
+            avgLateSupervision: 0,
+            avgCompletedSupervision: 0,
+            completedSupervisions: [],
           },
         ])
       })
