@@ -108,7 +108,8 @@ const ThesisEditForm: FC<{
     if (
       currentProgram.length > 0 &&
       currentProgram[0].options?.useMilestones &&
-      currentProgram[0].options?.milestones?.versions?.length > 0
+      currentProgram[0].options?.milestones?.versions?.length > 0 &&
+      editedThesis.milestone == null
     ) {
       editedThesis.milestone = 0
       editedThesis.milestoneVersion =
@@ -185,7 +186,9 @@ const ThesisEditForm: FC<{
       user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(currentStatus)
     ),
     ETHESIS_SENT: Boolean(
-      user.isAdmin && !selectedProgram?.options?.hideSendToEthesis
+      user.isAdmin &&
+      !selectedProgram?.options?.hideSendToEthesis &&
+      !selectedProgram?.options?.allowStudentStartedProcess
     ),
     ETHESIS: Boolean(user.isAdmin),
     COMPLETED: Boolean(user.isAdmin),
