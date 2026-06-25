@@ -111,6 +111,12 @@ export interface ThesisStatistics {
   supervisor: Partial<User>
   statusCounts: Record<ThesisStatus, number>
   startedWithinHalfYearCount: number
+  primarySupervisionsCount: number
+  lateSupervisions: number[]
+  lateSupervisionsCount: number
+  avgLateSupervision: number
+  avgCompletedSupervision: number
+  completedSupervisions: number[]
 }
 
 export interface StudyTrackData {

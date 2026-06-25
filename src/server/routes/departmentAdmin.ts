@@ -140,11 +140,18 @@ departmentAdminRouter.get(
       thesis: Thesis
     }[]
 
-    const statistics: ThesisStatistics[] = []
+    let statistics: ThesisStatistics[] = []
 
     departmentSupervisions.forEach((supervision) => {
-      const { user, thesis } = supervision
-      const { status, startDate } = thesis
+      const { user, thesis, isPrimarySupervisor } = supervision
+      const { status, startDate, targetDate } = thesis
+
+      const targetDateObject = new Date(targetDate)
+      const startDateObject = new Date(startDate)
+
+      function timeDiff(first: Date, second: Date) {
+        return (first - second) / (1000 * 60 * 60 * 24)
+      }
 
       const supervisor = statistics.find((s) => s.supervisor.id === user.id)
       if (supervisor) {
@@ -155,6 +162,15 @@ departmentAdminRouter.get(
         )
           ? 1
           : 0
+        supervisor.primarySupervisionsCount +=
+          isPrimarySupervisor && status == 'IN_PROGRESS' ? 1 : 0
+        supervisor.lateSupervisions.push(
+          status != 'COMPLETED' ? timeDiff(new Date(), targetDateObject) : 0
+        )
+        if (status === 'COMPLETED')
+          supervisor.completedSupervisions.push(
+            timeDiff(targetDateObject, startDateObject)
+          )
       } else {
         const department = departments.find((d) => d.id === user.departmentId)
 
@@ -182,11 +198,44 @@ departmentAdminRouter.get(
             ETHESIS_SENT: status === 'ETHESIS_SENT' ? 1 : 0,
             ETHESIS: status === 'ETHESIS' ? 1 : 0,
           },
-          startedWithinHalfYearCount: isWithinLastHalfYear(new Date(startDate))
+          startedWithinHalfYearCount: isWithinLastHalfYear(startDateObject)
             ? 1
             : 0,
+          primarySupervisionsCount:
+            isPrimarySupervisor && status == 'IN_PROGRESS' ? 1 : 0,
+          lateSupervisions: [
+            status != 'COMPLETED' ? timeDiff(new Date(), targetDateObject) : 0,
+          ],
+          lateSupervisionsCount: 0,
+          avgLateSupervision: 0,
+          avgCompletedSupervision: 0,
+          completedSupervisions:
+            status === 'COMPLETED'
+              ? [timeDiff(targetDateObject, startDateObject)]
+              : [],
         })
       }
+    })
+
+    statistics = statistics.map((supervisor) => {
+      const current = {
+        ...supervisor,
+        lateSupervisions: supervisor.lateSupervisions.filter(
+          (x: number) => x > 30
+        ),
+      }
+      current['lateSupervisionsCount'] = current.lateSupervisions.length
+      current['avgLateSupervision'] =
+        current.lateSupervisions.length > 0
+          ? current.lateSupervisions.reduce((a, b) => a + b) /
+            current.lateSupervisions.length
+          : 0
+      current['avgCompletedSupervision'] =
+        current.completedSupervisions.length > 0
+          ? current.completedSupervisions.reduce((a, b) => a + b) /
+            current.completedSupervisions.length
+          : 0
+      return current
     })
 
     res.status(200).send(statistics)
