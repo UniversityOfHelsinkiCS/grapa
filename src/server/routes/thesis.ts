@@ -8,7 +8,7 @@ import {
   ServerPutRequest,
 } from '../types'
 import parseFormDataJson from '../middleware/parseFormDataJson'
-import parseMutlipartFormData from '../middleware/attachment'
+import parseMultipartFormData from '../middleware/attachment'
 import { Thesis, EventLog, Program } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisDataMiddleware } from '../validators/thesis'
@@ -110,7 +110,7 @@ thesisRouter.get(
 thesisRouter.post(
   '/',
   ethesisUserHandler,
-  parseMutlipartFormData,
+  parseMultipartFormData,
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisDataMiddleware,
@@ -152,7 +152,7 @@ thesisRouter.post(
 thesisRouter.put(
   '/:id',
   ethesisUserHandler,
-  parseMutlipartFormData,
+  parseMultipartFormData,
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisDataMiddleware,
