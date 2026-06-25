@@ -186,6 +186,56 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
       valueGetter: (_, { startedWithinHalfYearCount }) =>
         startedWithinHalfYearCount,
     },
+    {
+      field: 'thesisCount.LATE_COUNT',
+      headerName: t('departmentStatisticsPage:late'),
+      renderHeader: () => (
+        <Tooltip title={t('departmentStatisticsPage:lateTooltip')}>
+          <Typography variant="body2">
+            {t('departmentStatisticsPage:late')}
+          </Typography>
+        </Tooltip>
+      ),
+      filterable: false,
+      width: 150,
+      type: 'number',
+      valueGetter: (_, { lateSupervisionsCount }) =>
+        lateSupervisionsCount != 0 ? lateSupervisionsCount : null,
+    },
+    {
+      field: 'thesisCount.LATE_TIME',
+      headerName: t('departmentStatisticsPage:avgLate'),
+      renderHeader: () => (
+        <Tooltip title={t('departmentStatisticsPage:avgLateTooltip')}>
+          <Typography variant="body2">
+            {t('departmentStatisticsPage:avgLate')}
+          </Typography>
+        </Tooltip>
+      ),
+      filterable: false,
+      width: 150,
+      type: 'number',
+      valueGetter: (_, { avgLateSupervision }) =>
+        avgLateSupervision != 0 ? `${Math.round(avgLateSupervision)}` : null,
+    },
+    {
+      field: 'thesisCount.COMPLETE_TIME',
+      headerName: t('departmentStatisticsPage:avgCompletion'),
+      renderHeader: () => (
+        <Tooltip title={t('departmentStatisticsPage:avgCompletionTooltip')}>
+          <Typography variant="body2">
+            {t('departmentStatisticsPage:avgCompletion')}
+          </Typography>
+        </Tooltip>
+      ),
+      filterable: false,
+      width: 150,
+      type: 'number',
+      valueGetter: (_, { avgCompletedSupervision }) =>
+        avgCompletedSupervision != 0
+          ? `${Math.round(avgCompletedSupervision)}`
+          : null,
+    },
   ]
 
   return (
