@@ -64,7 +64,7 @@ export const ProgressView = ({
     ...startStatuses,
     { statusId: 'IN_PROGRESS', name: t('thesisStages:inProgress') },
     ...milestones,
-    ...(!thesis.program.options?.hideSendToEthesis
+    ...(!thesis.program.options?.hideSendToEthesis && !useStudentStartedProcess
       ? [{ statusId: 'ETHESIS_SENT', name: t('thesisStages:ethesisSent') }]
       : []),
     {
@@ -120,21 +120,17 @@ export const ProgressView = ({
     })
   }
 
-  const handleSetEthesisSent = () => {
-    setConfirmDialogOpen(true)
-  }
-
   const handleCancelConfirmation = () => {
     setConfirmDialogOpen(false)
   }
 
-  const handleConfirmSetEthesisSent = () => {
+  const handleConfirmLastMilestone = () => {
     editThesisMutation.mutate(
       {
         thesisId: thesis.id,
         data: {
           ...thesis,
-          status: 'ETHESIS_SENT',
+          milestone: milestoneStep + 1,
         },
       },
       {
@@ -215,7 +211,8 @@ export const ProgressView = ({
         {thesis.status === 'IN_PROGRESS' &&
           step >= 1 &&
           (steps[step - 1].milestone ||
-            (steps[step] && steps[step].milestone)) && (
+            (steps[step] && steps[step].milestone)) &&
+          steps[step - 1]?.milestone_index !== milestones.length && (
             <Stack
               direction="row"
               sx={{
@@ -223,28 +220,24 @@ export const ProgressView = ({
                 mt: 3,
               }}
             >
-              {steps[step - 1]?.milestone_index === milestones.length ? (
-                <Button
-                  variant="contained"
-                  onClick={handleSetEthesisSent}
-                  disabled={editThesisMutation.isPending}
-                >
-                  {t('progressView:markAsSentToEthesis')}
-                </Button>
-              ) : (
-                <Button
-                  variant="contained"
-                  disabled={!steps[step].milestone}
-                  onClick={() => saveMilestone(1)}
-                >
-                  {t('progressView:doneButton').replace(
-                    '{0}',
-                    steps[step]?.milestone_index
-                      ? inProgressIndex + 1 + '.' + steps[step].milestone_index
-                      : ''
-                  )}
-                </Button>
-              )}
+              <Button
+                variant="contained"
+                disabled={!steps[step].milestone}
+                onClick={() => {
+                  if (steps[step]?.milestone_index === milestones.length) {
+                    setConfirmDialogOpen(true)
+                  } else {
+                    saveMilestone(1)
+                  }
+                }}
+              >
+                {t('progressView:doneButton').replace(
+                  '{0}',
+                  steps[step]?.milestone_index
+                    ? inProgressIndex + 1 + '.' + steps[step].milestone_index
+                    : ''
+                )}
+              </Button>
 
               <Button
                 variant="outlined"
@@ -262,15 +255,15 @@ export const ProgressView = ({
       <Popup
         open={confirmDialogOpen}
         onClose={handleCancelConfirmation}
-        title={t('progressView:ethesisConfirmationTitle')}
-        onSubmit={handleConfirmSetEthesisSent}
+        title={t('progressView:lastMilestoneConfirmationTitle')}
+        onSubmit={handleConfirmLastMilestone}
         submitText={t('common:approveButton')}
         submitColor="primary"
         submitDisabled={editThesisMutation.isPending}
         cancelText={t('common:cancelButton')}
       >
         <DialogContentText id="confirm-dialog-description">
-          {t('progressView:ethesisConfirmationText')}
+          {t('progressView:lastMilestoneConfirmationText')}
         </DialogContentText>
       </Popup>
     </Box>

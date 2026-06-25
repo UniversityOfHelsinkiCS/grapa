@@ -297,12 +297,14 @@
     "removeGraderConfirmationTitle": "Ta bort bedömare",
     "removeGraderConfirmationContent": "Är du säker på att du vill ta bort bedömaren: {{name}}?",
     "removeGraderConfirmationNoName": "Är du säker på att du vill ta bort bedömare {{index}}?",
-    "submitEthesisLabel": "Avhandlingen är klar för bedömning:",
-    "submitEthesis": "Skicka avhandlingsinformation till E-thesis",
-    "toSubmitEthesis": "Skickar avhandlingsinformationen till E-thesis",
+    "setSentToEthesisLabel": "Avhandlingen är klar för bedömning:",
+    "setSentToEthesis": "Markera avhandlingsinformationen som skickad till E-thesis",
+    "toSubmitEthesis": "Markerar avhandlingsinformationen som skickad till E-thesis",
     "send": "Skicka",
     "customDate": "Anpassat datum",
-    "notInCurrentProgram": " (Inte en del av det aktuella programmet)"
+    "notInCurrentProgram": " (Inte en del av det aktuella programmet)",
+    "setEthesisStudentStarted": "Ge tillstånd att skicka in E-thesis",
+    "needSecondGraderForEthesis": "En andra bedömare krävs innan du kan skicka till E-thesis"
   },
   "thesisStages": {
     "draft": "Utkast",
@@ -414,8 +416,8 @@
     "deleteWarning": "Obs: En avdelning kan inte tas bort när den väl har skapats"
   },
   "progressView": {
-    "ethesisConfirmationTitle": "Bekräftelse",
-    "ethesisConfirmationText": "Är du säker på att du vill markera denna avhandling som skickad till E-thesis? Detta kan inte ångras.",
+    "lastMilestoneConfirmationTitle": "Bekräftelse",
+    "lastMilestoneConfirmationText": "Är du säker på att du vill slutföra det sista steget? Detta kan inte ångras.",
     "markAsSentToEthesis": "Markera som skickad till E-thesis",
     "milestone": "Milstolpe",
     "title": "Framsteg",

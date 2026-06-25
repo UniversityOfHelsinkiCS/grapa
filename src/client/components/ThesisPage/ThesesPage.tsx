@@ -11,11 +11,7 @@ import {
   GridSortModel,
 } from '@mui/x-data-grid'
 
-import {
-  ThesisData as Thesis,
-  ThesisStatus,
-  TranslationLanguage,
-} from '@backend/types'
+import { ThesisData as Thesis } from '@backend/types'
 
 import { usePaginatedTheses } from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
@@ -61,8 +57,7 @@ const ThesesPage = ({
   pageSize = pageSize ?? DEFAULT_PAGE_SIZE
 
   const footerRef = useRef<HTMLDivElement>(null)
-  const { t, i18n } = useTranslation()
-  const { language } = i18n as { language: TranslationLanguage }
+  const { t } = useTranslation()
   const { user: currentUser, hasStaffAccess } = useLoggedInUser()
 
   const [paginationModel, setPaginationModel] = useState({
@@ -79,9 +74,6 @@ const ThesesPage = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [editedTesis, setEditedThesis] = useState<Thesis | null>(null)
   const [deletedThesis, setDeletedThesis] = useState<Thesis | null>(null)
-
-  const [ethesisDialogOpen, setEthesisDialogOpen] = useState(false)
-  const [ethesisTesis, setEthesisThesis] = useState<Thesis | null>(null)
 
   const [newThesis, setNewThesis] = useState<Thesis | null>(null)
   const [showOnlyOwnTheses] = useState(!noOwnThesesSwitch)
@@ -173,11 +165,6 @@ const ThesesPage = ({
     // NOTE: We need to clone the object to
     // prevent the form from updating the original object
     setEditedThesis(cloneDeep(thesisToEdit))
-  }
-
-  const initializeSetSentToEthesis = (thesisToEdit: Thesis) => {
-    setEthesisThesis(thesisToEdit)
-    setEthesisDialogOpen(true)
   }
 
   const initializeNewThesis = () => {
@@ -386,7 +373,6 @@ const ThesesPage = ({
             rowSelectionModel={rowSelectionModel}
             handleEditThesis={initializeThesisEdit}
             handleDeleteThesis={initializeThesisDelete}
-            handleSetSentToEthesis={initializeSetSentToEthesis}
             isStudentView={isStudentView}
           ></ViewThesisFooter>
         </Box>
@@ -417,53 +403,7 @@ const ThesesPage = ({
           isStudentView={isStudentView}
         />
       )}
-      {ethesisTesis && (
-        <Popup
-          open={ethesisDialogOpen}
-          onClose={() => {
-            setEthesisDialogOpen(false)
-            setEthesisThesis(null)
-          }}
-          onSubmit={async () => {
-            setEthesisDialogOpen(false)
 
-            const status = 'ETHESIS_SENT' as ThesisStatus
-            const ethesisDate = new Date().toISOString()
-            const data = { ...ethesisTesis, status, ethesisDate }
-            await editThesis({ thesisId: ethesisTesis.id, data })
-            setEthesisThesis(null)
-          }}
-          title={t('thesisForm:toSubmitEthesis')}
-          submitText={t('common:submitButton')}
-          cancelText={t('common:cancelButton')}
-        >
-          <Box>
-            {ethesisTesis.topic}
-
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="body2">
-                {t('author')}{' '}
-                {ethesisTesis.authors.length > 0 &&
-                  ethesisTesis.authors
-                    .map((a) => `${a.firstName} ${a.lastName}`)
-                    .join(', ')}
-              </Typography>
-              <Typography variant="body2" sx={{ mt: 1 }}>
-                <span style={{ marginRight: 10 }}>
-                  {t('thesisForm:graders')}
-                </span>
-                {ethesisTesis.graders.length > 0 &&
-                  ethesisTesis.graders.map((grader) => (
-                    <p>
-                      {grader.user.firstName} {grader.user.lastName},{' '}
-                      {grader.title[language]}
-                    </p>
-                  ))}
-              </Typography>
-            </Box>
-          </Box>
-        </Popup>
-      )}
       {deletedThesis && (
         <Popup
           open={deleteDialogOpen}

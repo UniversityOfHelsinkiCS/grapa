@@ -175,7 +175,7 @@ studentRouter.post(
     }
 
     try {
-      validateThesisDataStudent(thesisData, req.user)
+      await validateThesisDataStudent(thesisData, req.user)
     } catch {
       res.status(400).send('Thesis data not valid')
       return
@@ -330,18 +330,10 @@ studentRouter.put(
       originalThesis.milestone != thesisData.milestone &&
       !isNaN(thesisData.milestone)
 
-    const isEthesisUpdate =
-      originalThesis.status != thesisData.status &&
-      thesisData.status === 'ETHESIS_SENT'
-
-    if (isMilestoneUpdate || isEthesisUpdate) {
+    if (isMilestoneUpdate) {
       thesisData = {
         ...originalThesis,
         ...(isMilestoneUpdate && { milestone: thesisData.milestone }),
-        ...(isEthesisUpdate && {
-          status: 'ETHESIS_SENT',
-          ethesisDate: thesisData.ethesisDate || new Date().toISOString(),
-        }),
       }
       bypassChecks = true
     }
@@ -355,7 +347,7 @@ studentRouter.put(
 
     if (!bypassChecks) {
       try {
-        validateThesisDataStudent(thesisData, user)
+        await validateThesisDataStudent(thesisData, user)
       } catch {
         res.status(400).send('Thesis data not valid')
         return

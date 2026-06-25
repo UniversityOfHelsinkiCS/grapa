@@ -151,11 +151,11 @@
       "disableConfirm": "Oletko varma, että haluat poistaa työskentelysopimuksen vaatimuksen?"
     },
     "hideSendToEthesis": {
-      "toggle": "Piilota \"Lähetä Ethesikseen\"-toiminnallisuus",
-      "tooltip": "Piilottaa Ethesikseen lähettämisen toiminnallisuuden koulutusohjelmasta",
-      "confirmTitle": "Vahvista \"Lähetä Ethesikseen\" asetus",
-      "enableConfirm": "Oletko varma, että haluat piilottaa \"Lähetä Ethesikseen\"-toiminnallisuuden?",
-      "disableConfirm": "Oletko varma, että haluat näyttää \"Lähetä Ethesikseen\"-toiminnallisuuden?"
+      "toggle": "Piilota \"Lähetä E-thesikseen\"-toiminnallisuus",
+      "tooltip": "Piilottaa E-thesikseen lähettämisen toiminnallisuuden koulutusohjelmasta",
+      "confirmTitle": "Vahvista \"Lähetä E-thesikseen\" asetus",
+      "enableConfirm": "Oletko varma, että haluat piilottaa \"Lähetä E-thesikseen\"-toiminnallisuuden?",
+      "disableConfirm": "Oletko varma, että haluat näyttää \"Lähetä E-thesikseen\"-toiminnallisuuden?"
     },
     "useMilestones": {
       "toggle": "Käytä etappeja",
@@ -295,13 +295,15 @@
     "removeGraderConfirmationTitle": "Poista arvioija",
     "removeGraderConfirmationContent": "Haluatko varmasti poistaa arvioijan: {{name}}?",
     "removeGraderConfirmationNoName": "Haluatko varmasti poistaa arvioijan {{index}}?",
-    "submitEthesisLabel": "Työ valmis arviointia varten:",
-    "submitEthesis": "Lähetä tutkielman tiedot Ethesikseen",
-    "toSubmitEthesis": "Tutkielman tietojen lähettäminen Ethesikseen",
+    "setSentToEthesisLabel": "Työ valmis arviointia varten:",
+    "setSentToEthesis": "Merkitse tutkielman tiedot E-thesikseen lähetetyksi",
+    "toSubmitEthesis": "Tutkielman tietojen merkitseminen E-thesikseen lähetetyksi",
     "send": "Lähetä",
     "admin": "admin",
     "customDate": "Muu päivämäärä",
-    "notInCurrentProgram": " (Ei osana nykyistä ohjelmaa)"
+    "notInCurrentProgram": " (Ei osana nykyistä ohjelmaa)",
+    "setEthesisStudentStarted": "Anna lupa palauttaa E-thesikseen",
+    "needSecondGraderForEthesis": "Toinen arvioija vaaditaan ennen E-thesikseen lähettämistä"
   },
   "thesisStages": {
     "draft": "Luonnos",
@@ -310,9 +312,9 @@
     "inProgress": "Käynnissä",
     "completed": "Valmis",
     "cancelled": "Keskeytetty",
-    "ethesis": "Ethesiksessä",
+    "ethesis": "E-thesiksessä",
     "ethesis_studentstarted": "Lupa palauttaa",
-    "ethesisSent": "Ethesikseen lähetetty"
+    "ethesisSent": "E-thesikseen lähetetty"
   },
   "thesesTableToolbar": {
     "newThesisButton": "Uusi tutkielma",
@@ -413,9 +415,9 @@
     "deleteWarning": "Huom: Yksikköä ei voi poistaa luomisen jälkeen"
   },
   "progressView": {
-    "ethesisConfirmationTitle": "Vahvistus",
-    "ethesisConfirmationText": "Oletko varma että haluat merkata tämän lähetetyksi Ethesikseen? Tätä toimintoa ei voi peruuttaa",
-    "markAsSentToEthesis": "Merkitse Ethesikseen lähetetyksi",
+    "lastMilestoneConfirmationTitle": "Vahvistus",
+    "lastMilestoneConfirmationText": "Oletko varma että haluat merkitä viimeisen vaiheen valmiiksi? Tätä toimintoa ei voi peruuttaa",
+    "markAsSentToEthesis": "Merkitse E-thesikseen lähetetyksi",
     "milestone": "Etappi",
     "title": "Edistyminen",
     "doneButton": "Merkitse etappi {0} tehdyksi",

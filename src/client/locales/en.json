@@ -153,11 +153,11 @@
       "disableConfirm": "Are you sure you want to disable the ways of working agreement requirement?"
     },
     "hideSendToEthesis": {
-      "toggle": "Hide \"Send to Ethesis\" functionality",
-      "tooltip": "Hides the Send to Ethesis functionality from the degree program",
-      "confirmTitle": "Confirm \"Send to Ethesis\" setting",
-      "enableConfirm": "Are you sure you want to hide the \"Send to Ethesis\" functionality?",
-      "disableConfirm": "Are you sure you want to show the \"Send to Ethesis\" functionality?"
+      "toggle": "Hide \"Send to E-thesis\" functionality",
+      "tooltip": "Hides the Send to E-thesis functionality from the degree program",
+      "confirmTitle": "Confirm \"Send to E-thesis\" setting",
+      "enableConfirm": "Are you sure you want to hide the \"Send to E-thesis\" functionality?",
+      "disableConfirm": "Are you sure you want to show the \"Send to E-thesis\" functionality?"
     },
     "useMilestones": {
       "toggle": "Use milestones",
@@ -297,12 +297,14 @@
     "removeGraderConfirmationTitle": "Delete grader",
     "removeGraderConfirmationContent": "Are you sure you want to delete the grader: {{name}}?",
     "removeGraderConfirmationNoName": "Are you sure you want to delete the grader {{index}}?",
-    "submitEthesisLabel": "Thesis ready for assesment:",
-    "submitEthesis": "Send thesis info to Ethesis",
-    "toSubmitEthesis": "Sending the thesis info to Ethesis",
+    "setSentToEthesisLabel": "Thesis ready for assesment:",
+    "setSentToEthesis": "Mark thesis info as sent to E-thesis",
+    "toSubmitEthesis": "Marking thesis info as sent to E-thesis",
     "send": "Send",
     "customDate": "Custom date",
-    "notInCurrentProgram": " (Not part of the current program)"
+    "notInCurrentProgram": " (Not part of the current program)",
+    "setEthesisStudentStarted": "Give permission to send to E-thesis",
+    "needSecondGraderForEthesis": "A second grader is required before sending to E-thesis"
   },
   "thesisStages": {
     "draft": "Draft",
@@ -311,9 +313,9 @@
     "inProgress": "In progress",
     "completed": "Completed",
     "cancelled": "Cancelled",
-    "ethesis": "Saved to ethesis",
+    "ethesis": "Saved to E-thesis",
     "ethesis_studentstarted": "Permission to send",
-    "ethesisSent": "Sent to Ethesis"
+    "ethesisSent": "Sent to E-thesis"
   },
   "thesesTableToolbar": {
     "newThesisButton": "New thesis",
@@ -414,9 +416,9 @@
     "deleteWarning": "Note: A department cannot be deleted once created"
   },
   "progressView": {
-    "ethesisConfirmationTitle": "Confirmation",
-    "ethesisConfirmationText": "Are you sure you want to mark this thesis as sent to Ethesis? This action cannot be undone",
-    "markAsSentToEthesis": "Mark as sent to Ethesis",
+    "lastMilestoneConfirmationTitle": "Confirmation",
+    "lastMilestoneConfirmationText": "Are you sure you want to complete the last milestone? This action cannot be undone",
+    "markAsSentToEthesis": "Mark as sent to E-thesis",
     "milestone": "Milestone",
     "title": "Progress",
     "doneButton": "Mark milestone {0} as done",

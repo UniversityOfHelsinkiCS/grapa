@@ -14,6 +14,7 @@ import {
   Skeleton,
   Stack,
   Typography,
+  Tooltip,
 } from '@mui/material'
 import Popup from '../Common/Popup'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
@@ -26,6 +27,8 @@ import {
   ThesisData as Thesis,
   TranslatedName,
   User,
+  TranslationLanguage,
+  ThesisStatus,
 } from '@backend/types'
 
 import { StatusLocale, ThesisFooterProps } from '../../types'
@@ -41,7 +44,7 @@ import { useChangeThesisStatusMutation } from '../../hooks/useThesesMutation'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { t } from 'i18next'
 import { ProgressView } from './Progress/ProgressView'
-import { canApprove } from '../../util/permissions'
+import { canApprove, canSetEthesisStudentStarted } from '../../util/permissions'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
@@ -424,7 +427,6 @@ const ViewThesisFooter = (
     rowSelectionModel,
     handleEditThesis,
     handleDeleteThesis,
-    handleSetSentToEthesis,
     isStudentView,
   } = props
 
@@ -433,7 +435,8 @@ const ViewThesisFooter = (
     ? rowSelectionModel.ids.entries().next().value[0]
     : undefined) as unknown as string | undefined
 
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { language } = i18n as unknown as { language: TranslationLanguage }
   const { user: currentUser } = useLoggedInUser()
   const [eventLogOpen, setEventLogOpen] = useState(false)
   const { thesis, isLoading: thesisLoading } = useSingleThesis(
@@ -447,6 +450,10 @@ const ViewThesisFooter = (
   const [pendingAction, setPendingAction] = useState<
     'approve' | 'sendDraft' | null
   >(null)
+
+  const [ethesisDialogOpen, setEthesisDialogOpen] = useState(false)
+  const [ethesisTargetStatus, setEthesisTargetStatus] =
+    useState<ThesisStatus | null>(null)
 
   const ethesisReady =
     currentUser &&
@@ -541,29 +548,55 @@ const ViewThesisFooter = (
                     </Button>
                   )}
                   {!thesis.program?.options?.hideSendToEthesis &&
-                    !thesis.program?.options?.allowStudentStartedProcess &&
-                    ethesisReady &&
-                    !isStudentView && (
-                      <Button
-                        variant="outlined"
-                        onClick={() => handleSetSentToEthesis(thesis)}
-                        sx={{
-                          color: '#fff',
-                          backgroundColor: '#000',
-                          borderColor: '#000',
-                          fontSize: '12px',
-                          height: 24,
-                          px: 2,
-                          fontWeight: 600,
-                          '&:hover': {
-                            backgroundColor: '#fff',
-                            borderColor: '#000',
-                            color: '#000',
-                          },
-                        }}
+                    !isStudentView &&
+                    (thesis.program?.options?.allowStudentStartedProcess
+                      ? canSetEthesisStudentStarted(thesis, currentUser!)
+                      : thesis.status === THESIS_STATUSES.IN_PROGRESS) && (
+                      <Tooltip
+                        title={
+                          !ethesisReady
+                            ? t('thesisForm:needSecondGraderForEthesis')
+                            : ''
+                        }
                       >
-                        {t('thesisForm:setSentToEthesis')}
-                      </Button>
+                        <Box component="span">
+                          <Button
+                            variant="outlined"
+                            disabled={!ethesisReady}
+                            onClick={() => {
+                              setEthesisTargetStatus(
+                                thesis.program?.options
+                                  ?.allowStudentStartedProcess
+                                  ? (THESIS_STATUSES.ETHESIS as ThesisStatus)
+                                  : THESIS_STATUSES.ETHESIS_SENT
+                              )
+                              setEthesisDialogOpen(true)
+                            }}
+                            sx={{
+                              color: '#fff',
+                              backgroundColor: '#000',
+                              borderColor: '#000',
+                              fontSize: '12px',
+                              height: 24,
+                              px: 2,
+                              fontWeight: 600,
+                              '&:hover': {
+                                backgroundColor: '#fff',
+                                borderColor: '#000',
+                                color: '#000',
+                              },
+                              '&.Mui-disabled': {
+                                color: 'rgba(255, 255, 255, 0.5)',
+                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                              },
+                            }}
+                          >
+                            {thesis.program?.options?.allowStudentStartedProcess
+                              ? t('thesisForm:setEthesisStudentStarted')
+                              : t('thesisForm:setSentToEthesis')}
+                          </Button>
+                        </Box>
+                      </Tooltip>
                     )}
                   <Button
                     variant="outlined"
@@ -711,6 +744,89 @@ const ViewThesisFooter = (
               ? t('approveButtonConfirmContent')
               : t('sendDraftButtonConfirmContent')}
           </Typography>
+        </Popup>
+      )}
+
+      {thesis && (
+        <Popup
+          open={ethesisDialogOpen}
+          onClose={() => {
+            setEthesisDialogOpen(false)
+            setEthesisTargetStatus(null)
+          }}
+          onSubmit={() => {
+            setEthesisDialogOpen(false)
+            if (ethesisTargetStatus) {
+              changeThesisStatus({
+                theses: [thesis],
+                status: ethesisTargetStatus,
+              })
+            }
+            setEthesisTargetStatus(null)
+          }}
+          title={t('thesisForm:toSubmitEthesis')}
+          submitText={t('common:submitButton')}
+          cancelText={t('common:cancelButton')}
+        >
+          <Box sx={{ mt: 1, maxHeight: 300, overflowY: 'auto' }}>
+            <List dense disablePadding>
+              <ListItem disableGutters sx={{ alignItems: 'flex-start' }}>
+                <ListItemText
+                  primary={t('common:topicHeader')}
+                  secondary={thesis.topic}
+                  primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
+                  secondaryTypographyProps={{
+                    variant: 'caption',
+                    color: 'text.secondary',
+                  }}
+                />
+              </ListItem>
+
+              <ListItem disableGutters sx={{ alignItems: 'flex-start' }}>
+                <ListItemText
+                  primary={t('author')}
+                  secondary={thesis.authors
+                    .toSorted((a, b) => a.lastName.localeCompare(b.lastName))
+                    .map(
+                      (author) =>
+                        `${author.lastName} ${author.firstName} ${
+                          author.studentNumber
+                            ? `(${author.studentNumber})`
+                            : ''
+                        }`
+                    )
+                    .join(', ')}
+                  primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
+                  secondaryTypographyProps={{
+                    variant: 'caption',
+                    color: 'text.secondary',
+                  }}
+                />
+              </ListItem>
+
+              {thesis.graders.length > 0 && (
+                <ListItem disableGutters sx={{ alignItems: 'flex-start' }}>
+                  <ListItemText
+                    primary={t('thesisForm:graders')}
+                    secondary={thesis.graders.map((grader) => (
+                      <span key={grader.user.id} style={{ display: 'block' }}>
+                        {grader.user.lastName} {grader.user.firstName},{' '}
+                        {grader.title[language]}
+                      </span>
+                    ))}
+                    primaryTypographyProps={{
+                      variant: 'body2',
+                      fontWeight: 500,
+                    }}
+                    secondaryTypographyProps={{
+                      variant: 'caption',
+                      color: 'text.secondary',
+                    }}
+                  />
+                </ListItem>
+              )}
+            </List>
+          </Box>
         </Popup>
       )}
     </>
