@@ -236,6 +236,24 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
           ? `${Math.round(avgCompletedSupervision)}`
           : null,
     },
+    {
+      field: 'thesisCount.PRIMARY_SUPERVISED',
+      headerName: t('departmentStatisticsPage:primarySupervisions'),
+      renderHeader: () => (
+        <Tooltip
+          title={t('departmentStatisticsPage:primarySupervisionsTooltip')}
+        >
+          <Typography variant="body2">
+            {t('departmentStatisticsPage:primarySupervisions')}
+          </Typography>
+        </Tooltip>
+      ),
+      filterable: false,
+      width: 150,
+      type: 'number',
+      valueGetter: (_, { primarySupervisionsCount }) =>
+        primarySupervisionsCount,
+    },
   ]
 
   return (
