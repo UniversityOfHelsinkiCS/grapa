@@ -1,0 +1,52 @@
+name: Test and deploy to staging in local
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: runner-scaleset-large
+    # runs-on: runner-scaleset #tämän pitää olla tarkalleen tämä että oikea runner löytyy organisaation alta.
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24.x'
+          cache: 'npm'
+      
+      - run: npm ci --no-audit --no-fund
+
+      - name: Build image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: grapa
+          tags: staging ${{ github.sha }}
+          containerfiles: |
+            ./Dockerfile
+          build-args: |
+            BASE_PATH=
+            GIT_SHA=${{ github.sha }}
+            STAGING=true
+            E2E=false
+          # ulimit 4096 is required for the buildah to work
+          # otherwise throws error "Too many open files"
+          extra-args: --ulimit nofile=4096:4096
+
+
+      - run: npm run lint
+      - run: npm test
+      - run: npm run test:front
+      - run: npm run test:integration
+
+      - name: Push to quay.io
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: quay.io/toska
+          username: toska+github
+          password: ${{ secrets.QUAY_IO_TOKEN }}
