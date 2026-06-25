@@ -20,6 +20,7 @@
     "manage": "node scripts/manage.js",
     "check:migrations": "node scripts/analyzeMigrationNames.js",
     "check:translations": "node scripts/analyzeTranslations.js",
+    "db:shell": "docker exec -it grapa_db psql -U postgres",
     "prepare": "husky"
   },
   "jest": {

@@ -48,18 +48,9 @@ import {
 import usePrograms from '../../hooks/usePrograms'
 import { PrethesisHelp } from '../PrethesisHelp/PrethesisHelp'
 import { useChangeThesisStatusMutation } from '../../hooks/useThesesMutation'
+import { canApprove } from '../../util/permissions'
 import { THESIS_STATUSES } from '../../../config'
 import Popup from '../Common/Popup'
-
-const canApprove = (thesis: Thesis, user: User) =>
-  Boolean(
-    user &&
-    ((thesis.status === THESIS_STATUSES.PLANNING &&
-      thesis.approvers?.length &&
-      thesis.approvers[0].id === user.id) ||
-      (thesis.status === THESIS_STATUSES.SUGGESTED &&
-        thesis.supervisions?.some((s) => s.user?.id === user.id)))
-  )
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData, TValue> {

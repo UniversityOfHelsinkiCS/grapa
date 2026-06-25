@@ -26,6 +26,6 @@ export interface ThesisFooterProps {
   rowSelectionModel: GridRowSelectionModel[]
   handleEditThesis: (thesis: Thesis) => void
   handleDeleteThesis: (thesis: Thesis) => void
-  handleSubitToEthesis: (thesis: Thesis) => void
+  handleSetSentToEthesis: (thesis: Thesis) => void
   isStudentView?: boolean
 }

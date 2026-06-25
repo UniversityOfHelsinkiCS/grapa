@@ -175,7 +175,7 @@ const ThesesPage = ({
     setEditedThesis(cloneDeep(thesisToEdit))
   }
 
-  const initializeSubitToEthesis = (thesisToEdit: Thesis) => {
+  const initializeSetSentToEthesis = (thesisToEdit: Thesis) => {
     setEthesisThesis(thesisToEdit)
     setEthesisDialogOpen(true)
   }
@@ -386,7 +386,7 @@ const ThesesPage = ({
             rowSelectionModel={rowSelectionModel}
             handleEditThesis={initializeThesisEdit}
             handleDeleteThesis={initializeThesisDelete}
-            handleSubitToEthesis={initializeSubitToEthesis}
+            handleSetSentToEthesis={initializeSetSentToEthesis}
             isStudentView={isStudentView}
           ></ViewThesisFooter>
         </Box>

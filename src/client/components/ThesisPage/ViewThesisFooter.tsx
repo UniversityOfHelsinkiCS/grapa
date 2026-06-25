@@ -41,6 +41,7 @@ import { useChangeThesisStatusMutation } from '../../hooks/useThesesMutation'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { t } from 'i18next'
 import { ProgressView } from './Progress/ProgressView'
+import { canApprove } from '../../util/permissions'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
@@ -423,7 +424,7 @@ const ViewThesisFooter = (
     rowSelectionModel,
     handleEditThesis,
     handleDeleteThesis,
-    handleSubitToEthesis,
+    handleSetSentToEthesis,
     isStudentView,
   } = props
 
@@ -500,16 +501,7 @@ const ViewThesisFooter = (
                 ? thesis.status === THESIS_STATUSES.DRAFT
                 : true) && (
                 <Box sx={{ display: 'flex', gap: 2 }}>
-                  {Boolean(
-                    !isStudentView &&
-                    ((thesis.status === THESIS_STATUSES.PLANNING &&
-                      thesis.approvers?.length &&
-                      thesis.approvers[0].id === currentUser?.id) ||
-                      (thesis.status === THESIS_STATUSES.SUGGESTED &&
-                        thesis.supervisions?.some(
-                          (s) => s.user.id === currentUser?.id
-                        )))
-                  ) && (
+                  {canApprove(thesis, currentUser!) && (
                     <Button
                       variant="outlined"
                       sx={{
@@ -548,6 +540,31 @@ const ViewThesisFooter = (
                       {t('sendDraftButton')}
                     </Button>
                   )}
+                  {!thesis.program?.options?.hideSendToEthesis &&
+                    !thesis.program?.options?.allowStudentStartedProcess &&
+                    ethesisReady &&
+                    !isStudentView && (
+                      <Button
+                        variant="outlined"
+                        onClick={() => handleSetSentToEthesis(thesis)}
+                        sx={{
+                          color: '#fff',
+                          backgroundColor: '#000',
+                          borderColor: '#000',
+                          fontSize: '12px',
+                          height: 24,
+                          px: 2,
+                          fontWeight: 600,
+                          '&:hover': {
+                            backgroundColor: '#fff',
+                            borderColor: '#000',
+                            color: '#000',
+                          },
+                        }}
+                      >
+                        {t('thesisForm:setSentToEthesis')}
+                      </Button>
+                    )}
                   <Button
                     variant="outlined"
                     sx={{
@@ -624,44 +641,6 @@ const ViewThesisFooter = (
               researchPlan={thesis?.researchPlan}
               waysOfWorking={thesis?.waysOfWorking}
             />
-            {!thesis.program?.options?.hideSendToEthesis &&
-              ethesisReady &&
-              !isStudentView && (
-                <Box
-                  sx={{
-                    marginTop: 5,
-                    marginBottom: 5,
-
-                    alignItems: 'center',
-                    gap: 2,
-                  }}
-                >
-                  <Typography style={{ marginBottom: 5 }}>
-                    {t('thesisForm:submitEthesisLabel')}
-                  </Typography>
-                  <Button
-                    variant="outlined"
-                    onClick={() => handleSubitToEthesis(thesis)}
-                    sx={{
-                      color: '#fff',
-                      backgroundColor: '#000',
-                      borderColor: '#000',
-                      fontSize: '12px',
-                      height: 24,
-                      px: 2,
-                      borderRadius: '1rem',
-                      fontWeight: 600,
-                      '&:hover': {
-                        backgroundColor: '#fff',
-                        borderColor: '#000',
-                        color: '#000',
-                      },
-                    }}
-                  >
-                    {t('thesisForm:submitEthesis')}
-                  </Button>
-                </Box>
-              )}
           </Box>
 
           {Boolean(events && events.length) &&
