@@ -434,19 +434,22 @@ export const handleStatusChangeEmail = async (
   updatedThesis: Thesis,
   actionUser: UserType
 ) => {
+  const supervisorEmails = uniq(
+    updatedThesis.supervisions
+      .map((person) => person.user)
+      .filter((user) => !user.isExternal && user.email)
+      .map((user) => user.email)
+  )
+
+  const authorEmails = uniq(
+    updatedThesis.authors.filter((user) => user.email).map((user) => user.email)
+  )
+
   if (
     originalThesis.status === 'PLANNING' &&
     updatedThesis.status === 'IN_PROGRESS'
   ) {
-    const supervisorTargets = updatedThesis.supervisions
-      .map((person) => person.user)
-      .filter((person) => !person.isExternal)
-
-    const targets = uniq(
-      [...supervisorTargets, ...updatedThesis.authors]
-        .filter((person) => person.email)
-        .map((person) => person.email)
-    )
+    const targets = uniq([...supervisorEmails, ...authorEmails])
 
     const subject = 'Prethesis - Thesis status changed to IN PROGRESS'
     const message = `
@@ -537,6 +540,45 @@ export const handleStatusChangeEmail = async (
       .map((admin) => (admin as any).user.email)
 
     targets.push(...ethesisAdminEmails)
+    await sendEmail(targets, message, subject)
+  } else if (
+    originalThesis.status !== 'ETHESIS' &&
+    updatedThesis.status === 'ETHESIS'
+  ) {
+    const options = (updatedThesis as any).program?.options
+    if (options?.allowStudentStartedProcess) {
+      const targets = authorEmails
+
+      const subject = 'Prethesis - Permission to submit to E-thesis'
+      const message = `
+    This is an automated message from Prethesis. \n\n
+
+    You now have permission to submit your thesis "${updatedThesis.topic}" to E-thesis.
+    Please submit your thesis directly to E-thesis. You can find the instructions here:
+    <a href='https://studies.helsinki.fi/instructions/article/e-thesis'>https://studies.helsinki.fi/instructions/article/e-thesis</a>
+  `
+      await sendEmail(targets, message, subject)
+    }
+  }
+
+  const options = (updatedThesis as any).program?.options
+  const versions = options?.milestones?.versions
+
+  if (
+    options?.useMilestones &&
+    originalThesis.milestone !== updatedThesis.milestone &&
+    updatedThesis.milestone ===
+      versions?.at(updatedThesis.milestoneVersion ?? -1)?.length
+  ) {
+    const targets = supervisorEmails
+
+    const subject = 'Prethesis - Last milestone reached'
+    const message = `
+    This is an automated message from Prethesis. \n\n
+
+    The user ${actionUser.firstName} ${actionUser.lastName} has marked the last milestone as done for the thesis "${updatedThesis.topic}".
+    Please go to Prethesis, mark the second grader, and give the student permission to send the thesis to E-thesis.
+  `
     await sendEmail(targets, message, subject)
   }
 }
