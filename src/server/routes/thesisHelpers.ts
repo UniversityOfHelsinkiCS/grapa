@@ -435,14 +435,16 @@ export const handleStatusChangeEmail = async (
   actionUser: UserType
 ) => {
   const supervisorEmails = uniq(
-    updatedThesis.supervisions
-      .map((person) => person.user)
-      .filter((user) => !user.isExternal && user.email)
+    (updatedThesis.supervisions || [])
+      .map((person) => person?.user)
+      .filter((user) => user && !user.isExternal && user.email)
       .map((user) => user.email)
   )
 
   const authorEmails = uniq(
-    updatedThesis.authors.filter((user) => user.email).map((user) => user.email)
+    (updatedThesis.authors || [])
+      .filter((user) => user?.email)
+      .map((user) => user.email)
   )
 
   if (
