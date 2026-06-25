@@ -385,7 +385,7 @@
     "avgCompletionTooltip": "Keskimääräinen valmistuminen, päivää",
     "avgCompletion": "Valmistuminen KA",
     "primarySupervisions": "Pääohjattavat",
-    "primarySupervisionsTooltip": "Tutkielmat joissa merkitty pääohjaajiksi"
+    "primarySupervisionsTooltip": "Tutkielmat joissa merkitty pääohjaajaksi"
   },
   "loginAsPage": {
     "title": "Valitse käyttäjä, jona haluat kirjautua",
