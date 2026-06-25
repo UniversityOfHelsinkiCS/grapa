@@ -384,7 +384,9 @@
     "avgLateTooltip": "Average lateness, days",
     "avgLate": "avg. Late",
     "avgCompletionTooltip": "Average completion, days",
-    "avgCompletion": "avg. Completed"
+    "avgCompletion": "avg. Completed",
+    "primarySupervisions": "Primary supervisions",
+    "primarySupervisionsTooltip": "Theses where marked as primary supervisor"
   },
   "loginAsPage": {
     "title": "Choose a user to log in as",

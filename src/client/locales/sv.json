@@ -384,7 +384,9 @@
     "avgLateTooltip": "Genomsnittlig försening, dagar",
     "avgLate": "Snittförsening",
     "avgCompletionTooltip": "Genomsnittlig tid till slutförande, dagar",
-    "avgCompletion": "Snittid slutförande"
+    "avgCompletion": "Snittid slutförande",
+    "primarySupervisions": "Huvudhandledning",
+    "primarySupervisionsTooltip": "Examensarbeten där du är huvudhandledare"
   },
   "loginAsPage": {
     "title": "Välj en användare att logga in som",

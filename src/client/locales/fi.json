@@ -383,7 +383,9 @@
     "avgLateTooltip": "Keskimääräinen myöhästyminen, päivää",
     "avgLate": "Myöhästyminen KA",
     "avgCompletionTooltip": "Keskimääräinen valmistuminen, päivää",
-    "avgCompletion": "Valmistuminen KA"
+    "avgCompletion": "Valmistuminen KA",
+    "primarySupervisions": "Pääohjattavat",
+    "primarySupervisionsTooltip": "Tutkielmat joissa merkitty pääohjaajiksi"
   },
   "loginAsPage": {
     "title": "Valitse käyttäjä, jona haluat kirjautua",
