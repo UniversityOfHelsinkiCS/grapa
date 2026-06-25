@@ -16,7 +16,7 @@ import {
 
 import ethesisUserHandler from '../middleware/ethesisUser'
 import parseFormDataJson from '../middleware/parseFormDataJson'
-import parseMutlipartFormData from '../middleware/attachment'
+import parseMultipartFormData from '../middleware/attachment'
 import { validateThesisDataStudentMiddleware } from '../validators/thesis'
 
 import { handleAttachmentByLabel } from './thesisAttachmentHelpers'
@@ -160,7 +160,7 @@ const validateThesisDataStudent = async (
 studentRouter.post(
   '/theses',
   ethesisUserHandler,
-  parseMutlipartFormData,
+  parseMultipartFormData,
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisDataStudentMiddleware,
@@ -281,25 +281,13 @@ studentRouter.delete(
 studentRouter.put(
   '/theses/:id',
   ethesisUserHandler,
-  parseMutlipartFormData,
+  parseMultipartFormData,
   parseFormDataJson,
   // @ts-expect-error the middleware updates the req object with the parsed JSON
   validateThesisDataStudentMiddleware,
   async (req: ServerPostRequest, res: any) => {
     const { id } = req.params
     const user = req.user
-    let thesisData = req.body
-
-    if (thesisData.studyTrackId && thesisData.programId) {
-      const program = await Program.findByPk(thesisData.programId)
-      const options = (program as any)?.options
-      thesisData.studyTrackId =
-        getPrimaryStudyTrackId(options, thesisData.studyTrackId) || undefined
-    }
-
-    // this is only to be used when making minor modifications to the original thesis from backend
-    // and data used for the modification is validated separately!
-    let bypassChecks = false
 
     // fetchThesisById checks user permissions for specific theses, but student routes
     // do the relevant checks by themselves, so isAdmin is just used to override those
@@ -320,6 +308,22 @@ studentRouter.put(
       res.status(401).send('Student must be an author in thesis')
       return
     }
+
+    let thesisData = req.body
+    let options = (originalThesis as any).program?.options
+
+    if (thesisData.studyTrackId && thesisData.programId) {
+      if (thesisData.programId !== originalThesis.programId) {
+        const program = await Program.findByPk(thesisData.programId)
+        options = (program as any)?.options
+      }
+      thesisData.studyTrackId =
+        getPrimaryStudyTrackId(options, thesisData.studyTrackId) || undefined
+    }
+
+    // this is only to be used when making minor modifications to the original thesis from backend
+    // and data used for the modification is validated separately!
+    let bypassChecks = false
 
     // Enforce that milestones can only be changed when IN_PROGRESS
     if (originalThesis.status !== 'IN_PROGRESS') {
@@ -410,7 +414,6 @@ studentRouter.put(
       )
       await handleStatusChangeEmail(originalThesis, updatedThesis, req.user)
     })
-
     res.send(updatedThesis)
   }
 )
