@@ -378,7 +378,13 @@
     "departmentHeader": "Avdelning",
     "thesisCountHeader": "Antal avhandlingar",
     "startedWithinHalfYearCount": "Påbörjade",
-    "startedWithinHalfYearTooltip": "Avhandlingar som har påbörjats inom de senaste sex månaderna"
+    "startedWithinHalfYearTooltip": "Avhandlingar som har påbörjats inom de senaste sex månaderna",
+    "late": "Försenade",
+    "lateTooltip": "Dessa examensarbeten är mer än en månad försenade enligt måldatumet. Detta inkluderar alla ej slutförda examensarbeten.",
+    "avgLateTooltip": "Genomsnittlig försening, dagar",
+    "avgLate": "Snittförsening",
+    "avgCompletionTooltip": "Genomsnittlig tid till slutförande, dagar",
+    "avgCompletion": "Snittid slutförande"
   },
   "loginAsPage": {
     "title": "Välj en användare att logga in som",

@@ -377,7 +377,13 @@
     "departmentHeader": "Yksikkö",
     "thesisCountHeader": "Tutkielmien määrä",
     "startedWithinHalfYearCount": "Alkaneet",
-    "startedWithinHalfYearTooltip": "Tutkielmat, jotka on aloitettu viimeisen puolen vuoden aikana"
+    "startedWithinHalfYearTooltip": "Tutkielmat, jotka on aloitettu viimeisen puolen vuoden aikana",
+    "late": "Myöhässä",
+    "lateTooltip": "Tutkielmat jotka ovat ylittäneet tavoitepäivänsä kuukaudella. Sisältää kaikki ei valmiit tutkielmat",
+    "avgLateTooltip": "Keskimääräinen myöhästyminen, päivää",
+    "avgLate": "Myöhästyminen KA",
+    "avgCompletionTooltip": "Keskimääräinen valmistuminen, päivää",
+    "avgCompletion": "Valmistuminen KA"
   },
   "loginAsPage": {
     "title": "Valitse käyttäjä, jona haluat kirjautua",

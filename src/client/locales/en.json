@@ -378,7 +378,13 @@
     "departmentHeader": "Department",
     "thesisCountHeader": "Count of theses",
     "startedWithinHalfYearCount": "Started",
-    "startedWithinHalfYearTooltip": "Theses that have been started within the last six months"
+    "startedWithinHalfYearTooltip": "Theses that have been started within the last six months",
+    "late": "Late",
+    "lateTooltip": "Theses are more than a month late according to the target date. This includes all non-completed theses.",
+    "avgLateTooltip": "Average lateness, days",
+    "avgLate": "avg. Late",
+    "avgCompletionTooltip": "Average completion, days",
+    "avgCompletion": "avg. Completed"
   },
   "loginAsPage": {
     "title": "Choose a user to log in as",
