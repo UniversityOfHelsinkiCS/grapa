@@ -253,7 +253,7 @@ describe('Theisis router with mocks', () => {
         expect(sendEmail).toHaveBeenCalledWith(
           [user1.email, user2.email],
           expect.any(String),
-          'Prethesis - Thesis status changed to IN PROGRESS'
+          'Prethesis - Tutkielman tila muutettu: KÄYNNISSÄ / Thesis status changed to IN PROGRESS / Avhandlingens status ändrad: PÅGÅR'
         )
       })
     })
@@ -312,7 +312,7 @@ describe('Theisis router with mocks', () => {
         expect(sendEmail).toHaveBeenCalledWith(
           [user1.email, user2.email],
           expect.any(String),
-          'Prethesis - Thesis status changed to IN PROGRESS'
+          'Prethesis - Tutkielman tila muutettu: KÄYNNISSÄ / Thesis status changed to IN PROGRESS / Avhandlingens status ändrad: PÅGÅR'
         )
       })
     })

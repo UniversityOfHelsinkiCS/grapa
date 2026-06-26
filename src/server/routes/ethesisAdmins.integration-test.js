@@ -303,7 +303,7 @@ describe('ethesis admin router', () => {
             expect(targets).toHaveLength(3)
 
             // Verify the email subject and content
-            expect(subject).toBe('Prethesis - Tutkielma valmiina Ethesiskseen')
+            expect(subject).toBe('Prethesis - Tutkielma valmiina Ethesikseen / Thesis ready for E-thesis / Avhandling redo för E-thesis')
             expect(message).toContain('Test Thesis for Email Notifications')
             expect(message).toContain('Test Author')
             expect(message).toContain('Test Grader')
