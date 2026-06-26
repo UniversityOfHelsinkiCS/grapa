@@ -298,6 +298,7 @@
     "setSentToEthesisLabel": "Työ valmis arviointia varten:",
     "setSentToEthesis": "Merkitse tutkielman tiedot E-thesikseen lähetetyksi",
     "toSubmitEthesis": "Tutkielman tietojen merkitseminen E-thesikseen lähetetyksi",
+    "toSubmitEthesisStudentStarted": "Anna opiskelijalle lupa lähettää E-thesikseen",
     "send": "Lähetä",
     "admin": "admin",
     "customDate": "Muu päivämäärä",

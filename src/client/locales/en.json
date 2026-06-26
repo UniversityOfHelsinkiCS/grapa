@@ -300,6 +300,7 @@
     "setSentToEthesisLabel": "Thesis ready for assesment:",
     "setSentToEthesis": "Mark thesis info as sent to E-thesis",
     "toSubmitEthesis": "Marking thesis info as sent to E-thesis",
+    "toSubmitEthesisStudentStarted": "Give the student permission to submit to E-thesis",
     "send": "Send",
     "customDate": "Custom date",
     "notInCurrentProgram": " (Not part of the current program)",

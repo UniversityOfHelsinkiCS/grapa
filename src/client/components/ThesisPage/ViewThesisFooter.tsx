@@ -764,7 +764,11 @@ const ViewThesisFooter = (
             }
             setEthesisTargetStatus(null)
           }}
-          title={t('thesisForm:toSubmitEthesis')}
+          title={
+            thesis.program?.options?.allowStudentStartedProcess
+              ? t('thesisForm:toSubmitEthesisStudentStarted')
+              : t('thesisForm:toSubmitEthesis')
+          }
           submitText={t('common:submitButton')}
           cancelText={t('common:cancelButton')}
         >

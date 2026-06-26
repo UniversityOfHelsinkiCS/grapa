@@ -300,6 +300,7 @@
     "setSentToEthesisLabel": "Avhandlingen är klar för bedömning:",
     "setSentToEthesis": "Markera avhandlingsinformationen som skickad till E-thesis",
     "toSubmitEthesis": "Markerar avhandlingsinformationen som skickad till E-thesis",
+    "toSubmitEthesisStudentStarted": "Ge studenten tillstånd att skicka till E-thesis",
     "send": "Skicka",
     "customDate": "Anpassat datum",
     "notInCurrentProgram": " (Inte en del av det aktuella programmet)",
