@@ -21,6 +21,8 @@
     "targetDateHeader": "Target date",
     "durationHeader": "Duration (days)",
     "completedDateHeader": "Completed",
+    "validUntilHeader": "Contract",
+    "validUntilTooltip": "End date of the ways of working agreement",
     "averageDuration": "Average thesis duration: {{days}} days",
     "enabled": "Enabled",
     "otherSettings": "Other settings",

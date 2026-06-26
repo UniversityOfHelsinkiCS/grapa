@@ -448,6 +448,30 @@ const PrethesisTable = ({
       },
       enableResizing: true,
     }),
+    ...((isLoading && rows.length === 0
+      ? previousData.current.rows
+      : rows
+    ).some((row) => row.waysOfWorkingValidUntil)
+      ? [
+          columnHelper.accessor('waysOfWorkingValidUntil', {
+            id: 'validUntil',
+            size: 30,
+            cell: (info) => (
+              <Typography variant="small">
+                {info.getValue()
+                  ? dayjs(info.getValue() as string).format('YYYY-MM-DD')
+                  : '-'}
+              </Typography>
+            ),
+            header: () => (
+              <Tooltip title={t('validUntilTooltip')} placement="top">
+                <Box component="span">{t('validUntilHeader')}</Box>
+              </Tooltip>
+            ),
+            enableResizing: true,
+          }),
+        ]
+      : []),
     columnHelper.accessor('supervisions', {
       size: 0,
       cell: (info) => (
@@ -668,6 +692,7 @@ const PrethesisTable = ({
                         'supervisor',
                         'supervisionPercentage',
                         'select',
+                        'validUntil',
                       ].includes(header.id) &&
                         !isStudentView && (
                           <IconButton

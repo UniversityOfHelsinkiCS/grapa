@@ -21,6 +21,8 @@
     "targetDateHeader": "Måldatum",
     "durationHeader": "Längd (dagar)",
     "completedDateHeader": "Färdig",
+    "validUntilHeader": "Avtal",
+    "validUntilTooltip": "Slutdatum för arbetsavtal",
     "averageDuration": "Avhandlingens genomsnittliga längd: {{days}} dagar",
     "enabled": "Aktiverad",
     "otherSettings": "Andra inställningar",

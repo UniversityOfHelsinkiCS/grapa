@@ -21,6 +21,8 @@
     "targetDateHeader": "Tavoitepäivä",
     "durationHeader": "Kesto (pv)",
     "completedDateHeader": "Valmis",
+    "validUntilHeader": "Sopimus",
+    "validUntilTooltip": "Työskentelysopimuksen päättymispäivä",
     "averageDuration": "Tutkielman keskimääräinen kesto: {{days}} päivää",
     "enabled": "Käytössä",
     "otherSettings": "Muut asetukset",
