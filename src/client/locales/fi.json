@@ -237,6 +237,8 @@
     "approver": "Valitse ohjelmavastaava"
   },
   "thesisForm": {
+    "milestoneVersion": "Etappien versio",
+    "version": "Versio",
     "approverHeader": "Vastaava",
     "approverInstructions": "Valitse ohjelmavastaava, joka on lähimpänä tutkielman aihepiiriä, hallinnoimaan prosessia.",
     "errorSummary": "Lomake sisältää seuraavia virheitä",

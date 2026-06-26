@@ -239,6 +239,8 @@
     "approver": "Please select a program manager"
   },
   "thesisForm": {
+    "milestoneVersion": "Milestone version",
+    "version": "Version",
     "approverHeader": "Program manager",
     "approverInstructions": "Select a program manager, whose expertise is closest to the topic of the thesis, to manage the process.",
     "errorSummary": "Form contains the following errors",

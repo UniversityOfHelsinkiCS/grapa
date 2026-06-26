@@ -239,6 +239,8 @@
     "approver": "Vänligen välj en programdirektör"
   },
   "thesisForm": {
+    "milestoneVersion": "Milstolpsversion",
+    "version": "Version",
     "approverHeader": "Ansvarig",
     "approverInstructions": "Välj den programansvariga vars expertis ligger närmast avhandlingens ämne för att hantera processen.",
     "errorSummary": "Blanketten innehåller följande fel",
