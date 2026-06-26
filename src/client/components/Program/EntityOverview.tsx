@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import 'dayjs/locale/fi'
 import dayjs from 'dayjs'
+import { isEqual } from 'lodash-es'
 import { DatePicker } from '@mui/x-date-pickers'
 import {
   Button,
@@ -203,6 +204,16 @@ const ListInput = ({
     }
 
     const options = program.options
+
+    if (versioned) {
+      const currentVersions = options[feature]?.versions || []
+      const lastVersion =
+        currentVersions.length > 0 ? currentVersions.at(-1) : []
+      if (isEqual(pendingValue, lastVersion)) {
+        setPendingValue(null)
+        return
+      }
+    }
     if (versioned && !options[feature]) options[feature] = { versions: [] }
     if (versioned && !options[feature].versions) options[feature].versions = []
     if (versioned) options[feature].versions.push(pendingValue)
