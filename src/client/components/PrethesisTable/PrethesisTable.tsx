@@ -560,6 +560,9 @@ const PrethesisTable = ({
                     activeFilterView == filterView ? 'filled' : 'outlined'
                   }
                   size="small"
+                  sx={{
+                    fontSize: '0.85rem',
+                  }}
                   label={t(`thesesTableToolbar:filterViews:${filterView}:name`)}
                   onClick={() => {
                     onFilterChange(filterViews[filterView].filterModel)

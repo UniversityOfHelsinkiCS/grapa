@@ -11,7 +11,7 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
     backgroundColor: '#f8f8f8',
     color: 'rgba(0, 0, 0, 0.87)',
     maxWidth: 500,
-    fontSize: theme.typography.pxToRem(12),
+    fontSize: theme.typography.pxToRem(16),
     border: '1px solid #eaeaea',
   },
 }))
