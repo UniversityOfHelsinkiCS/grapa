@@ -23,11 +23,14 @@ import { handleAttachmentByLabel } from './thesisAttachmentHelpers'
 
 import {
   handleGradersChangeEventLog,
-  handleStatusChangeEmail,
   handleStatusChangeEventLog,
   handleSupervisionsChangeEventLog,
-  handleThesisCreationEmail,
 } from '../services/thesisHelpers'
+
+import {
+  handleStatusChangeEmail,
+  handleThesisCreationEmail,
+} from '../services/thesisNotificationService'
 
 import { cleanThesisUserData } from '../services/thesisService'
 import { getProgram, getPrograms } from '../services/programService'

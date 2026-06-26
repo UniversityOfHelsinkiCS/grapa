@@ -1,5 +1,5 @@
 import { Includeable, literal, Op, Order, Transaction } from 'sequelize'
-import { uniq, uniqBy } from 'lodash-es'
+import { uniqBy } from 'lodash-es'
 import { userFields } from '../routes/config'
 import {
   Grader,
@@ -12,14 +12,13 @@ import {
   Thesis,
   Program,
   StudyTrack,
-  EthesisAdmin,
   Author,
   Approver,
   StudyTrackManagement,
 } from '../db/models'
 import { getSecondaryStudyTrackIds } from '../util/studyTracks'
 import { ThesisData, User as UserType } from '../types'
-import sendEmail from '../mailer/pate'
+
 import {
   getWhereClauseForManyWordSearch,
   getWhereClauseForOneWordSearch,
@@ -429,162 +428,6 @@ export const titlesGraderGroup = [
   'postdoctoral researcher',
 ]
 
-export const handleStatusChangeEmail = async (
-  originalThesis: Thesis,
-  updatedThesis: Thesis,
-  actionUser: UserType
-) => {
-  const supervisorEmails = uniq(
-    (updatedThesis.supervisions || [])
-      .map((person) => person?.user)
-      .filter((user) => user && !user.isExternal && user.email)
-      .map((user) => user.email)
-  )
-
-  const authorEmails = uniq(
-    (updatedThesis.authors || [])
-      .filter((user) => user?.email)
-      .map((user) => user.email)
-  )
-
-  if (
-    originalThesis.status === 'PLANNING' &&
-    updatedThesis.status === 'IN_PROGRESS'
-  ) {
-    const targets = uniq([...supervisorEmails, ...authorEmails])
-
-    const subject = 'Prethesis - Thesis status changed to IN PROGRESS'
-    const message = `
-    This is an automated message from Prethesis. \n\n
-
-    The status of the thesis "${updatedThesis.topic}" has been changed to IN PROGRESS by ${actionUser.firstName} ${actionUser.lastName}.
-  `
-    await sendEmail(targets, message, subject)
-  } else if (
-    originalThesis.status === 'IN_PROGRESS' &&
-    updatedThesis.status === 'ETHESIS_SENT'
-  ) {
-    const author = updatedThesis.authors[0]
-    const program = await Program.findByPk(updatedThesis.programId)
-    const studyTrack = await StudyTrack.findByPk(updatedThesis.studyTrackId)
-
-    const employeeTitlesPrimer = (
-      await getEmployeeTitles(
-        updatedThesis.graders.filter((g) => g.isPrimaryGrader)[0]?.user.username
-      )
-    )?.titles.filter((title) =>
-      titlesGraderGroup.includes(title.en.toLowerCase())
-    )[0] ?? {
-      fi: '',
-    }
-
-    const getSecondaryEmployeeTitle = async () => {
-      if (updatedThesis.graders.some((grader) => grader.user.isExternal)) {
-        return { fi: '' }
-      }
-
-      return (
-        (
-          await getEmployeeTitles(
-            updatedThesis.graders.filter((g) => !g.isPrimaryGrader)[0]?.user
-              .username
-          )
-        )?.titles.filter((title) =>
-          titlesGraderGroup.includes(title.en.toLowerCase())
-        )[0] ?? {
-          fi: '',
-        }
-      )
-    }
-
-    const employeeTitlesSecond = await getSecondaryEmployeeTitle()
-
-    const subject = 'Prethesis - Tutkielma valmiina Ethesiskseen'
-
-    const message = `
-    Seuraava tutkielma on valmiina siirrettäväksi Ethesikseen
-
-    ${author.firstName} ${author.lastName} (${author.studentNumber})
-    ${updatedThesis.topic}
-
-    ${program?.name?.fi || program?.name?.en} ${studyTrack ? `(${studyTrack.name?.fi || studyTrack.name?.en})` : ''}
-
-    Arvioijat:
-
-    ${updatedThesis.graders
-      .map(
-        (grader) =>
-          `${grader.isPrimaryGrader ? employeeTitlesPrimer.fi : employeeTitlesSecond.fi} ${grader.user.firstName} ${grader.user.lastName} (${grader.user.email}) ${grader.isPrimaryGrader ? 'ensisijainen' : ''}`
-      )
-      .join('\n    ')}
-
-    <a href='https://prethesis.helsinki.fi/ethesis'>https://prethesis.helsinki.fi/ethesis</a>
-  `
-
-    const targets = ['matti.luukkainen@helsinki.fi']
-
-    const ethesisAdmins = await EthesisAdmin.findAll({
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['email'],
-          required: true,
-          on: {
-            id: { [Op.col]: 'EthesisAdmin.user_id' },
-          },
-        },
-      ],
-    })
-
-    const ethesisAdminEmails = ethesisAdmins
-      .filter((admin) => (admin as any).user?.email)
-      .map((admin) => (admin as any).user.email)
-
-    targets.push(...ethesisAdminEmails)
-    await sendEmail(targets, message, subject)
-  } else if (
-    originalThesis.status !== 'ETHESIS' &&
-    updatedThesis.status === 'ETHESIS'
-  ) {
-    const options = (updatedThesis as any).program?.options
-    if (options?.allowStudentStartedProcess) {
-      const targets = authorEmails
-
-      const subject = 'Prethesis - Permission to submit to E-thesis'
-      const message = `
-    This is an automated message from Prethesis. \n\n
-
-    You now have permission to submit your thesis "${updatedThesis.topic}" to E-thesis.
-    Please submit your thesis directly to E-thesis. You can find the instructions here:
-    <a href='https://studies.helsinki.fi/instructions/article/e-thesis'>https://studies.helsinki.fi/instructions/article/e-thesis</a>
-  `
-      await sendEmail(targets, message, subject)
-    }
-  }
-
-  const options = (updatedThesis as any).program?.options
-  const versions = options?.milestones?.versions
-
-  if (
-    options?.useMilestones &&
-    originalThesis.milestone !== updatedThesis.milestone &&
-    updatedThesis.milestone ===
-      versions?.at(updatedThesis.milestoneVersion ?? -1)?.length
-  ) {
-    const targets = supervisorEmails
-
-    const subject = 'Prethesis - Last milestone reached'
-    const message = `
-    This is an automated message from Prethesis. \n\n
-
-    The user ${actionUser.firstName} ${actionUser.lastName} has marked the last milestone as done for the thesis "${updatedThesis.topic}".
-    Please go to Prethesis, mark the second grader, and give the student permission to send the thesis to E-thesis.
-  `
-    await sendEmail(targets, message, subject)
-  }
-}
-
 export const getEmployeeTitles = async (search: string): Promise<TitleData> => {
   if (inStaging || inTest || inE2EMode) {
     const employeeMockData = [
@@ -656,30 +499,6 @@ export const normalizeEmployeeTitlesPayload = (
   return mappedData.length > 0
     ? mappedData[0]
     : { username: search, titles: [] }
-}
-
-export const handleThesisCreationEmail = async (
-  newThesis: ThesisData,
-  actionUser: UserType
-) => {
-  if (newThesis.approvers?.length) {
-    const approverTargets = newThesis.approvers
-      .filter((approver) => approver.email)
-      .map((approver) => approver.email)
-
-    const targets = uniq([...approverTargets])
-
-    const subject = 'Prethesis - A new thesis for you to approve'
-    const message = `
-    This is an automated message from Prethesis. \n\n
-
-    A new thesis "${newThesis.topic}" was created by ${actionUser.firstName} ${actionUser.lastName}.
-    The author of the thesis is ${newThesis.authors[0].firstName} ${newThesis.authors[0].lastName}.
-    You were marked as an approver for this thesis.
-  `
-
-    await sendEmail(targets, message, subject)
-  }
 }
 
 export const handleStatusChangeEventLog = async (

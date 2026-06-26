@@ -18,11 +18,14 @@ import { getPaginatedTheses, createThesis } from '../services/thesisService'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import {
   handleGradersChangeEventLog,
-  handleStatusChangeEmail,
   handleStatusChangeEventLog,
   handleSupervisionsChangeEventLog,
-  handleThesisCreationEmail,
 } from '../services/thesisHelpers'
+
+import {
+  handleStatusChangeEmail,
+  handleThesisCreationEmail,
+} from '../services/thesisNotificationService'
 import {
   deleteThesisAttachments,
   handleAttachmentByLabel,

@@ -227,7 +227,7 @@ describe('ethesis admin router', () => {
             mockSendEmail.mockClear()
 
             // Import the handleStatusChangeEmail function
-            const { handleStatusChangeEmail } = await import('../services/thesisHelpers')
+            const { handleStatusChangeEmail } = await import('../services/thesisNotificationService')
 
             // Create test author user
             const authorUser = await User.create({
