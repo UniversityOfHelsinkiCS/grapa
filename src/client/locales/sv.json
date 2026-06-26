@@ -345,7 +345,7 @@
     }
   },
   "thesesPage": {
-    "approvalRequiredTooltip": "Denna avhandling har tilldelats dig. Ditt godkännande krävs!",
+    "approvalRequiredTooltip": "Denna avhandling kräver åtgärder från dig.",
     "primarySupervisorTooltip": "Du är huvudhandledare för denna avhandling",
     "noRows": "Inga rader"
   },

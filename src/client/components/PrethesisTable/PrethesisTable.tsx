@@ -48,7 +48,7 @@ import {
 import usePrograms from '../../hooks/usePrograms'
 import { PrethesisHelp } from '../PrethesisHelp/PrethesisHelp'
 import { useChangeThesisStatusMutation } from '../../hooks/useThesesMutation'
-import { canApprove } from '../../util/permissions'
+import { canApprove, canSetEthesisStudentStarted } from '../../util/permissions'
 import { THESIS_STATUSES } from '../../../config'
 import Popup from '../Common/Popup'
 
@@ -465,19 +465,9 @@ const PrethesisTable = ({
             </Tooltip>
           ) : null}
 
-          {(user &&
-            info.row.original.approvers.find(
-              (approver) =>
-                approver.id === user.id &&
-                info.row.original.status == 'PLANNING'
-            )) ||
-          ((info.row.original.supervisions.find(
-            (supervisor) => supervisor.user?.id === user.id
-          ) ||
-            info.row.original.seminarSupervisions?.find(
-              (supervisor) => supervisor.user?.id === user.id
-            )) &&
-            info.row.original.status == 'SUGGESTED') ? (
+          {user &&
+          (canApprove(info.row.original, user) ||
+            canSetEthesisStudentStarted(info.row.original, user)) ? (
             <Tooltip title={t('thesesPage:approvalRequiredTooltip')}>
               <IconButton>
                 <PriorityHigh

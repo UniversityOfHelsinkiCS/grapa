@@ -344,7 +344,7 @@
     }
   },
   "thesesPage": {
-    "approvalRequiredTooltip": "Tämä tutkielma on osoitettu sinulle. Hyväksyntäsi tarvitaan!",
+    "approvalRequiredTooltip": "Tämä tutkielma vaatii sinulta toimenpiteitä.",
     "primarySupervisorTooltip": "Olet tämän tutkielman pääohjaaja",
     "noRows": "Ei rivejä"
   },
