@@ -214,7 +214,9 @@ const ThesesPage = ({
         { user: currentUser, isPrimaryGrader: true, isExternal: false },
       ],
       topic: '',
-      status: 'PLANNING',
+      status: programOptions[0]?.options?.allowStudentStartedProcess
+        ? 'DRAFT'
+        : 'PLANNING',
       startDate: dayjs().format('YYYY-MM-DD'),
       targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
     })
