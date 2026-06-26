@@ -22,7 +22,7 @@ import {
   handleStatusChangeEventLog,
   handleSupervisionsChangeEventLog,
   handleThesisCreationEmail,
-} from './thesisHelpers'
+} from '../services/thesisHelpers'
 import {
   deleteThesisAttachments,
   handleAttachmentByLabel,

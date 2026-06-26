@@ -1,5 +1,5 @@
 import { ThesisData, SupervisionData, TitleData } from '../types'
-import { titlesGraderGroup } from '../routes/thesisHelpers'
+import { titlesGraderGroup } from '../services/thesisHelpers'
 import { getPrimaryStudyTrackId } from './studyTracks'
 export const getTotalPercentage = (supervisions: SupervisionData[]) =>
   supervisions.reduce((total, selection) => total + selection.percentage, 0)

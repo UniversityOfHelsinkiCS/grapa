@@ -4,7 +4,7 @@ import { Thesis, User } from '../db/models'
 import { mangleData } from './mangleData'
 import logger from '../util/logger'
 import { sequelize } from '../db/connection'
-import { handleStatusChangeEventLog } from '../routes/thesisHelpers'
+import { handleStatusChangeEventLog } from '../services/thesisHelpers'
 
 interface AttainmentData {
   id: string

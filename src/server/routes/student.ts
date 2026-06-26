@@ -27,7 +27,7 @@ import {
   handleStatusChangeEventLog,
   handleSupervisionsChangeEventLog,
   handleThesisCreationEmail,
-} from './thesisHelpers'
+} from '../services/thesisHelpers'
 
 import { cleanThesisUserData } from '../services/thesisService'
 import { getProgram, getPrograms } from '../services/programService'

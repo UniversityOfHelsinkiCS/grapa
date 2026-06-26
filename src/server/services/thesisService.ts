@@ -15,7 +15,7 @@ import {
   getGraderTitles,
   getSortByColumn,
   getAndCreateExtUsers,
-} from '../routes/thesisHelpers'
+} from './thesisHelpers'
 import { transformThesisData, transformSingleThesis } from '../util/helpers'
 import { User as UserType, ThesisData } from '../types'
 import CustomValidationError from '../errors/ValidationError'

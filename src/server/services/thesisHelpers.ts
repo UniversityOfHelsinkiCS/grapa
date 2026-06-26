@@ -1,6 +1,6 @@
 import { Includeable, literal, Op, Order, Transaction } from 'sequelize'
 import { uniq, uniqBy } from 'lodash-es'
-import { userFields } from './config'
+import { userFields } from '../routes/config'
 import {
   Grader,
   SeminarSupervision,
@@ -24,7 +24,7 @@ import {
   getWhereClauseForManyWordSearch,
   getWhereClauseForOneWordSearch,
   getWhereClauseForTwoWordSearch,
-} from './usersSearchHelpers'
+} from '../routes/usersSearchHelpers'
 import { Literal } from 'sequelize/types/utils'
 import { TitleData } from '../types'
 import { EMPLOYEE_TOKEN, GW_API_URL } from '../util/config'
