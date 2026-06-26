@@ -361,13 +361,18 @@ const PrethesisTable = ({
       : []),
     columnHelper.accessor('status', {
       size: 50,
-      cell: (info) => (
-        <Chip
-          label={t(StatusLocale[info.getValue()])}
-          variant="outlined"
-          sx={{}}
-        />
-      ),
+      cell: (info) => {
+        const status = info.getValue() as keyof typeof StatusLocale
+        const isEthesisStudentStarted =
+          status === 'ETHESIS' &&
+          info.row.original?.program?.options?.allowStudentStartedProcess
+
+        const translationKey = isEthesisStudentStarted
+          ? 'thesisStages:ethesis_studentstarted'
+          : StatusLocale[status]
+
+        return <Chip label={t(translationKey)} variant="outlined" sx={{}} />
+      },
       meta: {
         getCellContext(context) {
           const status = context.row.original.status
