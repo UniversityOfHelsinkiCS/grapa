@@ -143,6 +143,7 @@ const PrethesisTable = ({
   }
 
   /* Sorting */
+
   const [sortedField, setSortedField] = React.useState(
     !isStudentView && filterViews && activeFilterView
       ? filterViews[activeFilterView].sortingModel[0]?.field || null
@@ -454,7 +455,7 @@ const PrethesisTable = ({
     ).some((row) => row.waysOfWorkingValidUntil)
       ? [
           columnHelper.accessor('waysOfWorkingValidUntil', {
-            id: 'validUntil',
+            id: 'waysOfWorkingValidUntil',
             size: 30,
             cell: (info) => (
               <Typography variant="small">
@@ -692,7 +693,6 @@ const PrethesisTable = ({
                         'supervisor',
                         'supervisionPercentage',
                         'select',
-                        'validUntil',
                       ].includes(header.id) &&
                         !isStudentView && (
                           <IconButton

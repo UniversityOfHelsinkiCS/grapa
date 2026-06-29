@@ -595,7 +595,13 @@ export const getGraderTitles = async (thesis: ThesisData | Thesis) => {
 export const getSortByColumn = (
   sortBy: string,
   language: string
-): 'status' | 'topic' | Literal | 'startDate' | 'targetDate' => {
+):
+  | 'status'
+  | 'topic'
+  | Literal
+  | 'startDate'
+  | 'targetDate'
+  | 'waysOfWorkingValidUntil' => {
   switch (sortBy) {
     case 'status':
       return 'status'
@@ -621,6 +627,8 @@ export const getSortByColumn = (
       return 'startDate'
     case 'targetDate':
       return 'targetDate'
+    case 'waysOfWorkingValidUntil':
+      return 'waysOfWorkingValidUntil'
     default:
       return undefined
   }
