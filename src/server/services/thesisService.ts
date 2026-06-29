@@ -24,7 +24,6 @@ import CustomAuthorizationError from '../errors/AuthorizationError'
 import CustomNotFoundError from '../errors/NotFoundError'
 
 import { cleanUserProperties } from './studentService'
-import { VALID_THESIS_STATUSES } from '../../config'
 
 export const cleanThesisUserData = (thesis: any) => {
   thesis.authors = thesis.authors.map((user: any) => cleanUserProperties(user))
@@ -296,21 +295,13 @@ export const fetchThesisById = async (
   return thesis
 }
 
-// Statuses that mean a thesis is no longer active
-const INACTIVE_STATUSES: Array<(typeof VALID_THESIS_STATUSES)[number]> = [
-  'COMPLETED',
-  'CANCELLED',
-  'ETHESIS',
-  'ETHESIS_SENT',
-]
-
 export const findThesesByExpirationDates = async (targetDates: Date[]) => {
   const includes = buildThesisIncludes()
   const dateStrings = targetDates.map((d) => d.toISOString().slice(0, 10))
   return Thesis.findAll({
     where: {
       waysOfWorkingValidUntil: { [Op.in]: dateStrings },
-      status: { [Op.notIn]: INACTIVE_STATUSES },
+      status: 'IN_PROGRESS',
     },
     include: includes,
   })
