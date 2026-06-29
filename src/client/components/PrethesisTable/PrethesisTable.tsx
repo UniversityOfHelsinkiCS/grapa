@@ -470,6 +470,24 @@ const PrethesisTable = ({
               </Tooltip>
             ),
             enableResizing: true,
+            meta: {
+              getCellContext: (context) => {
+                const validUntil = context.row.original.waysOfWorkingValidUntil
+                const status = context.row.original.status
+                if (!validUntil || status !== 'IN_PROGRESS') return {}
+                const daysUntil = dayjs(validUntil).diff(dayjs(), 'day')
+                return {
+                  sx: {
+                    backgroundColor:
+                      daysUntil < 0
+                        ? '#ffc8c8' // past due — red
+                        : daysUntil <= 60
+                          ? '#fff6c8' // within 2 months — yellow
+                          : '',
+                  },
+                }
+              },
+            },
           }),
         ]
       : []),
