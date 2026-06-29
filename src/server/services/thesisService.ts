@@ -1,4 +1,4 @@
-import { type Transaction } from 'sequelize'
+import { type Transaction, Op } from 'sequelize'
 import {
   DepartmentAdmin,
   Grader,
@@ -293,6 +293,21 @@ export const fetchThesisById = async (
   const thesis = theses.find((t) => t.id === id)
 
   return thesis
+}
+
+// Statuses that mean a thesis is no longer active
+const INACTIVE_STATUSES = ['COMPLETED', 'CANCELLED', 'ETHESIS_SENT']
+
+export const findThesesByExpirationDates = async (targetDates: Date[]) => {
+  const includes = buildThesisIncludes()
+  const dateStrings = targetDates.map((d) => d.toISOString().slice(0, 10))
+  return Thesis.findAll({
+    where: {
+      waysOfWorkingValidUntil: { [Op.in]: dateStrings },
+      status: { [Op.notIn]: INACTIVE_STATUSES },
+    },
+    include: includes,
+  })
 }
 
 export const getSingleThesis = async (

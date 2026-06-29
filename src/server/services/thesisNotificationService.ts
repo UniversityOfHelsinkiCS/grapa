@@ -10,7 +10,10 @@ import {
   ethesisPermissionEmailTemplate,
   lastMilestoneReachedEmailTemplate,
   newThesisToApproveEmailTemplate,
+  waysOfWorkingExpiringEmailTemplate,
+  waysOfWorkingExpiredEmailTemplate,
 } from '../templates/thesisEmail'
+import { findThesesByExpirationDates } from './thesisService'
 
 export const handleStatusChangeEmail = async (
   originalThesis: Thesis,
@@ -159,6 +162,57 @@ export const handleThesisCreationEmail = async (
       actionUser
     )
 
+    await sendEmail(targets, message, subject)
+  }
+}
+
+export const sendScheduledEmails = async () => {
+  const today = new Date()
+
+  const twoMonthsFromNow = new Date(today)
+  twoMonthsFromNow.setMonth(twoMonthsFromNow.getMonth() + 2)
+
+  const [thesesExpiringToday, thesesExpiringInTwoMonths] = await Promise.all([
+    findThesesByExpirationDates([today]),
+    findThesesByExpirationDates([twoMonthsFromNow]),
+  ])
+
+  const collectEmails = (thesis: any): string[] => {
+    const emails: string[] = []
+
+    // Authors (students)
+    for (const author of thesis.authors ?? []) {
+      if (author.email) emails.push(author.email)
+    }
+    // Supervisors
+    for (const s of thesis.supervisions ?? []) {
+      if (s.user?.email && !s.user.isExternal) emails.push(s.user.email)
+    }
+    // Graders
+    for (const g of thesis.graders ?? []) {
+      if (g.user?.email && !g.user.isExternal) emails.push(g.user.email)
+    }
+    // Seminar supervisors
+    for (const ss of thesis.seminarSupervisions ?? []) {
+      if (ss.user?.email && !ss.user.isExternal) emails.push(ss.user.email)
+    }
+
+    return uniq(emails)
+  }
+
+  for (const thesis of thesesExpiringToday) {
+    const targets = collectEmails(thesis)
+    if (!targets.length) continue
+    const { subject, message } = waysOfWorkingExpiredEmailTemplate(thesis.topic)
+    await sendEmail(targets, message, subject)
+  }
+
+  for (const thesis of thesesExpiringInTwoMonths) {
+    const targets = collectEmails(thesis)
+    if (!targets.length) continue
+    const { subject, message } = waysOfWorkingExpiringEmailTemplate(
+      thesis.topic
+    )
     await sendEmail(targets, message, subject)
   }
 }

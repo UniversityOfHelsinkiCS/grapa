@@ -148,3 +148,49 @@ Du markerades som godkännare för denna avhandling.
   `,
   }
 }
+
+export const waysOfWorkingExpiringEmailTemplate = (
+  topic: string
+): TemplateOutput => ({
+  subject:
+    'Prethesis - Ohjaussopimus vanhenee pian / Supervision agreement expiring soon / Handledningsavtalet löper ut snart',
+  message: `
+Tämä on automaattinen viesti Prethesiksestä.
+
+Ohjaussopimus tutkielmalle "${topic}" vanhenee kahden kuukauden kuluttua.
+Ole hyvä ja uusi sopimus tarvittaessa.
+---
+This is an automated message from Prethesis.
+
+The supervision agreement for the thesis "${topic}" will expire in two months.
+Please renew the agreement if necessary.
+---
+Detta är ett automatiskt meddelande från Prethesis.
+
+Handledningsavtalet för avhandlingen "${topic}" löper ut om två månader.
+Vänligen förnya avtalet vid behov.
+  `,
+})
+
+export const waysOfWorkingExpiredEmailTemplate = (
+  topic: string
+): TemplateOutput => ({
+  subject:
+    'Prethesis - Ohjaussopimus vanhenee tänään / Supervision agreement expires today / Handledningsavtalet löper ut idag',
+  message: `
+Tämä on automaattinen viesti Prethesiksestä.
+
+Ohjaussopimus tutkielmalle "${topic}" vanhenee tänään.
+Ole hyvä ja uusi sopimus tarvittaessa.
+---
+This is an automated message from Prethesis.
+
+The supervision agreement for the thesis "${topic}" expires today.
+Please renew the agreement if necessary.
+---
+Detta är ett automatiskt meddelande från Prethesis.
+
+Handledningsavtalet för avhandlingen "${topic}" löper ut idag.
+Vänligen förnya avtalet vid behov.
+  `,
+})
