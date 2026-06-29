@@ -2,7 +2,7 @@ import { NextFunction } from 'express'
 import { ServerPostRequest, ServerPutRequest, ThesisData } from '@backend/types'
 import { uniqBy } from 'lodash-es'
 import CustomValidationError from '../errors/ValidationError'
-import { getTotalPercentage } from '../util/helpers'
+import { getTotalPercentage } from '../services/thesisHelpers'
 import { Program } from '../db/models'
 import { VALID_THESIS_STATUSES } from '../../config'
 

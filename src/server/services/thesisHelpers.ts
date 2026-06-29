@@ -16,51 +16,16 @@ import {
   Approver,
   StudyTrackManagement,
 } from '../db/models'
-import { getSecondaryStudyTrackIds } from '../util/studyTracks'
-import { ThesisData, User as UserType } from '../types'
-
 import {
-  getWhereClauseForManyWordSearch,
-  getWhereClauseForOneWordSearch,
-  getWhereClauseForTwoWordSearch,
-} from '../routes/usersSearchHelpers'
+  getSecondaryStudyTrackIds,
+  getPrimaryStudyTrackId,
+} from '../util/studyTracks'
+import { ThesisData, User as UserType, SupervisionData } from '../types'
+
 import { Literal } from 'sequelize/types/utils'
 import { TitleData } from '../types'
 import { EMPLOYEE_TOKEN, GW_API_URL } from '../util/config'
 import { inStaging, inTest, inE2EMode } from '../../config'
-
-const getAuthorsWhereClause = (authorsPartial: string) => {
-  const trimmedAuthorsPartial = authorsPartial.trim()
-  const searchedWords = trimmedAuthorsPartial.split(' ')
-  if (searchedWords.length === 2) {
-    return getWhereClauseForTwoWordSearch(trimmedAuthorsPartial)
-  } else if (searchedWords.length > 2) {
-    return getWhereClauseForManyWordSearch(trimmedAuthorsPartial)
-  } else {
-    return getWhereClauseForOneWordSearch(trimmedAuthorsPartial)
-  }
-}
-
-const getProgramWhereClause = (
-  programNamePartial: string,
-  language: string | undefined
-) => {
-  const acualLanguage = language ?? 'en'
-  // Validate that the language is one of the allowed keys
-  const allowedLanguages = ['en', 'fi', 'sv']
-  if (!allowedLanguages.includes(acualLanguage)) {
-    throw new Error('Invalid language key')
-  }
-  return {
-    [Op.or]: [
-      {
-        [`name.${acualLanguage}`]: {
-          [Op.iLike]: `%${programNamePartial.trim()}%`,
-        },
-      },
-    ],
-  }
-}
 
 const getOrderLiteralBasedOnThesesApprovals = (currentUser: UserType) =>
   literal(`(
@@ -98,7 +63,7 @@ export const getOrdering = ({
   ]
 }
 
-interface FetchThesisProps {
+export interface ThesisFiltersOptions {
   thesisId?: string
   programId?: string
   studyTrackId?: string
@@ -114,71 +79,48 @@ interface FetchThesisProps {
   onlyAuthored?: boolean
   search?: string
 }
-export const getFindThesesOptions = async ({
-  thesisId,
-  programId,
-  studyTrackId,
-  departmentId,
-  programNamePartial,
-  topicPartial,
-  authorsPartial,
-  status,
-  language,
-  actionUser,
-  onlySupervised,
-  onlySeminarSupervised,
-  onlyAuthored,
-  search,
-}: FetchThesisProps) => {
-  const includes: Includeable[] = [
+
+export const buildThesisIncludes = (
+  programNamePartial?: string,
+  language?: string
+): Includeable[] => {
+  const actualLanguage = language ?? 'en'
+  const allowedLanguages = ['en', 'fi', 'sv']
+  if (!allowedLanguages.includes(actualLanguage)) {
+    throw new Error('Invalid language key')
+  }
+
+  const programWhere = programNamePartial
+    ? {
+        [`name.${actualLanguage}`]: {
+          [Op.iLike]: `%${programNamePartial.trim()}%`,
+        },
+      }
+    : undefined
+
+  return [
     {
       model: Supervision,
       as: 'supervisions',
       attributes: ['percentage', 'isPrimarySupervisor'],
       separate: true,
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: userFields,
-        },
-      ],
+      include: [{ model: User, as: 'user', attributes: userFields }],
     },
     {
       model: SeminarSupervision,
       as: 'seminarSupervisions',
       separate: true,
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: userFields,
-        },
-      ],
+      include: [{ model: User, as: 'user', attributes: userFields }],
     },
     {
       model: Grader,
       as: 'graders',
       attributes: ['isPrimaryGrader'],
       separate: true,
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: userFields,
-        },
-      ],
+      include: [{ model: User, as: 'user', attributes: userFields }],
     },
-    {
-      model: User,
-      as: 'authors',
-      attributes: userFields,
-    },
-    {
-      model: User,
-      as: 'approvers',
-      attributes: userFields,
-    },
+    { model: User, as: 'authors', attributes: userFields },
+    { model: User, as: 'approvers', attributes: userFields },
     {
       model: Attachment,
       as: 'researchPlan',
@@ -197,75 +139,155 @@ export const getFindThesesOptions = async ({
       model: Program,
       as: 'program',
       attributes: ['id', 'name', 'options'],
-      where: programNamePartial
-        ? getProgramWhereClause(programNamePartial, language)
-        : undefined,
+      where: programWhere,
       required: true,
     },
   ]
+}
 
-  const whereClause: Record<any, any> = thesisId ? { id: thesisId } : {}
+const getStudyTrackIds = async (studyTrackId: string): Promise<string[]> => {
+  const studyTrack = await StudyTrack.findByPk(studyTrackId, {
+    include: [{ model: Program, as: 'program' }],
+  })
+  if (!studyTrack) return [studyTrackId]
+  const options =
+    (studyTrack as any).Program?.options || (studyTrack as any).program?.options
+  const secondaryIds = getSecondaryStudyTrackIds(options, studyTrackId)
+  return [studyTrackId, ...secondaryIds]
+}
 
-  const andConditions: any[] = []
-
-  if (authorsPartial) {
-    const matchingUsers = await User.findAll({
-      attributes: ['id'],
-      where: getAuthorsWhereClause(authorsPartial),
-      raw: true,
-    })
-    const matchingUserIds = matchingUsers.map((u: any) => u.id)
-
-    const matchingAuthorsList = await Author.findAll({
-      attributes: ['thesisId'],
-      where: { userId: { [Op.in]: matchingUserIds } },
-      raw: true,
-    })
-    const matchingThesisIds = matchingAuthorsList.map((a: any) => a.thesisId)
-
-    if (whereClause.id) {
-      andConditions.push({
-        id: {
-          [Op.and]: [
-            typeof whereClause.id === 'string'
-              ? { [Op.eq]: whereClause.id }
-              : whereClause.id,
-            { [Op.in]: matchingThesisIds },
-          ],
-        },
-      })
-    } else {
-      whereClause.id = { [Op.in]: matchingThesisIds }
-    }
+const buildPermissionsConditions = async (
+  actionUser: UserType,
+  departmentId?: string,
+  onlySupervised?: boolean,
+  onlySeminarSupervised?: boolean,
+  onlyAuthored?: boolean
+) => {
+  // If departmentId is set, or user is admin, AND they don't explicitly filter by my role, no restriction needed here (department subquery added later)
+  if (
+    !onlySupervised &&
+    !onlySeminarSupervised &&
+    !onlyAuthored &&
+    (departmentId || actionUser.isAdmin || actionUser.ethesisAdmin)
+  ) {
+    return null
   }
 
-  if (programId) {
-    whereClause.programId = programId
+  if (onlySeminarSupervised) {
+    return literal(
+      `EXISTS (SELECT 1 FROM "${SeminarSupervision.tableName}" WHERE "${SeminarSupervision.tableName}"."thesis_id" = "Thesis"."id" AND "${SeminarSupervision.tableName}"."user_id" = '${actionUser.id}')`
+    )
   }
-  if (studyTrackId) {
-    const studyTrack = await StudyTrack.findByPk(studyTrackId, {
+  if (onlyAuthored) {
+    return literal(
+      `EXISTS (SELECT 1 FROM "${Author.tableName}" WHERE "${Author.tableName}"."thesis_id" = "Thesis"."id" AND "${Author.tableName}"."user_id" = '${actionUser.id}')`
+    )
+  }
+
+  // Otherwise, user is restricted to what they supervise, approve, or programs/study tracks they manage
+  const programManagement =
+    onlySupervised || onlySeminarSupervised || onlyAuthored
+      ? []
+      : await ProgramManagement.findAll({
+          attributes: ['programId'],
+          where: { userId: actionUser.id },
+        })
+
+  const programIds = programManagement.map((pm) => pm.programId)
+
+  const studyTrackManagement =
+    onlySupervised || onlySeminarSupervised || onlyAuthored
+      ? []
+      : await StudyTrackManagement.findAll({
+          attributes: ['studyTrackId'],
+          where: { userId: actionUser.id },
+        })
+
+  const studyTrackIds = studyTrackManagement.map((stm) => stm.studyTrackId)
+
+  const expandedStudyTrackIds = new Set<string>(studyTrackIds)
+  if (studyTrackIds.length > 0) {
+    const studyTracks = await StudyTrack.findAll({
+      where: { id: { [Op.in]: studyTrackIds } },
       include: [{ model: Program, as: 'program' }],
     })
-    const options =
-      (studyTrack as any)?.Program?.options ||
-      (studyTrack as any)?.program?.options
-    const secondaryIds = getSecondaryStudyTrackIds(options, studyTrackId)
-
-    if (secondaryIds.length > 0) {
-      whereClause.studyTrackId = { [Op.in]: [studyTrackId, ...secondaryIds] }
-    } else {
-      whereClause.studyTrackId = studyTrackId
+    for (const st of studyTracks) {
+      const options =
+        (st as any).Program?.options || (st as any).program?.options
+      getSecondaryStudyTrackIds(options, st.id).forEach((id) =>
+        expandedStudyTrackIds.add(id)
+      )
     }
   }
+
+  const orConditions: any[] = [
+    literal(
+      `EXISTS (SELECT 1 FROM "${Supervision.tableName}" WHERE "${Supervision.tableName}"."thesis_id" = "Thesis"."id" AND "${Supervision.tableName}"."user_id" = '${actionUser.id}')`
+    ),
+    literal(
+      `EXISTS (SELECT 1 FROM "${Approver.tableName}" WHERE "${Approver.tableName}"."thesis_id" = "Thesis"."id" AND "${Approver.tableName}"."user_id" = '${actionUser.id}')`
+    ),
+  ]
+
+  if (programIds.length > 0) {
+    orConditions.push({ programId: programIds })
+  }
+  if (expandedStudyTrackIds.size > 0) {
+    orConditions.push({ studyTrackId: Array.from(expandedStudyTrackIds) })
+  }
+
+  return {
+    [Op.or]: orConditions,
+  }
+}
+
+export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
+  const {
+    thesisId,
+    programId,
+    studyTrackId,
+    departmentId,
+    topicPartial,
+    authorsPartial,
+    status,
+    search,
+    actionUser,
+    onlySupervised,
+    onlySeminarSupervised,
+    onlyAuthored,
+  } = options
+
+  const whereClause: any = {}
+  const andConditions: any[] = []
+
+  // 1. Thesis ID
+  if (thesisId) {
+    whereClause.id = thesisId
+  }
+
+  // 2. Authors
+  if (authorsPartial) {
+    andConditions.push(
+      literal(
+        `EXISTS (SELECT 1 FROM "authors" INNER JOIN "users" ON "authors"."user_id" = "users"."id" WHERE "authors"."thesis_id" = "Thesis"."id" AND ("users"."first_name" || ' ' || "users"."last_name" ILIKE $authorSearch OR "users"."last_name" || ' ' || "users"."first_name" ILIKE $authorSearch OR "users"."username" ILIKE $authorSearch OR "users"."student_number" ILIKE $authorSearch OR "users"."email" ILIKE $authorSearch))`
+      )
+    )
+  }
+
+  // 3. Exact matches
+  if (programId) whereClause.programId = programId
+  if (status) whereClause.status = status
   if (topicPartial) {
-    whereClause.topic = {
-      [Op.iLike]: `%${topicPartial.trim()}%`,
-    }
-  }
-  if (status) {
-    whereClause.status = status
+    whereClause.topic = { [Op.iLike]: `%${topicPartial.trim()}%` }
   }
 
+  // 4. Study Track (with secondary expansion)
+  if (studyTrackId) {
+    const studyTrackIds = await getStudyTrackIds(studyTrackId)
+    whereClause.studyTrackId = { [Op.in]: studyTrackIds }
+  }
+
+  // 5. Department
   if (departmentId) {
     andConditions.push(
       literal(
@@ -274,76 +296,8 @@ export const getFindThesesOptions = async ({
     )
   }
 
-  if (
-    (!departmentId && !actionUser.isAdmin && !actionUser.ethesisAdmin) ||
-    onlySupervised ||
-    onlySeminarSupervised ||
-    onlyAuthored
-  ) {
-    const programManagement =
-      onlySupervised || onlySeminarSupervised || onlyAuthored
-        ? []
-        : await ProgramManagement.findAll({
-            attributes: ['programId'],
-            where: { userId: actionUser.id },
-          })
-
-    const programIds = programManagement.map((pm) => pm.programId)
-
-    const studyTrackManagement =
-      onlySupervised || onlySeminarSupervised || onlyAuthored
-        ? []
-        : await StudyTrackManagement.findAll({
-            attributes: ['studyTrackId'],
-            where: { userId: actionUser.id },
-          })
-
-    const studyTrackIds = studyTrackManagement.map((stm) => stm.studyTrackId)
-
-    const expandedStudyTrackIds = new Set<string>(studyTrackIds)
-    if (studyTrackIds.length > 0) {
-      const studyTracks = await StudyTrack.findAll({
-        where: { id: { [Op.in]: studyTrackIds } },
-        include: [{ model: Program, as: 'program' }],
-      })
-
-      for (const st of studyTracks) {
-        const options =
-          (st as any).Program?.options || (st as any).program?.options
-        const secondaryIds = getSecondaryStudyTrackIds(options, st.id)
-        secondaryIds.forEach((id) => expandedStudyTrackIds.add(id))
-      }
-    }
-
-    if (onlySeminarSupervised) {
-      andConditions.push(
-        literal(
-          `EXISTS (SELECT 1 FROM "${SeminarSupervision.tableName}" WHERE "${SeminarSupervision.tableName}"."thesis_id" = "Thesis"."id" AND "${SeminarSupervision.tableName}"."user_id" = '${actionUser.id}')`
-        )
-      )
-    } else if (onlyAuthored) {
-      andConditions.push(
-        literal(
-          `EXISTS (SELECT 1 FROM "${Author.tableName}" WHERE "${Author.tableName}"."thesis_id" = "Thesis"."id" AND "${Author.tableName}"."user_id" = '${actionUser.id}')`
-        )
-      )
-    } else {
-      whereClause[Op.or] = [
-        literal(
-          `EXISTS (SELECT 1 FROM "${Supervision.tableName}" WHERE "${Supervision.tableName}"."thesis_id" = "Thesis"."id" AND "${Supervision.tableName}"."user_id" = '${actionUser.id}')`
-        ),
-        literal(
-          `EXISTS (SELECT 1 FROM "${Approver.tableName}" WHERE "${Approver.tableName}"."thesis_id" = "Thesis"."id" AND "${Approver.tableName}"."user_id" = '${actionUser.id}')`
-        ),
-        programIds?.length ? { programId: programIds } : {},
-        expandedStudyTrackIds.size
-          ? { studyTrackId: Array.from(expandedStudyTrackIds) }
-          : {},
-      ]
-    }
-  }
-
-  if (search != undefined) {
+  // 6. Search
+  if (search) {
     andConditions.push(
       literal(
         `(EXISTS (SELECT 1 FROM theses WHERE theses.fts_index @@ to_tsquery('simple', $search) AND theses.id = "Thesis".id) OR EXISTS (SELECT 1 FROM authors INNER JOIN users ON authors.user_id = users.id WHERE authors.thesis_id = "Thesis".id AND users.fts_index @@ to_tsquery('simple', $search)))`
@@ -351,28 +305,23 @@ export const getFindThesesOptions = async ({
     )
   }
 
+  // 7. Permissions
+  const permissionCondition = await buildPermissionsConditions(
+    actionUser,
+    departmentId,
+    onlySupervised,
+    onlySeminarSupervised,
+    onlyAuthored
+  )
+  if (permissionCondition) {
+    andConditions.push(permissionCondition)
+  }
+
   if (andConditions.length > 0) {
     whereClause[Op.and] = andConditions
   }
 
-  return {
-    where: whereClause,
-    attributes: [
-      'id',
-      'topic',
-      'status',
-      'startDate',
-      'milestone',
-      'milestoneVersion',
-      'targetDate',
-      'ethesisDate',
-      'waysOfWorkingValidUntil',
-      'programId',
-      'studyTrackId',
-      'updatedAt',
-    ],
-    include: includes,
-  }
+  return whereClause
 }
 
 export const getAndCreateExtUsers = async (
@@ -676,3 +625,67 @@ export const getSortByColumn = (
       return undefined
   }
 }
+
+export const getTotalPercentage = (supervisions: SupervisionData[]) =>
+  supervisions.reduce((total, selection) => total + selection.percentage, 0)
+
+// Helper function to transform a single thesis data
+export const transformSingleThesis = (
+  thesis: ThesisData,
+  graderTitles: TitleData[]
+) => {
+  const mappedStudyTrackId =
+    getPrimaryStudyTrackId(
+      (thesis as any).program?.options || (thesis as any).Program?.options,
+      thesis.studyTrackId
+    ) || thesis.studyTrackId
+
+  return {
+    ...thesis,
+    studyTrackId: mappedStudyTrackId,
+    graders: thesis.graders
+      .map((grader) => ({
+        ...grader,
+        title: graderTitles
+          .filter((obj) => obj?.username === grader.user.username)[0]
+          ?.titles.filter((title) =>
+            titlesGraderGroup.includes(title.en.toLowerCase())
+          )[0] ?? {
+          fi: '',
+          en: '',
+          sv: '',
+        },
+        isExternal: grader.user.isExternal,
+      }))
+      .sort((a, b) => (a.isPrimaryGrader ? -1 : b.isPrimaryGrader ? 1 : 0)),
+    supervisions: thesis.supervisions
+      .map((supervision) => ({
+        ...supervision,
+        isExternal: supervision.user.isExternal,
+      }))
+      .sort((a, b) =>
+        a.isPrimarySupervisor
+          ? -1
+          : b.isPrimarySupervisor
+            ? 1
+            : a.isExternal
+              ? 1
+              : -1
+      ),
+    seminarSupervisions: (thesis.seminarSupervisions ?? [])
+      .map((seminarSupervision) => ({
+        ...seminarSupervision,
+        isExternal: seminarSupervision.user.isExternal,
+      }))
+      .sort((a, b) => (a.isExternal ? 1 : b.isExternal ? -1 : 0)),
+  }
+}
+
+// Transforms the raw query data to suitably formatted data for the frontend
+export const transformThesisData = (
+  thesisData: ThesisData[],
+  graderTitles: TitleData[][] // Array of title arrays
+) =>
+  thesisData.map((thesis, idx) =>
+    transformSingleThesis(thesis, graderTitles[idx])
+  )

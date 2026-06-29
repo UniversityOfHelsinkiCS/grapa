@@ -10,13 +10,14 @@ import {
   User,
 } from '../db/models'
 import {
-  getFindThesesOptions,
+  buildThesisIncludes,
+  buildThesisWhereClause,
   getOrdering,
   getGraderTitles,
   getSortByColumn,
   getAndCreateExtUsers,
 } from './thesisHelpers'
-import { transformThesisData, transformSingleThesis } from '../util/helpers'
+import { transformThesisData, transformSingleThesis } from './thesisHelpers'
 import { User as UserType, ThesisData } from '../types'
 import CustomValidationError from '../errors/ValidationError'
 import CustomAuthorizationError from '../errors/AuthorizationError'
@@ -128,7 +129,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
       .join(' & ')
   }
 
-  const options = await getFindThesesOptions({
+  const where = await buildThesisWhereClause({
     programId,
     studyTrackId,
     departmentId,
@@ -144,8 +145,25 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     search: formattedSearch || undefined,
   })
 
+  const includes = buildThesisIncludes(programNamePartial, language)
+
   const { count, rows } = await Thesis.findAndCountAll({
-    ...options,
+    where,
+    include: includes,
+    attributes: [
+      'id',
+      'topic',
+      'status',
+      'startDate',
+      'milestone',
+      'milestoneVersion',
+      'targetDate',
+      'ethesisDate',
+      'waysOfWorkingValidUntil',
+      'programId',
+      'studyTrackId',
+      'updatedAt',
+    ],
     offset: Number(offset),
     limit: Number(limit),
     order: getOrdering({
@@ -154,7 +172,11 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
       orderDirection: sortOrder,
     }),
     distinct: true,
-    bind: { language, search: formattedSearch },
+    bind: {
+      language,
+      search: formattedSearch,
+      authorSearch: authorsPartial ? `%${authorsPartial.trim()}%` : null,
+    },
   })
 
   const thesesRows = rows.map((t) => t.toJSON()) as ThesisData[]
@@ -259,17 +281,15 @@ export const fetchThesisById = async (
   transaction?: Transaction,
   onlyAuthored?: boolean
 ) => {
-  const options = await getFindThesesOptions({
+  const where = await buildThesisWhereClause({
     thesisId: id,
     actionUser: user,
     onlyAuthored,
   })
-  // We need to use findAll here because we need to include
-  // Supervision model twice (see the explanation comment
-  // inside getFindThesesOptions).
-  // For some reason. findOne does not support that
 
-  const theses = await Thesis.findAll({ ...options, transaction })
+  const includes = buildThesisIncludes()
+
+  const theses = await Thesis.findAll({ where, include: includes, transaction })
   const thesis = theses.find((t) => t.id === id)
 
   return thesis
