@@ -78,7 +78,13 @@ const GraderSelect: React.FC<{
         sx={{ whiteSpace: 'pre-line' }}
       >
         <AlertTitle>{t('thesisForm:graderInstructions:title')}</AlertTitle>
-        {t('thesisForm:graderInstructions:content')}
+        {t('thesisForm:graderInstructions:content1')}
+        {maxGraders > 1 && (
+          <>
+            {'\n\n'}
+            {t('thesisForm:graderInstructions:content2')}
+          </>
+        )}
       </Alert>
 
       {generalGraderErrors.length > 0 && (

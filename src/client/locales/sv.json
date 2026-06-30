@@ -273,7 +273,8 @@
     "graders": "Bedömare",
     "graderInstructions": {
       "title": "Instruktioner för att fylla i bedömare",
-      "content": "Bedömare 1 måste vara en professor, biträdande professor, forskningsdirektör, äldre universitetslektor eller universitetslektor vid Helsingfors universitet.\n\n Bedömare 2 måste vara doktor. Bedömare 2 kan vara en person utanför Helsingfors universitet.",
+      "content1": "Bedömare 1 måste vara en professor, biträdande professor, forskningsdirektör, äldre universitetslektor eller universitetslektor vid Helsingfors universitet.",
+      "content2": "Bedömare 2 måste vara doktor. Bedömare 2 kan vara en person utanför Helsingfors universitet.",
       "primaryGrader": "Professor eller annan lämplig",
       "secondaryGrader": "Doktor"
     },
