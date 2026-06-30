@@ -180,6 +180,13 @@
       "enableConfirm": "Oletko varma, että haluat poistaa opintosuunnat käytöstä?",
       "disableConfirm": "Oletko varma, että haluat ottaa opintosuunnat käyttöön?"
     },
+    "useIdleState": {
+      "toggle": "Ota lepotilan seuranta käyttöön",
+      "tooltip": "Seuraa, onko tutkielma ollut epäaktiivinen puoli vuotta (kandidaatti) tai vuoden (maisteri), ja merkitsee sen lepotilaan.",
+      "confirmTitle": "Vahvista lepotilan seurannan asetus",
+      "enableConfirm": "Oletko varma, että haluat ottaa lepotilan seurannan käyttöön?",
+      "disableConfirm": "Oletko varma, että haluat poistaa lepotilan seurannan käytöstä?"
+    },
     "targetDates": {
       "fieldTitle": "Tavoitepäivä",
       "title": "Tavoitepäivät",
@@ -314,6 +321,7 @@
     "draft": "Luonnos",
     "suggested": "Ehdotus",
     "planned": "Suunniteltu",
+    "idle": "Lepotilassa",
     "inProgress": "Käynnissä",
     "completed": "Valmis",
     "cancelled": "Keskeytetty",

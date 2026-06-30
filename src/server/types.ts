@@ -104,6 +104,7 @@ export interface ThesisData {
   waysOfWorking?: FileData | File
   waysOfWorkingValidUntil?: string | null
   ethesisDate?: string
+  isIdle?: boolean
 }
 
 export interface ThesisStatistics {

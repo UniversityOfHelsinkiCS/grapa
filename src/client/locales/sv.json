@@ -182,6 +182,13 @@
       "enableConfirm": "Är du säker på att du vill inaktivera studieinriktningar?",
       "disableConfirm": "Är du säker på att du vill aktivera studieinriktningar?"
     },
+    "useIdleState": {
+      "toggle": "Aktivera vilolägesuppföljning",
+      "tooltip": "Följer upp om en avhandling har varit inaktiv i ett halvår (kandidat) eller ett år (magister) och markerar den som vilande.",
+      "confirmTitle": "Bekräfta inställning för vilolägesuppföljning",
+      "enableConfirm": "Är du säker på att du vill aktivera vilolägesuppföljning?",
+      "disableConfirm": "Är du säker på att du vill inaktivera vilolägesuppföljning?"
+    },
     "targetDates": {
       "fieldTitle": "Måldatum",
       "title": "Måldatum",
@@ -315,6 +322,7 @@
     "draft": "Utkast",
     "suggested": "Förslag",
     "planned": "Planerad",
+    "idle": "Vilande",
     "inProgress": "Pågår",
     "completed": "Färdig",
     "cancelled": "Avbruten",

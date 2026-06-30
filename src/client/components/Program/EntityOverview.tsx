@@ -628,6 +628,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     hideSendToEthesis: 'boolean',
     useMilestones: 'boolean',
     disableStudyTracks: 'boolean',
+    useIdleState: 'boolean',
   }
 
   const featureFlagUI = Object.keys(options).map((feature) => {

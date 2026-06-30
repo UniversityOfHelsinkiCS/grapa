@@ -164,6 +164,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
       'programId',
       'studyTrackId',
       'updatedAt',
+      'isIdle',
     ],
     offset: Number(offset),
     limit: Number(limit),

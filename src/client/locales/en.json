@@ -182,6 +182,13 @@
       "enableConfirm": "Are you sure you want to disable study tracks?",
       "disableConfirm": "Are you sure you want to enable study tracks?"
     },
+    "useIdleState": {
+      "toggle": "Enable idle state tracking",
+      "tooltip": "Tracks if a thesis has been inactive for half a year (Bachelor's) or a year (Master's) and marks it as idle.",
+      "confirmTitle": "Confirm idle state tracking settings",
+      "enableConfirm": "Are you sure you want to enable idle state tracking?",
+      "disableConfirm": "Are you sure you want to disable idle state tracking?"
+    },
     "targetDates": {
       "fieldTitle": "Target date",
       "title": "Target dates",
@@ -315,6 +322,7 @@
     "draft": "Draft",
     "suggested": "Suggested",
     "planned": "Planned",
+    "idle": "Idle",
     "inProgress": "In progress",
     "completed": "Completed",
     "cancelled": "Cancelled",

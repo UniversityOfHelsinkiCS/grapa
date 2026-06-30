@@ -643,13 +643,15 @@ export const transformSingleThesis = (
   graderTitles: TitleData[]
 ) => {
   const mappedStudyTrackId =
-    getPrimaryStudyTrackId(
-      (thesis as any).program?.options || (thesis as any).Program?.options,
-      thesis.studyTrackId
-    ) || thesis.studyTrackId
+    getPrimaryStudyTrackId(thesis.program?.options, thesis.studyTrackId) ||
+    thesis.studyTrackId
+
+  const programOptions = thesis.program?.options || {}
+  const useIdleState = programOptions.useIdleState === true
 
   return {
     ...thesis,
+    isIdle: useIdleState ? thesis.isIdle : false,
     studyTrackId: mappedStudyTrackId,
     graders: thesis.graders
       .map((grader) => ({
