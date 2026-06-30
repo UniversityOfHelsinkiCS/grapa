@@ -201,9 +201,9 @@
       "enableConfirm": "Haluatko vahvistaa muutoksesis tavoitepäiviin?",
       "description": "Asetuksella koulutusohjelmassa voidaan määritellä tutkielmalomakkeeseen oletusvaihtoehtoja tavoitepäivälle. Tämä ei estä käyttäjiä asettamasta muuta päivämäärää."
     },
-    "numberOfGradersLabel": "Tarkastajien enimmäismäärä",
-    "numberOfGradersConfirmTitle": "Vahvista tarkastajien määrän asetus",
-    "numberOfGradersConfirmContent": "Haluatko varmasti muuttaa tarkastajien enimmäismäärän arvoon {{count}}?",
+    "numberOfGradersLabel": "Arvioijien enimmäismäärä",
+    "numberOfGradersConfirmTitle": "Vahvista arvioijien määrän asetus",
+    "numberOfGradersConfirmContent": "Haluatko varmasti muuttaa arvioijien enimmäismäärän arvoon {{count}}?",
     "other": "Muut",
     "features": "Ominaisuudet",
     "combinedStudyTracks": {
