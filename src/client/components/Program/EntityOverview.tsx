@@ -713,6 +713,8 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
               value={draftNumberOfGraders}
               onChange={(e) => setDraftNumberOfGraders(Number(e.target.value))}
             >
+              {(program?.options?.isBachelorProgram ||
+                draftNumberOfGraders === 1) && <MenuItem value={1}>1</MenuItem>}
               <MenuItem value={2}>2</MenuItem>
               <MenuItem value={3}>3</MenuItem>
             </Select>

@@ -455,10 +455,11 @@ const ViewThesisFooter = (
   const [ethesisTargetStatus, setEthesisTargetStatus] =
     useState<ThesisStatus | null>(null)
 
+  const isBachelor = thesis?.program?.options?.isBachelorProgram === true
   const ethesisReady =
     currentUser &&
     thesis &&
-    thesis.graders.length === 2 &&
+    (isBachelor ? thesis.graders.length >= 1 : thesis.graders.length >= 2) &&
     thesis.status === THESIS_STATUSES.IN_PROGRESS
 
   return (
