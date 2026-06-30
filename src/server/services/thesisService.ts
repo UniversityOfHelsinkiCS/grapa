@@ -8,6 +8,7 @@ import {
   Author,
   Approver,
   User,
+  Program,
 } from '../db/models'
 import {
   buildThesisIncludes,
@@ -315,22 +316,47 @@ export const checkIdleTheses = async () => {
     const oneYearAgo = new Date()
     oneYearAgo.setDate(oneYearAgo.getDate() - 365)
 
+    const halfYearAgo = new Date()
+    halfYearAgo.setDate(halfYearAgo.getDate() - 180)
+
+    const programs = await Program.findAll()
+    const bachelorProgramIds = programs
+      .filter((p) => p.options?.isBachelorProgram === true)
+      .map((p) => p.id)
+
+    const orConditions: any[] = []
+
+    if (bachelorProgramIds.length > 0) {
+      orConditions.push(
+        {
+          programId: { [Op.in]: bachelorProgramIds },
+          milestoneOrStatusUpdatedAt: { [Op.lt]: halfYearAgo },
+        },
+        {
+          programId: { [Op.notIn]: bachelorProgramIds },
+          milestoneOrStatusUpdatedAt: { [Op.lt]: oneYearAgo },
+        }
+      )
+    } else {
+      orConditions.push({
+        milestoneOrStatusUpdatedAt: { [Op.lt]: oneYearAgo },
+      })
+    }
+
     const [updatedCount] = await Thesis.update(
       { isIdle: true },
       {
         where: {
           isIdle: false,
-          milestoneOrStatusUpdatedAt: {
-            [Op.lt]: oneYearAgo,
-          },
           status: 'IN_PROGRESS',
+          [Op.or]: orConditions,
         },
       }
     )
 
     if (updatedCount > 0) {
       logger.info(
-        `Marked ${updatedCount} theses as idle (no activity for 365 days)`
+        `Marked ${updatedCount} theses as idle (no activity for 180/365 days)`
       )
     }
   } catch (err) {
