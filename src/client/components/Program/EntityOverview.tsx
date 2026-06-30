@@ -629,6 +629,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     useMilestones: 'boolean',
     disableStudyTracks: 'boolean',
     useIdleState: 'boolean',
+    isBachelorProgram: 'boolean',
   }
 
   const featureFlagUI = Object.keys(options).map((feature) => {

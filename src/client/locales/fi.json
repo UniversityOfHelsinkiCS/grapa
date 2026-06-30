@@ -187,6 +187,13 @@
       "enableConfirm": "Oletko varma, että haluat ottaa lepotilan seurannan käyttöön?",
       "disableConfirm": "Oletko varma, että haluat poistaa lepotilan seurannan käytöstä?"
     },
+    "isBachelorProgram": {
+      "toggle": "On kandiohjelma",
+      "tooltip": "Aseta tämä kandidaattiohjelmaksi.",
+      "confirmTitle": "Vahvista ohjelman tason asetus",
+      "enableConfirm": "Oletko varma, että haluat asettaa tämän kandiohjelmaksi?",
+      "disableConfirm": "Oletko varma, että haluat poistaa kandiohjelma-asetuksen?"
+    },
     "targetDates": {
       "fieldTitle": "Tavoitepäivä",
       "title": "Tavoitepäivät",

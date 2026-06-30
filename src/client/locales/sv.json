@@ -189,6 +189,13 @@
       "enableConfirm": "Är du säker på att du vill aktivera vilolägesuppföljning?",
       "disableConfirm": "Är du säker på att du vill inaktivera vilolägesuppföljning?"
     },
+    "isBachelorProgram": {
+      "toggle": "Är kandidatprogram",
+      "tooltip": "Ställ in om detta program är ett kandidatprogram.",
+      "confirmTitle": "Bekräfta inställning för programnivå",
+      "enableConfirm": "Är du säker på att du vill ställa in detta som ett kandidatprogram?",
+      "disableConfirm": "Är du säker på att du vill ta bort inställningen för kandidatprogram?"
+    },
     "targetDates": {
       "fieldTitle": "Måldatum",
       "title": "Måldatum",

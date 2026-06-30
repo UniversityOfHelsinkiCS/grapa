@@ -189,6 +189,13 @@
       "enableConfirm": "Are you sure you want to enable idle state tracking?",
       "disableConfirm": "Are you sure you want to disable idle state tracking?"
     },
+    "isBachelorProgram": {
+      "toggle": "Is Bachelor's Programme",
+      "tooltip": "Set if this programme is a Bachelor's level programme.",
+      "confirmTitle": "Confirm programme level setting",
+      "enableConfirm": "Are you sure you want to set this as a Bachelor's programme?",
+      "disableConfirm": "Are you sure you want to remove the Bachelor's programme setting?"
+    },
     "targetDates": {
       "fieldTitle": "Target date",
       "title": "Target dates",
