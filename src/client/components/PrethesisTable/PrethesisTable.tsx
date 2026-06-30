@@ -44,6 +44,7 @@ import {
   ArrowDownward,
   ArrowUpward,
   Sort,
+  Bedtime,
 } from '@mui/icons-material'
 import usePrograms from '../../hooks/usePrograms'
 import { PrethesisHelp } from '../PrethesisHelp/PrethesisHelp'
@@ -372,7 +373,11 @@ const PrethesisTable = ({
           ? 'thesisStages:ethesis_studentstarted'
           : StatusLocale[status]
 
-        return <Chip label={t(translationKey)} variant="outlined" sx={{}} />
+        const labelText = info.row.original?.isIdle
+          ? `${t(translationKey)} (${t('thesisStages:idle')})`
+          : t(translationKey)
+
+        return <Chip label={labelText} variant="outlined" sx={{}} />
       },
       meta: {
         getCellContext(context) {
@@ -523,6 +528,18 @@ const PrethesisTable = ({
                     color: 'primary.main',
                   }}
                 ></PriorityHigh>
+              </IconButton>
+            </Tooltip>
+          ) : null}
+
+          {info.row.original?.isIdle ? (
+            <Tooltip title={t('thesisStages:idle')}>
+              <IconButton>
+                <Bedtime
+                  sx={{
+                    color: 'primary.main',
+                  }}
+                ></Bedtime>
               </IconButton>
             </Tooltip>
           ) : null}
@@ -839,23 +856,35 @@ const PrethesisTable = ({
                     },
                   }}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      {...(cell.getContext().cell.column.columnDef.meta && {
-                        ...cell
-                          .getContext()
-                          .cell.column.columnDef.meta.getCellContext(
-                            cell.getContext()
-                          ),
-                      })}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    const isTextColumn = ![
+                      'select',
+                      'supervisions',
+                      'status',
+                    ].includes(cell.column.id)
+                    const metaProps: any = cell.column.columnDef.meta
+                      ? cell.column.columnDef.meta.getCellContext(
+                          cell.getContext()
+                        )
+                      : {}
+
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        {...metaProps}
+                        sx={{
+                          ...(metaProps?.sx || {}),
+                          opacity:
+                            row.original.isIdle && isTextColumn ? 0.5 : 1,
+                        }}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    )
+                  })}
                 </TableRow>
               ))
             ) : (
