@@ -41,6 +41,10 @@ class Thesis extends Model<
 
   declare waysOfWorkingValidUntil: string | null | undefined
 
+  declare milestoneOrStatusUpdatedAt: Date | string | null | undefined
+
+  declare isIdle: boolean
+
   declare authors: NonAttribute<User[]>
 
   declare graders: NonAttribute<Grader[]>
@@ -115,6 +119,15 @@ Thesis.init(
     waysOfWorkingValidUntil: {
       type: DataTypes.DATEONLY,
       allowNull: true,
+    },
+    milestoneOrStatusUpdatedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    isIdle: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {

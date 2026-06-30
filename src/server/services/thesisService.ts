@@ -24,6 +24,7 @@ import CustomAuthorizationError from '../errors/AuthorizationError'
 import CustomNotFoundError from '../errors/NotFoundError'
 
 import { cleanUserProperties } from './studentService'
+import logger from '../util/logger'
 
 export const cleanThesisUserData = (thesis: any) => {
   thesis.authors = thesis.authors.map((user: any) => cleanUserProperties(user))
@@ -305,6 +306,35 @@ export const findThesesByExpirationDates = async (targetDates: Date[]) => {
     },
     include: includes,
   })
+}
+
+export const checkIdleTheses = async () => {
+  try {
+    logger.info('Running idle theses check')
+    const oneYearAgo = new Date()
+    oneYearAgo.setDate(oneYearAgo.getDate() - 365)
+
+    const [updatedCount] = await Thesis.update(
+      { isIdle: true },
+      {
+        where: {
+          isIdle: false,
+          milestoneOrStatusUpdatedAt: {
+            [Op.lt]: oneYearAgo,
+          },
+          status: 'IN_PROGRESS',
+        },
+      }
+    )
+
+    if (updatedCount > 0) {
+      logger.info(
+        `Marked ${updatedCount} theses as idle (no activity for 365 days)`
+      )
+    }
+  } catch (err) {
+    logger.error('Error running idle theses check:', err)
+  }
 }
 
 export const getSingleThesis = async (
