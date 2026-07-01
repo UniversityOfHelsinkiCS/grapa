@@ -77,7 +77,7 @@
     "react-dropzone-esm": "15.2.0",
     "react-i18next": "17.0.7",
     "react-router-dom": "7.15.0",
-    "redis": "^5.12.1",
+    "redis": "^6.0.0",
     "sequelize": "6.37.8",
     "umzug": "3.8.3",
     "uuid": "14.0.0",
