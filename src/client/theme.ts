@@ -33,6 +33,7 @@ const colors = {
 const themeOptions: ThemeOptions = {
   typography: {
     fontFamily: [
+      '"Roboto"',
       '"Open Sans"',
       '"Helvetica"',
       '"Arial"',
