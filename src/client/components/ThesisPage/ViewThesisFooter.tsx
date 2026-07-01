@@ -15,9 +15,10 @@ import {
   Stack,
   Typography,
   Tooltip,
+  Chip,
+  Alert,
 } from '@mui/material'
 import Popup from '../Common/Popup'
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 
 import {
   FileData,
@@ -31,7 +32,7 @@ import {
   ThesisStatus,
 } from '@backend/types'
 
-import { StatusLocale, ThesisFooterProps } from '../../types'
+import { ThesisFooterProps } from '../../types'
 import usePrograms from '../../hooks/usePrograms'
 import useEvents from '../../hooks/useEvents'
 import { useSingleThesis } from '../../hooks/useTheses'
@@ -39,10 +40,9 @@ import { useSingleThesis } from '../../hooks/useTheses'
 import { BASE_PATH, THESIS_STATUSES } from '../../../config'
 import EventsView from '../EventsView/EventsView'
 import { useState } from 'react'
-import { ExpandLess, ExpandMore } from '@mui/icons-material'
+import { ChevronRight, ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useChangeThesisStatusMutation } from '../../hooks/useThesesMutation'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
-import { t } from 'i18next'
 import { ProgressView } from './Progress/ProgressView'
 import { canApprove, canSetEthesisStudentStarted } from '../../util/permissions'
 
@@ -51,23 +51,11 @@ const StatusRow = ({ thesis }: { thesis: Thesis }) => (
     sx={{
       display: 'flex',
       flexDirection: 'row',
-      justifyContent: 'space-between',
       px: 2,
       mt: 2,
-      backgroundColor: '#E1E4E8',
       fontSize: '10pt',
     }}
   >
-    <Typography
-      component="span"
-      sx={{
-        fontSize: '10pt',
-        fontWeight: 600,
-        textTransform: 'capitalize',
-      }}
-    >
-      {t(StatusLocale[thesis.status])}
-    </Typography>
     <Typography
       component="span"
       sx={{
@@ -83,23 +71,22 @@ const StatusRow = ({ thesis }: { thesis: Thesis }) => (
 )
 
 const Authors = ({ authors }: { authors: User[] }) => (
-  <List>
+  <Typography component="p">
     {authors.map((author, index) => (
       <Typography
         key={author.id}
-        component="p"
+        component="span"
         variant="subtitle2"
         sx={{
-          fontWeight: 700,
-          textTransform: 'uppercase',
-          color: '#586069',
+          fontWeight: 400,
         }}
       >
-        {author.firstName} {author.lastName}
-        {index < authors.length - 1 ? ' - ' : ''}
+        {author.firstName} {author.lastName}{' '}
+        {author.studentNumber ? `(${author.studentNumber})` : ''}
+        {index < authors.length - 1 ? ', ' : ''}
       </Typography>
     ))}
-  </List>
+  </Typography>
 )
 
 const ProgramTrack = ({
@@ -131,30 +118,37 @@ const ProgramTrack = ({
       sx={{
         display: 'flex',
         alignItems: 'center',
-        fontSize: '10pt',
-        fontWeight: 600,
+        fontSize: '11pt',
+        fontWeight: 500,
         textTransform: 'capitalize',
         gap: 1,
         mb: 2,
-        color: 'primary.dark',
+        color: 'black',
       }}
     >
+      <Chip
+        variant="outlined"
+        sx={{ fontFamily: 'monospace' }}
+        label={program?.id}
+      />
       {program?.name[language as keyof TranslatedName]}
       {track && (
-        <Typography
-          component="span"
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '10pt',
-            fontWeight: 600,
-            textTransform: 'capitalize',
-            gap: 1,
-          }}
-        >
-          <ArrowRightAltIcon fontSize="small" />
-          {track.name[language as keyof TranslatedName]}
-        </Typography>
+        <>
+          <ChevronRight fontSize="small" />
+          <Typography
+            component="span"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '11pt',
+              fontWeight: 400,
+              textTransform: 'capitalize',
+              gap: 1,
+            }}
+          >
+            {track.name[language as keyof TranslatedName]}
+          </Typography>
+        </>
       )}
     </Typography>
   )
@@ -462,6 +456,14 @@ const ViewThesisFooter = (
     (isBachelor ? thesis.graders.length >= 1 : thesis.graders.length >= 2) &&
     thesis.status === THESIS_STATUSES.IN_PROGRESS
 
+  const difference =
+    currentUser &&
+    thesis?.targetDate &&
+    dayjs(thesis.targetDate).isBefore(dayjs())
+      ? dayjs(thesis.targetDate).diff(dayjs(), 'day') * -1
+      : 0
+  const isLate = difference && difference > 0
+
   return (
     <>
       {thesis ? (
@@ -472,37 +474,9 @@ const ViewThesisFooter = (
             sx={{
               mb: 2,
               alignItems: 'center',
-              justifyContent: 'space-between',
+              justifyContent: 'end',
             }}
           >
-            <Typography
-              component="h2"
-              sx={{
-                textTransform: 'uppercase',
-                fontFamily: 'Roboto',
-                mb: 2,
-              }}
-            >
-              <Typography
-                component="span"
-                sx={{
-                  fontSize: '12pt',
-                  fontWeight: 600,
-                  position: 'relative',
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: '4px',
-                    left: 0,
-                    zIndex: -1,
-                    width: '100%',
-                  },
-                }}
-              >
-                {t('thesisPreview')}
-              </Typography>
-            </Typography>
-
             {thesis &&
               currentUser &&
               (isStudentView
@@ -515,10 +489,10 @@ const ViewThesisFooter = (
                       sx={{
                         color: '#000',
                         backgroundColor: '#fcd34d',
+                        borderColor: '#000',
                         fontSize: '12px',
                         height: 24,
                         px: 2,
-                        borderRadius: '1rem',
                         fontWeight: 600,
                       }}
                       onClick={() => setPendingAction('approve')}
@@ -535,7 +509,6 @@ const ViewThesisFooter = (
                         color: '#000',
                         height: 24,
                         px: 2,
-                        borderRadius: '1rem',
                         fontWeight: 600,
                         '&:hover': {
                           backgroundColor: '#000',
@@ -629,12 +602,24 @@ const ViewThesisFooter = (
               )}
           </Stack>
 
+          <Stack
+            direction="row"
+            sx={{ justifyContent: 'space-between', alignItems: 'baseline' }}
+          >
+            <ProgramTrack
+              programId={thesis.programId}
+              studyTrackId={thesis.studyTrackId!}
+              isStudentView={isStudentView}
+              thesisProgram={thesis.program}
+            />
+            <StatusRow thesis={thesis} />
+          </Stack>
+
           <Typography
             component="h3"
             sx={{
               fontSize: '1.5rem',
-              fontWeight: 700,
-              textTransform: 'uppercase',
+              fontWeight: 800,
             }}
           >
             {thesis.topic}
@@ -642,21 +627,31 @@ const ViewThesisFooter = (
 
           <Authors authors={thesis.authors} />
 
+          {thesis.status == 'IN_PROGRESS' && isLate != false && (
+            <Alert
+              severity={difference > 180 ? 'error' : 'warning'}
+              sx={{ my: 1.5 }}
+            >
+              {t('viewThesisFooter:thesisLate').replace(
+                '{difference}',
+                difference
+              )}{' '}
+              {dayjs(thesis.startDate).format('YYYY-MM-DD')}
+            </Alert>
+          )}
+
+          {thesis.status == 'COMPLETED' && isLate != false && (
+            <Alert severity="info" sx={{ my: 1.5 }}>
+              {t('viewThesisFooter:thesisComplete')}
+            </Alert>
+          )}
+
           <ProgressView
             thesis={thesis}
             isStudentView={isStudentView}
           ></ProgressView>
 
-          <StatusRow thesis={thesis} />
-
           <Box sx={{ p: 2 }}>
-            <ProgramTrack
-              programId={thesis.programId}
-              studyTrackId={thesis.studyTrackId!}
-              isStudentView={isStudentView}
-              thesisProgram={thesis.program}
-            />
-
             <Grid
               container
               sx={{
