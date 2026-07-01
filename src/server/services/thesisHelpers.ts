@@ -21,6 +21,7 @@ import {
   getPrimaryStudyTrackId,
 } from '../util/studyTracks'
 import { ThesisData, User as UserType, SupervisionData } from '../types'
+import logger from '../util/logger'
 
 import { Literal } from 'sequelize/types/utils'
 import { TitleData } from '../types'
@@ -407,17 +408,22 @@ export const getEmployeeTitles = async (search: string): Promise<TitleData> => {
 
   const url = `${GW_API_URL}employeeinformation/v1?search=${search}`
 
-  const response = await fetch(url, {
-    headers: { 'x-api-key': EMPLOYEE_TOKEN },
-  })
+  try {
+    const response = await fetch(url, {
+      headers: { 'x-api-key': EMPLOYEE_TOKEN },
+    })
 
-  if (!response.ok) {
+    if (!response.ok) {
+      return { username: search, titles: [] }
+    }
+
+    const payload = await response.json()
+
+    return normalizeEmployeeTitlesPayload(payload, search)
+  } catch (e) {
+    logger.error('Failed to fetch employee titles:', e)
     return { username: search, titles: [] }
   }
-
-  const payload = await response.json()
-
-  return normalizeEmployeeTitlesPayload(payload, search)
 }
 
 export const normalizeEmployeeTitlesPayload = (
