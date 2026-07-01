@@ -101,7 +101,7 @@ export const ProgressView = ({
     }
 
     if (index > inProgressIndex && useMilestones) {
-      return index - programMilestones.length + 1
+      return index - (programMilestones?.length ?? 0) + 1
     }
 
     return index + 1
