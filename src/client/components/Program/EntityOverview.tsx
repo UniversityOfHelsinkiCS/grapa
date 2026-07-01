@@ -23,10 +23,12 @@ import {
   Autocomplete,
   Alert,
   Chip,
+  IconButton,
+  Paper,
 } from '@mui/material'
 import Popup from '../Common/Popup'
 import usePrograms, { useUpdateProgramMutation } from '../../hooks/usePrograms'
-
+import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined'
 import { useTranslation } from 'react-i18next'
 import EventsView from '../EventsView/EventsView'
 import { useProgramEvents } from '../../hooks/useEvents'
@@ -232,7 +234,6 @@ const ListInput = ({
       <Stack
         sx={{
           gap: '1rem',
-          width: '40rem',
         }}
       >
         <Typography variant="h5">
@@ -243,99 +244,111 @@ const ListInput = ({
         </Typography>
         {listValues.map((value, index) => {
           return (
-            <Stack
-              direction="row"
+            <Paper
+              variant="outlined"
               sx={{
-                gap: '1rem',
+                width: '40rem',
+                p: 1,
+                borderRadius: '0.25rem',
               }}
-              key={index}
             >
-              {isDateInput ? (
-                <DatePicker
-                  label={`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                    },
-                  }}
-                  value={value.value ? dayjs(value.value) : null}
-                  format="DD.MM.YYYY"
-                  onChange={(date) => {
-                    setListValues(
-                      listValues.map((v, i) => {
-                        return i == index
-                          ? { value: date ? date.format('YYYY-MM-DD') : '' }
-                          : v
-                      })
-                    )
-                  }}
-                  sx={{
-                    width: '100%',
-                  }}
-                />
-              ) : isMultilingualInput ? (
-                <Stack direction="column" sx={{ width: '100%', gap: 1 }}>
-                  <Typography variant="subtitle2">
-                    {`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
-                  </Typography>
-                  {['fi', 'en', 'sv'].map((lang) => (
-                    <TextField
-                      key={lang}
-                      size="small"
-                      variant="outlined"
-                      label={lang.toUpperCase()}
-                      value={value.value?.[lang] || ''}
-                      onChange={(
-                        event: React.ChangeEvent<HTMLInputElement>
-                      ) => {
-                        setListValues(
-                          listValues.map((v: any, i: number) => {
-                            if (i === index) {
-                              return {
-                                ...v,
-                                value: {
-                                  ...v.value,
-                                  [lang]: event.target.value,
-                                },
+              <Stack
+                direction="row"
+                sx={{
+                  gap: '1rem',
+                }}
+                key={index}
+              >
+                {isDateInput ? (
+                  <DatePicker
+                    label={`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                      },
+                    }}
+                    value={value.value ? dayjs(value.value) : null}
+                    format="DD.MM.YYYY"
+                    onChange={(date) => {
+                      setListValues(
+                        listValues.map((v, i) => {
+                          return i == index
+                            ? { value: date ? date.format('YYYY-MM-DD') : '' }
+                            : v
+                        })
+                      )
+                    }}
+                    sx={{
+                      width: '100%',
+                    }}
+                  />
+                ) : isMultilingualInput ? (
+                  <Stack direction="column" sx={{ width: '100%', gap: 1 }}>
+                    <Typography variant="subtitle2">
+                      {`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
+                    </Typography>
+                    {['fi', 'en', 'sv'].map((lang) => (
+                      <TextField
+                        key={lang}
+                        size="small"
+                        variant="outlined"
+                        label={lang.toUpperCase()}
+                        value={value.value?.[lang] || ''}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ) => {
+                          setListValues(
+                            listValues.map((v: any, i: number) => {
+                              if (i === index) {
+                                return {
+                                  ...v,
+                                  value: {
+                                    ...v.value,
+                                    [lang]: event.target.value,
+                                  },
+                                }
                               }
-                            }
-                            return v
-                          })
+                              return v
+                            })
+                          )
+                        }}
+                      />
+                    ))}
+                  </Stack>
+                ) : (
+                  <TextField
+                    variant="outlined"
+                    label={`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
+                    value={value.value}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setListValues(
+                        listValues.map((v: any, i: number) => {
+                          return i == index ? { value: event.target.value } : v
+                        })
+                      )
+                    }}
+                    sx={{
+                      width: '100%',
+                    }}
+                  ></TextField>
+                )}
+                <Stack sx={{ justifyContent: 'center' }}>
+                  <Tooltip title={translation('deleteButton', 'Poista')}>
+                    <IconButton
+                      arial-label={translation('deleteButton', 'Poista')}
+                      onClick={() => {
+                        setListValues(
+                          listValues.filter((_v: any, i: any) => i != index)
                         )
                       }}
-                    />
-                  ))}
+                      color="error"
+                    >
+                      <RemoveCircleOutlineOutlinedIcon />
+                    </IconButton>
+                  </Tooltip>
                 </Stack>
-              ) : (
-                <TextField
-                  variant="outlined"
-                  label={`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
-                  value={value.value}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    setListValues(
-                      listValues.map((v: any, i: number) => {
-                        return i == index ? { value: event.target.value } : v
-                      })
-                    )
-                  }}
-                  sx={{
-                    width: '100%',
-                  }}
-                ></TextField>
-              )}
-
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => {
-                  setListValues(
-                    listValues.filter((_v: any, i: any) => i != index)
-                  )
-                }}
-              >
-                {translation('common:removeButton')}
-              </Button>
-            </Stack>
+              </Stack>
+            </Paper>
           )
         })}
         <Stack direction="row" sx={{ gap: '1rem' }}>
@@ -343,7 +356,7 @@ const ListInput = ({
             {translation('common:saveButton')}
           </Button>
           <Button
-            variant="contained"
+            variant="outlined"
             onClick={() => {
               setListValues([
                 ...listValues,
@@ -459,7 +472,7 @@ const CombinedStudyTracksInput = ({
 
   return (
     <>
-      <Stack sx={{ gap: '1rem', width: '40rem' }}>
+      <Stack sx={{ gap: '1rem' }}>
         <Typography variant="h5">
           {translation(`programOverviewPage:combinedStudyTracks:title`)}
         </Typography>
@@ -584,7 +597,7 @@ const CombinedStudyTracksInput = ({
             {translation('common:submitButton')}
           </Button>
           <Button
-            variant="contained"
+            variant="outlined"
             onClick={() => {
               setListValues([...listValues, { primary: null, secondaries: [] }])
             }}
