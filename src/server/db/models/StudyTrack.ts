@@ -55,7 +55,7 @@ StudyTracks.init(
       // unique index on name and programId
       {
         unique: true,
-        fields: ['name', 'program_Id'],
+        fields: ['name', 'program_id'],
       },
     ],
   }
