@@ -23,7 +23,7 @@ export const PATE_URL =
     : 'https://api-toska.apps.ocp-test-0.k8s.it.helsinki.fi/pate/'
 
 export const OIDC_ISSUER = inDevelopment
-  ? 'http://login.toska.localhost:3001/.well-known/openid-configuration'
+  ? 'http://login.toska.localhost:3042/.well-known/openid-configuration'
   : inProduction
     ? 'https://login.helsinki.fi/.well-known/openid-configuration'
     : 'https://login-test.it.helsinki.fi/.well-known/openid-configuration'
@@ -46,7 +46,7 @@ export const IMPORTER_URL =
     : 'https://api-toska.apps.ocp-test-0.k8s.it.helsinki.fi/importer'
 
 export const LOGOUT_REDIRECT_URL = inDevelopment
-  ? 'http://login.toska.localhost:3001/session/end'
+  ? 'http://login.toska.localhost:3042/session/end'
   : inProduction
     ? 'https://login.helsinki.fi/idp/profile/Logout'
     : 'https://login-test.it.helsinki.fi/idp/profile/Logout'
