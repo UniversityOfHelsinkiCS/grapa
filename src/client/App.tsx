@@ -36,10 +36,20 @@ const App = () => {
               minHeight: '100vh',
               display: 'flex',
               flexDirection: 'column',
+              alignItems: 'center',
             }}
           >
             <NavBar />
-            <Box component="main" style={{ flexGrow: '1', display: 'flex' }}>
+            <Box
+              component="main"
+              style={{
+                flexGrow: '1',
+                display: 'flex',
+                minWidth: '50rem',
+                width: '100vw',
+                maxWidth: '100rem',
+              }}
+            >
               {!user?.departmentId && hasStaffAccess ? (
                 <DepartmentSelector />
               ) : (
