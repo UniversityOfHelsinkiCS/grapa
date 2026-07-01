@@ -461,5 +461,9 @@
     "updaterFailed": "Updaterin ajo epäonnistui",
     "confirmRunTitle": "Vahvista updaterin käynnistys",
     "confirmRunDescription": "Haluatko varmasti käynnistää updaterin manuaalisesti? Tämä hakee uusimmat tiedot lähdejärjestelmistä ja saattaa kestää hetken."
+  },
+  "viewThesisFooter": {
+    "thesisLate": "Tutkielma on ylittänyt tavoitepäivän {difference} vuorokaudella. Tutkielman tavoitepäivä on: ",
+    "thesisComplete": "Tutkielma on valmis"
   }
 }

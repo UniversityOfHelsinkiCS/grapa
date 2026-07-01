@@ -462,5 +462,9 @@
     "updaterFailed": "Misslyckades med att köra uppdateraren",
     "confirmRunTitle": "Bekräfta körning av uppdaterare",
     "confirmRunDescription": "Är du säker på att du vill köra uppdateraren manuellt? Detta hämtar den senaste datan från de underliggande systemen och kan ta lite tid."
+  },
+  "viewThesisFooter": {
+    "thesisLate": "Avhandlingen har överskridit sitt måldatum med {difference} dygn. Avhandlingens måldatum är: ",
+    "thesisComplete": "Avhandlingen är färdig"
   }
 }

@@ -462,5 +462,9 @@
     "updaterFailed": "Failed to run updater",
     "confirmRunTitle": "Confirm Updater Run",
     "confirmRunDescription": "Are you sure you want to run the updater manually? This will fetch the latest data from the upstream systems and might take some time."
+  },
+  "viewThesisFooter": {
+    "thesisLate": "The thesis has exceeded its target date by {difference} days. The target date for the thesis is: ",
+    "thesisComplete": "The thesis is complete"
   }
 }
