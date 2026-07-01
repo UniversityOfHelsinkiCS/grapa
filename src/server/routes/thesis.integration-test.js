@@ -82,7 +82,7 @@ describe('thesis router', () => {
           .get('/api/theses/paginate')
           .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
         expect(response.status).toEqual(200)
-        expect(response.body).toEqual({ theses: [], totalCount: 0 })
+        expect(response.body).toEqual({ theses: [], totalCount: 0, availableMilestones: [] })
       })
     })
   })

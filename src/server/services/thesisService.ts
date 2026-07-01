@@ -227,7 +227,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
       bind: {
         language,
         search: formattedSearch,
-        authorSearch: formattedSearch ? `%${formattedSearch}%` : undefined,
+        authorSearch: authorsPartial ? `%${authorsPartial.trim()}%` : null,
       },
     })
 
