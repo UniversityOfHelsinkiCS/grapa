@@ -60,7 +60,8 @@ const ThesisEditForm: FC<{
   const { language } = i18n as { language: TranslationLanguage }
   const [formErrors, setFormErrors] = useState<ZodIssue[]>([])
   const [editedThesis, setEditedThesis] = useState<ThesisData>(() => {
-    return { ...initialThesis }
+    const { _program, _studyTrack, ...rest } = initialThesis as any
+    return rest
   })
   const [userSearch, setUserSearch] = useState('')
   const { programManagements: programManagementsOfApprovers } =
