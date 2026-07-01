@@ -27,15 +27,17 @@ export const ProgressView = ({
   const editThesisMutation = useEditThesisMutation(isStudentView)
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
 
-  const useMilestones =
-    thesis.program.options?.useMilestones && thesis.milestoneVersion != null
-
   const useStudentStartedProcess =
     thesis.program.options?.allowStudentStartedProcess
 
-  const programMilestones = thesis.program.options?.milestones?.versions.at(
+  const programMilestones = thesis.program.options?.milestones?.versions?.at(
     thesis.milestoneVersion != null ? thesis.milestoneVersion : -1
   )
+
+  const useMilestones =
+    thesis.program.options?.useMilestones &&
+    thesis.milestoneVersion != null &&
+    programMilestones !== undefined
 
   const milestones =
     useMilestones && programMilestones
@@ -100,8 +102,8 @@ export const ProgressView = ({
       }
     }
 
-    if (index > inProgressIndex && useMilestones) {
-      return index - (programMilestones?.length ?? 0) + 1
+    if (index > inProgressIndex && useMilestones && programMilestones) {
+      return index - programMilestones.length + 1
     }
 
     return index + 1
