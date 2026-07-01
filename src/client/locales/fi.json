@@ -344,6 +344,8 @@
     "filterButton": "Suodattimet",
     "saveFiltersButton": "Tallenna suodattimet",
     "search": "Haku",
+    "milestone": "Etappi",
+    "all": "Kaikki",
     "filterViews": {
       "active": {
         "name": "Aktiiviset",

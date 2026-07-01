@@ -345,6 +345,8 @@
     "filterButton": "Filtrera",
     "saveFiltersButton": "Spara filter",
     "search": "Sök",
+    "milestone": "Milstolpe",
+    "all": "Alla",
     "filterViews": {
       "active": {
         "name": "Aktiva",

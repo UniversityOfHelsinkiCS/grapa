@@ -71,6 +71,7 @@ export interface GetPaginatedThesesParams {
   sortOrder?: 'asc' | 'desc'
   hideUserProperties?: boolean
   search?: string
+  milestone?: string | number
 }
 
 export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
@@ -93,6 +94,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     sortOrder,
     hideUserProperties,
     search,
+    milestone,
   } = params
 
   const allowedLanguages = ['en', 'fi', 'sv']
@@ -131,7 +133,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
       .join(' & ')
   }
 
-  const where = await buildThesisWhereClause({
+  const baseWhere = await buildThesisWhereClause({
     programId,
     studyTrackId,
     departmentId,
@@ -147,10 +149,16 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     search: formattedSearch || undefined,
   })
 
+  const fullWhere = { ...baseWhere }
+  if (milestone !== undefined) {
+    fullWhere.milestone = milestone
+    fullWhere.status = 'IN_PROGRESS'
+  }
+
   const includes = buildThesisIncludes(programNamePartial, language)
 
   const { count, rows } = await Thesis.findAndCountAll({
-    where,
+    where: fullWhere,
     include: includes,
     attributes: [
       'id',
@@ -193,7 +201,43 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
 
   if (hideUserProperties) cleanThesisBulk(theses)
 
-  return { theses, totalCount: count }
+  let canHaveMilestones = true
+  if (baseWhere.status) {
+    if (Array.isArray(baseWhere.status)) {
+      if (!baseWhere.status.includes('IN_PROGRESS')) {
+        canHaveMilestones = false
+      }
+    } else if (baseWhere.status !== 'IN_PROGRESS') {
+      canHaveMilestones = false
+    }
+  }
+
+  let availableMilestones: number[] = []
+
+  if (canHaveMilestones) {
+    const distinctMilestones = await Thesis.findAll({
+      where: {
+        ...baseWhere,
+        milestone: { [Op.not]: null },
+        status: 'IN_PROGRESS',
+      },
+      attributes: ['milestone'],
+      group: ['milestone'],
+      raw: true,
+      bind: {
+        language,
+        search: formattedSearch,
+        authorSearch: formattedSearch ? `%${formattedSearch}%` : undefined,
+      },
+    })
+
+    availableMilestones = distinctMilestones
+      .map((t: any) => t.milestone)
+      .filter((m) => m !== null && m !== undefined)
+      .sort((a, b) => a - b)
+  }
+
+  return { theses, totalCount: count, availableMilestones }
 }
 
 export const createThesis = async (thesisData: ThesisData, t: Transaction) => {

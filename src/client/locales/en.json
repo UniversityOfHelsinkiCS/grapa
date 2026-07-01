@@ -345,6 +345,8 @@
     "filterButton": "Filters",
     "saveFiltersButton": "Save filters",
     "search": "Search",
+    "milestone": "Milestone",
+    "all": "All",
     "filterViews": {
       "active": {
         "name": "Active",

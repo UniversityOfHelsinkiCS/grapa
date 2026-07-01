@@ -33,6 +33,9 @@ import {
   TextField,
   Tooltip,
   Typography,
+  Select,
+  FormControl,
+  InputLabel,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { StatusLocale } from '../../types'
@@ -77,6 +80,7 @@ interface Props {
   isStudentView: boolean
   noAddThesisButton: boolean
   showSupervisors?: boolean
+  availableMilestones?: number[]
 }
 
 const PrethesisTable = ({
@@ -95,6 +99,7 @@ const PrethesisTable = ({
   initializeNewThesis,
   isStudentView,
   showSupervisors,
+  availableMilestones = [],
 }: Props) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -136,6 +141,10 @@ const PrethesisTable = ({
 
   const [debounceTimeout, setDebounceTimeout] = React.useState(null)
 
+  const [activeMilestoneFilter, setActiveMilestoneFilter] = React.useState<
+    string | null
+  >('all')
+
   if (!isStudentView) {
     React.useEffect(() => {
       onFilterChange(filterViews[activeFilterView].filterModel)
@@ -162,6 +171,7 @@ const PrethesisTable = ({
         includeNotManaged: true,
       })
     : { programs: [], isLoading: false }
+
   const favoritePrograms =
     programs?.filter((p) => user?.favoriteProgramIds?.includes(p.id)) || []
   const allFavProgramsAllowStudentStarted =
@@ -390,9 +400,9 @@ const PrethesisTable = ({
 
           const milestone_count =
             useMilestones && milestone_version != undefined
-              ? context.row.original?.program?.options?.milestones?.versions[
+              ? context.row.original?.program?.options?.milestones?.versions?.[
                   milestone_version
-                ].length
+                ]?.length
               : undefined
 
           return useMilestones &&
@@ -639,6 +649,7 @@ const PrethesisTable = ({
                     )
                     onSortingChange(filterViews[filterView].sortingModel)
                     setActiveFilterView(filterView)
+                    setActiveMilestoneFilter('all')
                     changePage(0)
                   }}
                 ></Chip>
@@ -647,27 +658,57 @@ const PrethesisTable = ({
           </Stack>
         )}
 
-        {!noAddThesisButton && showHiddenNewThesisButton && (
-          <Box sx={{ ml: 'auto' }}>
-            <IconButton onClick={handleMenuClick} size="small">
-              <MoreVertIcon />
-            </IconButton>
-            <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
-              <MenuItem
-                onClick={() => {
-                  handleMenuClose()
-                  initializeNewThesis()
-                }}
-              >
-                {t('thesesTableToolbar:newThesisButton')}
-              </MenuItem>
-            </Menu>
-          </Box>
+        {!isStudentView && availableMilestones.length > 0 && (
+          <FormControl size="small" sx={{ ml: 'auto', minWidth: 150 }}>
+            <InputLabel id="milestone-filter-label">
+              {t('thesesTableToolbar:milestone')}
+            </InputLabel>
+            <Select
+              labelId="milestone-filter-label"
+              id="milestone-filter"
+              value={activeMilestoneFilter}
+              label={t('thesesTableToolbar:milestone')}
+              onChange={(e) => {
+                const val = e.target.value as string
+                setActiveMilestoneFilter(val)
+                onFilterChange({
+                  items:
+                    val !== 'all'
+                      ? [
+                          {
+                            field: 'milestone',
+                            operator: 'equals',
+                            value: val,
+                          },
+                        ]
+                      : [],
+                })
+                changePage(0)
+              }}
+            >
+              <MenuItem value="all">{t('thesesTableToolbar:all')}</MenuItem>
+              {Array.from(
+                new Set([
+                  ...availableMilestones,
+                  ...(activeMilestoneFilter !== 'all'
+                    ? [Number(activeMilestoneFilter)]
+                    : []),
+                ])
+              )
+                .sort((a, b) => a - b)
+                .map((milestoneVal) => (
+                  <MenuItem key={milestoneVal} value={String(milestoneVal)}>
+                    {milestoneVal}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
         )}
 
         {!isStudentView && (
           <TextField
             size="small"
+            sx={{ ml: availableMilestones.length > 0 ? 0 : 'auto' }}
             placeholder={t('thesesTableToolbar:search')}
             variant="outlined"
             onChange={(e) => {
@@ -682,6 +723,24 @@ const PrethesisTable = ({
               )
             }}
           ></TextField>
+        )}
+
+        {!noAddThesisButton && showHiddenNewThesisButton && (
+          <Box sx={{ ml: isStudentView ? 'auto' : 0 }}>
+            <IconButton onClick={handleMenuClick} size="small">
+              <MoreVertIcon />
+            </IconButton>
+            <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
+              <MenuItem
+                onClick={() => {
+                  handleMenuClose()
+                  initializeNewThesis()
+                }}
+              >
+                {t('thesesTableToolbar:newThesisButton')}
+              </MenuItem>
+            </Menu>
+          </Box>
         )}
 
         <PrethesisHelp

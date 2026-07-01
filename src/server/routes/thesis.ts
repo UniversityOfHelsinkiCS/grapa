@@ -66,6 +66,7 @@ thesisRouter.get(
       limit: req.query.limit as string,
       offset: req.query.offset as string,
       search: req.query.search as string,
+      milestone: req.query.milestone as string,
     })
 
     return res.send(result)

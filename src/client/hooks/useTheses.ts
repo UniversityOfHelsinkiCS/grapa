@@ -22,6 +22,7 @@ interface UsePaginatedThesesParams {
   limit: number
   useStudentApi?: boolean
   search?: string
+  milestone?: string | number
 }
 
 export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
@@ -45,6 +46,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     params.order.sortBy,
     params.order.sortOrder,
     params.search,
+    params.milestone,
     language,
     params.useStudentApi,
   ]
@@ -52,6 +54,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
   const queryFn = async (): Promise<{
     theses: ThesisData[]
     totalCount: number
+    availableMilestones?: number[]
   }> => {
     const endpoint = params.useStudentApi
       ? '/student/theses'
@@ -71,6 +74,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
         authorsPartial: params.authorsPartial,
         programNamePartial: params.programNamePartial,
         search: params.search,
+        milestone: params.milestone,
         language,
         ...params.order,
       },
@@ -81,7 +85,12 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
 
   const { data, ...rest } = useQuery({ queryKey, queryFn })
 
-  return { theses: data?.theses, totalCount: data?.totalCount, ...rest }
+  return {
+    theses: data?.theses,
+    totalCount: data?.totalCount ?? 0,
+    availableMilestones: data?.availableMilestones ?? [],
+    ...rest,
+  }
 }
 
 export const useSingleThesis = (

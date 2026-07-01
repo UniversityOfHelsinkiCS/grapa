@@ -79,6 +79,7 @@ const ThesesPage = ({
   const [showOnlyOwnTheses] = useState(!noOwnThesesSwitch)
 
   const [filterStatus, setFilterStatus] = useState<string | null>(null)
+  const [filterMilestone, setFilterMilestone] = useState<string | null>(null)
   const [filterTopic, setFilterTopic] = useState<string | null>(null)
   const [filterAuthors, setFilterAuthors] = useState<string | null>(null)
   const [filterProgramName, setFilterProgramName] = useState<string | null>(
@@ -97,6 +98,7 @@ const ThesesPage = ({
   const {
     theses,
     totalCount,
+    availableMilestones,
     isLoading: isThesesLoading,
   } = usePaginatedTheses({
     order,
@@ -104,6 +106,7 @@ const ThesesPage = ({
     studyTrackId: filteringStudyTrackId,
     departmentId: filteringDepartmentId,
     status: filterStatus,
+    milestone: filterMilestone !== null ? filterMilestone : undefined,
     topicPartial: debouncedFilterTopic,
     authorsPartial: debouncedFilterAuthors,
     programNamePartial: debouncedFilterProgramName,
@@ -144,8 +147,9 @@ const ThesesPage = ({
   const managedPrograms = useMemo(
     () =>
       (programs ?? []).filter((program) => isStudentView || program.isManaged),
-    [programs]
+    [programs, isStudentView]
   )
+
   const { mutateAsync: editThesis } = useEditThesisMutation(isStudentView)
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation(isStudentView)
   const { mutateAsync: createThesis } = useCreateThesisMutation(isStudentView)
@@ -230,6 +234,7 @@ const ThesesPage = ({
     // we allow only one filter at a time
     // so we can safely reset the filters
     setFilterStatus(null)
+    setFilterMilestone(null)
     setFilterTopic(null)
     setFilterAuthors(null)
     setFilterProgramName(null)
@@ -243,6 +248,9 @@ const ThesesPage = ({
     switch (filterModel.items[0].field) {
       case 'status':
         setFilterStatus(filterModel.items[0].value)
+        break
+      case 'milestone':
+        setFilterMilestone(filterModel.items[0].value)
         break
       case 'topic':
         setFilterTopic(filterModel.items[0].value)
@@ -296,6 +304,7 @@ const ThesesPage = ({
           user={currentUser}
           isStudentView={isStudentView}
           initializeNewThesis={initializeNewThesis}
+          availableMilestones={availableMilestones}
           noAddThesisButton={noAddThesisButton}
           showSupervisors={showSupervisors}
           filterViews={{
