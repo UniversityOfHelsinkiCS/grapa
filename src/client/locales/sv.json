@@ -196,6 +196,13 @@
       "enableConfirm": "Är du säker på att du vill ställa in detta som ett kandidatprogram?",
       "disableConfirm": "Är du säker på att du vill ta bort inställningen för kandidatprogram?"
     },
+    "supervisorApproval": {
+      "toggle": "Handledares godkännande",
+      "tooltip": "Tillåt handledare att godkänna avhandlingar i detta program",
+      "confirmTitle": "Bekräfta inställning för handledares godkännande",
+      "enableConfirm": "Är du säker på att du vill tillåta handledares godkännande?",
+      "disableConfirm": "Är du säker på att du vill inaktivera handledares godkännande?"
+    },
     "targetDates": {
       "fieldTitle": "Måldatum",
       "title": "Måldatum",

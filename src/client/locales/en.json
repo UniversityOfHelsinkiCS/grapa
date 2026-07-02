@@ -196,6 +196,13 @@
       "enableConfirm": "Are you sure you want to set this as a Bachelor's programme?",
       "disableConfirm": "Are you sure you want to remove the Bachelor's programme setting?"
     },
+    "supervisorApproval": {
+      "toggle": "Supervisor approval",
+      "tooltip": "Allow supervisors to approve theses in this programme",
+      "confirmTitle": "Confirm supervisor approval setting",
+      "enableConfirm": "Are you sure you want to enable supervisor approval?",
+      "disableConfirm": "Are you sure you want to disable supervisor approval?"
+    },
     "targetDates": {
       "fieldTitle": "Target date",
       "title": "Target dates",

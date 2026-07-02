@@ -642,6 +642,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     useMilestones: 'boolean',
     disableStudyTracks: 'boolean',
     useIdleState: 'boolean',
+    supervisorApproval: 'boolean',
     isBachelorProgram: 'boolean',
   }
 

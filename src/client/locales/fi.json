@@ -194,6 +194,13 @@
       "enableConfirm": "Oletko varma, että haluat asettaa tämän kandiohjelmaksi?",
       "disableConfirm": "Oletko varma, että haluat poistaa kandiohjelma-asetuksen?"
     },
+    "supervisorApproval": {
+      "toggle": "Ohjaajan hyväksyntä",
+      "tooltip": "Salli ohjaajien hyväksyä tutkielmia tässä ohjelmassa",
+      "confirmTitle": "Vahvista ohjaajan hyväksynnän asetus",
+      "enableConfirm": "Oletko varma, että haluat ottaa ohjaajan hyväksynnän käyttöön?",
+      "disableConfirm": "Oletko varma, että haluat poistaa ohjaajan hyväksynnän käytöstä?"
+    },
     "targetDates": {
       "fieldTitle": "Tavoitepäivä",
       "title": "Tavoitepäivät",
