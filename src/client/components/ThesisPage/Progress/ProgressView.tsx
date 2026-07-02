@@ -166,46 +166,56 @@ export const ProgressView = ({
               key={label.name}
               sx={{
                 flexGrow: label.milestone ? 1 : 0.1,
-                px: 2,
-                py: 2,
+                borderTop: steps[index].milestone
+                  ? '0.25rem solid #9e9e9e'
+                  : 'none',
                 maxWidth: '20rem',
                 color:
                   step > index || (step == index && steps[step].milestone)
                     ? 'black'
                     : '#9e9e9e',
-                backgroundColor: step - 1 == index ? '#cfe0eb' : null,
               }}
             >
               <Box
                 sx={{
-                  backgroundColor: step > index ? 'primary.main' : '#9e9e9e',
-                  width: '2rem',
-                  height: '2rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 'bold',
-                  color: 'white',
-                  mb: 1,
+                  px: 2,
+                  py: 2,
+                  mt: steps[index].milestone ? 4 : 0,
+                  maxWidth: '20rem',
+                  backgroundColor: step - 1 == index ? '#cfe0eb' : null,
                 }}
               >
-                {getVisibleStep(index)}
+                <Box
+                  sx={{
+                    backgroundColor: step > index ? 'primary.main' : '#9e9e9e',
+                    width: '2rem',
+                    height: '2rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 'bold',
+                    color: 'white',
+                    mb: 1,
+                  }}
+                >
+                  {getVisibleStep(index)}
+                </Box>
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {!label.milestone ? label.name + ' ' : null}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: 'small',
+                  }}
+                >
+                  {label.description}
+                </Typography>
               </Box>
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  fontWeight: 'bold',
-                }}
-              >
-                {!label.milestone ? label.name + ' ' : null}
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: 'small',
-                }}
-              >
-                {label.description}
-              </Typography>
             </Box>
           ))}
         </Stack>
