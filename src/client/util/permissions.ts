@@ -27,7 +27,9 @@ export const canSetEthesisStudentStarted = (thesis: Thesis, user: User) => {
   const milestonesLength = programMilestones?.length || 0
 
   const isLastMilestone =
-    thesis.milestone !== undefined && thesis.milestone === milestonesLength
+    milestonesLength === 0 ||
+    thesis.milestone == null ||
+    thesis.milestone === milestonesLength
 
   return Boolean(
     isSupervisor(thesis, user) &&
