@@ -17,6 +17,7 @@ import {
   Tooltip,
   Chip,
   Alert,
+  Divider,
 } from '@mui/material'
 import Popup from '../Common/Popup'
 
@@ -468,11 +469,12 @@ const ViewThesisFooter = (
     <>
       {thesis ? (
         <Box sx={{ m: 2 }}>
+          <Divider></Divider>
           <Stack
             direction="row"
             spacing={2}
             sx={{
-              mb: 2,
+              my: 2,
               alignItems: 'center',
               justifyContent: 'end',
             }}
@@ -643,6 +645,12 @@ const ViewThesisFooter = (
           {thesis.status == 'COMPLETED' && isLate != false && (
             <Alert severity="info" sx={{ my: 1.5 }}>
               {t('viewThesisFooter:thesisComplete')}
+            </Alert>
+          )}
+
+          {thesis.isIdle && (
+            <Alert severity="info" sx={{ my: 1.5 }}>
+              {t('viewThesisFooter:thesisIdle')}
             </Alert>
           )}
 
