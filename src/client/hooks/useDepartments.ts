@@ -63,7 +63,7 @@ export const useUpdateDepartmentMutation = () => {
   return useMutation({
     mutationFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ['departments'],
       })
     },
@@ -83,7 +83,7 @@ export const useCreateDepartmentMutation = () => {
   return useMutation({
     mutationFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ['departments'],
       })
     },

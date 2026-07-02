@@ -20,8 +20,8 @@ const umzug = new Umzug({
       const migration = require(path)
       return {
         name,
-        up: async () => migration.up(context),
-        down: async () => migration.down(context),
+        up: async () => await migration.up(context),
+        down: async () => await migration.down(context),
       }
     },
   },

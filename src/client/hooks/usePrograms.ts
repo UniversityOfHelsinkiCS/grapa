@@ -62,7 +62,7 @@ export const useUpdateProgramMutation = () => {
   return useMutation({
     mutationFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ['programs'],
       })
     },

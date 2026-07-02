@@ -52,7 +52,7 @@ export const useUpdateProgramManagementMutation = () => {
   const mutation = useMutation({
     mutationFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ['program-managements'],
       })
     },

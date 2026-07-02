@@ -8,7 +8,7 @@ export const has_access = (user: {
   return user.isAdmin || user.iamGroups.includes('hy-employees')
 }
 
-export const employeesAndAdminOnly = async (
+export const employeesAndAdminOnly = (
   req: any,
   _: Response,
   next: NextFunction

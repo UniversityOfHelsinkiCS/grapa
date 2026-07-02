@@ -14,11 +14,11 @@ const useUserProgramsMutation = () => {
   const mutation = useMutation({
     mutationFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ['user'],
       })
 
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ['programs'],
       })
     },
