@@ -4,18 +4,21 @@ import { THESIS_STATUSES } from '../../config'
 export const isSupervisor = (thesis: Thesis, user: User) =>
   Boolean(user && thesis.supervisions?.some((s) => s.user?.id === user.id))
 
-export const isApprover = (thesis: Thesis, user: User) =>
-  Boolean(
-    user && thesis.approvers?.length && thesis.approvers[0].id === user.id
+export const isProgramApprover = (thesis: Thesis, user: User) =>
+  Boolean(user && user.approvableProgramIds?.includes(thesis.programId))
+
+export const canApprove = (thesis: Thesis, user: User) => {
+  const supervisorApprovalEnabled = Boolean(
+    thesis.program?.options?.supervisorApproval
   )
 
-export const canApprove = (thesis: Thesis, user: User) =>
-  Boolean(
+  return Boolean(
     user &&
-    ((thesis.status === THESIS_STATUSES.PLANNING && isApprover(thesis, user)) ||
-      (thesis.status === THESIS_STATUSES.SUGGESTED &&
-        isSupervisor(thesis, user)))
+    thesis.status === THESIS_STATUSES.PLANNING &&
+    (isProgramApprover(thesis, user) ||
+      (supervisorApprovalEnabled && isSupervisor(thesis, user)))
   )
+}
 
 export const canSetEthesisStudentStarted = (thesis: Thesis, user: User) => {
   const programMilestones = thesis.program?.options?.milestones?.versions?.at(
