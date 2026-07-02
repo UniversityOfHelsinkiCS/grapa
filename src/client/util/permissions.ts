@@ -12,9 +12,13 @@ export const canApprove = (thesis: Thesis, user: User) => {
     thesis.program?.options?.supervisorApproval
   )
 
+  const isValidStatus =
+    thesis.status === THESIS_STATUSES.PLANNING ||
+    thesis.status === THESIS_STATUSES.SUGGESTED
+
   return Boolean(
     user &&
-    thesis.status === THESIS_STATUSES.PLANNING &&
+    isValidStatus &&
     (isProgramApprover(thesis, user) ||
       (supervisorApprovalEnabled && isSupervisor(thesis, user)))
   )
