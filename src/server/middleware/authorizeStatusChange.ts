@@ -1,6 +1,6 @@
 import { NextFunction } from 'express'
 import { ServerPostRequest, ServerPutRequest } from '../types'
-import { ProgramManagement, Thesis } from '../db/models'
+import { ProgramManagement, Thesis, Supervision, Program } from '../db/models'
 import CustomAuthorizationError from '../errors/AuthorizationError'
 
 export const authorizeStatusChange = async (
@@ -54,7 +54,7 @@ export const authorizeStatusChange = async (
   // and the user is trying to update it
   // to something else than PLANNING,
   // then we need to check permissions i.e.
-  // only allow it if the user is a-program-manager
+  // only allow it if the user is a program-manager or supervisor
   const programsWhereUserIsManager = await ProgramManagement.findAll({
     attributes: ['programId'],
     where: { userId: actionUser.id },
@@ -63,8 +63,27 @@ export const authorizeStatusChange = async (
     (program) => program.programId
   )
 
-  if (!programIdsWhereUserIsManager.includes(req.body.programId)) {
-    // if the user is not a program-manager and the status
+  let isSupervisor = false
+  if (thesis) {
+    const supervision = await Supervision.findOne({
+      where: {
+        thesisId: thesis.id,
+        userId: actionUser.id,
+      },
+    })
+
+    if (supervision) {
+      const program = await Program.findByPk(thesis.programId)
+      const options = program?.options as Record<string, any> | undefined
+      isSupervisor = !!options?.supervisorApproval
+    }
+  }
+
+  if (
+    !programIdsWhereUserIsManager.includes(req.body.programId) &&
+    !isSupervisor
+  ) {
+    // if the user is not a program-manager or supervisor and the status
     // is changed or the thesis a new one throw an Authorization error
     if (!thesis || thesis.status !== req.body.status) {
       throw new CustomAuthorizationError(
