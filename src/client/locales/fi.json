@@ -330,6 +330,7 @@
     "suggested": "Ehdotus",
     "planned": "Suunniteltu",
     "idle": "Lepotilassa",
+    "late": "Myöhässä",
     "inProgress": "Käynnissä",
     "completed": "Valmis",
     "cancelled": "Keskeytetty",
@@ -464,6 +465,7 @@
   },
   "viewThesisFooter": {
     "thesisLate": "Tutkielma on ylittänyt tavoitepäivän {difference} vuorokaudella. Tutkielman tavoitepäivä on: ",
-    "thesisComplete": "Tutkielma on valmis"
+    "thesisComplete": "Tutkielma on valmis",
+    "thesisIdle": "Tutkielma on lepotilassa"
   }
 }

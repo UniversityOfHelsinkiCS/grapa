@@ -331,6 +331,7 @@
     "suggested": "Förslag",
     "planned": "Planerad",
     "idle": "Vilande",
+    "late": "Sen",
     "inProgress": "Pågår",
     "completed": "Färdig",
     "cancelled": "Avbruten",
@@ -465,6 +466,7 @@
   },
   "viewThesisFooter": {
     "thesisLate": "Avhandlingen har överskridit sitt måldatum med {difference} dygn. Avhandlingens måldatum är: ",
-    "thesisComplete": "Avhandlingen är färdig"
+    "thesisComplete": "Avhandlingen är färdig",
+    "thesisIdle": "Avhandlingen är i viloläge"
   }
 }
