@@ -383,9 +383,18 @@ const PrethesisTable = ({
           ? 'thesisStages:ethesis_studentstarted'
           : StatusLocale[status]
 
+        const targetDate = info.row.original?.targetDate
+
+        const difference =
+          targetDate && dayjs(targetDate).isBefore(dayjs())
+            ? dayjs(targetDate).diff(dayjs(), 'day') * -1
+            : 0
+
         const labelText = info.row.original?.isIdle
           ? `${t(translationKey)} (${t('thesisStages:idle')})`
-          : t(translationKey)
+          : difference >= 30 && info.row.original.status == 'IN_PROGRESS'
+            ? `${t(translationKey)} (${t('thesisStages:late')})`
+            : t(translationKey)
 
         return <Chip label={labelText} variant="outlined" sx={{}} />
       },
@@ -444,14 +453,16 @@ const PrethesisTable = ({
         getCellContext: (context) => {
           const targetDate = context.row.original.targetDate
           const status = context.row.original.status
+          const isIdle = context.row.original.isIdle
           const difference =
             targetDate && dayjs(targetDate).isBefore(dayjs())
               ? dayjs(targetDate).diff(dayjs(), 'day') * -1
               : 0
           return {
             sx: {
-              backgroundColor:
-                targetDate && status == 'IN_PROGRESS'
+              backgroundColor: isIdle
+                ? '#c8d7ff'
+                : targetDate && status == 'IN_PROGRESS'
                   ? difference >= 180
                     ? '#ffc8c8'
                     : difference >= 30
