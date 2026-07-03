@@ -315,7 +315,9 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
   // 7. Custom complex filters
   if (missingSecondGrader) {
     andConditions.push(
-      literal(`(SELECT COUNT(*) FROM graders WHERE graders.thesis_id = "Thesis".id) < 2`)
+      literal(
+        `(SELECT COUNT(*) FROM graders WHERE graders.thesis_id = "Thesis".id) < 2`
+      )
     )
   }
 
@@ -335,7 +337,9 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
   if (ethesisReadyStudentStarted) {
     andConditions.push(
       { status: 'ETHESIS' },
-      literal(`(SELECT options->>'allowStudentStartedProcess' FROM "programs" WHERE id = "Thesis"."program_id") = 'true'`)
+      literal(
+        `(SELECT options->>'allowStudentStartedProcess' FROM "programs" WHERE id = "Thesis"."program_id") = 'true'`
+      )
     )
   }
 
@@ -622,11 +626,9 @@ export const getGraderTitles = async (thesis: ThesisData | Thesis) => {
     .map((grader) => (grader.user.isExternal ? null : grader.user.username))
     .filter((username) => !!username)
 
-  const graderTitles = []
-  for (const username of graderUsernames) {
-    const titles = await getEmployeeTitles(username)
-    graderTitles.push(titles)
-  }
+  const graderTitles = await Promise.all(
+    graderUsernames.map((username) => getEmployeeTitles(username))
+  )
 
   return graderTitles
 }
