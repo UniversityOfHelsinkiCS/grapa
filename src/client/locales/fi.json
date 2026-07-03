@@ -370,8 +370,21 @@
       "all": {
         "name": "Kaikki",
         "tooltip": "Näyttää kaikki tutkielmat"
+      },
+      "missingSecondGrader": {
+        "name": "Toinen arvostelija puuttuu",
+        "tooltip": "Näyttää tutkielmat, joihin on valittu alle kaksi arvostelijaa"
+      },
+      "lastMilestone": {
+        "name": "Viimeisellä etapilla",
+        "tooltip": "Näyttää tutkielmat, jotka ovat viimeisellä etapilla"
+      },
+      "ethesisReadyStudentStarted": {
+        "name": "Lupa palauttaa",
+        "tooltip": "Näyttää tutkielmat, joilla on lupa palauttaa"
       }
-    }
+    },
+    "actionNeeded": "Vaatii toimenpiteitä"
   },
   "thesesPage": {
     "approvalRequiredTooltip": "Tämä tutkielma vaatii sinulta toimenpiteitä.",

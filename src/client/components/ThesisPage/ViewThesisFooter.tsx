@@ -525,7 +525,7 @@ const ViewThesisFooter = (
                   )}
                   {!thesis.program?.options?.hideSendToEthesis &&
                     !isStudentView &&
-                    (thesis.program?.options?.allowStudentStartedProcess
+                    (thesis.program?.options?.useMilestones
                       ? canSetEthesisStudentStarted(thesis, currentUser!)
                       : thesis.status === THESIS_STATUSES.IN_PROGRESS) && (
                       <Tooltip

@@ -23,6 +23,9 @@ interface UsePaginatedThesesParams {
   useStudentApi?: boolean
   search?: string
   milestone?: string | number
+  missingSecondGrader?: boolean
+  lastMilestone?: boolean
+  ethesisReadyStudentStarted?: boolean
 }
 
 export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
@@ -47,6 +50,9 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     params.order.sortOrder,
     params.search,
     params.milestone,
+    params.missingSecondGrader,
+    params.lastMilestone,
+    params.ethesisReadyStudentStarted,
     language,
     params.useStudentApi,
   ]
@@ -55,6 +61,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     theses: ThesisData[]
     totalCount: number
     availableMilestones?: number[]
+    availableActionNeeded?: Record<string, boolean>
   }> => {
     const endpoint = params.useStudentApi
       ? '/student/theses'
@@ -75,6 +82,9 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
         programNamePartial: params.programNamePartial,
         search: params.search,
         milestone: params.milestone,
+        missingSecondGrader: params.missingSecondGrader,
+        lastMilestone: params.lastMilestone,
+        ethesisReadyStudentStarted: params.ethesisReadyStudentStarted,
         language,
         ...params.order,
       },
@@ -89,6 +99,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     theses: data?.theses,
     totalCount: data?.totalCount ?? 0,
     availableMilestones: data?.availableMilestones ?? [],
+    availableActionNeeded: data?.availableActionNeeded ?? {},
     ...rest,
   }
 }

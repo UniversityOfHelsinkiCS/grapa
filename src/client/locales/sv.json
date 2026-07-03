@@ -371,8 +371,21 @@
       "all": {
         "name": "Alla",
         "tooltip": "Visar alla avhandlingar"
+      },
+      "missingSecondGrader": {
+        "name": "Saknar andra granskare",
+        "tooltip": "Visar avhandlingar som har färre än två granskare tilldelade"
+      },
+      "lastMilestone": {
+        "name": "På sista milstolpen",
+        "tooltip": "Visar avhandlingar som är på sin sista milstolpe"
+      },
+      "ethesisReadyStudentStarted": {
+        "name": "Tillstånd att lämna in",
+        "tooltip": "Visar avhandlingar som har tillstånd att lämnas in"
       }
-    }
+    },
+    "actionNeeded": "Kräver åtgärder"
   },
   "thesesPage": {
     "approvalRequiredTooltip": "Denna avhandling kräver åtgärder från dig.",

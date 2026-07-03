@@ -80,6 +80,14 @@ const ThesesPage = ({
 
   const [filterStatus, setFilterStatus] = useState<string | null>(null)
   const [filterMilestone, setFilterMilestone] = useState<string | null>(null)
+  const [filterMissingSecondGrader, setFilterMissingSecondGrader] =
+    useState<boolean>(false)
+  const [filterLastMilestone, setFilterLastMilestone] = useState<boolean>(false)
+  const [
+    filterEthesisReadyStudentStarted,
+    setFilterEthesisReadyStudentStarted,
+  ] = useState<boolean>(false)
+
   const [filterTopic, setFilterTopic] = useState<string | null>(null)
   const [filterAuthors, setFilterAuthors] = useState<string | null>(null)
   const [filterProgramName, setFilterProgramName] = useState<string | null>(
@@ -99,6 +107,7 @@ const ThesesPage = ({
     theses,
     totalCount,
     availableMilestones,
+    availableActionNeeded,
     isLoading: isThesesLoading,
   } = usePaginatedTheses({
     order,
@@ -106,6 +115,9 @@ const ThesesPage = ({
     studyTrackId: filteringStudyTrackId,
     departmentId: filteringDepartmentId,
     status: filterStatus,
+    missingSecondGrader: filterMissingSecondGrader,
+    lastMilestone: filterLastMilestone,
+    ethesisReadyStudentStarted: filterEthesisReadyStudentStarted,
     milestone: filterMilestone !== null ? filterMilestone : undefined,
     topicPartial: debouncedFilterTopic,
     authorsPartial: debouncedFilterAuthors,
@@ -231,10 +243,12 @@ const ThesesPage = ({
   }
 
   const onFilterChange = useCallback((filterModel: GridFilterModel) => {
-    // we allow only one filter at a time
-    // so we can safely reset the filters
+    // reset all filters first
     setFilterStatus(null)
     setFilterMilestone(null)
+    setFilterMissingSecondGrader(false)
+    setFilterLastMilestone(false)
+    setFilterEthesisReadyStudentStarted(false)
     setFilterTopic(null)
     setFilterAuthors(null)
     setFilterProgramName(null)
@@ -245,25 +259,36 @@ const ThesesPage = ({
       return
     }
 
-    switch (filterModel.items[0].field) {
-      case 'status':
-        setFilterStatus(filterModel.items[0].value)
-        break
-      case 'milestone':
-        setFilterMilestone(filterModel.items[0].value)
-        break
-      case 'topic':
-        setFilterTopic(filterModel.items[0].value)
-        break
-      case 'authors':
-        setFilterAuthors(filterModel.items[0].value)
-        break
-      case 'programId':
-        setFilterProgramName(filterModel.items[0].value)
-        break
-      default:
-        break
-    }
+    filterModel.items.forEach((item) => {
+      switch (item.field) {
+        case 'status':
+          setFilterStatus(item.value)
+          break
+        case 'milestone':
+          setFilterMilestone(item.value)
+          break
+        case 'missingSecondGrader':
+          setFilterMissingSecondGrader(true)
+          break
+        case 'lastMilestone':
+          setFilterLastMilestone(true)
+          break
+        case 'ethesisReadyStudentStarted':
+          setFilterEthesisReadyStudentStarted(true)
+          break
+        case 'topic':
+          setFilterTopic(item.value)
+          break
+        case 'authors':
+          setFilterAuthors(item.value)
+          break
+        case 'programId':
+          setFilterProgramName(item.value)
+          break
+        default:
+          break
+      }
+    })
   }, [])
 
   const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
@@ -307,77 +332,153 @@ const ThesesPage = ({
           availableMilestones={availableMilestones}
           noAddThesisButton={noAddThesisButton}
           showSupervisors={showSupervisors}
-          filterViews={{
-            active: {
-              filterModel: {
-                items: [
-                  {
-                    field: 'status',
-                    operator: 'isAnyOf',
-                    value: [
-                      'DRAFT',
-                      'SUGGESTED',
-                      'PLANNING',
-                      'IN_PROGRESS',
-                      'ETHESIS',
-                      'ETHESIS_SENT',
+          filterViews={[
+            {
+              items: {
+                active: {
+                  filterModel: {
+                    items: [
+                      {
+                        field: 'status',
+                        operator: 'isAnyOf',
+                        value: [
+                          'DRAFT',
+                          'SUGGESTED',
+                          'PLANNING',
+                          'IN_PROGRESS',
+                          'ETHESIS',
+                          'ETHESIS_SENT',
+                        ],
+                      },
                     ],
                   },
-                ],
-              },
-              sortingModel: [
-                {
-                  field: 'startDate',
-                  sort: 'desc',
+                  sortingModel: [
+                    {
+                      field: 'startDate',
+                      sort: 'desc',
+                    },
+                  ],
                 },
-              ],
-            },
-            inactive: {
-              filterModel: {
-                items: [
-                  {
-                    field: 'status',
-                    operator: 'isAnyOf',
-                    value: ['COMPLETED', 'CANCELLED'],
+                inactive: {
+                  filterModel: {
+                    items: [
+                      {
+                        field: 'status',
+                        operator: 'isAnyOf',
+                        value: ['COMPLETED', 'CANCELLED'],
+                      },
+                    ],
                   },
-                ],
-              },
-              sortingModel: [
-                {
-                  field: 'targetDate',
-                  sort: 'desc',
+                  sortingModel: [
+                    {
+                      field: 'targetDate',
+                      sort: 'desc',
+                    },
+                  ],
                 },
-              ],
-            },
-            all: {
-              filterModel: {
-                items: [],
-              },
-              sortingModel: [
-                {
-                  field: 'startDate',
-                  sort: 'desc',
-                },
-              ],
-            },
-            suggested: {
-              filterModel: {
-                items: [
-                  {
-                    field: 'status',
-                    operator: 'isAnyOf',
-                    value: ['SUGGESTED'],
+                all: {
+                  filterModel: {
+                    items: [],
                   },
-                ],
-              },
-              sortingModel: [
-                {
-                  field: 'startDate',
-                  sort: 'desc',
+                  sortingModel: [
+                    {
+                      field: 'startDate',
+                      sort: 'desc',
+                    },
+                  ],
                 },
-              ],
+              },
             },
-          }}
+            {
+              label: t('thesesTableToolbar:actionNeeded'),
+              items: {
+                ...(availableActionNeeded?.suggested
+                  ? {
+                      suggested: {
+                        filterModel: {
+                          items: [
+                            {
+                              field: 'status',
+                              operator: 'isAnyOf',
+                              value: ['SUGGESTED'],
+                            },
+                          ],
+                        },
+                        sortingModel: [
+                          {
+                            field: 'startDate',
+                            sort: 'desc',
+                          },
+                        ],
+                      },
+                    }
+                  : {}),
+                ...(availableActionNeeded?.missingSecondGrader
+                  ? {
+                      missingSecondGrader: {
+                        filterModel: {
+                          items: [
+                            {
+                              field: 'missingSecondGrader',
+                              operator: 'is',
+                              value: true,
+                            },
+                          ],
+                        },
+                        sortingModel: [
+                          {
+                            field: 'startDate',
+                            sort: 'desc',
+                          },
+                        ],
+                      },
+                    }
+                  : {}),
+                ...(availableActionNeeded?.lastMilestone
+                  ? {
+                      lastMilestone: {
+                        filterModel: {
+                          items: [
+                            {
+                              field: 'lastMilestone',
+                              operator: 'is',
+                              value: true,
+                            },
+                          ],
+                        },
+                        sortingModel: [
+                          {
+                            field: 'startDate',
+                            sort: 'desc',
+                          },
+                        ],
+                      },
+                    }
+                  : {}),
+                ...(availableActionNeeded?.ethesisReadyStudentStarted
+                  ? {
+                      ethesisReadyStudentStarted: {
+                        filterModel: {
+                          items: [
+                            {
+                              field: 'ethesisReadyStudentStarted',
+                              operator: 'is',
+                              value: true,
+                            },
+                          ],
+                        },
+                        sortingModel: [
+                          {
+                            field: 'startDate',
+                            sort: 'desc',
+                          },
+                        ],
+                      },
+                    }
+                  : {}),
+              },
+            },
+          ].filter((group) => Object.keys(group.items).length > 0)}
         ></PrethesisTable>
         <Box ref={footerRef}>
           <ViewThesisFooter

@@ -371,8 +371,21 @@
       "all": {
         "name": "All",
         "tooltip": "Shows all theses"
+      },
+      "missingSecondGrader": {
+        "name": "Missing second grader",
+        "tooltip": "Shows theses that have less than two graders assigned"
+      },
+      "lastMilestone": {
+        "name": "On final milestone",
+        "tooltip": "Shows theses that are currently on their final milestone"
+      },
+      "ethesisReadyStudentStarted": {
+        "name": "Permission to submit",
+        "tooltip": "Shows theses that have permission to be submitted"
       }
-    }
+    },
+    "actionNeeded": "Action needed"
   },
   "thesesPage": {
     "approvalRequiredTooltip": "This thesis requires actions from you.",

@@ -79,6 +79,9 @@ export interface ThesisFiltersOptions {
   onlySeminarSupervised?: boolean
   onlyAuthored?: boolean
   search?: string
+  missingSecondGrader?: boolean
+  lastMilestone?: boolean
+  ethesisReadyStudentStarted?: boolean
 }
 
 export const buildThesisIncludes = (
@@ -256,6 +259,9 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
     onlySupervised,
     onlySeminarSupervised,
     onlyAuthored,
+    missingSecondGrader,
+    lastMilestone,
+    ethesisReadyStudentStarted,
   } = options
 
   const whereClause: any = {}
@@ -306,7 +312,34 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
     )
   }
 
-  // 7. Permissions
+  // 7. Custom complex filters
+  if (missingSecondGrader) {
+    andConditions.push(
+      literal(`(SELECT COUNT(*) FROM graders WHERE graders.thesis_id = "Thesis".id) < 2`)
+    )
+  }
+
+  if (lastMilestone) {
+    andConditions.push(
+      { status: 'IN_PROGRESS' },
+      literal(
+        `(
+          (SELECT jsonb_array_length(options->'milestones'->'versions'->CAST(COALESCE("Thesis"."milestone_version", -1) AS int)) FROM "programs" WHERE id = "Thesis"."program_id") > 0
+          AND
+          "Thesis"."milestone" = (SELECT jsonb_array_length(options->'milestones'->'versions'->CAST(COALESCE("Thesis"."milestone_version", -1) AS int)) FROM "programs" WHERE id = "Thesis"."program_id")
+        )`
+      )
+    )
+  }
+
+  if (ethesisReadyStudentStarted) {
+    andConditions.push(
+      { status: 'ETHESIS' },
+      literal(`(SELECT options->>'allowStudentStartedProcess' FROM "programs" WHERE id = "Thesis"."program_id") = 'true'`)
+    )
+  }
+
+  // 8. Permissions
   const permissionCondition = await buildPermissionsConditions(
     actionUser,
     departmentId,
@@ -705,3 +738,121 @@ export const transformThesisData = (
   thesisData.map((thesis, idx) =>
     transformSingleThesis(thesis, graderTitles[idx])
   )
+
+export const getAvailableMilestones = async (
+  baseWhere: any,
+  bindParams: any
+): Promise<number[]> => {
+  let canHaveMilestones = true
+  if (baseWhere.status) {
+    if (Array.isArray(baseWhere.status)) {
+      if (!baseWhere.status.includes('IN_PROGRESS')) {
+        canHaveMilestones = false
+      }
+    } else if (baseWhere.status !== 'IN_PROGRESS') {
+      canHaveMilestones = false
+    }
+  }
+
+  if (!canHaveMilestones) return []
+
+  const distinctMilestones = await Thesis.findAll({
+    where: {
+      ...baseWhere,
+      milestone: { [Op.not]: null },
+      status: 'IN_PROGRESS',
+    },
+    attributes: ['milestone'],
+    group: ['milestone'],
+    raw: true,
+    bind: bindParams,
+  })
+
+  return distinctMilestones
+    .map((t: any) => t.milestone)
+    .filter((m) => m !== null && m !== undefined)
+    .sort((a, b) => a - b)
+}
+
+export const getAvailableActionNeeded = async (
+  baseWhere: any,
+  bindParams: any
+) => {
+  const baseAnd = baseWhere[Op.and]
+    ? Array.isArray(baseWhere[Op.and])
+      ? baseWhere[Op.and]
+      : [baseWhere[Op.and]]
+    : []
+
+  const [
+    hasSuggested,
+    hasMissingSecondGrader,
+    hasLastMilestone,
+    hasEthesisReadyStudentStarted,
+  ] = await Promise.all([
+    Thesis.findOne({
+      where: {
+        ...baseWhere,
+        [Op.and]: [...baseAnd, { status: 'SUGGESTED' }],
+      },
+      attributes: ['id'],
+      raw: true,
+      bind: bindParams,
+    }),
+    Thesis.findOne({
+      where: {
+        ...baseWhere,
+        [Op.and]: [
+          ...baseAnd,
+          literal(
+            `(SELECT COUNT(*) FROM graders WHERE graders.thesis_id = "Thesis".id) < 2`
+          ),
+        ],
+      },
+      attributes: ['id'],
+      raw: true,
+      bind: bindParams,
+    }),
+    Thesis.findOne({
+      where: {
+        ...baseWhere,
+        [Op.and]: [
+          ...baseAnd,
+          { status: 'IN_PROGRESS' },
+          literal(
+            `(
+              (SELECT jsonb_array_length(options->'milestones'->'versions'->CAST(COALESCE("Thesis"."milestone_version", -1) AS int)) FROM "programs" WHERE id = "Thesis"."program_id") > 0
+              AND
+              "Thesis"."milestone" = (SELECT jsonb_array_length(options->'milestones'->'versions'->CAST(COALESCE("Thesis"."milestone_version", -1) AS int)) FROM "programs" WHERE id = "Thesis"."program_id")
+            )`
+          ),
+        ],
+      },
+      attributes: ['id'],
+      raw: true,
+      bind: bindParams,
+    }),
+    Thesis.findOne({
+      where: {
+        ...baseWhere,
+        [Op.and]: [
+          ...baseAnd,
+          { status: 'ETHESIS' },
+          literal(
+            `(SELECT options->>'allowStudentStartedProcess' FROM "programs" WHERE id = "Thesis"."program_id") = 'true'`
+          ),
+        ],
+      },
+      attributes: ['id'],
+      raw: true,
+      bind: bindParams,
+    }),
+  ])
+
+  return {
+    suggested: !!hasSuggested,
+    missingSecondGrader: !!hasMissingSecondGrader,
+    lastMilestone: !!hasLastMilestone,
+    ethesisReadyStudentStarted: !!hasEthesisReadyStudentStarted,
+  }
+}

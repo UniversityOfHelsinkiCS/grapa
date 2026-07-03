@@ -36,6 +36,9 @@ import {
   Select,
   FormControl,
   InputLabel,
+  Tabs,
+  Tab,
+  OutlinedInput,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { StatusLocale } from '../../types'
@@ -48,6 +51,7 @@ import {
   ArrowUpward,
   Sort,
   Bedtime,
+  Close,
 } from '@mui/icons-material'
 import usePrograms from '../../hooks/usePrograms'
 import { PrethesisHelp } from '../PrethesisHelp/PrethesisHelp'
@@ -135,34 +139,81 @@ const PrethesisTable = ({
   }
 
   /* FilterView */
-  const [activeFilterView, setActiveFilterView] = React.useState(
-    !isStudentView && filterViews ? Object.keys(filterViews)[0] : null
-  )
+  const getFirstFilterView = () => {
+    if (!filterViews || !Array.isArray(filterViews) || filterViews.length === 0)
+      return null
+    return Object.keys(filterViews[0].items)[0]
+  }
 
-  const [debounceTimeout, setDebounceTimeout] = React.useState(null)
+  const getFilterViewData = (viewId: string | null) => {
+    if (!filterViews || !Array.isArray(filterViews) || !viewId) return null
+    for (const group of filterViews) {
+      if (group.items[viewId]) return group.items[viewId]
+    }
+    return null
+  }
+
+  const [activeBaseView, setActiveBaseView] = React.useState(
+    !isStudentView ? getFirstFilterView() : null
+  )
+  const [activeToggles, setActiveToggles] = React.useState<string[]>([])
+
+  const [debounceTimeout, setDebounceTimeout] = React.useState<any>(null)
 
   const [activeMilestoneFilter, setActiveMilestoneFilter] = React.useState<
     string | null
   >('all')
 
+  const getCombinedFilterItems = (
+    baseView: string | null,
+    toggles: string[],
+    milestone: string | null
+  ) => {
+    const items: any[] = []
+
+    const baseData = getFilterViewData(baseView)
+    if (baseData) items.push(...baseData.filterModel.items)
+
+    for (const t of toggles) {
+      const toggleData = getFilterViewData(t)
+      if (toggleData) items.push(...toggleData.filterModel.items)
+    }
+
+    if (milestone && milestone !== 'all') {
+      items.push({
+        field: 'milestone',
+        operator: 'equals',
+        value: milestone,
+      })
+    }
+
+    return items
+  }
+
   if (!isStudentView) {
     React.useEffect(() => {
-      onFilterChange(filterViews[activeFilterView].filterModel)
-      onSortingChange(filterViews[activeFilterView].sortingModel)
+      const data = getFilterViewData(activeBaseView)
+      if (data) {
+        onFilterChange({
+          items: getCombinedFilterItems(activeBaseView, activeToggles, activeMilestoneFilter),
+        })
+        onSortingChange(data.sortingModel)
+      }
     }, [])
   }
 
   /* Sorting */
 
-  const [sortedField, setSortedField] = React.useState(
-    !isStudentView && filterViews && activeFilterView
-      ? filterViews[activeFilterView].sortingModel[0]?.field || null
+  const activeData =
+    !isStudentView && activeBaseView
+      ? getFilterViewData(activeBaseView)
       : null
+
+  const [sortedField, setSortedField] = React.useState(
+    activeData?.sortingModel[0]?.field || null
   )
   const [sortedDir, setSortedDir] = React.useState(
-    !isStudentView && filterViews && activeFilterView
-      ? filterViews[activeFilterView].sortingModel[0]?.sort || 'asc'
-      : 'asc'
+    activeData?.sortingModel[0]?.sort || 'asc'
   )
 
   /* New thesis button */
@@ -627,44 +678,114 @@ const PrethesisTable = ({
           </Button>
         )}
 
-        {!isStudentView && filterViews && (
+        {!isStudentView && filterViews && Array.isArray(filterViews) && (
           <Stack
-            direction="row"
+            direction="column"
             sx={{
               gap: 1,
+              alignItems: 'flex-start',
             }}
           >
-            {Object.keys(filterViews).map((filterView) => (
-              <Tooltip
-                key={filterView}
-                title={t(
-                  `thesesTableToolbar:filterViews:${filterView}:tooltip`
-                )}
+            {filterViews.map((group, index) => (
+              <Stack
+                key={index}
+                direction="row"
+                sx={{ gap: 1, alignItems: 'center' }}
               >
-                <Chip
-                  variant={
-                    activeFilterView == filterView ? 'filled' : 'outlined'
-                  }
-                  size="small"
-                  sx={{
-                    fontSize: '0.85rem',
-                  }}
-                  label={t(`thesesTableToolbar:filterViews:${filterView}:name`)}
-                  onClick={() => {
-                    onFilterChange(filterViews[filterView].filterModel)
-                    setSortedDir(
-                      filterViews[filterView].sortingModel[0]['sort']
-                    )
-                    setSortedField(
-                      filterViews[filterView].sortingModel[0]['field']
-                    )
-                    onSortingChange(filterViews[filterView].sortingModel)
-                    setActiveFilterView(filterView)
-                    setActiveMilestoneFilter('all')
-                    changePage(0)
-                  }}
-                ></Chip>
-              </Tooltip>
+                {group.label && (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 600,
+                      color: 'text.secondary',
+                      minWidth: 100,
+                      textAlign: 'right',
+                      mr: 0.5,
+                    }}
+                  >
+                    {group.label}:
+                  </Typography>
+                )}
+                {Object.keys(group.items).map((filterView) => (
+                  <Tooltip
+                    key={filterView}
+                    title={t(
+                      `thesesTableToolbar:filterViews:${filterView}:tooltip`
+                    )}
+                  >
+                    <Chip
+                      variant={
+                        (index === 0 && activeBaseView === filterView) ||
+                        (index > 0 && activeToggles.includes(filterView))
+                          ? 'filled'
+                          : 'outlined'
+                      }
+                      size="small"
+                      sx={{
+                        fontSize: '0.85rem',
+                        ...(index === 0 && { borderRadius: 1 }),
+                      }}
+                      label={t(
+                        `thesesTableToolbar:filterViews:${filterView}:name`
+                      )}
+                      onClick={() => {
+                        const viewData = group.items[filterView]
+                        let newBase = activeBaseView
+                        let newToggles = [...activeToggles]
+                        let newMilestone = activeMilestoneFilter
+
+                        if (index === 0) {
+                          newBase = filterView
+                          newToggles = []
+                          newMilestone = 'all'
+                          setActiveBaseView(filterView)
+                          setActiveToggles([])
+                          setActiveMilestoneFilter('all')
+                          setSortedDir(viewData.sortingModel[0]['sort'])
+                          setSortedField(viewData.sortingModel[0]['field'])
+                          onSortingChange(viewData.sortingModel)
+                        } else {
+                          if (newToggles.includes(filterView)) {
+                            newToggles = newToggles.filter((t) => t !== filterView)
+                          } else {
+                            newToggles.push(filterView)
+                          }
+                          setActiveToggles(newToggles)
+                        }
+
+                        onFilterChange({
+                          items: getCombinedFilterItems(
+                            newBase,
+                            newToggles,
+                            newMilestone
+                          ),
+                        })
+
+                        changePage(0)
+                      }}
+                    ></Chip>
+                  </Tooltip>
+                ))}
+                {index > 0 && activeToggles.length > 0 && (
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      setActiveToggles([])
+                      onFilterChange({
+                        items: getCombinedFilterItems(
+                          activeBaseView,
+                          [],
+                          activeMilestoneFilter
+                        ),
+                      })
+                      changePage(0)
+                    }}
+                    sx={{ ml: 1, padding: '2px' }}
+                  >
+                    <Close fontSize="small" />
+                  </IconButton>
+                )}
+              </Stack>
             ))}
           </Stack>
         )}
@@ -683,16 +804,11 @@ const PrethesisTable = ({
                 const val = e.target.value as string
                 setActiveMilestoneFilter(val)
                 onFilterChange({
-                  items:
-                    val !== 'all'
-                      ? [
-                          {
-                            field: 'milestone',
-                            operator: 'equals',
-                            value: val,
-                          },
-                        ]
-                      : [],
+                  items: getCombinedFilterItems(
+                    activeBaseView,
+                    activeToggles,
+                    val
+                  ),
                 })
                 changePage(0)
               }}

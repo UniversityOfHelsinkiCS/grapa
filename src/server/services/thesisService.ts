@@ -17,6 +17,8 @@ import {
   getGraderTitles,
   getSortByColumn,
   getAndCreateExtUsers,
+  getAvailableMilestones,
+  getAvailableActionNeeded,
 } from './thesisHelpers'
 import { transformThesisData, transformSingleThesis } from './thesisHelpers'
 import { User as UserType, ThesisData } from '../types'
@@ -72,6 +74,9 @@ export interface GetPaginatedThesesParams {
   hideUserProperties?: boolean
   search?: string
   milestone?: string | number
+  missingSecondGrader?: boolean
+  lastMilestone?: boolean
+  ethesisReadyStudentStarted?: boolean
 }
 
 export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
@@ -95,6 +100,9 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     hideUserProperties,
     search,
     milestone,
+    missingSecondGrader,
+    lastMilestone,
+    ethesisReadyStudentStarted,
   } = params
 
   const allowedLanguages = ['en', 'fi', 'sv']
@@ -147,6 +155,9 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     onlySupervised: String(onlySupervised) === 'true',
     onlySeminarSupervised: String(onlySeminarSupervised) === 'true',
     search: formattedSearch || undefined,
+    missingSecondGrader,
+    lastMilestone,
+    ethesisReadyStudentStarted,
   })
 
   const fullWhere = { ...baseWhere }
@@ -201,43 +212,23 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
 
   if (hideUserProperties) cleanThesisBulk(theses)
 
-  let canHaveMilestones = true
-  if (baseWhere.status) {
-    if (Array.isArray(baseWhere.status)) {
-      if (!baseWhere.status.includes('IN_PROGRESS')) {
-        canHaveMilestones = false
-      }
-    } else if (baseWhere.status !== 'IN_PROGRESS') {
-      canHaveMilestones = false
-    }
+  const bindParams = {
+    language,
+    search: formattedSearch,
+    authorSearch: authorsPartial ? `%${authorsPartial.trim()}%` : null,
   }
 
-  let availableMilestones: number[] = []
+  const [availableMilestones, availableActionNeeded] = await Promise.all([
+    getAvailableMilestones(baseWhere, bindParams),
+    getAvailableActionNeeded(baseWhere, bindParams),
+  ])
 
-  if (canHaveMilestones) {
-    const distinctMilestones = await Thesis.findAll({
-      where: {
-        ...baseWhere,
-        milestone: { [Op.not]: null },
-        status: 'IN_PROGRESS',
-      },
-      attributes: ['milestone'],
-      group: ['milestone'],
-      raw: true,
-      bind: {
-        language,
-        search: formattedSearch,
-        authorSearch: authorsPartial ? `%${authorsPartial.trim()}%` : null,
-      },
-    })
-
-    availableMilestones = distinctMilestones
-      .map((t: any) => t.milestone)
-      .filter((m) => m !== null && m !== undefined)
-      .sort((a, b) => a - b)
+  return {
+    theses,
+    totalCount: count,
+    availableMilestones,
+    availableActionNeeded,
   }
-
-  return { theses, totalCount: count, availableMilestones }
 }
 
 export const createThesis = async (thesisData: ThesisData, t: Transaction) => {
