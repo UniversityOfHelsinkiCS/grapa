@@ -87,6 +87,9 @@ studentRouter.get('/theses', async (req: RequestWithUser, res: any) => {
     language: req.query.language as string,
     limit: req.query.limit as string,
     offset: req.query.offset as string,
+    missingSecondGrader: req.query.missingSecondGrader === 'true',
+    lastMilestone: req.query.lastMilestone === 'true',
+    ethesisReadyStudentStarted: req.query.ethesisReadyStudentStarted === 'true',
     hideUserProperties: true,
   })
 
