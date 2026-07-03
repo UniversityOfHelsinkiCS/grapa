@@ -167,7 +167,9 @@ export const ProgressView = ({
               sx={{
                 flexGrow: label.milestone ? 1 : 0.1,
                 borderTop: steps[index].milestone
-                  ? '0.25rem solid #9e9e9e'
+                  ? step > index
+                    ? '0.25rem solid #005a94'
+                    : '0.25rem solid #9e9e9e'
                   : 'none',
                 maxWidth: '20rem',
                 color:
