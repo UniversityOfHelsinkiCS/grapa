@@ -488,6 +488,9 @@
   "viewThesisFooter": {
     "thesisLate": "The thesis has exceeded its target date by {difference} days. The target date for the thesis is: ",
     "thesisComplete": "The thesis is complete",
-    "thesisIdle": "The thesis is idle"
+    "thesisIdle": "The thesis is idle",
+    "mastersThesis": "Master's Thesis",
+    "bachelorsThesis": "Bachelor's Thesis",
+    "requiresApproval": "Requires your approval"
   }
 }

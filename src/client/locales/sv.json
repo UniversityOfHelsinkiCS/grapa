@@ -488,6 +488,9 @@
   "viewThesisFooter": {
     "thesisLate": "Avhandlingen har överskridit sitt måldatum med {difference} dygn. Avhandlingens måldatum är: ",
     "thesisComplete": "Avhandlingen är färdig",
-    "thesisIdle": "Avhandlingen är i viloläge"
+    "thesisIdle": "Avhandlingen är i viloläge",
+    "mastersThesis": "Magisteravhandling",
+    "bachelorsThesis": "Kandidatuppsats",
+    "requiresApproval": "Kräver ditt godkännande"
   }
 }

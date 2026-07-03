@@ -487,6 +487,9 @@
   "viewThesisFooter": {
     "thesisLate": "Tutkielma on ylittänyt tavoitepäivän {difference} vuorokaudella. Tutkielman tavoitepäivä on: ",
     "thesisComplete": "Tutkielma on valmis",
-    "thesisIdle": "Tutkielma on lepotilassa"
+    "thesisIdle": "Tutkielma on lepotilassa",
+    "mastersThesis": "Maisterintutkielma",
+    "bachelorsThesis": "Kandidaatintutkielma",
+    "requiresApproval": "Vaatii hyväksyntääsi"
   }
 }
