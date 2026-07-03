@@ -18,6 +18,7 @@ import {
   Chip,
   Alert,
   Divider,
+  ButtonBase,
 } from '@mui/material'
 import Popup from '../Common/Popup'
 
@@ -55,7 +56,12 @@ import {
 } from '../../hooks/useThesesMutation'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { ProgressView } from './Progress/ProgressView'
-import { canApprove, canSetEthesisStudentStarted } from '../../util/permissions'
+import {
+  canApprove,
+  canSetEthesisStudentStarted,
+  isProgramApprover,
+} from '../../util/permissions'
+import { NavLink } from 'react-router-dom'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
@@ -105,11 +111,15 @@ const ProgramTrack = ({
   studyTrackId,
   isStudentView,
   thesisProgram,
+  currentUser,
+  thesis,
 }: {
   programId: string
   studyTrackId: string
   isStudentView?: boolean
   thesisProgram?: any
+  currentUser?: User
+  thesis?: Thesis
 }) => {
   const { i18n } = useTranslation()
   const { programs, isLoading: programsLoading } = usePrograms({
@@ -129,10 +139,7 @@ const ProgramTrack = ({
       sx={{
         display: 'flex',
         alignItems: 'center',
-        fontSize: '11pt',
-        fontWeight: 500,
-        textTransform: 'capitalize',
-        gap: 1,
+        gap: 0.5,
         mb: 2,
         color: 'black',
       }}
@@ -142,23 +149,68 @@ const ProgramTrack = ({
         sx={{ fontFamily: 'monospace' }}
         label={program?.id}
       />
-      {program?.name[language as keyof TranslatedName]}
+      <ButtonBase
+        component={NavLink}
+        to={`/programs/${thesis ? thesis.programId : ''}`}
+        disabled={
+          !currentUser ||
+          (currentUser &&
+            thesis &&
+            !currentUser.isAdmin &&
+            isProgramApprover(thesis, currentUser))
+        }
+        sx={{
+          transition: '0.1s',
+          borderRadius: '0.25rem',
+          ':hover': {
+            backgroundColor: '#00000023',
+          },
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: '11pt',
+            fontWeight: 500,
+            textTransform: 'capitalize',
+            p: 1,
+          }}
+        >
+          {program?.name[language as keyof TranslatedName]}
+        </Typography>
+      </ButtonBase>
       {track && (
         <>
           <ChevronRight fontSize="small" />
-          <Typography
-            component="span"
+          <ButtonBase
+            component={NavLink}
+            to={`/study-tracks/${thesis ? thesis.studyTrackId : ''}`}
+            disabled={
+              !currentUser ||
+              (currentUser &&
+                thesis &&
+                !currentUser.isAdmin &&
+                isProgramApprover(thesis, currentUser))
+            }
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              fontSize: '11pt',
-              fontWeight: 400,
-              textTransform: 'capitalize',
-              gap: 1,
+              transition: '0.1s',
+              borderRadius: '0.25rem',
+              ':hover': {
+                backgroundColor: '#00000023',
+              },
             }}
           >
-            {track.name[language as keyof TranslatedName]}
-          </Typography>
+            <Typography
+              component="span"
+              sx={{
+                fontSize: '11pt',
+                fontWeight: 400,
+                textTransform: 'capitalize',
+                p: 1,
+              }}
+            >
+              {track.name[language as keyof TranslatedName]}
+            </Typography>
+          </ButtonBase>
         </>
       )}
     </Typography>
@@ -646,6 +698,8 @@ const ViewThesisFooter = (
               studyTrackId={thesis.studyTrackId!}
               isStudentView={isStudentView}
               thesisProgram={thesis.program}
+              currentUser={currentUser}
+              thesis={thesis}
             />
             <StatusRow thesis={thesis} />
           </Stack>
