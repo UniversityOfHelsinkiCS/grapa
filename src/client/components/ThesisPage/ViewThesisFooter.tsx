@@ -41,7 +41,14 @@ import { useSingleThesis } from '../../hooks/useTheses'
 import { BASE_PATH, THESIS_STATUSES } from '../../../config'
 import EventsView from '../EventsView/EventsView'
 import { useState } from 'react'
-import { ChevronRight, ExpandLess, ExpandMore } from '@mui/icons-material'
+import {
+  Bedtime,
+  Check,
+  ChevronRight,
+  ExpandLess,
+  ExpandMore,
+  PriorityHigh,
+} from '@mui/icons-material'
 import {
   useChangeThesisStatusMutation,
   useEditThesisMutation,
@@ -684,15 +691,21 @@ const ViewThesisFooter = (
             </Alert>
           )}
 
-          {thesis.status == 'COMPLETED' && isLate != false && (
-            <Alert severity="info" sx={{ my: 1.5 }}>
+          {thesis.status == 'COMPLETED' && (
+            <Alert severity="info" sx={{ my: 1.5 }} icon={<Check />}>
               {t('viewThesisFooter:thesisComplete')}
             </Alert>
           )}
 
           {thesis.isIdle && (
-            <Alert severity="info" sx={{ my: 1.5 }}>
+            <Alert severity="info" sx={{ my: 1.5 }} icon={<Bedtime />}>
               {t('viewThesisFooter:thesisIdle')}
+            </Alert>
+          )}
+
+          {thesis && currentUser && canApprove(thesis, currentUser) && (
+            <Alert color="warning" icon={<PriorityHigh />}>
+              {t('viewThesisFooter:requiresApproval')}
             </Alert>
           )}
 
