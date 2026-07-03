@@ -207,7 +207,6 @@ const PrethesisTable = ({
   }
 
   /* Sorting */
-
   const activeData =
     !isStudentView && activeBaseView ? getFilterViewData(activeBaseView) : null
 
