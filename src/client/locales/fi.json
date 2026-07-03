@@ -31,6 +31,7 @@
     "approveButtonConfirmContent": "Oletko varma, että haluat hyväksyä tämän tutkielmasuunnitelman?",
     "approveBulkButtonConfirmContent": "Oletko varma, että haluat hyväksyä nämä tutkielmasuunnitelmat?",
     "editButton": "Muokkaa",
+    "wakeUpFromSleepButton": "Herätä lepotilasta",
     "sendDraftButton": "Lähetä ehdotuksena",
     "sendDraftButtonConfirmTitle": "Vahvista ehdotuksen lähetys",
     "sendDraftButtonConfirmContent": "Oletko varma, että haluat lähettää tämän luonnoksen ehdotuksena?",

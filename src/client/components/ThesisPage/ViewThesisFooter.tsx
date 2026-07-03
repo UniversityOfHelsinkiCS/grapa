@@ -42,7 +42,10 @@ import { BASE_PATH, THESIS_STATUSES } from '../../../config'
 import EventsView from '../EventsView/EventsView'
 import { useState } from 'react'
 import { ChevronRight, ExpandLess, ExpandMore } from '@mui/icons-material'
-import { useChangeThesisStatusMutation } from '../../hooks/useThesesMutation'
+import {
+  useChangeThesisStatusMutation,
+  useEditThesisMutation,
+} from '../../hooks/useThesesMutation'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { ProgressView } from './Progress/ProgressView'
 import { canApprove, canSetEthesisStudentStarted } from '../../util/permissions'
@@ -441,6 +444,7 @@ const ViewThesisFooter = (
   const { events } = useEvents({ thesisId, enabled: !isStudentView })
   const { mutateAsync: changeThesisStatus } =
     useChangeThesisStatusMutation(isStudentView)
+  const { mutateAsync: editThesis } = useEditThesisMutation(isStudentView)
 
   const [pendingAction, setPendingAction] = useState<
     'approve' | 'sendDraft' | null
@@ -479,101 +483,118 @@ const ViewThesisFooter = (
               justifyContent: 'end',
             }}
           >
-            {thesis &&
-              currentUser &&
-              (isStudentView
-                ? thesis.status === THESIS_STATUSES.DRAFT
-                : true) && (
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  {canApprove(thesis, currentUser!) && (
-                    <Button
-                      variant="outlined"
-                      sx={{
-                        color: '#000',
-                        backgroundColor: '#fcd34d',
+            {thesis && currentUser && (
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                {thesis.isIdle && (
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      fontSize: '12px',
+                      height: 24,
+                      px: 2,
+                      fontWeight: 600,
+                    }}
+                    onClick={() => {
+                      void editThesis({
+                        thesisId: thesis.id as string,
+                        data: { ...thesis, isIdle: false },
+                      })
+                    }}
+                  >
+                    {t('wakeUpFromSleepButton')}
+                  </Button>
+                )}
+                {canApprove(thesis, currentUser!) && (
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      color: '#000',
+                      backgroundColor: '#fcd34d',
+                      borderColor: '#000',
+                      fontSize: '12px',
+                      height: 24,
+                      px: 2,
+                      fontWeight: 600,
+                    }}
+                    onClick={() => setPendingAction('approve')}
+                  >
+                    {t('approveButton')}
+                  </Button>
+                )}
+                {isStudentView && thesis.status === THESIS_STATUSES.DRAFT && (
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      borderColor: '#000',
+                      fontSize: '12px',
+                      color: '#000',
+                      height: 24,
+                      px: 2,
+                      fontWeight: 600,
+                      '&:hover': {
+                        backgroundColor: '#000',
                         borderColor: '#000',
-                        fontSize: '12px',
-                        height: 24,
-                        px: 2,
-                        fontWeight: 600,
-                      }}
-                      onClick={() => setPendingAction('approve')}
+                        color: '#FFF',
+                      },
+                    }}
+                    onClick={() => setPendingAction('sendDraft')}
+                  >
+                    {t('sendDraftButton')}
+                  </Button>
+                )}
+                {!thesis.program?.options?.hideSendToEthesis &&
+                  !isStudentView &&
+                  (thesis.program?.options?.useMilestones
+                    ? canSetEthesisStudentStarted(thesis, currentUser!)
+                    : thesis.status === THESIS_STATUSES.IN_PROGRESS) && (
+                    <Tooltip
+                      title={
+                        !ethesisReady
+                          ? t('thesisForm:needSecondGraderForEthesis')
+                          : ''
+                      }
                     >
-                      {t('approveButton')}
-                    </Button>
-                  )}
-                  {isStudentView && (
-                    <Button
-                      variant="outlined"
-                      sx={{
-                        borderColor: '#000',
-                        fontSize: '12px',
-                        color: '#000',
-                        height: 24,
-                        px: 2,
-                        fontWeight: 600,
-                        '&:hover': {
-                          backgroundColor: '#000',
-                          borderColor: '#000',
-                          color: '#FFF',
-                        },
-                      }}
-                      onClick={() => setPendingAction('sendDraft')}
-                    >
-                      {t('sendDraftButton')}
-                    </Button>
-                  )}
-                  {!thesis.program?.options?.hideSendToEthesis &&
-                    !isStudentView &&
-                    (thesis.program?.options?.useMilestones
-                      ? canSetEthesisStudentStarted(thesis, currentUser!)
-                      : thesis.status === THESIS_STATUSES.IN_PROGRESS) && (
-                      <Tooltip
-                        title={
-                          !ethesisReady
-                            ? t('thesisForm:needSecondGraderForEthesis')
-                            : ''
-                        }
-                      >
-                        <Box component="span">
-                          <Button
-                            variant="outlined"
-                            disabled={!ethesisReady}
-                            onClick={() => {
-                              setEthesisTargetStatus(
-                                thesis.program?.options
-                                  ?.allowStudentStartedProcess
-                                  ? (THESIS_STATUSES.ETHESIS as ThesisStatus)
-                                  : THESIS_STATUSES.ETHESIS_SENT
-                              )
-                              setEthesisDialogOpen(true)
-                            }}
-                            sx={{
-                              color: '#fff',
-                              backgroundColor: '#000',
+                      <Box component="span">
+                        <Button
+                          variant="outlined"
+                          disabled={!ethesisReady}
+                          onClick={() => {
+                            setEthesisTargetStatus(
+                              thesis.program?.options
+                                ?.allowStudentStartedProcess
+                                ? (THESIS_STATUSES.ETHESIS as ThesisStatus)
+                                : THESIS_STATUSES.ETHESIS_SENT
+                            )
+                            setEthesisDialogOpen(true)
+                          }}
+                          sx={{
+                            color: '#fff',
+                            backgroundColor: '#000',
+                            borderColor: '#000',
+                            fontSize: '12px',
+                            height: 24,
+                            px: 2,
+                            fontWeight: 600,
+                            '&:hover': {
+                              backgroundColor: '#fff',
                               borderColor: '#000',
-                              fontSize: '12px',
-                              height: 24,
-                              px: 2,
-                              fontWeight: 600,
-                              '&:hover': {
-                                backgroundColor: '#fff',
-                                borderColor: '#000',
-                                color: '#000',
-                              },
-                              '&.Mui-disabled': {
-                                color: 'rgba(255, 255, 255, 0.5)',
-                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                              },
-                            }}
-                          >
-                            {thesis.program?.options?.allowStudentStartedProcess
-                              ? t('thesisForm:setEthesisStudentStarted')
-                              : t('thesisForm:setSentToEthesis')}
-                          </Button>
-                        </Box>
-                      </Tooltip>
-                    )}
+                              color: '#000',
+                            },
+                            '&.Mui-disabled': {
+                              color: 'rgba(255, 255, 255, 0.5)',
+                              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            },
+                          }}
+                        >
+                          {thesis.program?.options?.allowStudentStartedProcess
+                            ? t('thesisForm:setEthesisStudentStarted')
+                            : t('thesisForm:setSentToEthesis')}
+                        </Button>
+                      </Box>
+                    </Tooltip>
+                  )}
+                {(!isStudentView ||
+                  thesis.status === THESIS_STATUSES.DRAFT) && (
                   <Button
                     variant="outlined"
                     sx={{
@@ -586,6 +607,10 @@ const ViewThesisFooter = (
                   >
                     {t('editButton')}
                   </Button>
+                )}
+
+                {(!isStudentView ||
+                  thesis.status === THESIS_STATUSES.DRAFT) && (
                   <Button
                     variant="contained"
                     color="error"
@@ -600,8 +625,9 @@ const ViewThesisFooter = (
                   >
                     {t('deleteButton')}
                   </Button>
-                </Box>
-              )}
+                )}
+              </Box>
+            )}
           </Stack>
 
           <Stack
@@ -728,12 +754,12 @@ const ViewThesisFooter = (
           }
           onSubmit={() => {
             if (pendingAction === 'approve') {
-              changeThesisStatus({
+              void changeThesisStatus({
                 theses: [thesis],
                 status: THESIS_STATUSES.IN_PROGRESS,
               })
             } else if (pendingAction === 'sendDraft') {
-              changeThesisStatus({
+              void changeThesisStatus({
                 theses: [thesis],
                 status: THESIS_STATUSES.SUGGESTED,
               })
@@ -761,7 +787,7 @@ const ViewThesisFooter = (
           onSubmit={() => {
             setEthesisDialogOpen(false)
             if (ethesisTargetStatus) {
-              changeThesisStatus({
+              void changeThesisStatus({
                 theses: [thesis],
                 status: ethesisTargetStatus,
               })

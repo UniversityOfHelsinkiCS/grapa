@@ -27,6 +27,7 @@
     "enabled": "Aktiverad",
     "otherSettings": "Andra inställningar",
     "editButton": "Redigera",
+    "wakeUpFromSleepButton": "Väck från viloläge",
     "sendDraftButton": "Skicka förslag",
     "sendDraftButtonConfirmTitle": "Bekräfta sändning av förslag",
     "sendDraftButtonConfirmContent": "Är du säker på att du vill skicka detta utkast som ett förslag?",

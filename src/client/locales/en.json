@@ -27,6 +27,7 @@
     "enabled": "Enabled",
     "otherSettings": "Other settings",
     "editButton": "Edit",
+    "wakeUpFromSleepButton": "Wake up from sleep",
     "sendDraftButton": "Send suggestion",
     "sendDraftButtonConfirmTitle": "Confirm Send Draft",
     "sendDraftButtonConfirmContent": "Are you sure you want to send this draft as a suggestion?",

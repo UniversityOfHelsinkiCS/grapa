@@ -340,10 +340,15 @@ studentRouter.put(
       originalThesis.milestone != thesisData.milestone &&
       !isNaN(thesisData.milestone)
 
-    if (isMilestoneUpdate) {
+    const isIdleUpdate =
+      originalThesis.isIdle !== thesisData.isIdle &&
+      typeof thesisData.isIdle === 'boolean'
+
+    if (isMilestoneUpdate || isIdleUpdate) {
       thesisData = {
         ...originalThesis,
         ...(isMilestoneUpdate && { milestone: thesisData.milestone }),
+        ...(isIdleUpdate && { isIdle: thesisData.isIdle }),
       }
       bypassChecks = true
     }
