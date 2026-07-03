@@ -69,7 +69,8 @@ thesisRouter.get(
       milestone: req.query.milestone as string,
       missingSecondGrader: req.query.missingSecondGrader === 'true',
       lastMilestone: req.query.lastMilestone === 'true',
-      ethesisReadyStudentStarted: req.query.ethesisReadyStudentStarted === 'true',
+      ethesisReadyStudentStarted:
+        req.query.ethesisReadyStudentStarted === 'true',
     })
 
     return res.send(result)
