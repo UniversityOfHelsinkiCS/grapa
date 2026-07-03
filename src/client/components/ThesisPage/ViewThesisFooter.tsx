@@ -467,7 +467,7 @@ const ViewThesisFooter = (
     dayjs(thesis.targetDate).isBefore(dayjs())
       ? dayjs(thesis.targetDate).diff(dayjs(), 'day') * -1
       : 0
-  const isLate = difference && difference > 0
+  const isLate = difference && difference > 30
 
   return (
     <>
@@ -643,15 +643,31 @@ const ViewThesisFooter = (
             <StatusRow thesis={thesis} />
           </Stack>
 
-          <Typography
-            component="h3"
-            sx={{
-              fontSize: '1.5rem',
-              fontWeight: 800,
-            }}
+          <Stack
+            direction="row"
+            sx={{ alignItems: 'center', gap: 1, flexWrap: 'wrap' }}
           >
-            {thesis.topic}
-          </Typography>
+            <Typography
+              component="h3"
+              sx={{
+                fontSize: '1.5rem',
+                fontWeight: 800,
+              }}
+            >
+              {thesis.topic}
+            </Typography>
+            {thesis?.program?.options && (
+              <Chip
+                size="small"
+                variant="outlined"
+                label={
+                  thesis?.program?.options?.isBachelorProgram
+                    ? t('viewThesisFooter:bachelorsThesis')
+                    : t('viewThesisFooter:mastersThesis')
+                }
+              ></Chip>
+            )}
+          </Stack>
 
           <Authors authors={thesis.authors} />
 
@@ -664,7 +680,7 @@ const ViewThesisFooter = (
                 '{difference}',
                 difference
               )}{' '}
-              {dayjs(thesis.startDate).format('YYYY-MM-DD')}
+              {dayjs(thesis.targetDate).format('YYYY-MM-DD')}
             </Alert>
           )}
 
