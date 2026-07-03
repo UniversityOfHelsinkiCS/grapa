@@ -675,9 +675,9 @@ const PrethesisTable = ({
                 })
                 changePage(0)
               }}
-              sx={{ minHeight: 'auto' }}
-              TabIndicatorProps={{
-                sx: {
+              sx={{
+                minHeight: 'auto',
+                '& .MuiTabs-indicator': {
                   height: 3,
                   borderTopLeftRadius: 3,
                   borderTopRightRadius: 3,
