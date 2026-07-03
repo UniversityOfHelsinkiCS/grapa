@@ -38,7 +38,6 @@ import {
   InputLabel,
   Tabs,
   Tab,
-  OutlinedInput,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { StatusLocale } from '../../types'
@@ -52,6 +51,7 @@ import {
   Sort,
   Bedtime,
   Close,
+  Check,
 } from '@mui/icons-material'
 import usePrograms from '../../hooks/usePrograms'
 import { PrethesisHelp } from '../PrethesisHelp/PrethesisHelp'
@@ -195,7 +195,11 @@ const PrethesisTable = ({
       const data = getFilterViewData(activeBaseView)
       if (data) {
         onFilterChange({
-          items: getCombinedFilterItems(activeBaseView, activeToggles, activeMilestoneFilter),
+          items: getCombinedFilterItems(
+            activeBaseView,
+            activeToggles,
+            activeMilestoneFilter
+          ),
         })
         onSortingChange(data.sortingModel)
       }
@@ -205,9 +209,7 @@ const PrethesisTable = ({
   /* Sorting */
 
   const activeData =
-    !isStudentView && activeBaseView
-      ? getFilterViewData(activeBaseView)
-      : null
+    !isStudentView && activeBaseView ? getFilterViewData(activeBaseView) : null
 
   const [sortedField, setSortedField] = React.useState(
     activeData?.sortingModel[0]?.field || null
@@ -642,238 +644,280 @@ const PrethesisTable = ({
         p: 2,
       }}
     >
-      <Stack direction="row" sx={{ gap: 2, mb: 2, alignItems: 'center' }}>
-        {selectedApprovable.length > 0 && (
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            sx={{
-              fontSize: '12px',
-              height: 24,
-              px: 2,
-              fontWeight: 700,
-              boxShadow: 0,
-            }}
-            onClick={() => setPendingAction('approve')}
-          >
-            {t('approveButton', 'Approve')} ({selectedApprovable.length})
-          </Button>
-        )}
+      <Stack direction="column" sx={{ mb: 2 }}>
+        {/* Row 1: Main Views and Actions */}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            borderBottom: 1,
+            borderColor: 'divider',
+            mb: 2,
+          }}
+        >
+          {/* Base View Tabs */}
+          {!isStudentView &&
+          filterViews &&
+          Array.isArray(filterViews) &&
+          filterViews[0] ? (
+            <Tabs
+              value={activeBaseView}
+              onChange={(_, newValue) => {
+                const viewData = filterViews[0].items[newValue]
+                setActiveBaseView(newValue)
+                setActiveToggles([])
+                setActiveMilestoneFilter('all')
+                setSortedDir(viewData.sortingModel[0]['sort'])
+                setSortedField(viewData.sortingModel[0]['field'])
+                onSortingChange(viewData.sortingModel)
+                onFilterChange({
+                  items: getCombinedFilterItems(newValue, [], 'all'),
+                })
+                changePage(0)
+              }}
+              sx={{ minHeight: 'auto' }}
+              TabIndicatorProps={{
+                sx: {
+                  height: 3,
+                  borderTopLeftRadius: 3,
+                  borderTopRightRadius: 3,
+                },
+              }}
+            >
+              {Object.keys(filterViews[0].items).map((filterView) => (
+                <Tab
+                  key={filterView}
+                  value={filterView}
+                  label={t(`thesesTableToolbar:filterViews:${filterView}:name`)}
+                  sx={{
+                    textTransform: 'none',
+                    minHeight: 'auto',
+                    py: 1.5,
+                    px: 3,
+                    fontSize: '0.95rem',
+                    fontWeight: activeBaseView === filterView ? 700 : 500,
+                  }}
+                />
+              ))}
+            </Tabs>
+          ) : (
+            <Box />
+          )}
 
-        {!noAddThesisButton && !showHiddenNewThesisButton && (
-          <Button
-            variant="contained"
-            size="small"
-            sx={{
-              fontSize: '12px',
-              height: 24,
-              px: 2,
-              fontWeight: 700,
-              boxShadow: 0,
-            }}
-            onClick={initializeNewThesis}
-          >
-            {t('thesesTableToolbar:newThesisButton')}
-          </Button>
-        )}
-
-        {!isStudentView && filterViews && Array.isArray(filterViews) && (
-          <Stack
-            direction="column"
-            sx={{
-              gap: 1,
-              alignItems: 'flex-start',
-            }}
-          >
-            {filterViews.map((group, index) => (
-              <Stack
-                key={index}
-                direction="row"
-                sx={{ gap: 1, alignItems: 'center' }}
+          {/* Global Actions */}
+          <Stack direction="row" sx={{ gap: 2, pb: 1, alignItems: 'center' }}>
+            {selectedApprovable.length > 0 && (
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                sx={{
+                  fontSize: '12px',
+                  height: 24,
+                  px: 2,
+                  fontWeight: 700,
+                  boxShadow: 0,
+                }}
+                onClick={() => setPendingAction('approve')}
               >
-                {group.label && (
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontWeight: 600,
-                      color: 'text.secondary',
-                      minWidth: 100,
-                      textAlign: 'right',
-                      mr: 0.5,
+                {t('approveButton', 'Approve')} ({selectedApprovable.length})
+              </Button>
+            )}
+
+            {!noAddThesisButton && !showHiddenNewThesisButton && (
+              <Button
+                variant="contained"
+                size="small"
+                sx={{
+                  fontSize: '12px',
+                  height: 24,
+                  px: 2,
+                  fontWeight: 700,
+                  boxShadow: 0,
+                }}
+                onClick={initializeNewThesis}
+              >
+                {t('thesesTableToolbar:newThesisButton')}
+              </Button>
+            )}
+
+            {!noAddThesisButton && showHiddenNewThesisButton && (
+              <Box>
+                <IconButton onClick={handleMenuClick} size="small">
+                  <MoreVertIcon />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={openMenu}
+                  onClose={handleMenuClose}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      handleMenuClose()
+                      initializeNewThesis()
                     }}
                   >
-                    {group.label}:
-                  </Typography>
-                )}
-                {Object.keys(group.items).map((filterView) => (
-                  <Tooltip
-                    key={filterView}
-                    title={t(
-                      `thesesTableToolbar:filterViews:${filterView}:tooltip`
-                    )}
-                  >
-                    <Chip
-                      variant={
-                        (index === 0 && activeBaseView === filterView) ||
-                        (index > 0 && activeToggles.includes(filterView))
-                          ? 'filled'
-                          : 'outlined'
-                      }
-                      size="small"
-                      sx={{
-                        fontSize: '0.85rem',
-                        ...(index === 0 && { borderRadius: 1 }),
-                      }}
-                      label={t(
-                        `thesesTableToolbar:filterViews:${filterView}:name`
-                      )}
-                      onClick={() => {
-                        const viewData = group.items[filterView]
-                        let newBase = activeBaseView
-                        let newToggles = [...activeToggles]
-                        let newMilestone = activeMilestoneFilter
+                    {t('thesesTableToolbar:newThesisButton')}
+                  </MenuItem>
+                </Menu>
+              </Box>
+            )}
 
-                        if (index === 0) {
-                          newBase = filterView
-                          newToggles = []
-                          newMilestone = 'all'
-                          setActiveBaseView(filterView)
-                          setActiveToggles([])
-                          setActiveMilestoneFilter('all')
-                          setSortedDir(viewData.sortingModel[0]['sort'])
-                          setSortedField(viewData.sortingModel[0]['field'])
-                          onSortingChange(viewData.sortingModel)
-                        } else {
-                          if (newToggles.includes(filterView)) {
-                            newToggles = newToggles.filter((t) => t !== filterView)
+            <PrethesisHelp
+              text={t('help:table')}
+              sx={{ height: 24 }}
+            ></PrethesisHelp>
+          </Stack>
+        </Box>
+
+        {/* Row 2: Table Filters and Search */}
+        <Stack
+          direction="row"
+          sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+        >
+          {/* Table Data Filters */}
+          <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
+            {!isStudentView &&
+              filterViews &&
+              Array.isArray(filterViews) &&
+              filterViews[1] && (
+                <Stack
+                  direction="row"
+                  sx={{ gap: 1, alignItems: 'center', flexWrap: 'wrap' }}
+                >
+                  {filterViews[1].label && (
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 600,
+                        color: 'text.secondary',
+                        mr: 0.5,
+                      }}
+                    >
+                      {filterViews[1].label}:
+                    </Typography>
+                  )}
+                  {Object.keys(filterViews[1].items).map((filterView) => {
+                    const isChecked = activeToggles.includes(filterView)
+                    return (
+                      <Chip
+                        key={filterView}
+                        {...(isChecked && {
+                          icon: <Check fontSize="small" />,
+                        })}
+                        label={t(
+                          `thesesTableToolbar:filterViews:${filterView}:name`
+                        )}
+                        color={isChecked ? 'primary' : 'default'}
+                        variant={isChecked ? 'filled' : 'outlined'}
+                        onClick={() => {
+                          let newToggles = [...activeToggles]
+                          if (isChecked) {
+                            newToggles = newToggles.filter(
+                              (t) => t !== filterView
+                            )
                           } else {
                             newToggles.push(filterView)
                           }
                           setActiveToggles(newToggles)
-                        }
-
+                          onFilterChange({
+                            items: getCombinedFilterItems(
+                              activeBaseView,
+                              newToggles,
+                              activeMilestoneFilter
+                            ),
+                          })
+                          changePage(0)
+                        }}
+                      />
+                    )
+                  })}
+                  {activeToggles.length > 0 && (
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        setActiveToggles([])
                         onFilterChange({
                           items: getCombinedFilterItems(
-                            newBase,
-                            newToggles,
-                            newMilestone
+                            activeBaseView,
+                            [],
+                            activeMilestoneFilter
                           ),
                         })
-
                         changePage(0)
                       }}
-                    ></Chip>
-                  </Tooltip>
-                ))}
-                {index > 0 && activeToggles.length > 0 && (
-                  <IconButton
-                    size="small"
-                    onClick={() => {
-                      setActiveToggles([])
-                      onFilterChange({
-                        items: getCombinedFilterItems(
-                          activeBaseView,
-                          [],
-                          activeMilestoneFilter
-                        ),
-                      })
-                      changePage(0)
-                    }}
-                    sx={{ ml: 1, padding: '2px' }}
-                  >
-                    <Close fontSize="small" />
-                  </IconButton>
-                )}
-              </Stack>
-            ))}
+                      sx={{ padding: '2px' }}
+                    >
+                      <Close fontSize="small" />
+                    </IconButton>
+                  )}
+                </Stack>
+              )}
+
+            {!isStudentView && availableMilestones.length > 0 && (
+              <FormControl size="small" sx={{ minWidth: 150 }}>
+                <InputLabel id="milestone-filter-label">
+                  {t('thesesTableToolbar:milestone')}
+                </InputLabel>
+                <Select
+                  labelId="milestone-filter-label"
+                  id="milestone-filter"
+                  value={activeMilestoneFilter}
+                  label={t('thesesTableToolbar:milestone')}
+                  onChange={(e) => {
+                    const val = e.target.value as string
+                    setActiveMilestoneFilter(val)
+                    onFilterChange({
+                      items: getCombinedFilterItems(
+                        activeBaseView,
+                        activeToggles,
+                        val
+                      ),
+                    })
+                    changePage(0)
+                  }}
+                >
+                  <MenuItem value="all">{t('thesesTableToolbar:all')}</MenuItem>
+                  {Array.from(
+                    new Set([
+                      ...availableMilestones,
+                      ...(activeMilestoneFilter !== 'all'
+                        ? [Number(activeMilestoneFilter)]
+                        : []),
+                    ])
+                  )
+                    .sort((a, b) => a - b)
+                    .map((milestoneVal) => (
+                      <MenuItem key={milestoneVal} value={String(milestoneVal)}>
+                        {milestoneVal}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            )}
           </Stack>
-        )}
 
-        {!isStudentView && availableMilestones.length > 0 && (
-          <FormControl size="small" sx={{ ml: 'auto', minWidth: 150 }}>
-            <InputLabel id="milestone-filter-label">
-              {t('thesesTableToolbar:milestone')}
-            </InputLabel>
-            <Select
-              labelId="milestone-filter-label"
-              id="milestone-filter"
-              value={activeMilestoneFilter}
-              label={t('thesesTableToolbar:milestone')}
+          {/* Search Input */}
+          {!isStudentView && (
+            <TextField
+              size="small"
+              placeholder={t('thesesTableToolbar:search')}
+              variant="outlined"
               onChange={(e) => {
-                const val = e.target.value as string
-                setActiveMilestoneFilter(val)
-                onFilterChange({
-                  items: getCombinedFilterItems(
-                    activeBaseView,
-                    activeToggles,
-                    val
-                  ),
-                })
-                changePage(0)
+                if (debounceTimeout != null) {
+                  clearTimeout(debounceTimeout)
+                }
+                setDebounceTimeout(
+                  setTimeout(() => {
+                    onSearch(e.target.value)
+                    changePage(0)
+                  }, 400)
+                )
               }}
-            >
-              <MenuItem value="all">{t('thesesTableToolbar:all')}</MenuItem>
-              {Array.from(
-                new Set([
-                  ...availableMilestones,
-                  ...(activeMilestoneFilter !== 'all'
-                    ? [Number(activeMilestoneFilter)]
-                    : []),
-                ])
-              )
-                .sort((a, b) => a - b)
-                .map((milestoneVal) => (
-                  <MenuItem key={milestoneVal} value={String(milestoneVal)}>
-                    {milestoneVal}
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
-        )}
-
-        {!isStudentView && (
-          <TextField
-            size="small"
-            sx={{ ml: availableMilestones.length > 0 ? 0 : 'auto' }}
-            placeholder={t('thesesTableToolbar:search')}
-            variant="outlined"
-            onChange={(e) => {
-              if (debounceTimeout != null) {
-                clearTimeout(debounceTimeout)
-              }
-              setDebounceTimeout(
-                setTimeout(() => {
-                  onSearch(e.target.value)
-                  changePage(0)
-                }, 400)
-              )
-            }}
-          ></TextField>
-        )}
-
-        {!noAddThesisButton && showHiddenNewThesisButton && (
-          <Box sx={{ ml: isStudentView ? 'auto' : 0 }}>
-            <IconButton onClick={handleMenuClick} size="small">
-              <MoreVertIcon />
-            </IconButton>
-            <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
-              <MenuItem
-                onClick={() => {
-                  handleMenuClose()
-                  initializeNewThesis()
-                }}
-              >
-                {t('thesesTableToolbar:newThesisButton')}
-              </MenuItem>
-            </Menu>
-          </Box>
-        )}
-
-        <PrethesisHelp
-          text={t('help:table')}
-          sx={{ ml: 'auto', height: 24 }}
-        ></PrethesisHelp>
+            ></TextField>
+          )}
+        </Stack>
       </Stack>
       <TableContainer>
         <Table
