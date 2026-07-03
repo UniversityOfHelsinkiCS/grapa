@@ -105,6 +105,7 @@ export interface ThesisData {
   waysOfWorkingValidUntil?: string | null
   ethesisDate?: string
   isIdle?: boolean
+  milestoneOrStatusUpdatedAt?: string | Date | null
 }
 
 export interface ThesisStatistics {
