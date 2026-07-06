@@ -1,4 +1,5 @@
 import { Includeable, literal, Op, Order, Transaction } from 'sequelize'
+import dayjs from 'dayjs'
 import { uniqBy } from 'lodash-es'
 import { userFields } from '../routes/config'
 import {
@@ -857,4 +858,83 @@ export const getAvailableActionNeeded = async (
     lastMilestone: !!hasLastMilestone,
     ethesisReadyStudentStarted: !!hasEthesisReadyStudentStarted,
   }
+}
+
+export const escapeCsv = (str: any) => {
+  if (str == null) return ''
+  const stringified = String(str)
+  return /[";\n]/.test(stringified)
+    ? `"${stringified.replace(/"/g, '""')}"`
+    : stringified
+}
+
+const CSV_COLUMNS = [
+  {
+    header: 'Program ID',
+    getValue: (t: ThesisData) => t.programId,
+  },
+
+  { header: 'Topic', getValue: (t: ThesisData) => t.topic },
+  { header: 'Status', getValue: (t: ThesisData) => t.status },
+  {
+    header: 'Start Date',
+    getValue: (t: ThesisData) =>
+      t.startDate ? dayjs(t.startDate).format('YYYY-MM-DD') : '',
+  },
+  {
+    header: 'Target Date',
+    getValue: (t: ThesisData) =>
+      t.targetDate ? dayjs(t.targetDate).format('YYYY-MM-DD') : '',
+  },
+  {
+    header: 'Program',
+    getValue: (t: ThesisData, lang: string) => {
+      const name = t.program?.name
+      if (!name) return t.programId
+      return (
+        name[lang as keyof typeof name] || name.fi || name.en || t.programId
+      )
+    },
+  },
+  {
+    header: 'Authors',
+    getValue: (t: ThesisData) =>
+      t.authors?.map((a) => `${a.lastName} ${a.firstName}`).join(', '),
+  },
+  {
+    header: 'Author Student IDs',
+    getValue: (t: ThesisData) =>
+      t.authors
+        ?.map((a) => a.studentNumber)
+        .filter(Boolean)
+        .join(', '),
+  },
+  {
+    header: 'Supervisors',
+    getValue: (t: ThesisData) =>
+      t.supervisions
+        ?.map((s) => `${s.user?.lastName} ${s.user?.firstName}`)
+        .join(', '),
+  },
+  {
+    header: 'Graders',
+    getValue: (t: ThesisData) =>
+      t.graders
+        ?.map((g) => `${g.user?.lastName} ${g.user?.firstName}`)
+        .join(', '),
+  },
+  {
+    header: 'Milestone',
+    getValue: (t: ThesisData) => t.milestone,
+  },
+]
+
+export const thesesToCsv = (theses: ThesisData[], language = 'fi') => {
+  const headers = CSV_COLUMNS.map((col) => col.header)
+
+  const rows = theses.map((t) =>
+    CSV_COLUMNS.map((col) => escapeCsv(col.getValue(t, language)))
+  )
+
+  return [headers.join(';'), ...rows.map((row) => row.join(';'))].join('\n')
 }

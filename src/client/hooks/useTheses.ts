@@ -104,6 +104,49 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
   }
 }
 
+export const useExportThesesCsv = (params: UsePaginatedThesesParams) => {
+  const { i18n } = useTranslation()
+  const { language } = i18n
+
+  const exportCsv = async (filename = 'theses.csv') => {
+    const endpoint = '/theses/csv'
+
+    const { data } = await apiClient.get(endpoint, {
+      params: {
+        onlyAuthored: params.onlyAuthored,
+        onlySupervised: params.onlySupervised,
+        onlySeminarSupervised: params.onlySeminarSupervised,
+        programId: params.programId,
+        studyTrackId: params.studyTrackId,
+        departmentId: params.departmentId,
+        status: params.status,
+        topicPartial: params.topicPartial,
+        authorsPartial: params.authorsPartial,
+        programNamePartial: params.programNamePartial,
+        search: params.search,
+        milestone: params.milestone,
+        missingSecondGrader: params.missingSecondGrader,
+        lastMilestone: params.lastMilestone,
+        ethesisReadyStudentStarted: params.ethesisReadyStudentStarted,
+        language,
+        ...params.order,
+      },
+      responseType: 'blob',
+    })
+
+    const url = window.URL.createObjectURL(new Blob([data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', filename)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.URL.revokeObjectURL(url)
+  }
+
+  return { exportCsv }
+}
+
 export const useSingleThesis = (
   id: string | GridRowSelectionModel,
   useStudentApi?: boolean

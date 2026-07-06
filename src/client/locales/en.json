@@ -26,6 +26,7 @@
     "averageDuration": "Average thesis duration: {{days}} days",
     "enabled": "Enabled",
     "otherSettings": "Other settings",
+    "exportCsv": "Export CSV",
     "editButton": "Edit",
     "wakeUpFromSleepButton": "Wake up from sleep",
     "sendDraftButton": "Send suggestion",

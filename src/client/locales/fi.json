@@ -26,6 +26,7 @@
     "averageDuration": "Tutkielman keskimääräinen kesto: {{days}} päivää",
     "enabled": "Käytössä",
     "otherSettings": "Muut asetukset",
+    "exportCsv": "Vie CSV",
     "approveButton": "Hyväksy",
     "approveButtonConfirmTitle": "Vahvista hyväksyntä",
     "approveButtonConfirmContent": "Oletko varma, että haluat hyväksyä tämän tutkielmasuunnitelman?",

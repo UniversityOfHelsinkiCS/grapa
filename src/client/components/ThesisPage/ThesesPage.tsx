@@ -13,7 +13,7 @@ import {
 
 import { ThesisData as Thesis } from '@backend/types'
 
-import { usePaginatedTheses } from '../../hooks/useTheses'
+import { usePaginatedTheses, useExportThesesCsv } from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import {
   useCreateThesisMutation,
@@ -103,13 +103,7 @@ const ThesesPage = ({
 
   const [, setCurrentFilters] = useState(null)
 
-  const {
-    theses,
-    totalCount,
-    availableMilestones,
-    availableActionNeeded,
-    isLoading: isThesesLoading,
-  } = usePaginatedTheses({
+  const thesesQueryParams = {
     order,
     programId: filteringProgramId,
     studyTrackId: filteringStudyTrackId,
@@ -129,7 +123,17 @@ const ThesesPage = ({
     limit: paginationModel.pageSize,
     useStudentApi: isStudentView && currentUser?.hasStudyRight,
     search: searchQuery.length > 0 ? searchQuery : undefined,
-  })
+  }
+
+  const {
+    theses,
+    totalCount,
+    availableMilestones,
+    availableActionNeeded,
+    isLoading: isThesesLoading,
+  } = usePaginatedTheses(thesesQueryParams)
+
+  const { exportCsv } = useExportThesesCsv(thesesQueryParams)
 
   const showDurationColumn = useMemo(
     () =>
@@ -332,6 +336,7 @@ const ThesesPage = ({
           availableMilestones={availableMilestones}
           noAddThesisButton={noAddThesisButton}
           showSupervisors={showSupervisors}
+          onExportCsv={() => exportCsv(`theses-export-${dayjs().format('YYYY-MM-DD')}.csv`)}
           filterViews={[
             {
               items: {

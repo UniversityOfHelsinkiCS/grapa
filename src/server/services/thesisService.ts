@@ -186,8 +186,8 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
       'updatedAt',
       'isIdle',
     ],
-    offset: Number(offset),
-    limit: Number(limit),
+    offset: limit === 'all' ? undefined : Number(offset),
+    limit: limit === 'all' ? undefined : Number(limit),
     order: getOrdering({
       currentUser,
       orderBy: sortByColumn,

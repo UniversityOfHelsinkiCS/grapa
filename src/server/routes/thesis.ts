@@ -20,6 +20,7 @@ import {
   handleGradersChangeEventLog,
   handleStatusChangeEventLog,
   handleSupervisionsChangeEventLog,
+  thesesToCsv,
 } from '../services/thesisHelpers'
 
 import {
@@ -41,39 +42,58 @@ const deleteThesis = async (id: string, transaction: Transaction) => {
   await Thesis.destroy({ where: { id }, transaction })
 }
 
+const getPaginatedQuery = (req: ServerGetRequest) => ({
+  ...req.query,
+  currentUser: req.user,
+  sortOrder: req.query.sortOrder as 'asc' | 'desc',
+  sortBy: req.query.sortBy as string,
+  departmentId: req.query.departmentId as string,
+  status: req.query.status as string,
+  authorsPartial: req.query.authorsPartial as string,
+  topicPartial: req.query.topicPartial as string,
+  programNamePartial: req.query.programNamePartial as string,
+  programId: req.query.programId as string,
+  studyTrackId: req.query.studyTrackId as string,
+  language: req.query.language as string,
+  onlyAuthored: req.query.onlyAuthored as string,
+  onlySupervised: req.query.onlySupervised as string,
+  onlySeminarSupervised: req.query.onlySeminarSupervised as string,
+  limit: req.query.limit as string,
+  offset: req.query.offset as string,
+  search: req.query.search as string,
+  milestone: req.query.milestone as string,
+  missingSecondGrader: req.query.missingSecondGrader === 'true',
+  lastMilestone: req.query.lastMilestone === 'true',
+  ethesisReadyStudentStarted: req.query.ethesisReadyStudentStarted === 'true',
+})
+
 thesisRouter.get(
   '/paginate',
   ethesisUserHandler,
   getEthesisAdminStatus,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
-    const result = await getPaginatedTheses({
-      ...req.query,
-      currentUser: req.user,
-      sortOrder: req.query.sortOrder as 'asc' | 'desc',
-      sortBy: req.query.sortBy as string,
-      departmentId: req.query.departmentId as string,
-      status: req.query.status as string,
-      authorsPartial: req.query.authorsPartial as string,
-      topicPartial: req.query.topicPartial as string,
-      programNamePartial: req.query.programNamePartial as string,
-      programId: req.query.programId as string,
-      studyTrackId: req.query.studyTrackId as string,
-      language: req.query.language as string,
-      onlyAuthored: req.query.onlyAuthored as string,
-      onlySupervised: req.query.onlySupervised as string,
-      onlySeminarSupervised: req.query.onlySeminarSupervised as string,
-      limit: req.query.limit as string,
-      offset: req.query.offset as string,
-      search: req.query.search as string,
-      milestone: req.query.milestone as string,
-      missingSecondGrader: req.query.missingSecondGrader === 'true',
-      lastMilestone: req.query.lastMilestone === 'true',
-      ethesisReadyStudentStarted:
-        req.query.ethesisReadyStudentStarted === 'true',
-    })
-
+    const result = await getPaginatedTheses(getPaginatedQuery(req))
     return res.send(result)
+  }
+)
+
+thesisRouter.get(
+  '/csv',
+  ethesisUserHandler,
+  getEthesisAdminStatus,
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: ServerGetRequest, res: Response) => {
+    const query = getPaginatedQuery(req)
+    query.limit = 'all'
+    const result = await getPaginatedTheses(query)
+
+    const language = (req.query.language as string) || 'fi'
+    const csvString = thesesToCsv(result.theses, language)
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8')
+    res.setHeader('Content-Disposition', 'attachment; filename="theses.csv"')
+    return res.send(csvString)
   }
 )
 

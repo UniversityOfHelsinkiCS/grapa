@@ -52,6 +52,7 @@ import {
   Bedtime,
   Close,
   Check,
+  Download,
 } from '@mui/icons-material'
 import usePrograms from '../../hooks/usePrograms'
 import { PrethesisHelp } from '../PrethesisHelp/PrethesisHelp'
@@ -85,6 +86,7 @@ interface Props {
   noAddThesisButton: boolean
   showSupervisors?: boolean
   availableMilestones?: number[]
+  onExportCsv?: () => void
 }
 
 const PrethesisTable = ({
@@ -104,6 +106,7 @@ const PrethesisTable = ({
   isStudentView,
   showSupervisors,
   availableMilestones = [],
+  onExportCsv,
 }: Props) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -897,24 +900,43 @@ const PrethesisTable = ({
             )}
           </Stack>
 
-          {/* Search Input */}
+          {/* Search Input and Export */}
           {!isStudentView && (
-            <TextField
-              size="small"
-              placeholder={t('thesesTableToolbar:search')}
-              variant="outlined"
-              onChange={(e) => {
-                if (debounceTimeout != null) {
-                  clearTimeout(debounceTimeout)
-                }
-                setDebounceTimeout(
-                  setTimeout(() => {
-                    onSearch(e.target.value)
-                    changePage(0)
-                  }, 400)
-                )
-              }}
-            ></TextField>
+            <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
+              {onExportCsv && (
+              <Button
+                variant="outlined"
+                color="secondary"
+                size="small"
+                startIcon={<Download />}
+                sx={{
+                  height: 36,
+                  fontWeight: 600,
+                  textTransform: 'none',
+                }}
+                onClick={onExportCsv}
+              >
+                {t('common:exportCsv')}
+              </Button>
+            )}
+
+              <TextField
+                size="small"
+                placeholder={t('thesesTableToolbar:search')}
+                variant="outlined"
+                onChange={(e) => {
+                  if (debounceTimeout != null) {
+                    clearTimeout(debounceTimeout)
+                  }
+                  setDebounceTimeout(
+                    setTimeout(() => {
+                      onSearch(e.target.value)
+                      changePage(0)
+                    }, 400)
+                  )
+                }}
+              />
+            </Stack>
           )}
         </Stack>
       </Stack>

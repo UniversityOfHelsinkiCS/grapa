@@ -26,6 +26,7 @@
     "averageDuration": "Avhandlingens genomsnittliga längd: {{days}} dagar",
     "enabled": "Aktiverad",
     "otherSettings": "Andra inställningar",
+    "exportCsv": "Exportera CSV",
     "editButton": "Redigera",
     "wakeUpFromSleepButton": "Väck från viloläge",
     "sendDraftButton": "Skicka förslag",
