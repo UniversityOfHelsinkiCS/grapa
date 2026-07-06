@@ -89,7 +89,7 @@ export const buildThesisIncludes = (
   language?: string
 ): Includeable[] => {
   const actualLanguage = language ?? 'en'
-  const allowedLanguages = ['en', 'fi', 'sv']
+  const allowedLanguages = ['fi', 'sv', 'en']
   if (!allowedLanguages.includes(actualLanguage)) {
     throw new Error('Invalid language key')
   }

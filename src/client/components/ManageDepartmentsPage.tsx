@@ -36,7 +36,7 @@ const ManageDepartmentsPage: React.FC = () => {
     name: TranslatedName
     enabled: boolean
   }>({
-    name: { fi: '', en: '', sv: '' },
+    name: { fi: '', sv: '', en: '' },
     enabled: true,
   })
 
@@ -50,7 +50,7 @@ const ManageDepartmentsPage: React.FC = () => {
     })
     setCreateDialogOpen(false)
     setDraftDepartment({
-      name: { fi: '', en: '', sv: '' },
+      name: { fi: '', sv: '', en: '' },
       enabled: true,
     })
   }
@@ -58,8 +58,8 @@ const ManageDepartmentsPage: React.FC = () => {
   const isCreateDisabled =
     createDepartmentMutation.isPending ||
     !draftDepartment.name.fi ||
-    !draftDepartment.name.en ||
-    !draftDepartment.name.sv
+    !draftDepartment.name.sv ||
+    !draftDepartment.name.en
 
   return (
     <Box sx={{ width: '100%', position: 'relative' }}>

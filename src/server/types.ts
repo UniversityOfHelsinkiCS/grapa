@@ -4,8 +4,8 @@ import { VALID_EVENT_LOG_TYPES, VALID_THESIS_STATUSES } from '../config'
 
 export interface TranslatedName {
   fi: string
-  en: string
   sv: string
+  en: string
 }
 
 export type TranslationLanguage = keyof TranslatedName

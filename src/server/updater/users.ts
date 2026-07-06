@@ -7,7 +7,7 @@ import { safeBulkCreate } from './util'
 const parsePreferredLanguageUrnToLanguage = (urn: string) => {
   const fallBackLanguage = 'en'
   if (!urn) return fallBackLanguage
-  const possibleLanguages = ['fi', 'en', 'sv']
+  const possibleLanguages = ['fi', 'sv', 'en']
   const splitArray = urn.split(':')
   const language = splitArray[splitArray.length - 1]
   return possibleLanguages.includes(language) ? language : fallBackLanguage

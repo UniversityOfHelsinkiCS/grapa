@@ -49,8 +49,8 @@ const ManageEntity = <T extends ManageableItem>({
   const [selectedItem, setSelectedItem] = useState<T | null>(null)
   const [draftName, setDraftName] = useState<TranslatedName>({
     fi: '',
-    en: '',
     sv: '',
+    en: '',
   })
   const [draftEnabled, setDraftEnabled] = useState<boolean>(true)
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
@@ -59,12 +59,12 @@ const ManageEntity = <T extends ManageableItem>({
     if (selectedItem) {
       setDraftName({
         fi: selectedItem.name.fi || '',
-        en: selectedItem.name.en || '',
         sv: selectedItem.name.sv || '',
+        en: selectedItem.name.en || '',
       })
       setDraftEnabled(selectedItem.enabled ?? true)
     } else {
-      setDraftName({ fi: '', en: '', sv: '' })
+      setDraftName({ fi: '', sv: '', en: '' })
       setDraftEnabled(true)
     }
   }, [selectedItem])

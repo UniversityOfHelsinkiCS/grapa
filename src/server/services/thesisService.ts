@@ -105,7 +105,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     ethesisReadyStudentStarted,
   } = params
 
-  const allowedLanguages = ['en', 'fi', 'sv']
+  const allowedLanguages = ['fi', 'sv', 'en']
   if (!allowedLanguages.includes(language)) {
     throw new CustomValidationError('Invalid language key', {})
   }

@@ -33,7 +33,7 @@ departmentRouter.get(
     }
 
     // Validate that the language is one of the allowed keys
-    const allowedLanguages = ['en', 'fi', 'sv']
+    const allowedLanguages = ['fi', 'sv', 'en']
     if (!allowedLanguages.includes(language)) {
       throw new Error('Invalid language key')
     }

@@ -88,7 +88,7 @@ const FeatureFlagControl = ({
 
   const [pendingValue, setPendingValue] = useState<boolean | null>(null)
 
-  const handleToggle = async (event: ChangeEvent<HTMLInputElement>) => {
+  const handleToggle = (event: ChangeEvent<HTMLInputElement>) => {
     setPendingValue(event.target.checked)
   }
 
@@ -175,7 +175,7 @@ const ListInput = ({
       initial = initial.map((item: any) => {
         const val = item.value
         if (typeof val === 'string') {
-          return { value: { fi: val, en: val, sv: val } }
+          return { value: { fi: val, sv: val, en: val } }
         }
         return item
       })
@@ -185,7 +185,7 @@ const ListInput = ({
 
   const [pendingValue, setPendingValue] = useState<any | null>(null)
 
-  const handleSave = async () => {
+  const handleSave = () => {
     const validValues = isDateInput
       ? listValues.filter((v: any) => dayjs(v.value).isValid())
       : listValues
@@ -287,7 +287,7 @@ const ListInput = ({
                     <Typography variant="subtitle2">
                       {`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
                     </Typography>
-                    {['fi', 'en', 'sv'].map((lang) => (
+                    {['fi', 'sv', 'en'].map((lang) => (
                       <TextField
                         key={lang}
                         size="small"
@@ -363,7 +363,7 @@ const ListInput = ({
                 isDateInput
                   ? { value: null }
                   : isMultilingualInput
-                    ? { value: { fi: '', en: '', sv: '' } }
+                    ? { value: { fi: '', sv: '', en: '' } }
                     : { value: '' },
               ])
             }}
@@ -425,7 +425,7 @@ const CombinedStudyTracksInput = ({
     string
   > | null>(null)
 
-  const handleSave = async () => {
+  const handleSave = () => {
     const validValues = listValues.filter(
       (v) => v.primary && v.secondaries.length > 0
     )
@@ -822,9 +822,9 @@ const EntityOverview = () => {
 
     setSelectedEntityId(entities[0].id)
     if (entityType === 'program') {
-      navigate(`/programs/${entities[0].id}`, { replace: true })
+      void navigate(`/programs/${entities[0].id}`, { replace: true })
     } else {
-      navigate(`/study-tracks/${entities[0].id}`, { replace: true })
+      void navigate(`/study-tracks/${entities[0].id}`, { replace: true })
     }
   }, [navigate, programId, studyTrackId, entities, entityType])
 

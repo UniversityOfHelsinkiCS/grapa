@@ -16,7 +16,7 @@ export const getProgram = async (id: string, language: string) => {
     },
   ]
 
-  const allowedLanguages = ['en', 'fi', 'sv']
+  const allowedLanguages = ['fi', 'sv', 'en']
   if (!allowedLanguages.includes(language)) {
     throw new Error('Invalid language key')
   }
@@ -71,7 +71,7 @@ export const getPrograms = async (
   }
 
   // Validate that the language is one of the allowed keys
-  const allowedLanguages = ['en', 'fi', 'sv']
+  const allowedLanguages = ['fi', 'sv', 'en']
   if (!allowedLanguages.includes(language)) {
     throw new Error('Invalid language key')
   }
