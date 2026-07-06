@@ -904,21 +904,23 @@ const PrethesisTable = ({
           {!isStudentView && (
             <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
               {onExportCsv && (
-              <Button
-                variant="outlined"
-                color="secondary"
-                size="small"
-                startIcon={<Download />}
-                sx={{
-                  height: 36,
-                  fontWeight: 600,
-                  textTransform: 'none',
-                }}
-                onClick={onExportCsv}
-              >
-                {t('common:exportCsv')}
-              </Button>
-            )}
+                <Tooltip title={t('common:exportCsvTooltip')} placement="top">
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    size="small"
+                    startIcon={<Download />}
+                    sx={{
+                      height: 36,
+                      fontWeight: 600,
+                      textTransform: 'none',
+                    }}
+                    onClick={onExportCsv}
+                  >
+                    {t('common:exportCsv')}
+                  </Button>
+                </Tooltip>
+              )}
 
               <TextField
                 size="small"
