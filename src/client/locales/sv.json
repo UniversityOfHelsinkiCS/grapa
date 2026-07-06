@@ -30,6 +30,8 @@
     "exportCsvTooltip": "Filen använder semikolon (;) för att separera kolumner. Om ditt kalkylprogram frågar, välj semikolon som avgränsare.",
     "editButton": "Redigera",
     "wakeUpFromSleepButton": "Väck från viloläge",
+    "wakeUpFromSleepButtonConfirmTitle": "Bekräfta väckning",
+    "wakeUpFromSleepButtonConfirmContent": "Är du säker på att du vill väcka denna avhandling från viloläge?",
     "sendDraftButton": "Skicka förslag",
     "sendDraftButtonConfirmTitle": "Bekräfta sändning av förslag",
     "sendDraftButtonConfirmContent": "Är du säker på att du vill skicka detta utkast som ett förslag?",

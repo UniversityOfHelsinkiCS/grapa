@@ -30,6 +30,8 @@
     "exportCsvTooltip": "The file uses semicolons (;) to separate columns. If asked by your spreadsheet program, choose semicolon as the delimiter.",
     "editButton": "Edit",
     "wakeUpFromSleepButton": "Wake up from sleep",
+    "wakeUpFromSleepButtonConfirmTitle": "Confirm Wake Up",
+    "wakeUpFromSleepButtonConfirmContent": "Are you sure you want to wake up this thesis from sleep?",
     "sendDraftButton": "Send suggestion",
     "sendDraftButtonConfirmTitle": "Confirm Send Draft",
     "sendDraftButtonConfirmContent": "Are you sure you want to send this draft as a suggestion?",

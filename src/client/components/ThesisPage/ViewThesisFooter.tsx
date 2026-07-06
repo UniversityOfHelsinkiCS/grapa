@@ -506,7 +506,7 @@ const ViewThesisFooter = (
   const { mutateAsync: editThesis } = useEditThesisMutation(isStudentView)
 
   const [pendingAction, setPendingAction] = useState<
-    'approve' | 'sendDraft' | null
+    'approve' | 'sendDraft' | 'wakeUp' | null
   >(null)
 
   const [ethesisDialogOpen, setEthesisDialogOpen] = useState(false)
@@ -553,12 +553,7 @@ const ViewThesisFooter = (
                       px: 2,
                       fontWeight: 600,
                     }}
-                    onClick={() => {
-                      void editThesis({
-                        thesisId: thesis.id as string,
-                        data: { ...thesis, isIdle: false },
-                      })
-                    }}
+                    onClick={() => setPendingAction('wakeUp')}
                   >
                     {t('wakeUpFromSleepButton')}
                   </Button>
@@ -833,7 +828,9 @@ const ViewThesisFooter = (
           title={
             pendingAction === 'approve'
               ? t('approveButtonConfirmTitle', 'Confirm Approval')
-              : t('sendDraftButtonConfirmTitle', 'Confirm Send Draft')
+              : pendingAction === 'wakeUp'
+                ? t('wakeUpFromSleepButtonConfirmTitle', 'Confirm Wake Up')
+                : t('sendDraftButtonConfirmTitle', 'Confirm Send Draft')
           }
           onSubmit={() => {
             if (pendingAction === 'approve') {
@@ -846,6 +843,11 @@ const ViewThesisFooter = (
                 theses: [thesis],
                 status: THESIS_STATUSES.SUGGESTED,
               })
+            } else if (pendingAction === 'wakeUp') {
+              void editThesis({
+                thesisId: thesis.id as string,
+                data: { ...thesis, isIdle: false },
+              })
             }
             setPendingAction(null)
           }}
@@ -855,7 +857,9 @@ const ViewThesisFooter = (
           <Typography>
             {pendingAction === 'approve'
               ? t('approveButtonConfirmContent')
-              : t('sendDraftButtonConfirmContent')}
+              : pendingAction === 'wakeUp'
+                ? t('wakeUpFromSleepButtonConfirmContent')
+                : t('sendDraftButtonConfirmContent')}
           </Typography>
         </Popup>
       )}
