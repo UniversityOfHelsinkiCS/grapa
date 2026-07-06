@@ -1,7 +1,7 @@
 export const LANGUAGES = [
-  { code: 'en', name: 'English' },
   { code: 'fi', name: 'Suomi' },
   { code: 'sv', name: 'Svenska' },
+  { code: 'en', name: 'English' },
 ]
 
 export const stringToColor = (string: string) => {
