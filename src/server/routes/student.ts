@@ -50,7 +50,17 @@ studentRouter.use(withStudyRight)
 studentRouter.get('/programs', async (req: RequestWithUser, res: any) => {
   const language = (req.query.language ?? 'en') as string
 
-  const programsWithStudyRights = await getStudentStudyRights(req.user)
+  const studyRights = await getStudentStudyRights(req.user)
+
+  const studyTracks = new Set(
+    studyRights
+      .map((studyright) => studyright.studyTrackId)
+      .filter((track) => track)
+  )
+
+  const programsWithStudyRights = studyRights.map(
+    (studyright) => studyright.programCode
+  )
 
   const programs = await getPrograms(
     false,
@@ -61,12 +71,26 @@ studentRouter.get('/programs', async (req: RequestWithUser, res: any) => {
     req.user.id
   )
 
-  const result = programs.filter((program) => {
-    return (
-      program.options.allowStudentStartedProcess &&
-      programsWithStudyRights.includes(program.id)
-    )
-  })
+  const result = programs
+    .filter((program) => {
+      return (
+        program.options.allowStudentStartedProcess &&
+        programsWithStudyRights.includes(program.id)
+      )
+    })
+    .map((program) => {
+      const filteredStudyTracks = program.studyTracks.filter((studytrack) =>
+        studyTracks.has(studytrack.id)
+      )
+
+      if (filteredStudyTracks.length > 0) {
+        return {
+          ...program,
+          studyTracks: filteredStudyTracks,
+        }
+      }
+      return program
+    })
 
   res.send(result)
 })
@@ -147,7 +171,9 @@ const validateThesisDataStudent = async (
   if (thesisData.programId) {
     const programId: string = thesisData.programId
     const program = await getProgram(programId, 'fi')
-    const userStudyRights = await getStudentStudyRights(user)
+    const userStudyRights = (await getStudentStudyRights(user)).map(
+      (studyright) => studyright.programCode
+    )
 
     if (program == null) {
       throw Error('Program id does not exist')

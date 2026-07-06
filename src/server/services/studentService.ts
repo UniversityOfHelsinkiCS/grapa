@@ -27,9 +27,11 @@ export const getStudentStudyRights = async (user: User) => {
     raw: true,
   })
 
-  const programsWithStudyRights: string[] = studyRights.map((studyright) => {
-    return studyright.programCode
-  })
+  const programsWithStudyRights: StudyRight[] = studyRights.map(
+    (studyright) => {
+      return studyright
+    }
+  )
 
   return programsWithStudyRights
 }
