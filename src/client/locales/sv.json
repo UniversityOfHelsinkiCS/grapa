@@ -197,6 +197,13 @@
       "enableConfirm": "Är du säker på att du vill ställa in detta som ett kandidatprogram?",
       "disableConfirm": "Är du säker på att du vill ta bort inställningen för kandidatprogram?"
     },
+    "thesisProgramManagerNotRequired": {
+      "toggle": "Ansvarig person inte obligatorisk",
+      "tooltip": "Ange om en ansvarig person inte är obligatorisk för avhandlingar i detta program.",
+      "confirmTitle": "Bekräfta inställning för ansvarig person",
+      "enableConfirm": "Är du säker på att du vill ta bort kravet på en ansvarig person för avhandlingar i detta program?",
+      "disableConfirm": "Är du säker på att du vill kräva en ansvarig person för avhandlingar i detta program?"
+    },
     "supervisorApproval": {
       "toggle": "Handledares godkännande",
       "tooltip": "Tillåt handledare att godkänna avhandlingar i detta program",

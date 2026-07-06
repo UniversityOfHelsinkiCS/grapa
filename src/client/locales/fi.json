@@ -195,6 +195,13 @@
       "enableConfirm": "Oletko varma, että haluat asettaa tämän kandiohjelmaksi?",
       "disableConfirm": "Oletko varma, että haluat poistaa kandiohjelma-asetuksen?"
     },
+    "thesisProgramManagerNotRequired": {
+      "toggle": "Vastuuhenkilö ei pakollinen",
+      "tooltip": "Aseta, jos vastuuhenkilö ei ole pakollinen tämän ohjelman tutkielmille.",
+      "confirmTitle": "Vahvista vastuuhenkilöasetus",
+      "enableConfirm": "Oletko varma, että haluat poistaa vastuuhenkilön pakollisuuden tämän ohjelman tutkielmilta?",
+      "disableConfirm": "Oletko varma, että haluat asettaa vastuuhenkilön pakolliseksi tämän ohjelman tutkielmille?"
+    },
     "supervisorApproval": {
       "toggle": "Ohjaajan hyväksyntä",
       "tooltip": "Salli ohjaajien hyväksyä tutkielmia tässä ohjelmassa",

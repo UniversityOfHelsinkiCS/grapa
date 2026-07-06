@@ -90,7 +90,8 @@ const ThesisEditForm: FC<{
   const handleSubmit = async () => {
     const thesisErrors = getFormErrors(
       editedThesis,
-      approvers?.length > 0,
+      approvers?.length > 0 &&
+        !selectedProgram?.options?.thesisProgramManagerNotRequired,
       Boolean(selectedProgram?.options?.seminar),
       Boolean(selectedProgram?.options?.allowMultipleSeminarResponsibles),
       Boolean(selectedProgram?.options?.waysOfWorkingRequired),
@@ -424,62 +425,69 @@ const ThesisEditForm: FC<{
             </FormControl>
           )}
 
-          {!isStudentView && approvers && approvers.length > 0 && (
-            <>
-              <Alert
-                id="grader-select-instructions"
-                severity="info"
-                variant="outlined"
-                sx={{ whiteSpace: 'pre-line' }}
-              >
-                <AlertTitle>{t('thesisForm:approverInstructions')}</AlertTitle>
-              </Alert>
-              <FormControl fullWidth>
-                <InputLabel id="approver-select-label">
-                  {`${t('thesisForm:approverHeader')}*`}
-                </InputLabel>
-                <Select
-                  data-testid="approver-select-input"
-                  required
-                  value={
-                    editedThesis.approvers?.length > 0
-                      ? editedThesis.approvers[0]?.id
-                      : ''
-                  }
-                  id="approver"
-                  label="Approver"
-                  name="approver"
-                  onChange={(event) => {
-                    setEditedThesis((oldThesis) => ({
-                      ...oldThesis,
-                      approvers: [
-                        approvers.find((a) => a.id === event.target.value),
-                      ],
-                    }))
-
-                    setFormErrors(
-                      formErrors.filter((error) => error.path[0] !== 'approver')
-                    )
-                  }}
-                  error={formErrors.some(
-                    (error) => error.path[0] === 'approver'
-                  )}
+          {!isStudentView &&
+            approvers &&
+            approvers.length > 0 &&
+            !selectedProgram?.options?.thesisProgramManagerNotRequired && (
+              <>
+                <Alert
+                  id="grader-select-instructions"
+                  severity="info"
+                  variant="outlined"
+                  sx={{ whiteSpace: 'pre-line' }}
                 >
-                  {approvers.map((approver) => (
-                    <MenuItem key={approver.id} value={approver.id}>
-                      {approver.firstName} {approver.lastName}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText error>
-                  {t(
-                    formErrors.find((error) => error.path[0] === 'approver')
-                      ?.message
-                  )}
-                </FormHelperText>
-              </FormControl>
-            </>
-          )}
+                  <AlertTitle>
+                    {t('thesisForm:approverInstructions')}
+                  </AlertTitle>
+                </Alert>
+                <FormControl fullWidth>
+                  <InputLabel id="approver-select-label">
+                    {`${t('thesisForm:approverHeader')}*`}
+                  </InputLabel>
+                  <Select
+                    data-testid="approver-select-input"
+                    required
+                    value={
+                      editedThesis.approvers?.length > 0
+                        ? editedThesis.approvers[0]?.id
+                        : ''
+                    }
+                    id="approver"
+                    label="Approver"
+                    name="approver"
+                    onChange={(event) => {
+                      setEditedThesis((oldThesis) => ({
+                        ...oldThesis,
+                        approvers: [
+                          approvers.find((a) => a.id === event.target.value),
+                        ],
+                      }))
+
+                      setFormErrors(
+                        formErrors.filter(
+                          (error) => error.path[0] !== 'approver'
+                        )
+                      )
+                    }}
+                    error={formErrors.some(
+                      (error) => error.path[0] === 'approver'
+                    )}
+                  >
+                    {approvers.map((approver) => (
+                      <MenuItem key={approver.id} value={approver.id}>
+                        {approver.firstName} {approver.lastName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText error>
+                    {t(
+                      formErrors.find((error) => error.path[0] === 'approver')
+                        ?.message
+                    )}
+                  </FormHelperText>
+                </FormControl>
+              </>
+            )}
 
           <FormControl fullWidth>
             {(() => {

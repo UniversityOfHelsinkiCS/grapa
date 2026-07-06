@@ -643,6 +643,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     disableStudyTracks: 'boolean',
     useIdleState: 'boolean',
     supervisorApproval: 'boolean',
+    thesisProgramManagerNotRequired: 'boolean',
     isBachelorProgram: 'boolean',
   }
 

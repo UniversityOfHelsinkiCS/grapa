@@ -197,6 +197,13 @@
       "enableConfirm": "Are you sure you want to set this as a Bachelor's programme?",
       "disableConfirm": "Are you sure you want to remove the Bachelor's programme setting?"
     },
+    "thesisProgramManagerNotRequired": {
+      "toggle": "Program manager not required",
+      "tooltip": "Set if a program manager is not mandatory for theses in this programme.",
+      "confirmTitle": "Confirm program manager setting",
+      "enableConfirm": "Are you sure you want to remove the program manager requirement for theses in this programme?",
+      "disableConfirm": "Are you sure you want to require a program manager for theses in this programme?"
+    },
     "supervisorApproval": {
       "toggle": "Supervisor approval",
       "tooltip": "Allow supervisors to approve theses in this programme",
