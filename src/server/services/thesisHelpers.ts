@@ -860,8 +860,8 @@ export const getAvailableActionNeeded = async (
   }
 }
 
-export const escapeCsv = (str: any) => {
-  if (str == null) return ''
+export const escapeCsv = (str: unknown) => {
+  if (str === null || str === undefined) return ''
   const stringified = String(str)
   return /[";\n]/.test(stringified)
     ? `"${stringified.replace(/"/g, '""')}"`
@@ -903,11 +903,13 @@ const CSV_COLUMNS = [
   },
   {
     header: 'Author Student IDs',
-    getValue: (t: ThesisData) =>
-      t.authors
+    getValue: (t: ThesisData) => {
+      const ids = t.authors
         ?.map((a) => a.studentNumber)
         .filter(Boolean)
-        .join(', '),
+        .join(', ')
+      return ids ? `\t${ids}` : ''
+    },
   },
   {
     header: 'Supervisors',
@@ -936,5 +938,8 @@ export const thesesToCsv = (theses: ThesisData[], language = 'fi') => {
     CSV_COLUMNS.map((col) => escapeCsv(col.getValue(t, language)))
   )
 
-  return [headers.join(';'), ...rows.map((row) => row.join(';'))].join('\n')
+  return (
+    '\uFEFF' +
+    ['sep=;', headers.join(';'), ...rows.map((row) => row.join(';'))].join('\n')
+  )
 }
