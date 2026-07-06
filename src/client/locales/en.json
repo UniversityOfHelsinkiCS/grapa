@@ -27,7 +27,7 @@
     "enabled": "Enabled",
     "otherSettings": "Other settings",
     "exportCsv": "Export CSV",
-    "exportCsvTooltip": "The file uses semicolons (;) to separate columns. If asked by your spreadsheet program, choose semicolon as the delimiter.",
+    "exportCsvTooltip": "The file uses commas (,) to separate columns. If asked by your spreadsheet program, choose comma as the delimiter.",
     "editButton": "Edit",
     "wakeUpFromSleepButton": "Wake up from sleep",
     "wakeUpFromSleepButtonConfirmTitle": "Confirm Wake Up",

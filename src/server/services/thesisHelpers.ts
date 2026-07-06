@@ -863,7 +863,7 @@ export const getAvailableActionNeeded = async (
 export const escapeCsv = (str: unknown) => {
   if (str === null || str === undefined) return ''
   const stringified = String(str)
-  return /[";\n]/.test(stringified)
+  return /[",\n]/.test(stringified)
     ? `"${stringified.replace(/"/g, '""')}"`
     : stringified
 }
@@ -908,7 +908,7 @@ const CSV_COLUMNS = [
         ?.map((a) => a.studentNumber)
         .filter(Boolean)
         .join(', ')
-      return ids ? `\t${ids}` : ''
+      return ids ? `="${ids}"` : ''
     },
   },
   {
@@ -940,6 +940,6 @@ export const thesesToCsv = (theses: ThesisData[], language = 'fi') => {
 
   return (
     '\uFEFF' +
-    ['sep=;', headers.join(';'), ...rows.map((row) => row.join(';'))].join('\n')
+    [headers.join(','), ...rows.map((row) => row.join(','))].join('\n')
   )
 }

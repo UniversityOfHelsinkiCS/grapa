@@ -27,7 +27,7 @@
     "enabled": "Käytössä",
     "otherSettings": "Muut asetukset",
     "exportCsv": "Vie CSV",
-    "exportCsvTooltip": "Tiedosto käyttää puolipisteitä (;) sarakkeiden erottamiseen. Jos taulukkolaskentaohjelmasi kysyy, valitse erottimeksi puolipiste.",
+    "exportCsvTooltip": "Tiedosto käyttää pilkkuja (,) sarakkeiden erottamiseen. Jos taulukkolaskentaohjelmasi kysyy, valitse erottimeksi pilkku.",
     "approveButton": "Hyväksy",
     "approveButtonConfirmTitle": "Vahvista hyväksyntä",
     "approveButtonConfirmContent": "Oletko varma, että haluat hyväksyä tämän tutkielmasuunnitelman?",

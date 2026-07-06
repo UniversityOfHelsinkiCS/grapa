@@ -27,7 +27,7 @@
     "enabled": "Aktiverad",
     "otherSettings": "Andra inställningar",
     "exportCsv": "Exportera CSV",
-    "exportCsvTooltip": "Filen använder semikolon (;) för att separera kolumner. Om ditt kalkylprogram frågar, välj semikolon som avgränsare.",
+    "exportCsvTooltip": "Filen använder kommatecken (,) för att separera kolumner. Om ditt kalkylprogram frågar, välj kommatecken som avgränsare.",
     "editButton": "Redigera",
     "wakeUpFromSleepButton": "Väck från viloläge",
     "wakeUpFromSleepButtonConfirmTitle": "Bekräfta väckning",
