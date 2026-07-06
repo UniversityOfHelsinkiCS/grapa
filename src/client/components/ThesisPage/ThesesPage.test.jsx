@@ -23,6 +23,9 @@ jest.unstable_mockModule('./src/client/hooks/useTheses', () => ({
     totalCount: 0,
     isLoading: false,
   }),
+  useExportThesesCsv: jest.fn().mockReturnValue({
+    exportCsv: jest.fn(),
+  }),
 }))
 
 jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
