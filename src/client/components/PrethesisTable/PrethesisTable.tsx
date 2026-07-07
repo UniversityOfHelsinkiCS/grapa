@@ -594,19 +594,20 @@ const PrethesisTable = ({
             </Tooltip>
           ) : null}
 
-          {user &&
-          (canApprove(info.row.original, user) ||
-            canSetEthesisStudentStarted(info.row.original, user)) ? (
-            <Tooltip title={t('thesesPage:approvalRequiredTooltip')}>
-              <IconButton>
-                <PriorityHigh
-                  sx={{
-                    color: 'primary.main',
-                  }}
-                ></PriorityHigh>
-              </IconButton>
-            </Tooltip>
-          ) : null}
+          {(user &&
+            (canApprove(info.row.original, user) ||
+              canSetEthesisStudentStarted(info.row.original, user))) ||
+            (isStudentView && info.row.original.status == 'DRAFT' && (
+              <Tooltip title={t('thesesPage:approvalRequiredTooltip')}>
+                <IconButton>
+                  <PriorityHigh
+                    sx={{
+                      color: 'primary.main',
+                    }}
+                  ></PriorityHigh>
+                </IconButton>
+              </Tooltip>
+            ))}
 
           {info.row.original?.isIdle ? (
             <Tooltip title={t('thesisStages:idle')}>
