@@ -402,7 +402,7 @@
     "actionNeeded": "Vaatii toimenpiteitä"
   },
   "thesesPage": {
-    "approvalRequiredTooltip": "Tämä tutkielma vaatii sinulta toimenpiteitä.",
+    "actionRequiredTooltip": "Tämä tutkielma vaatii sinulta toimenpiteitä.",
     "primarySupervisorTooltip": "Olet tämän tutkielman pääohjaaja",
     "noRows": "Ei rivejä"
   },
@@ -504,6 +504,11 @@
     "thesisIdle": "Tutkielma on lepotilassa",
     "mastersThesis": "Maisterintutkielma",
     "bachelorsThesis": "Kandidaatintutkielma",
-    "requiresApproval": "Vaatii hyväksyntääsi"
+    "requiresApproval": "Vaatii hyväksyntääsi",
+    "missingGradersActionRequired": "Odottaa arvioijien määrittämistä",
+    "requiresEthesisPermission": "Odottaa että annat opiskelijalle luvan palauttaa E-thesikseen",
+    "studentActionRequired": "Sinun tulee lähettää tutkielma arvioitavaksi, kun olet täyttänyt kaikki tarvittavat tiedot.",
+    "studentEthesisActionRequired": "Siirry <1>E-thesikseen</1> palauttamaan tutkielmasi.",
+    "ethesisInstructionsLink": "https://studies.helsinki.fi/ohjeet/artikkeli/e-thesis"
   }
 }

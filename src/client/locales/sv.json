@@ -403,7 +403,7 @@
     "actionNeeded": "Kräver åtgärder"
   },
   "thesesPage": {
-    "approvalRequiredTooltip": "Denna avhandling kräver åtgärder från dig.",
+    "actionRequiredTooltip": "Denna avhandling kräver åtgärder från dig.",
     "primarySupervisorTooltip": "Du är huvudhandledare för denna avhandling",
     "noRows": "Inga rader"
   },
@@ -505,6 +505,11 @@
     "thesisIdle": "Avhandlingen är i viloläge",
     "mastersThesis": "Magisteravhandling",
     "bachelorsThesis": "Kandidatuppsats",
-    "requiresApproval": "Kräver ditt godkännande"
+    "requiresApproval": "Kräver ditt godkännande",
+    "missingGradersActionRequired": "Väntar på att bedömare ska tilldelas",
+    "requiresEthesisPermission": "Väntar på att du ger studenten tillstånd att skicka in till E-thesis",
+    "studentActionRequired": "Du måste skicka in avhandlingen för bedömning när du har fyllt i all nödvändig information.",
+    "studentEthesisActionRequired": "Gå till <1>E-thesis</1> för att lämna in din avhandling.",
+    "ethesisInstructionsLink": "https://studies.helsinki.fi/instruktioner/artikel/e-thesis"
   }
 }

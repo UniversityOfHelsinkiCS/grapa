@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import { GridSlotProps } from '@mui/x-data-grid'
 import {
   Box,
@@ -49,6 +49,7 @@ import {
   ExpandLess,
   ExpandMore,
   PriorityHigh,
+  Send,
 } from '@mui/icons-material'
 import {
   useChangeThesisStatusMutation,
@@ -58,8 +59,12 @@ import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { ProgressView } from './Progress/ProgressView'
 import {
   canApprove,
-  canSetEthesisStudentStarted,
+  canSetEthesisMilestones,
   isProgramApprover,
+  isStudentDraftActionRequired,
+  isStudentEthesisActionRequired,
+  isEthesisReady,
+  isMissingGradersActionRequired,
 } from '../../util/permissions'
 import { NavLink } from 'react-router-dom'
 
@@ -513,12 +518,7 @@ const ViewThesisFooter = (
   const [ethesisTargetStatus, setEthesisTargetStatus] =
     useState<ThesisStatus | null>(null)
 
-  const isBachelor = thesis?.program?.options?.isBachelorProgram === true
-  const ethesisReady =
-    currentUser &&
-    thesis &&
-    (isBachelor ? thesis.graders.length >= 1 : thesis.graders.length >= 2) &&
-    thesis.status === THESIS_STATUSES.IN_PROGRESS
+  const ethesisReady = thesis && currentUser && isEthesisReady(thesis)
 
   const difference =
     currentUser &&
@@ -599,7 +599,7 @@ const ViewThesisFooter = (
                 {!thesis.program?.options?.hideSendToEthesis &&
                   !isStudentView &&
                   (thesis.program?.options?.useMilestones
-                    ? canSetEthesisStudentStarted(thesis, currentUser!)
+                    ? canSetEthesisMilestones(thesis, currentUser!)
                     : thesis.status === THESIS_STATUSES.IN_PROGRESS) && (
                     <Tooltip
                       title={
@@ -753,10 +753,49 @@ const ViewThesisFooter = (
           )}
 
           {thesis && currentUser && canApprove(thesis, currentUser) && (
-            <Alert color="warning" icon={<PriorityHigh />}>
+            <Alert color="warning" icon={<PriorityHigh />} sx={{ my: 1.5 }}>
               {t('viewThesisFooter:requiresApproval')}
             </Alert>
           )}
+
+          {thesis &&
+            currentUser &&
+            (isMissingGradersActionRequired(thesis, currentUser) ? (
+              <Alert color="warning" icon={<PriorityHigh />} sx={{ my: 1.5 }}>
+                {t('viewThesisFooter:missingGradersActionRequired')}
+              </Alert>
+            ) : canSetEthesisMilestones(thesis, currentUser) ? (
+              <Alert color="warning" icon={<PriorityHigh />} sx={{ my: 1.5 }}>
+                {t('viewThesisFooter:requiresEthesisPermission')}
+              </Alert>
+            ) : null)}
+
+          {thesis &&
+            currentUser &&
+            isStudentDraftActionRequired(thesis, isStudentView) && (
+              <Alert color="info" icon={<Send />} sx={{ my: 1.5 }}>
+                {t('viewThesisFooter:studentActionRequired')}
+              </Alert>
+            )}
+
+          {thesis &&
+            currentUser &&
+            isStudentEthesisActionRequired(thesis, isStudentView) && (
+              <Alert color="info" icon={<Send />} sx={{ my: 1.5 }}>
+                <Trans
+                  i18nKey="viewThesisFooter:studentEthesisActionRequired"
+                  components={{
+                    1: (
+                      <Link
+                        href={t('viewThesisFooter:ethesisInstructionsLink')}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      />
+                    ),
+                  }}
+                />
+              </Alert>
+            )}
 
           <ProgressView
             thesis={thesis}

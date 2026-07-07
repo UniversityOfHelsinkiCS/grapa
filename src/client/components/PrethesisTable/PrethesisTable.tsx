@@ -59,7 +59,7 @@ import { PrethesisHelp } from '../PrethesisHelp/PrethesisHelp'
 import { useChangeThesisStatusMutation } from '../../hooks/useThesesMutation'
 import {
   canApprove,
-  canSetEthesisStudentStarted,
+  canSetEthesisMilestones,
   needsStudentAction,
 } from '../../util/permissions'
 import { THESIS_STATUSES } from '../../../config'
@@ -608,9 +608,9 @@ const PrethesisTable = ({
 
           {(user &&
             (canApprove(info.row.original, user) ||
-              canSetEthesisStudentStarted(info.row.original, user))) ||
+              canSetEthesisMilestones(info.row.original, user))) ||
           needsStudentAction(info.row.original, isStudentView) ? (
-            <Tooltip title={t('thesesPage:approvalRequiredTooltip')}>
+            <Tooltip title={t('thesesPage:actionRequiredTooltip')}>
               <IconButton>
                 <PriorityHigh
                   sx={{

@@ -7,24 +7,29 @@ export const isSupervisor = (thesis: Thesis, user: User) =>
 export const isProgramApprover = (thesis: Thesis, user: User) =>
   Boolean(user && user.approvableProgramIds?.includes(thesis.programId))
 
-export const canApprove = (thesis: Thesis, user: User) => {
+export const hasApprovalRights = (thesis: Thesis, user: User) => {
   const supervisorApprovalEnabled = Boolean(
     thesis.program?.options?.supervisorApproval
   )
 
-  const isValidStatus =
-    thesis.status === THESIS_STATUSES.PLANNING ||
-    thesis.status === THESIS_STATUSES.SUGGESTED
-
   return Boolean(
     user &&
-    isValidStatus &&
     (isProgramApprover(thesis, user) ||
       (supervisorApprovalEnabled && isSupervisor(thesis, user)))
   )
 }
 
-export const canSetEthesisStudentStarted = (thesis: Thesis, user: User) => {
+export const canApprove = (thesis: Thesis, user: User) => {
+  const isValidStatus =
+    thesis.status === THESIS_STATUSES.PLANNING ||
+    thesis.status === THESIS_STATUSES.SUGGESTED
+
+  return Boolean(hasApprovalRights(thesis, user) && isValidStatus)
+}
+
+export const canSetEthesisMilestones = (thesis: Thesis, user: User) => {
+  if (!thesis.program?.options?.useMilestones) return false
+
   const programMilestones = thesis.program?.options?.milestones?.versions?.at(
     thesis.milestoneVersion != null ? thesis.milestoneVersion : -1
   )
@@ -36,16 +41,47 @@ export const canSetEthesisStudentStarted = (thesis: Thesis, user: User) => {
     thesis.milestone === milestonesLength
 
   return Boolean(
-    isSupervisor(thesis, user) &&
+    hasApprovalRights(thesis, user) &&
     isLastMilestone &&
     thesis.status === THESIS_STATUSES.IN_PROGRESS
   )
 }
 
-export const needsStudentAction = (thesis: Thesis, isStudentView?: boolean) => {
+export const isStudentDraftActionRequired = (
+  thesis: Thesis,
+  isStudentView?: boolean
+) => {
+  return Boolean(isStudentView && thesis.status === THESIS_STATUSES.DRAFT)
+}
+
+export const isEthesisReady = (thesis: Thesis) => {
+  if (!thesis) return false
+
+  const isBachelor = thesis.program?.options?.isBachelorProgram === true
   return Boolean(
-    isStudentView &&
-    (thesis.status === THESIS_STATUSES.DRAFT ||
-      thesis.status === THESIS_STATUSES.ETHESIS)
+    (isBachelor ? thesis.graders?.length >= 1 : thesis.graders?.length >= 2) &&
+    thesis.status === THESIS_STATUSES.IN_PROGRESS
+  )
+}
+
+export const isMissingGradersActionRequired = (thesis: Thesis, user: User) => {
+  return Boolean(
+    hasApprovalRights(thesis, user) &&
+    thesis.status === THESIS_STATUSES.IN_PROGRESS &&
+    !isEthesisReady(thesis)
+  )
+}
+
+export const isStudentEthesisActionRequired = (
+  thesis: Thesis,
+  isStudentView?: boolean
+) => {
+  return Boolean(isStudentView && thesis.status === THESIS_STATUSES.ETHESIS)
+}
+
+export const needsStudentAction = (thesis: Thesis, isStudentView?: boolean) => {
+  return (
+    isStudentDraftActionRequired(thesis, isStudentView) ||
+    isStudentEthesisActionRequired(thesis, isStudentView)
   )
 }

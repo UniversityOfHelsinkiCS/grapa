@@ -403,7 +403,7 @@
     "actionNeeded": "Action needed"
   },
   "thesesPage": {
-    "approvalRequiredTooltip": "This thesis requires actions from you.",
+    "actionRequiredTooltip": "This thesis requires actions from you.",
     "primarySupervisorTooltip": "You are the primary supervisor of this thesis",
     "noRows": "No rows"
   },
@@ -505,6 +505,11 @@
     "thesisIdle": "The thesis is idle",
     "mastersThesis": "Master's Thesis",
     "bachelorsThesis": "Bachelor's Thesis",
-    "requiresApproval": "Requires your approval"
+    "requiresApproval": "Requires your approval",
+    "missingGradersActionRequired": "Waiting for graders to be assigned",
+    "requiresEthesisPermission": "Waiting for you to give the student permission to submit to E-thesis",
+    "studentActionRequired": "You must submit the thesis for review once you have filled in all the required information.",
+    "studentEthesisActionRequired": "Go to <1>E-thesis</1> to submit your thesis.",
+    "ethesisInstructionsLink": "https://studies.helsinki.fi/instructions/article/e-thesis"
   }
 }
