@@ -912,6 +912,14 @@ const CSV_COLUMNS = [
     },
   },
   {
+    header: 'Author Emails',
+    getValue: (t: ThesisData) =>
+      t.authors
+        ?.map((a) => a.email)
+        .filter(Boolean)
+        .join(', '),
+  },
+  {
     header: 'Supervisors',
     getValue: (t: ThesisData) =>
       t.supervisions
