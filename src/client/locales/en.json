@@ -160,11 +160,11 @@
       "disableConfirm": "Are you sure you want to disable the ways of working agreement requirement?"
     },
     "hideSendToEthesis": {
-      "toggle": "Hide \"Send to E-thesis\" functionality",
-      "tooltip": "Hides the Send to E-thesis functionality from the degree program",
-      "confirmTitle": "Confirm \"Send to E-thesis\" setting",
-      "enableConfirm": "Are you sure you want to hide the \"Send to E-thesis\" functionality?",
-      "disableConfirm": "Are you sure you want to show the \"Send to E-thesis\" functionality?"
+      "toggle": "Hide \"Submit to E-thesis\" functionality",
+      "tooltip": "Hides the Submit to E-thesis functionality from the degree program",
+      "confirmTitle": "Confirm \"Submit to E-thesis\" setting",
+      "enableConfirm": "Are you sure you want to hide the \"Submit to E-thesis\" functionality?",
+      "disableConfirm": "Are you sure you want to show the \"Submit to E-thesis\" functionality?"
     },
     "useMilestones": {
       "toggle": "Use milestones",
@@ -336,14 +336,14 @@
     "removeGraderConfirmationContent": "Are you sure you want to delete the grader: {{name}}?",
     "removeGraderConfirmationNoName": "Are you sure you want to delete the grader {{index}}?",
     "setSentToEthesisLabel": "Thesis ready for assesment:",
-    "setSentToEthesis": "Mark thesis info as sent to E-thesis",
-    "toSubmitEthesis": "Marking thesis info as sent to E-thesis",
+    "setSentToEthesis": "Mark thesis info as submitted to E-thesis",
+    "toSubmitEthesis": "Marking thesis info as submitted to E-thesis",
     "toSubmitEthesisStudentStarted": "Give the student permission to submit to E-thesis",
     "send": "Send",
     "customDate": "Custom date",
     "notInCurrentProgram": " (Not part of the current program)",
-    "setEthesisStudentStarted": "Give permission to send to E-thesis",
-    "needSecondGraderForEthesis": "A second grader is required before sending to E-thesis"
+    "setEthesisStudentStarted": "Give permission to submit to E-thesis",
+    "needSecondGraderForEthesis": "A second grader is required before submitting to E-thesis"
   },
   "thesisStages": {
     "draft": "Draft",
@@ -355,8 +355,8 @@
     "completed": "Completed",
     "cancelled": "Cancelled",
     "ethesis": "Saved to E-thesis",
-    "ethesis_studentstarted": "Permission to send",
-    "ethesisSent": "Sent to E-thesis"
+    "ethesis_studentstarted": "Permission to submit",
+    "ethesisSent": "Submitted to E-thesis"
   },
   "thesesTableToolbar": {
     "newThesisButton": "New thesis",
@@ -474,7 +474,7 @@
   "progressView": {
     "lastMilestoneConfirmationTitle": "Confirmation",
     "lastMilestoneConfirmationText": "Are you sure you want to complete the last milestone? This action cannot be undone",
-    "markAsSentToEthesis": "Mark as sent to E-thesis",
+    "markAsSentToEthesis": "Mark as submitted to E-thesis",
     "milestone": "Milestone",
     "title": "Progress",
     "doneButton": "Mark milestone {0} as done",
