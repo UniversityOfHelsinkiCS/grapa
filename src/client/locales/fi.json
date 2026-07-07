@@ -359,6 +359,9 @@
   },
   "thesesTableToolbar": {
     "newThesisButton": "Uusi tutkielma",
+    "newThesisPopupTitle": "Tutkielmaluonnoksen luominen",
+    "newThesisPopupContent": "Huomaathan, että uuden tutkielman luominen tässä luo vain luonnoksen. Sinun on edelleen lähetettävä tutkielma erikseen arvioitavaksi täytettyäsi vaaditut tiedot.",
+    "newThesisPopupSubmit": "Jatka",
     "showAllThesesSwitch": "Kaikki tutkielmat",
     "showManagedProgramsThesesSwitch": "Tutkielmat ohjelmissani",
     "filterButton": "Suodattimet",

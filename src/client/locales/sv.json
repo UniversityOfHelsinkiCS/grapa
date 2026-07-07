@@ -360,6 +360,9 @@
   },
   "thesesTableToolbar": {
     "newThesisButton": "Ny avhandling",
+    "newThesisPopupTitle": "Skapa ett avhandlingsutkast",
+    "newThesisPopupContent": "Observera att skapandet av en ny avhandling här bara skapar ett utkast. Du måste fortfarande manuellt skicka avhandlingen för bedömning efter att ha fyllt i den nödvändiga informationen.",
+    "newThesisPopupSubmit": "Fortsätt",
     "showAllThesesSwitch": "Visa alla avhandlingar",
     "showManagedProgramsThesesSwitch": "Visa även avhandlingar i mina program",
     "filterButton": "Filtrera",

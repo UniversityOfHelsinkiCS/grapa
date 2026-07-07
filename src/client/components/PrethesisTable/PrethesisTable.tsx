@@ -57,7 +57,11 @@ import {
 import usePrograms from '../../hooks/usePrograms'
 import { PrethesisHelp } from '../PrethesisHelp/PrethesisHelp'
 import { useChangeThesisStatusMutation } from '../../hooks/useThesesMutation'
-import { canApprove, canSetEthesisStudentStarted } from '../../util/permissions'
+import {
+  canApprove,
+  canSetEthesisStudentStarted,
+  needsStudentAction,
+} from '../../util/permissions'
 import { THESIS_STATUSES } from '../../../config'
 import Popup from '../Common/Popup'
 
@@ -125,9 +129,9 @@ const PrethesisTable = ({
 
   const { mutateAsync: changeThesisStatus } =
     useChangeThesisStatusMutation(isStudentView)
-  const [pendingAction, setPendingAction] = React.useState<'approve' | null>(
-    null
-  )
+  const [pendingAction, setPendingAction] = React.useState<
+    'approve' | 'newThesis' | null
+  >(null)
   const [bulkSelection, setBulkSelection] = React.useState<Map<string, Thesis>>(
     new Map()
   )
@@ -139,6 +143,14 @@ const PrethesisTable = ({
   }
   const handleMenuClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleNewThesisClick = () => {
+    if (isStudentView) {
+      setPendingAction('newThesis')
+    } else {
+      initializeNewThesis()
+    }
   }
 
   /* FilterView */
@@ -597,17 +609,17 @@ const PrethesisTable = ({
           {(user &&
             (canApprove(info.row.original, user) ||
               canSetEthesisStudentStarted(info.row.original, user))) ||
-            (isStudentView && info.row.original.status == 'DRAFT' && (
-              <Tooltip title={t('thesesPage:approvalRequiredTooltip')}>
-                <IconButton>
-                  <PriorityHigh
-                    sx={{
-                      color: 'primary.main',
-                    }}
-                  ></PriorityHigh>
-                </IconButton>
-              </Tooltip>
-            ))}
+          needsStudentAction(info.row.original, isStudentView) ? (
+            <Tooltip title={t('thesesPage:approvalRequiredTooltip')}>
+              <IconButton>
+                <PriorityHigh
+                  sx={{
+                    color: 'primary.main',
+                  }}
+                ></PriorityHigh>
+              </IconButton>
+            </Tooltip>
+          ) : null}
 
           {info.row.original?.isIdle ? (
             <Tooltip title={t('thesisStages:idle')}>
@@ -739,7 +751,7 @@ const PrethesisTable = ({
                   fontWeight: 700,
                   boxShadow: 0,
                 }}
-                onClick={initializeNewThesis}
+                onClick={handleNewThesisClick}
               >
                 {t('thesesTableToolbar:newThesisButton')}
               </Button>
@@ -758,7 +770,7 @@ const PrethesisTable = ({
                   <MenuItem
                     onClick={() => {
                       handleMenuClose()
-                      initializeNewThesis()
+                      handleNewThesisClick()
                     }}
                   >
                     {t('thesesTableToolbar:newThesisButton')}
@@ -1173,8 +1185,17 @@ const PrethesisTable = ({
       <Popup
         open={pendingAction !== null}
         onClose={() => setPendingAction(null)}
-        title={t('approveButtonConfirmTitle', 'Confirm Approval')}
+        title={
+          pendingAction === 'newThesis'
+            ? t('thesesTableToolbar:newThesisPopupTitle')
+            : t('approveButtonConfirmTitle')
+        }
         onSubmit={async () => {
+          if (pendingAction === 'newThesis') {
+            setPendingAction(null)
+            initializeNewThesis()
+            return
+          }
           if (pendingAction === 'approve') {
             await changeThesisStatus({
               theses: selectedApprovable,
@@ -1190,34 +1211,51 @@ const PrethesisTable = ({
           }
           setPendingAction(null)
         }}
-        submitText={t('submitButton')}
+        submitText={
+          pendingAction === 'newThesis'
+            ? t('thesesTableToolbar:newThesisPopupSubmit')
+            : t('submitButton')
+        }
         cancelText={t('cancelButton')}
       >
-        <Typography>{t('approveBulkButtonConfirmContent')}</Typography>
-        <Box sx={{ mt: 2, maxHeight: 300, overflowY: 'auto' }}>
-          <List dense disablePadding>
-            {selectedApprovable.map((thesis) => (
-              <ListItem
-                key={thesis.id}
-                disableGutters
-                sx={{ alignItems: 'flex-start' }}
-              >
-                <ListItemText
-                  primary={thesis.topic}
-                  secondary={thesis.authors
-                    .toSorted((a, b) => a.lastName.localeCompare(b.lastName))
-                    .map(
-                      (author) =>
-                        `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
-                    )
-                    .join(', ')}
-                  primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
-                  secondaryTypographyProps={{ variant: 'caption' }}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        {pendingAction === 'newThesis' ? (
+          <Typography>
+            {t('thesesTableToolbar:newThesisPopupContent')}
+          </Typography>
+        ) : (
+          <>
+            <Typography>{t('approveBulkButtonConfirmContent')}</Typography>
+            <Box sx={{ mt: 2, maxHeight: 300, overflowY: 'auto' }}>
+              <List dense disablePadding>
+                {selectedApprovable.map((thesis) => (
+                  <ListItem
+                    key={thesis.id}
+                    disableGutters
+                    sx={{ alignItems: 'flex-start' }}
+                  >
+                    <ListItemText
+                      primary={thesis.topic}
+                      secondary={thesis.authors
+                        .toSorted((a, b) =>
+                          a.lastName.localeCompare(b.lastName)
+                        )
+                        .map(
+                          (author) =>
+                            `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
+                        )
+                        .join(', ')}
+                      primaryTypographyProps={{
+                        variant: 'body2',
+                        fontWeight: 500,
+                      }}
+                      secondaryTypographyProps={{ variant: 'caption' }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          </>
+        )}
       </Popup>
     </Stack>
   )

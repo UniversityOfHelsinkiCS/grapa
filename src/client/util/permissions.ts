@@ -41,3 +41,11 @@ export const canSetEthesisStudentStarted = (thesis: Thesis, user: User) => {
     thesis.status === THESIS_STATUSES.IN_PROGRESS
   )
 }
+
+export const needsStudentAction = (thesis: Thesis, isStudentView?: boolean) => {
+  return Boolean(
+    isStudentView &&
+    (thesis.status === THESIS_STATUSES.DRAFT ||
+      thesis.status === THESIS_STATUSES.ETHESIS)
+  )
+}

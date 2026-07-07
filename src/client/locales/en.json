@@ -360,6 +360,9 @@
   },
   "thesesTableToolbar": {
     "newThesisButton": "New thesis",
+    "newThesisPopupTitle": "Creating a thesis draft",
+    "newThesisPopupContent": "Please note that creating a new thesis here only creates a draft. You will still need to manually send the thesis for review after filling in the required information.",
+    "newThesisPopupSubmit": "Continue",
     "showAllThesesSwitch": "Show all theses",
     "showManagedProgramsThesesSwitch": "Also show theses of my programs",
     "filterButton": "Filters",
