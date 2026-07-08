@@ -7,7 +7,7 @@ import NotFound from './components/Errors/NotFound'
 
 import NoAccess from './components/NoAccess'
 import LoginAsPage from './components/LoginAsPage'
-import EntityOverview from './components/Program/EntityOverview'
+import EntityOverview from './components/ManageEntity/EntityOverview'
 import SeminarPage from './components/Seminar/SeminarPage'
 
 import { BASE_PATH } from '../config'

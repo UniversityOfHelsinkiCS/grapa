@@ -57,7 +57,7 @@ jest.unstable_mockModule(
 )
 
 jest.unstable_mockModule(
-  './src/client/components/Program/ManageEntityPermissions',
+  './src/client/components/ManageEntity/ManageEntityPermissions',
   () => ({
     default: jest.fn(({ filteringEntityId, hideTitle, entityType }) => (
       <div data-testid="entity-management">{`${filteringEntityId}-${String(hideTitle)}-${entityType}`}</div>
@@ -66,7 +66,7 @@ jest.unstable_mockModule(
 )
 
 jest.unstable_mockModule(
-  './src/client/components/Program/DepartmentStatistics',
+  './src/client/components/ManageEntity/DepartmentStatistics',
   () => ({
     default: jest.fn(({ filteringDepartmentId, hideTitle }) => (
       <div data-testid="department-statistics">{`${filteringDepartmentId}-${String(hideTitle)}`}</div>
