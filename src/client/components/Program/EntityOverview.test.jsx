@@ -61,8 +61,8 @@ jest.unstable_mockModule(
 jest.unstable_mockModule(
   './src/client/components/Program/EntityManagement',
   () => ({
-    default: jest.fn(({ filteringProgramId, hideTitle }) => (
-      <div data-testid="entity-management">{`${filteringProgramId}-${String(hideTitle)}`}</div>
+    default: jest.fn(({ filteringEntityId, hideTitle }) => (
+      <div data-testid="entity-management">{`${filteringEntityId}-${String(hideTitle)}`}</div>
     )),
   })
 )

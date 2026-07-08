@@ -54,12 +54,12 @@ import {
 } from '@backend/types'
 
 interface Props {
-  filteringProgramId?: string
+  filteringEntityId?: string
   hideTitle?: boolean
   entityType?: 'program' | 'studyTrack' | 'department'
 }
 const EntityManagement = ({
-  filteringProgramId,
+  filteringEntityId,
   hideTitle,
   entityType = 'program',
 }: Props) => {
@@ -67,12 +67,12 @@ const EntityManagement = ({
   const { user, isLoading: userLoading } = useLoggedInUser()
   const { language } = i18n as { language: TranslationLanguage }
 
-  const [programId, setProgramId] = useState(null)
+  const [entityId, setEntityId] = useState(null)
   const [managerCandidate, setManagerCandidate] = useState(null)
   const [isThesisApprover, setIsThesisApprover] = useState(true)
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [deletedProgramManagement, setDeletedProgramManagement] = useState(null)
+  const [deletedManagement, setDeletedManagement] = useState(null)
 
   const { programs: allPrograms } = usePrograms({ includeNotManaged: true })
   const { departments } = useDepartments({ includeNotManaged: false })
@@ -92,41 +92,29 @@ const EntityManagement = ({
 
   const { programManagements } = useProgramManagements(
     entityType === 'program'
-      ? filteringProgramId === 'own'
+      ? filteringEntityId
         ? {
-            programId: undefined,
+            programId: filteringEntityId,
             onlyThesisApprovers: false,
-            limitToEditorsPrograms: true,
+            limitToEditorsPrograms: undefined,
           }
-        : filteringProgramId
-          ? {
-              programId: filteringProgramId,
-              onlyThesisApprovers: false,
-              limitToEditorsPrograms: undefined,
-            }
-          : undefined
+        : undefined
       : undefined
   )
 
   const { studyTrackManagements } = useStudyTrackManagements(
-    entityType === 'studyTrack' &&
-      filteringProgramId &&
-      filteringProgramId !== 'own'
-      ? { studyTrackId: filteringProgramId }
+    entityType === 'studyTrack' && filteringEntityId
+      ? { studyTrackId: filteringEntityId }
       : undefined
   )
 
   const { departmentAdmins } = useDepartmentAdmins()
 
   let filteredDepartmentAdmins = departmentAdmins ?? []
-  if (
-    entityType === 'department' &&
-    filteringProgramId &&
-    filteringProgramId !== 'own'
-  ) {
+  if (entityType === 'department' && filteringEntityId) {
     filteredDepartmentAdmins = filteredDepartmentAdmins.filter(
       (departmentAdmin) =>
-        String(departmentAdmin.departmentId) === filteringProgramId
+        String(departmentAdmin.departmentId) === filteringEntityId
     )
   }
 
@@ -159,47 +147,44 @@ const EntityManagement = ({
   const { users } = useUsers({ search: debouncedSearch, onlyEmployees: true })
 
   useEffect(() => {
-    if (filteringProgramId && filteringProgramId !== 'own') {
-      setProgramId(filteringProgramId)
+    if (filteringEntityId) {
+      setEntityId(filteringEntityId)
       return
     }
 
-    setProgramId(null)
-  }, [filteringProgramId])
+    setEntityId(null)
+  }, [filteringEntityId])
 
-  const selectablePrograms =
-    filteringProgramId && filteringProgramId !== 'own'
-      ? entities?.filter((program) => program.id === filteringProgramId)
-      : entities
-  const isSingleProgramView = Boolean(
-    filteringProgramId && filteringProgramId !== 'own'
-  )
+  const selectableEntities = filteringEntityId
+    ? entities?.filter((entity) => entity.id === filteringEntityId)
+    : entities
+  const isSingleEntityView = Boolean(filteringEntityId)
 
-  const handleAddProgramManagement = async () => {
-    if (managerCandidate && programId) {
+  const handleAddManagement = async () => {
+    if (managerCandidate && entityId) {
       if (entityType === 'program') {
         await createProgramManagement({
           userId: managerCandidate.id,
-          programId,
+          programId: entityId,
           isThesisApprover,
         })
       } else if (entityType === 'studyTrack') {
         await createStudyTrackManagement({
           userId: managerCandidate.id,
-          studyTrackId: programId,
+          studyTrackId: entityId,
         })
       } else {
         await createDepartmentAdmin({
           userId: managerCandidate.id,
-          departmentId: programId,
+          departmentId: entityId,
         })
       }
       setManagerCandidate(null)
       setUserSearch('')
-      if (isSingleProgramView) {
-        setProgramId(filteringProgramId)
+      if (isSingleEntityView) {
+        setEntityId(filteringEntityId)
       } else {
-        setProgramId(null)
+        setEntityId(null)
       }
     }
   }
@@ -220,7 +205,7 @@ const EntityManagement = ({
           {
             field: 'more-actions',
             type: 'actions' as const,
-            headerName: t('programManagementPage:toggleApproval'),
+            headerName: t('entityManagement:toggleApproval'),
             sortable: false,
             width: 157,
             renderCell: (params: any) => (
@@ -235,8 +220,8 @@ const EntityManagement = ({
                 }}
                 title={
                   params.row.isThesisApprover
-                    ? t('programManagementPage:disallowThesisApprovalButton')
-                    : t('programManagementPage:allowThesisApprovalButton')
+                    ? t('entityManagement:disallowThesisApprovalButton')
+                    : t('entityManagement:allowThesisApprovalButton')
                 }
               >
                 <IconButton
@@ -298,7 +283,7 @@ const EntityManagement = ({
           type="button"
           onClick={() => {
             setDeleteDialogOpen(true)
-            setDeletedProgramManagement(
+            setDeletedManagement(
               params.row as ProgramManagementData | DepartmentAdminData
             )
           }}
@@ -325,8 +310,10 @@ const EntityManagement = ({
       {!hideTitle && (
         <Typography component="h1" variant="h4">
           {entityType === 'department'
-            ? t('departmentAdminPage:pageTitle')
-            : t('programManagementPage:pageTitle')}
+            ? t('entityManagement:departmentTitle')
+            : entityType === 'program'
+              ? t('entityManagement:programTitle')
+              : t('entityManagement:studyTrackTitle')}
         </Typography>
       )}
       <DataGrid
@@ -350,8 +337,10 @@ const EntityManagement = ({
       >
         <Typography component="h2" variant="h6">
           {entityType === 'department'
-            ? t('departmentAdminPage:addDepartmentAdmin')
-            : t('programManagementPage:addProgramManagement')}
+            ? t('entityManagement:addDepartmentManagement')
+            : entityType === 'program'
+              ? t('entityManagement:addProgramManagement')
+              : t('entityManagement:addStudyTrackManagement')}
         </Typography>
         <FormControl fullWidth>
           <Autocomplete
@@ -368,8 +357,8 @@ const EntityManagement = ({
                 {...params}
                 label={
                   entityType === 'department'
-                    ? t('departmentAdminPage:adminHeader')
-                    : t('programManagementPage:managerHeader')
+                    ? t('entityManagement:adminHeader')
+                    : t('entityManagement:managerHeader')
                 }
                 required
               />
@@ -386,29 +375,29 @@ const EntityManagement = ({
             }}
           />
         </FormControl>
-        {!isSingleProgramView && (
+        {!isSingleEntityView && (
           <FormControl fullWidth>
             <InputLabel id="program-select-label">
               {entityType === 'program'
-                ? t('programManagementPage:programHeader')
+                ? t('entityManagement:programHeader')
                 : entityType === 'studyTrack'
-                  ? t('studyTrackHeader', 'Study Track')
-                  : t('departmentAdminPage:departmentHeader')}
+                  ? t('entityManagement:studyTrackHeader')
+                  : t('entityManagement:departmentHeader')}
             </InputLabel>
             <Select
               data-testid="program-select-input"
               labelId="program-select-label"
               label={
                 entityType === 'program'
-                  ? t('programManagementPage:programHeader')
+                  ? t('entityManagement:programHeader')
                   : entityType === 'studyTrack'
-                    ? t('studyTrackHeader', 'Study Track')
-                    : t('departmentAdminPage:departmentHeader')
+                    ? t('entityManagement:studyTrackHeader')
+                    : t('entityManagement:departmentHeader')
               }
-              value={programId ?? ''}
-              onChange={(e) => setProgramId(e.target.value as string)}
+              value={entityId ?? ''}
+              onChange={(e) => setEntityId(e.target.value as string)}
             >
-              {selectablePrograms.map((program) => (
+              {selectableEntities.map((program) => (
                 <MenuItem
                   key={program.id}
                   value={program.id}
@@ -428,44 +417,46 @@ const EntityManagement = ({
                 onChange={(e) => setIsThesisApprover(e.target.checked)}
               />
             }
-            label={t('programManagementPage:allowThesisApprovalButton')}
+            label={t('entityManagement:allowThesisApprovalButton')}
           />
         )}
         <Button
           type="submit"
           variant="contained"
           data-testid="add-program-management-button"
-          disabled={!programId || !managerCandidate}
-          onClick={handleAddProgramManagement}
+          disabled={!entityId || !managerCandidate}
+          onClick={handleAddManagement}
           fullWidth
           sx={{ borderRadius: '0.5rem' }}
         >
           {t('submitButton')}
         </Button>
       </Box>
-      {deletedProgramManagement && (
+      {deletedManagement && (
         <Popup
           open={deleteDialogOpen}
           testId="delete-confirm"
           onClose={() => {
             setDeleteDialogOpen(false)
-            setDeletedProgramManagement(null)
+            setDeletedManagement(null)
           }}
           onSubmit={async () => {
             if (entityType === 'program') {
-              await deleteProgramManagement(deletedProgramManagement.id)
+              await deleteProgramManagement(deletedManagement.id)
             } else if (entityType === 'studyTrack') {
-              await deleteStudyTrackManagement(deletedProgramManagement.id)
+              await deleteStudyTrackManagement(deletedManagement.id)
             } else {
-              await deleteDepartmentAdmin(deletedProgramManagement.id)
+              await deleteDepartmentAdmin(deletedManagement.id)
             }
             setDeleteDialogOpen(false)
-            setDeletedProgramManagement(null)
+            setDeletedManagement(null)
           }}
           title={
             entityType === 'department'
-              ? t('departmentAdminPage:removeDepartmentAdminTitle')
-              : t('programManagementPage:removeProgramManagementTitle')
+              ? t('entityManagement:removeDepartmentManagementTitle')
+              : entityType === 'program'
+                ? t('entityManagement:removeProgramManagementTitle')
+                : t('entityManagement:removeStudyTrackManagementTitle')
           }
           submitText={t('deleteButton')}
           submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
@@ -474,18 +465,19 @@ const EntityManagement = ({
         >
           <Box>
             {entityType === 'department'
-              ? t('departmentAdminPage:removeDepartmentAdminContent', {
-                  name: `${deletedProgramManagement.user.firstName} ${deletedProgramManagement.user.lastName}`,
-                  department:
-                    deletedProgramManagement.department?.name[language],
+              ? t('entityManagement:removeDepartmentManagementContent', {
+                  name: `${deletedManagement.user.firstName} ${deletedManagement.user.lastName}`,
+                  department: deletedManagement.department?.name[language],
                 })
-              : t('programManagementPage:removeProgramManagementContent', {
-                  name: `${deletedProgramManagement.user.firstName} ${deletedProgramManagement.user.lastName}`,
-                  program:
-                    entityType === 'program'
-                      ? deletedProgramManagement.program?.name[language]
-                      : deletedProgramManagement.studyTrack?.name[language],
-                })}
+              : entityType === 'program'
+                ? t('entityManagement:removeProgramManagementContent', {
+                    name: `${deletedManagement.user.firstName} ${deletedManagement.user.lastName}`,
+                    program: deletedManagement.program?.name[language],
+                  })
+                : t('entityManagement:removeStudyTrackManagementContent', {
+                    name: `${deletedManagement.user.firstName} ${deletedManagement.user.lastName}`,
+                    studyTrack: deletedManagement.studyTrack?.name[language],
+                  })}
           </Box>
         </Popup>
       )}

@@ -411,28 +411,31 @@
   "customFilters": {
     "valuesLabel": "Värden"
   },
-  "programManagementPage": {
-    "pageTitle": "Programledningar",
+  "entityManagement": {
+    "programTitle": "Programledningar",
+    "studyTrackTitle": "Studieinriktningsledningar",
+    "departmentTitle": "Avdelningsadministratörer",
     "addProgramManagement": "Lägg till programledning",
+    "addStudyTrackManagement": "Lägg till studieinriktningsledning",
+    "addDepartmentManagement": "Lägg till avdelningsadministratör",
     "programHeader": "Program",
+    "studyTrackHeader": "Studieinriktning",
+    "departmentHeader": "Avdelning",
     "managerHeader": "Direktör",
+    "adminHeader": "Administratör",
     "toggleApproval": "Godkännanderättigheter",
     "allowThesisApprovalButton": "Tillåt godkännande av avhandling",
     "disallowThesisApprovalButton": "Tillåt inte godkännande av avhandling",
     "removeProgramManagementTitle": "Ta bort programledning",
-    "removeProgramManagementContent": "Är du säker på att du vill ta bort {{name}} från {{program}}?"
+    "removeStudyTrackManagementTitle": "Ta bort studieinriktningsledning",
+    "removeDepartmentManagementTitle": "Ta bort avdelningsadministratör",
+    "removeProgramManagementContent": "Är du säker på att du vill ta bort {{name}} från {{program}}?",
+    "removeStudyTrackManagementContent": "Är du säker på att du vill ta bort {{name}} från {{studyTrack}}?",
+    "removeDepartmentManagementContent": "Är du säker på att du vill ta bort {{name}} från {{department}}?"
   },
   "programLogsPage": {
     "pageTitle": "Programloggar",
     "showNonAdminOnlySwitch": "Visa endast icke-administratörsloggar"
-  },
-  "departmentAdminPage": {
-    "pageTitle": "Avdelningsadministratörer",
-    "addDepartmentAdmin": "Lägg till avdelningsadministratör",
-    "departmentHeader": "Avdelning",
-    "adminHeader": "Administratör",
-    "removeDepartmentAdminTitle": "Ta bort avdelningsadministratör",
-    "removeDepartmentAdminContent": "Är du säker på att du vill ta bort {{name}} från {{department}}?"
   },
   "departmentStatisticsPage": {
     "pageTitle": "Avdelningsstatistik",

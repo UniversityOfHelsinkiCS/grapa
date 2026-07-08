@@ -160,7 +160,7 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
             {tab === 'managePermissions' && (
               <Box>
                 <EntityManagement
-                  filteringProgramId={selectedEntity.id}
+                  filteringEntityId={selectedEntity.id}
                   hideTitle
                   entityType={entityType}
                 />

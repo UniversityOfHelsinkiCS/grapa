@@ -411,28 +411,31 @@
   "customFilters": {
     "valuesLabel": "Values"
   },
-  "programManagementPage": {
-    "pageTitle": "Program managements",
+  "entityManagement": {
+    "programTitle": "Program managements",
+    "studyTrackTitle": "Study track managements",
+    "departmentTitle": "Department admins",
     "addProgramManagement": "Add program management",
+    "addStudyTrackManagement": "Add study track management",
+    "addDepartmentManagement": "Add department admin",
     "programHeader": "Program",
+    "studyTrackHeader": "Study track",
+    "departmentHeader": "Department",
     "managerHeader": "Manager",
+    "adminHeader": "Admin",
     "toggleApproval": "Approval rights",
     "allowThesisApprovalButton": "Allow thesis approval",
     "disallowThesisApprovalButton": "Disallow thesis approval",
     "removeProgramManagementTitle": "Delete program management",
-    "removeProgramManagementContent": "Are you sure you want to delete {{name}} from the {{program}}?"
+    "removeStudyTrackManagementTitle": "Delete study track management",
+    "removeDepartmentManagementTitle": "Delete department admin",
+    "removeProgramManagementContent": "Are you sure you want to delete {{name}} from the {{program}}?",
+    "removeStudyTrackManagementContent": "Are you sure you want to delete {{name}} from the {{studyTrack}}?",
+    "removeDepartmentManagementContent": "Are you sure you want to delete {{name}} from the {{department}}?"
   },
   "programLogsPage": {
     "pageTitle": "Program logs",
     "showNonAdminOnlySwitch": "Show only non-admin logs"
-  },
-  "departmentAdminPage": {
-    "pageTitle": "Department admins",
-    "addDepartmentAdmin": "Add department admin",
-    "departmentHeader": "Department",
-    "adminHeader": "Admin",
-    "removeDepartmentAdminTitle": "Delete department admin",
-    "removeDepartmentAdminContent": "Are you sure you want to delete {{name}} from the {{department}}?"
   },
   "departmentStatisticsPage": {
     "pageTitle": "Departmental statistics",

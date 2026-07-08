@@ -410,28 +410,31 @@
   "customFilters": {
     "valuesLabel": "Arvot"
   },
-  "programManagementPage": {
-    "pageTitle": "Ohjelmavastaavat",
+  "entityManagement": {
+    "programTitle": "Ohjelmavastaavat",
+    "studyTrackTitle": "Opintosuuntavastaavat",
+    "departmentTitle": "Yksikön ylläpitäjät",
     "addProgramManagement": "Vastaavien lisäys",
+    "addStudyTrackManagement": "Opintosuuntavastaavan lisäys",
+    "addDepartmentManagement": "Lisää yksikön ylläpitäjä",
     "programHeader": "Ohjelma",
+    "studyTrackHeader": "Opintosuunta",
+    "departmentHeader": "Yksikkö",
     "managerHeader": "Vastaava",
+    "adminHeader": "Ylläpitäjä",
     "toggleApproval": "Hyväksymisoikeudet",
     "allowThesisApprovalButton": "Salli tutkielman hyväksyminen",
     "disallowThesisApprovalButton": "Estä tutkielman hyväksyminen",
-    "removeProgramManagementTitle": "Poista vastaava",
-    "removeProgramManagementContent": "Haluatko varmasti poistaa henkilön {{name}} ohjelmasta {{program}}?"
+    "removeProgramManagementTitle": "Poista ohjelmavastaava",
+    "removeStudyTrackManagementTitle": "Poista opintosuuntavastaava",
+    "removeDepartmentManagementTitle": "Poista yksikön ylläpitäjä",
+    "removeProgramManagementContent": "Haluatko varmasti poistaa henkilön {{name}} ohjelmasta {{program}}?",
+    "removeStudyTrackManagementContent": "Haluatko varmasti poistaa henkilön {{name}} opintosuunnasta {{studyTrack}}?",
+    "removeDepartmentManagementContent": "Haluatko varmasti poistaa henkilön {{name}} yksiköltä {{department}}?"
   },
   "programLogsPage": {
     "pageTitle": "Ohjelman lokit",
     "showNonAdminOnlySwitch": "Näytä vain ei-admin lokit"
-  },
-  "departmentAdminPage": {
-    "pageTitle": "Yksikön ylläpitäjät",
-    "addDepartmentAdmin": "Lisää yksikön ylläpitäjä",
-    "departmentHeader": "Yksikkö",
-    "adminHeader": "Vastaava",
-    "removeDepartmentAdminTitle": "Poista yksikön ylläpitäjä",
-    "removeDepartmentAdminContent": "Haluatko varmasti poistaa henkilön {{name}} yksiköltä {{department}}?"
   },
   "departmentStatisticsPage": {
     "pageTitle": "Yksikön tilastot",

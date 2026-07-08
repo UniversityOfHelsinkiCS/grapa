@@ -95,6 +95,7 @@ jest.unstable_mockModule(
 jest.unstable_mockModule(
   './src/client/components/PrethesisTable/PrethesisTable',
   () => ({
+    DEFAULT_PAGE_SIZE: 25,
     default: jest.fn(({ initializeNewThesis }) => (
       <button data-testid="create-new-thesis" onClick={initializeNewThesis}>
         Create new thesis
@@ -116,8 +117,6 @@ jest.unstable_mockModule(
     default: jest.fn(() => null),
   })
 )
-
-
 
 jest.unstable_mockModule('@mui/x-data-grid', () => ({
   DataGrid: jest.fn(({ slots, slotProps }) => {

@@ -59,8 +59,8 @@ jest.unstable_mockModule(
 jest.unstable_mockModule(
   './src/client/components/Program/EntityManagement',
   () => ({
-    default: jest.fn(({ filteringDepartmentId, hideTitle, entityType }) => (
-      <div data-testid="entity-management">{`${filteringDepartmentId}-${String(hideTitle)}-${entityType}`}</div>
+    default: jest.fn(({ filteringEntityId, hideTitle, entityType }) => (
+      <div data-testid="entity-management">{`${filteringEntityId}-${String(hideTitle)}-${entityType}`}</div>
     )),
   })
 )
@@ -113,7 +113,7 @@ describe('EntityOverview (Department)', () => {
     await user.click(screen.getByRole('tab', { name: 'Hallinnoi oikeuksia' }))
 
     expect(screen.getByTestId('entity-management')).toHaveTextContent(
-      'undefined-true-department'
+      'department-2-true-department'
     )
     expect(screen.queryByTestId('theses-page')).not.toBeInTheDocument()
   })
