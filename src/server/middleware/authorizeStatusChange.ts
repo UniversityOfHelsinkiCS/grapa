@@ -1,6 +1,11 @@
 import { NextFunction } from 'express'
 import { ServerPostRequest, ServerPutRequest } from '../types'
-import { ProgramManagement, Thesis, Supervision, Program } from '../db/models'
+import {
+  ProgramManagement,
+  Thesis,
+  Supervision,
+  StudyTrackManagement,
+} from '../db/models'
 import CustomAuthorizationError from '../errors/AuthorizationError'
 
 export const authorizeStatusChange = async (
@@ -63,6 +68,12 @@ export const authorizeStatusChange = async (
     (program) => program.programId
   )
 
+  const studyTrackManagement = await StudyTrackManagement.findAll({
+    attributes: ['studyTrackId'],
+    where: { userId: actionUser.id },
+  })
+  const studyTrackIds = studyTrackManagement.map((stm) => stm.studyTrackId)
+
   let isSupervisor = false
   if (thesis) {
     const supervision = await Supervision.findOne({
@@ -73,17 +84,16 @@ export const authorizeStatusChange = async (
     })
 
     if (supervision) {
-      const program = await Program.findByPk(thesis.programId)
-      const options = program?.options as Record<string, any> | undefined
       isSupervisor = !!options?.supervisorApproval
     }
   }
 
   if (
     !programIdsWhereUserIsManager.includes(req.body.programId) &&
+    !studyTrackIds.includes(req.body.studyTrackId) &&
     !isSupervisor
   ) {
-    // if the user is not a program-manager or supervisor and the status
+    // if the user is not a program-manager, study-track-manager, or supervisor and the status
     // is changed or the thesis a new one throw an Authorization error
     if (!thesis || thesis.status !== req.body.status) {
       throw new CustomAuthorizationError(
