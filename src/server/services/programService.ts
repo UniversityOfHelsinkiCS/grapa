@@ -47,7 +47,8 @@ export const getPrograms = async (
   isAdmin: boolean,
   language: string,
   favoriteProgramIds: string[],
-  userId: string
+  userId: string,
+  includeManagedStudyTracks: boolean = false
 ) => {
   const whereClause = {
     ...(!includeDisabled && { enabled: true }),
@@ -60,15 +61,6 @@ export const getPrograms = async (
       as: 'studyTracks',
     },
   ]
-
-  if (!isAdmin && !includeNotManaged) {
-    includes.push({
-      model: ProgramManagement,
-      attributes: [],
-      where: { userId: userId },
-      required: true,
-    })
-  }
 
   // Validate that the language is one of the allowed keys
   const allowedLanguages = ['fi', 'sv', 'en']
@@ -86,6 +78,7 @@ export const getPrograms = async (
 
   const managedPrograms = await ProgramManagement.findAll({
     attributes: ['programId'],
+    where: { userId },
     raw: true,
   })
   const managedProgramIds = new Set(
@@ -121,5 +114,15 @@ export const getPrograms = async (
     }
   })
 
-  return programsWithFavorites
+  let result = programsWithFavorites
+  if (!isAdmin && !includeNotManaged) {
+    result = result.filter(
+      (p) =>
+        p.isManaged ||
+        (includeManagedStudyTracks &&
+          p.studyTracks.some((st: any) => st.isManaged))
+    )
+  }
+
+  return result
 }

@@ -1,25 +1,30 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { ProgramData, TranslatedName } from '@backend/types'
 
 import apiClient from '../util/apiClient'
 import queryClient from '../util/queryClient'
+import useLoggedInUser from './useLoggedInUser'
 
 interface UseProgramsParams {
   includeNotManaged?: boolean
   includeDisabled?: boolean
   enabled?: boolean
   useStudentApi?: boolean
+  includeManagedStudyTracks?: boolean
 }
 
 const usePrograms = (params: UseProgramsParams) => {
   const { i18n } = useTranslation()
   const { language } = i18n
+  const { user } = useLoggedInUser()
 
   const queryKey = [
     'programs',
     params?.includeNotManaged,
     params?.includeDisabled,
+    params?.includeManagedStudyTracks,
     language,
   ]
 
@@ -33,13 +38,26 @@ const usePrograms = (params: UseProgramsParams) => {
     return data
   }
 
-  const { data: programs, ...rest } = useQuery({
+  const { data, ...rest } = useQuery({
     queryKey,
     queryFn,
     enabled: params?.enabled ?? true,
   })
 
-  return { programs, ...rest }
+  const programs = useMemo(() => {
+    if (!data) return undefined
+    if (user?.isAdmin || params?.includeNotManaged) return data
+    return data.filter((p) => p.isManaged)
+  }, [data, params?.includeNotManaged, user?.isAdmin])
+
+  const studyTracks = useMemo(() => {
+    if (!data) return undefined
+    const allTracks = data.flatMap((p) => p.studyTracks || [])
+    if (user?.isAdmin || params?.includeNotManaged) return allTracks
+    return allTracks.filter((st) => st.isManaged)
+  }, [data, params?.includeNotManaged, user?.isAdmin])
+
+  return { programs, studyTracks, ...rest }
 }
 
 interface UpdateProgramParams {

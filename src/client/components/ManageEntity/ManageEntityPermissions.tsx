@@ -74,14 +74,11 @@ const ManageEntityPermissions = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deletedPermission, setDeletedPermission] = useState(null)
 
-  const { programs: allPrograms } = usePrograms({ includeNotManaged: true })
+  const { programs: programEntities, studyTracks } = usePrograms({
+    includeNotManaged: user?.isAdmin,
+    includeManagedStudyTracks: true,
+  })
   const { departments } = useDepartments({ includeNotManaged: false })
-  const programEntities =
-    allPrograms?.filter((p) => user?.isAdmin || p.isManaged) || []
-  const studyTracks =
-    allPrograms
-      ?.flatMap((p) => p.studyTracks || [])
-      .filter((st) => user?.isAdmin || st.isManaged) || []
 
   const entities =
     entityType === 'department'

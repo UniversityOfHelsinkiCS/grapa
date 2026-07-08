@@ -28,6 +28,8 @@ programRouter.get(
   async (req: RequestWithUser, res: Response) => {
     const includeDisabled = req.query.includeDisabled === 'true'
     const includeNotManaged = req.query.includeNotManaged === 'true'
+    const includeManagedStudyTracks =
+      req.query.includeManagedStudyTracks === 'true'
     const language = (req.query.language ?? 'en') as string
     const { isAdmin, favoriteProgramIds, id } = req.user
     const result = await getPrograms(
@@ -36,7 +38,8 @@ programRouter.get(
       isAdmin,
       language,
       favoriteProgramIds,
-      id
+      id,
+      includeManagedStudyTracks
     )
     res.send(result)
   }
