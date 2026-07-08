@@ -190,7 +190,10 @@ const ManageEntityPermissions = ({
   if (
     !user.isAdmin &&
     ((entityType === 'department' && !user.managedDepartmentIds?.length) ||
-      (entityType !== 'department' && !user.managedProgramIds?.length))
+      (entityType === 'program' && !user.managedProgramIds?.length) ||
+      (entityType === 'studyTrack' &&
+        !user.managedProgramIds?.length &&
+        !user.managedStudyTrackIds?.length))
   )
     return <Navigate to="/" />
 
