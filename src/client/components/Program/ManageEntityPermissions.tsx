@@ -58,7 +58,7 @@ interface Props {
   hideTitle?: boolean
   entityType?: 'program' | 'studyTrack' | 'department'
 }
-const EntityManagement = ({
+const ManageEntityPermissions = ({
   filteringEntityId,
   hideTitle,
   entityType = 'program',
@@ -72,7 +72,7 @@ const EntityManagement = ({
   const [isThesisApprover, setIsThesisApprover] = useState(true)
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [deletedManagement, setDeletedManagement] = useState(null)
+  const [deletedPermission, setDeletedPermission] = useState(null)
 
   const { programs: allPrograms } = usePrograms({ includeNotManaged: true })
   const { departments } = useDepartments({ includeNotManaged: false })
@@ -118,7 +118,7 @@ const EntityManagement = ({
     )
   }
 
-  const managements =
+  const permissions =
     entityType === 'department'
       ? filteredDepartmentAdmins
       : entityType === 'program'
@@ -160,7 +160,7 @@ const EntityManagement = ({
     : entities
   const isSingleEntityView = Boolean(filteringEntityId)
 
-  const handleAddManagement = async () => {
+  const handleAddPermission = async () => {
     if (managerCandidate && entityId) {
       if (entityType === 'program') {
         await createProgramManagement({
@@ -189,7 +189,7 @@ const EntityManagement = ({
     }
   }
 
-  if (!user || userLoading || !entities || !managements) return null
+  if (!user || userLoading || !entities || !permissions) return null
   if (
     !user.isAdmin &&
     ((entityType === 'department' && !user.managedDepartmentIds?.length) ||
@@ -205,7 +205,7 @@ const EntityManagement = ({
           {
             field: 'more-actions',
             type: 'actions' as const,
-            headerName: t('entityManagement:toggleApproval'),
+            headerName: t('manageEntityPermissions:toggleApproval'),
             sortable: false,
             width: 157,
             renderCell: (params: any) => (
@@ -220,8 +220,8 @@ const EntityManagement = ({
                 }}
                 title={
                   params.row.isThesisApprover
-                    ? t('entityManagement:disallowThesisApprovalButton')
-                    : t('entityManagement:allowThesisApprovalButton')
+                    ? t('manageEntityPermissions:disallowThesisApprovalButton')
+                    : t('manageEntityPermissions:allowThesisApprovalButton')
                 }
               >
                 <IconButton
@@ -283,7 +283,7 @@ const EntityManagement = ({
           type="button"
           onClick={() => {
             setDeleteDialogOpen(true)
-            setDeletedManagement(
+            setDeletedPermission(
               params.row as ProgramManagementData | DepartmentAdminData
             )
           }}
@@ -310,15 +310,15 @@ const EntityManagement = ({
       {!hideTitle && (
         <Typography component="h1" variant="h4">
           {entityType === 'department'
-            ? t('entityManagement:departmentTitle')
+            ? t('manageEntityPermissions:departmentTitle')
             : entityType === 'program'
-              ? t('entityManagement:programTitle')
-              : t('entityManagement:studyTrackTitle')}
+              ? t('manageEntityPermissions:programTitle')
+              : t('manageEntityPermissions:studyTrackTitle')}
         </Typography>
       )}
       <DataGrid
         sx={{ mt: hideTitle ? 0 : '2rem' }}
-        rows={managements}
+        rows={permissions}
         columns={columns}
         pageSizeOptions={[100]}
         localeText={
@@ -337,10 +337,10 @@ const EntityManagement = ({
       >
         <Typography component="h2" variant="h6">
           {entityType === 'department'
-            ? t('entityManagement:addDepartmentManagement')
+            ? t('manageEntityPermissions:addDepartmentManagement')
             : entityType === 'program'
-              ? t('entityManagement:addProgramManagement')
-              : t('entityManagement:addStudyTrackManagement')}
+              ? t('manageEntityPermissions:addProgramManagement')
+              : t('manageEntityPermissions:addStudyTrackManagement')}
         </Typography>
         <FormControl fullWidth>
           <Autocomplete
@@ -357,8 +357,8 @@ const EntityManagement = ({
                 {...params}
                 label={
                   entityType === 'department'
-                    ? t('entityManagement:adminHeader')
-                    : t('entityManagement:managerHeader')
+                    ? t('manageEntityPermissions:adminHeader')
+                    : t('manageEntityPermissions:managerHeader')
                 }
                 required
               />
@@ -379,20 +379,20 @@ const EntityManagement = ({
           <FormControl fullWidth>
             <InputLabel id="program-select-label">
               {entityType === 'program'
-                ? t('entityManagement:programHeader')
+                ? t('manageEntityPermissions:programHeader')
                 : entityType === 'studyTrack'
-                  ? t('entityManagement:studyTrackHeader')
-                  : t('entityManagement:departmentHeader')}
+                  ? t('manageEntityPermissions:studyTrackHeader')
+                  : t('manageEntityPermissions:departmentHeader')}
             </InputLabel>
             <Select
               data-testid="program-select-input"
               labelId="program-select-label"
               label={
                 entityType === 'program'
-                  ? t('entityManagement:programHeader')
+                  ? t('manageEntityPermissions:programHeader')
                   : entityType === 'studyTrack'
-                    ? t('entityManagement:studyTrackHeader')
-                    : t('entityManagement:departmentHeader')
+                    ? t('manageEntityPermissions:studyTrackHeader')
+                    : t('manageEntityPermissions:departmentHeader')
               }
               value={entityId ?? ''}
               onChange={(e) => setEntityId(e.target.value as string)}
@@ -417,7 +417,7 @@ const EntityManagement = ({
                 onChange={(e) => setIsThesisApprover(e.target.checked)}
               />
             }
-            label={t('entityManagement:allowThesisApprovalButton')}
+            label={t('manageEntityPermissions:allowThesisApprovalButton')}
           />
         )}
         <Button
@@ -425,38 +425,38 @@ const EntityManagement = ({
           variant="contained"
           data-testid="add-program-management-button"
           disabled={!entityId || !managerCandidate}
-          onClick={handleAddManagement}
+          onClick={handleAddPermission}
           fullWidth
           sx={{ borderRadius: '0.5rem' }}
         >
           {t('submitButton')}
         </Button>
       </Box>
-      {deletedManagement && (
+      {deletedPermission && (
         <Popup
           open={deleteDialogOpen}
           testId="delete-confirm"
           onClose={() => {
             setDeleteDialogOpen(false)
-            setDeletedManagement(null)
+            setDeletedPermission(null)
           }}
           onSubmit={async () => {
             if (entityType === 'program') {
-              await deleteProgramManagement(deletedManagement.id)
+              await deleteProgramManagement(deletedPermission.id)
             } else if (entityType === 'studyTrack') {
-              await deleteStudyTrackManagement(deletedManagement.id)
+              await deleteStudyTrackManagement(deletedPermission.id)
             } else {
-              await deleteDepartmentAdmin(deletedManagement.id)
+              await deleteDepartmentAdmin(deletedPermission.id)
             }
             setDeleteDialogOpen(false)
-            setDeletedManagement(null)
+            setDeletedPermission(null)
           }}
           title={
             entityType === 'department'
-              ? t('entityManagement:removeDepartmentManagementTitle')
+              ? t('manageEntityPermissions:removeDepartmentManagementTitle')
               : entityType === 'program'
-                ? t('entityManagement:removeProgramManagementTitle')
-                : t('entityManagement:removeStudyTrackManagementTitle')
+                ? t('manageEntityPermissions:removeProgramManagementTitle')
+                : t('manageEntityPermissions:removeStudyTrackManagementTitle')
           }
           submitText={t('deleteButton')}
           submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
@@ -465,19 +465,22 @@ const EntityManagement = ({
         >
           <Box>
             {entityType === 'department'
-              ? t('entityManagement:removeDepartmentManagementContent', {
-                  name: `${deletedManagement.user.firstName} ${deletedManagement.user.lastName}`,
-                  department: deletedManagement.department?.name[language],
+              ? t('manageEntityPermissions:removeDepartmentManagementContent', {
+                  name: `${deletedPermission.user.firstName} ${deletedPermission.user.lastName}`,
+                  department: deletedPermission.department?.name[language],
                 })
               : entityType === 'program'
-                ? t('entityManagement:removeProgramManagementContent', {
-                    name: `${deletedManagement.user.firstName} ${deletedManagement.user.lastName}`,
-                    program: deletedManagement.program?.name[language],
+                ? t('manageEntityPermissions:removeProgramManagementContent', {
+                    name: `${deletedPermission.user.firstName} ${deletedPermission.user.lastName}`,
+                    program: deletedPermission.program?.name[language],
                   })
-                : t('entityManagement:removeStudyTrackManagementContent', {
-                    name: `${deletedManagement.user.firstName} ${deletedManagement.user.lastName}`,
-                    studyTrack: deletedManagement.studyTrack?.name[language],
-                  })}
+                : t(
+                    'manageEntityPermissions:removeStudyTrackManagementContent',
+                    {
+                      name: `${deletedPermission.user.firstName} ${deletedPermission.user.lastName}`,
+                      studyTrack: deletedPermission.studyTrack?.name[language],
+                    }
+                  )}
           </Box>
         </Popup>
       )}
@@ -485,4 +488,4 @@ const EntityManagement = ({
   )
 }
 
-export default EntityManagement
+export default ManageEntityPermissions

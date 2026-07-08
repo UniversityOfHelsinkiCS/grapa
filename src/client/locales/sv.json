@@ -411,7 +411,7 @@
   "customFilters": {
     "valuesLabel": "Värden"
   },
-  "entityManagement": {
+  "manageEntityPermissions": {
     "programTitle": "Programledningar",
     "studyTrackTitle": "Studieinriktningsledningar",
     "departmentTitle": "Avdelningsadministratörer",

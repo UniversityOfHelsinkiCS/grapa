@@ -411,7 +411,7 @@
   "customFilters": {
     "valuesLabel": "Values"
   },
-  "entityManagement": {
+  "manageEntityPermissions": {
     "programTitle": "Program managements",
     "studyTrackTitle": "Study track managements",
     "departmentTitle": "Department admins",

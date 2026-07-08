@@ -195,9 +195,9 @@ const {
   useDeleteProgramManagementMutation,
   useUpdateProgramManagementMutation,
 } = await import('../../hooks/useProgramManagementMutation')
-const EntityManagement = (await import('./EntityManagement')).default
+const ManageEntityPermissions = (await import('./ManageEntityPermissions')).default
 
-describe('EntityManagement component', () => {
+describe('ManageEntityPermissions component', () => {
   let createProgramManagementMock
   let deleteProgramManagementMock
   let updateProgramManagementMock
@@ -221,7 +221,7 @@ describe('EntityManagement component', () => {
   })
 
   it('renders all existing program managements', () => {
-    render(<EntityManagement filteringProgramId="PROG1" hideTitle />)
+    render(<ManageEntityPermissions filteringEntityId="PROG1" hideTitle />)
 
     expect(
       screen.getByTestId('program-manager-select-input')
@@ -234,7 +234,7 @@ describe('EntityManagement component', () => {
 
   describe('when an existing program management is deleted', () => {
     it('calls corresponding hook to delete program management', async () => {
-      render(<EntityManagement />)
+      render(<ManageEntityPermissions />)
 
       const user = userEvent.setup()
 
@@ -258,7 +258,7 @@ describe('EntityManagement component', () => {
 
   describe('when a new program management is created', () => {
     it('calls corresponding hook to create program management', async () => {
-      render(<EntityManagement />)
+      render(<ManageEntityPermissions />)
 
       const managerSelect = screen.getByTestId('program-manager-select-input')
       const managerInput = within(managerSelect).getByRole('combobox')
@@ -285,7 +285,7 @@ describe('EntityManagement component', () => {
 
   describe('when an existing program management is updated', () => {
     it('calls corresponding hook to update program management', async () => {
-      render(<EntityManagement />)
+      render(<ManageEntityPermissions />)
 
       const toggleThesisApproverButton = screen.getByTestId(
         'toggle-thesis-approver-button-1'

@@ -18,7 +18,7 @@ import {
   DepartmentData,
 } from '@backend/types'
 import ThesesPage from '../ThesisPage/ThesesPage'
-import EntityManagement from './EntityManagement'
+import ManageEntityPermissions from './ManageEntityPermissions'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 
 import SingleProgramLogs from './SingleProgramLogs'
@@ -159,7 +159,7 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
 
             {tab === 'managePermissions' && (
               <Box>
-                <EntityManagement
+                <ManageEntityPermissions
                   filteringEntityId={selectedEntity.id}
                   hideTitle
                   entityType={entityType}

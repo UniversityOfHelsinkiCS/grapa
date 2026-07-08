@@ -149,9 +149,9 @@ jest.unstable_mockModule('react-router-dom', () => ({ Navigate: jest.fn() }))
 
 const { useCreateDepartmentAdminMutation, useDeleteDepartmentAdminMutation } =
   await import('../../hooks/useDepartmentAdminMutation')
-const EntityManagement = (await import('./EntityManagement')).default
+const ManageEntityPermissions = (await import('./ManageEntityPermissions')).default
 
-describe('EntityManagement (Department)', () => {
+describe('ManageEntityPermissions (Department)', () => {
   let createDepartmentAdminMock
   let deleteDepartmentAdminMock
 
@@ -170,7 +170,7 @@ describe('EntityManagement (Department)', () => {
   })
 
   it('renders all existing department admins', () => {
-    render(<EntityManagement entityType="department" />)
+    render(<ManageEntityPermissions entityType="department" />)
 
     expect(
       screen.getByText('Yksikön ylläpitäjät')
@@ -183,7 +183,7 @@ describe('EntityManagement (Department)', () => {
 
   describe('when an existing department admins is deleted', () => {
     it('calls corresponding hook to delete department admin', async () => {
-      render(<EntityManagement entityType="department" />)
+      render(<ManageEntityPermissions entityType="department" />)
 
       const user = userEvent.setup()
 
@@ -207,7 +207,7 @@ describe('EntityManagement (Department)', () => {
 
   describe('when a new program management is created', () => {
     it('calls corresponding hook to create program management', async () => {
-      render(<EntityManagement entityType="department" />)
+      render(<ManageEntityPermissions entityType="department" />)
 
       const adminSelect = screen.getByTestId('program-manager-select-input')
       const adminInput = within(adminSelect).getByRole('combobox')
