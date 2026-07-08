@@ -19,6 +19,7 @@ const useLoggedInUser = () => {
     user?.isAdmin ||
     user?.hasSeminarSupervisions ||
     user?.managedProgramIds?.length ||
+    user?.managedStudyTrackIds?.length ||
     user?.managedDepartmentIds?.length ||
     user?.ethesisAdmin ||
     (user?.iamGroups ? user?.iamGroups.includes('hy-employees') : false)

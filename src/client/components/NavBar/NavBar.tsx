@@ -133,6 +133,7 @@ const ProgramMenu = () => {
     includeNotManaged: false,
     includeManagedStudyTracks: true,
   })
+
   const sortedPrograms = rawPrograms
     ? sortProgramsForMenu(rawPrograms, language)
     : undefined
@@ -366,9 +367,11 @@ const NavBar = () => {
               sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' }, gap: 1 }}
             >
               {hasStaffAccess && <SupervisedThesesLink />}
-              {Boolean(user.isAdmin || user.managedProgramIds?.length) && (
-                <ProgramMenu />
-              )}
+              {Boolean(
+                user.isAdmin ||
+                user.managedProgramIds?.length ||
+                user.managedStudyTrackIds?.length
+              ) && <ProgramMenu />}
               {Boolean(user.isAdmin || user.managedDepartmentIds?.length) && (
                 <DepartmentMenu />
               )}

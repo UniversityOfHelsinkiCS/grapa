@@ -5,6 +5,7 @@ import { validateUserThesesTableFiltersData } from '../validators/user'
 import {
   DepartmentAdmin,
   ProgramManagement,
+  StudyTrackManagement,
   SeminarSupervision,
   User,
 } from '../db/models'
@@ -42,11 +43,17 @@ userRouter.get(
       await SeminarSupervision.count({ where: { userId: user.id } })
     )
 
+    const managedStudyTracks = await StudyTrackManagement.findAll({
+      where: { userId: user.id },
+    })
+    const managedStudyTrackIds = managedStudyTracks.map((st) => st.studyTrackId)
+
     const thesesTableFilters = { items: <any>[] }
 
     return res.send({
       ...user,
       managedProgramIds,
+      managedStudyTrackIds,
       managedDepartmentIds,
       approvableProgramIds,
       hasSeminarSupervisions,
