@@ -10,10 +10,10 @@ import {
   CardActions,
   DialogContentText,
 } from '@mui/material'
-import Popup from './Common/Popup'
+import Popup from '../Common/Popup'
 
-import useLoggedInUser from '../hooks/useLoggedInUser'
-import { useRunUpdaterMutation } from '../hooks/useAdmin'
+import useLoggedInUser from '../../hooks/useLoggedInUser'
+import { useRunUpdaterMutation } from '../../hooks/useAdmin'
 
 const AdminOtherPage: React.FC = () => {
   const { t } = useTranslation()

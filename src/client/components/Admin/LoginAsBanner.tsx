@@ -2,7 +2,7 @@ import React from 'react'
 import { User } from '@backend/types'
 import { Button, Paper, Typography } from '@mui/material'
 
-import { LOGIN_AS_LOCAL_STORAGE_KEY } from '../../config'
+import { LOGIN_AS_LOCAL_STORAGE_KEY } from '../../../config'
 
 const LoggedInAsBanner = () => {
   const [user, setUser] = React.useState<User | null>(null)

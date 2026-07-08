@@ -6,16 +6,16 @@ import RootBoundary from './components/Errors/RootBoundary'
 import NotFound from './components/Errors/NotFound'
 
 import NoAccess from './components/NoAccess'
-import LoginAsPage from './components/LoginAsPage'
+import LoginAsPage from './components/Admin/LoginAsPage'
 import EntityOverview from './components/ManageEntity/EntityOverview'
 import SeminarPage from './components/Seminar/SeminarPage'
 
 import { BASE_PATH } from '../config'
 import Ethesis from './components/Ethesis'
 import useLoggedInUser from './hooks/useLoggedInUser'
-import ManageProgramsPage from './components/ManageProgramsPage'
-import ManageDepartmentsPage from './components/ManageDepartmentsPage'
-import AdminOtherPage from './components/AdminOtherPage'
+import ManageProgramsPage from './components/Admin/ManageProgramsPage'
+import ManageDepartmentsPage from './components/Admin/ManageDepartmentsPage'
+import AdminOtherPage from './components/Admin/AdminOtherPage'
 
 const IndexRoute = () => {
   const { isLoading, hasStaffAccess } = useLoggedInUser()

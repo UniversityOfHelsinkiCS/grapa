@@ -11,7 +11,7 @@ import {
   Typography,
   DialogContentText,
 } from '@mui/material'
-import Popup from './Popup'
+import Popup from '../Common/Popup'
 import { TranslatedName, TranslationLanguage } from '@backend/types'
 
 export interface ManageableItem {
@@ -20,7 +20,7 @@ export interface ManageableItem {
   enabled?: boolean
 }
 
-interface ManageEntityProps<T extends ManageableItem> {
+interface ManageEntityAdminProps<T extends ManageableItem> {
   showEditTranslations?: boolean
   pageTitle: string
   autocompleteLabel: string
@@ -32,7 +32,7 @@ interface ManageEntityProps<T extends ManageableItem> {
   confirmText: string
 }
 
-const ManageEntity = <T extends ManageableItem>({
+const ManageEntityAdmin = <T extends ManageableItem>({
   showEditTranslations = true,
   pageTitle,
   autocompleteLabel,
@@ -42,7 +42,7 @@ const ManageEntity = <T extends ManageableItem>({
   onSave,
   confirmTitle,
   confirmText,
-}: ManageEntityProps<T>) => {
+}: ManageEntityAdminProps<T>) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
 
@@ -230,4 +230,4 @@ const ManageEntity = <T extends ManageableItem>({
   )
 }
 
-export default ManageEntity
+export default ManageEntityAdmin

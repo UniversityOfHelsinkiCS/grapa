@@ -11,7 +11,7 @@ import { useTheme } from './theme'
 import useLoggedInUser from './hooks/useLoggedInUser'
 import Footer from './components/Footer'
 import NavBar from './components/NavBar/NavBar'
-import LoggedInAsBanner from './components/LoginAsBanner'
+import LoggedInAsBanner from './components/Admin/LoginAsBanner'
 import DepartmentSelector from './components/DepartmentSelector'
 
 const App = () => {

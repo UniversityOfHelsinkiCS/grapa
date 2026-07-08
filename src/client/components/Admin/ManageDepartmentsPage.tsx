@@ -13,11 +13,11 @@ import {
 import useDepartments, {
   useUpdateDepartmentMutation,
   useCreateDepartmentMutation,
-} from '../hooks/useDepartments'
-import useLoggedInUser from '../hooks/useLoggedInUser'
-import ManageEntity from './Common/ManageEntity'
+} from '../../hooks/useDepartments'
+import useLoggedInUser from '../../hooks/useLoggedInUser'
+import ManageEntityAdmin from './ManageEntityAdmin'
 import { TranslatedName } from '@backend/types'
-import Popup from './Common/Popup'
+import Popup from '../Common/Popup'
 
 const ManageDepartmentsPage: React.FC = () => {
   const { t } = useTranslation()
@@ -63,7 +63,7 @@ const ManageDepartmentsPage: React.FC = () => {
 
   return (
     <Box sx={{ width: '100%', position: 'relative' }}>
-      <ManageEntity
+      <ManageEntityAdmin
         pageTitle={t('manageDepartmentsPage:pageTitle')}
         autocompleteLabel={t('manageDepartmentsPage:chooseDepartmentLabel')}
         noOptionsText={t('manageDepartmentsPage:noDepartmentsFound')}

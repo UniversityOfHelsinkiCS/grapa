@@ -11,10 +11,10 @@ import {
 } from '@mui/material'
 import { User } from '@backend/types'
 
-import { useDebounce } from '../hooks/useDebounce'
-import useUsers from '../hooks/useUsers'
-import { loginAs } from '../util/loginAs'
-import useLoggedInUser from '../hooks/useLoggedInUser'
+import { useDebounce } from '../../hooks/useDebounce'
+import useUsers from '../../hooks/useUsers'
+import { loginAs } from '../../util/loginAs'
+import useLoggedInUser from '../../hooks/useLoggedInUser'
 
 const LoginAsPage: React.FC = () => {
   const { t } = useTranslation()

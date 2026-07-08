@@ -2,9 +2,9 @@ import React from 'react'
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import usePrograms, { useUpdateProgramMutation } from '../hooks/usePrograms'
-import useLoggedInUser from '../hooks/useLoggedInUser'
-import ManageEntity from './Common/ManageEntity'
+import usePrograms, { useUpdateProgramMutation } from '../../hooks/usePrograms'
+import useLoggedInUser from '../../hooks/useLoggedInUser'
+import ManageEntityAdmin from './ManageEntityAdmin'
 
 const ManageProgramsPage: React.FC = () => {
   const { t } = useTranslation()
@@ -21,7 +21,7 @@ const ManageProgramsPage: React.FC = () => {
   if (!user?.isAdmin) return <Navigate to="/" />
 
   return (
-    <ManageEntity
+    <ManageEntityAdmin
       showEditTranslations={false}
       pageTitle={t('manageProgramsPage:pageTitle')}
       autocompleteLabel={t('manageProgramsPage:chooseProgramLabel')}
