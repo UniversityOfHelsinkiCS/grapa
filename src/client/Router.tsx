@@ -8,7 +8,6 @@ import NotFound from './components/Errors/NotFound'
 import NoAccess from './components/NoAccess'
 import LoginAsPage from './components/LoginAsPage'
 import EntityOverview from './components/Program/EntityOverview'
-import DepartmentOverview from './components/Department/DepartmentOverview'
 import SeminarPage from './components/Seminar/SeminarPage'
 
 import { BASE_PATH } from '../config'
@@ -56,37 +55,27 @@ const router = createBrowserRouter(
           element: <ThesesPage key="student" isStudentView />,
           errorElement: <RootBoundary />,
         },
-        {
-          path: '/program-managements',
-          element: <Navigate to="/programs" replace />,
-        },
+
         {
           path: '/programs',
-          element: <EntityOverview />,
+          element: <EntityOverview entityType="program" />,
         },
         {
           path: '/programs/:programId',
-          element: <EntityOverview />,
+          element: <EntityOverview entityType="program" />,
         },
         {
           path: '/study-tracks/:studyTrackId',
-          element: <EntityOverview />,
+          element: <EntityOverview entityType="studyTrack" />,
         },
-        {
-          path: '/department-admins',
-          element: <Navigate to="/departments?tab=rights" replace />,
-        },
-        {
-          path: '/department-statistics',
-          element: <Navigate to="/departments?tab=statistics" replace />,
-        },
+
         {
           path: '/departments',
-          element: <DepartmentOverview />,
+          element: <EntityOverview entityType="department" />,
         },
         {
           path: '/departments/:departmentId',
-          element: <DepartmentOverview />,
+          element: <EntityOverview entityType="department" />,
         },
         {
           path: '/ethesis',

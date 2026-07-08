@@ -78,6 +78,14 @@ jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
   }),
 }))
 
+jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
+  default: jest.fn().mockReturnValue({ departments: [] }),
+}))
+
+jest.unstable_mockModule('./src/client/hooks/useDepartmentAdmins', () => ({
+  default: jest.fn().mockReturnValue({ departmentAdmins: [] }),
+}))
+
 jest.unstable_mockModule('./src/client/hooks/useProgramManagements', () => ({
   default: jest.fn().mockReturnValue({
     programManagements: [
@@ -155,6 +163,18 @@ jest.unstable_mockModule(
       mutateAsync: jest.fn(),
     }),
     useUpdateStudyTrackManagementMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+  })
+)
+
+jest.unstable_mockModule(
+  './src/client/hooks/useDepartmentAdminMutation',
+  () => ({
+    useCreateDepartmentAdminMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+    useDeleteDepartmentAdminMutation: jest.fn().mockReturnValue({
       mutateAsync: jest.fn(),
     }),
   })

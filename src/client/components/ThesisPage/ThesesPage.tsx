@@ -27,9 +27,9 @@ import ViewThesisFooter from './ViewThesisFooter'
 import Popup from '../Common/Popup'
 import { useDebounce } from '../../hooks/useDebounce'
 
-import PrethesisTable from '../PrethesisTable/PrethesisTable'
-
-const DEFAULT_PAGE_SIZE = 25
+import PrethesisTable, {
+  DEFAULT_PAGE_SIZE,
+} from '../PrethesisTable/PrethesisTable'
 
 interface Props {
   filteringProgramId?: string
@@ -37,8 +37,6 @@ interface Props {
   filteringDepartmentId?: string
   noOwnThesesSwitch?: boolean
   noAddThesisButton?: boolean
-  showExportOptions?: boolean
-  pageSize?: number
   onlySeminarSupervised?: boolean
   isStudentView?: boolean
   showSupervisors?: boolean
@@ -49,20 +47,17 @@ const ThesesPage = ({
   filteringDepartmentId,
   noOwnThesesSwitch,
   noAddThesisButton,
-  pageSize,
   onlySeminarSupervised = false,
   isStudentView = false,
   showSupervisors = false,
 }: Props) => {
-  pageSize = pageSize ?? DEFAULT_PAGE_SIZE
-
   const footerRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
   const { user: currentUser, hasStaffAccess } = useLoggedInUser()
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
-    pageSize,
+    pageSize: DEFAULT_PAGE_SIZE,
   })
 
   const [rowSelectionModel, setRowSelectionModel] =
@@ -336,7 +331,9 @@ const ThesesPage = ({
           availableMilestones={availableMilestones}
           noAddThesisButton={noAddThesisButton}
           showSupervisors={showSupervisors}
-          onExportCsv={() => exportCsv(`theses-export-${dayjs().format('YYYY-MM-DD')}.csv`)}
+          onExportCsv={() =>
+            exportCsv(`theses-export-${dayjs().format('YYYY-MM-DD')}.csv`)
+          }
           filterViews={[
             {
               items: {

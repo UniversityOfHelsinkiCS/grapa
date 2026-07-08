@@ -46,6 +46,10 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   }),
 }))
 
+jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
+  default: jest.fn().mockReturnValue({ programs: [] }),
+}))
+
 jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
   default: jest.fn().mockReturnValue({
     departments: [
@@ -102,6 +106,41 @@ jest.unstable_mockModule(
   })
 )
 
+jest.unstable_mockModule('./src/client/hooks/useProgramManagements', () => ({
+  default: jest.fn().mockReturnValue({ programManagements: [] }),
+}))
+
+jest.unstable_mockModule(
+  './src/client/hooks/useProgramManagementMutation',
+  () => ({
+    useCreateProgramManagementMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+    useDeleteProgramManagementMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+    useUpdateProgramManagementMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+  })
+)
+
+jest.unstable_mockModule('./src/client/hooks/useStudyTrackManagements', () => ({
+  default: jest.fn().mockReturnValue({ studyTrackManagements: [] }),
+}))
+
+jest.unstable_mockModule(
+  './src/client/hooks/useStudyTrackManagementMutation',
+  () => ({
+    useCreateStudyTrackManagementMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+    useDeleteStudyTrackManagementMutation: jest.fn().mockReturnValue({
+      mutateAsync: jest.fn(),
+    }),
+  })
+)
+
 jest.unstable_mockModule('@mui/icons-material/Delete', () => ({
   default: jest.fn().mockReturnValue('DeleteIcon'),
 }))
@@ -110,9 +149,9 @@ jest.unstable_mockModule('react-router-dom', () => ({ Navigate: jest.fn() }))
 
 const { useCreateDepartmentAdminMutation, useDeleteDepartmentAdminMutation } =
   await import('../../hooks/useDepartmentAdminMutation')
-const DepartmentAdmin = (await import('./DepartmentAdmin')).default
+const EntityManagement = (await import('./EntityManagement')).default
 
-describe('DepartmentAdmin', () => {
+describe('EntityManagement (Department)', () => {
   let createDepartmentAdminMock
   let deleteDepartmentAdminMock
 
@@ -131,10 +170,10 @@ describe('DepartmentAdmin', () => {
   })
 
   it('renders all existing department admins', () => {
-    render(<DepartmentAdmin />)
+    render(<EntityManagement entityType="department" />)
 
     expect(
-      screen.getByTestId('department-admin-page-title')
+      screen.getByText('Yksikön ylläpitäjät')
     ).toBeInTheDocument()
     expect(screen.getByText('Doe John')).toBeInTheDocument()
     expect(
@@ -144,12 +183,12 @@ describe('DepartmentAdmin', () => {
 
   describe('when an existing department admins is deleted', () => {
     it('calls corresponding hook to delete department admin', async () => {
-      render(<DepartmentAdmin />)
+      render(<EntityManagement entityType="department" />)
 
       const user = userEvent.setup()
 
       const deleteButton = screen.getByTestId(
-        'delete-department-admin-button-1'
+        'delete-department-management-button-1'
       )
       await user.click(deleteButton)
 
@@ -168,9 +207,9 @@ describe('DepartmentAdmin', () => {
 
   describe('when a new program management is created', () => {
     it('calls corresponding hook to create program management', async () => {
-      render(<DepartmentAdmin />)
+      render(<EntityManagement entityType="department" />)
 
-      const adminSelect = screen.getByTestId('department-admin-select-input')
+      const adminSelect = screen.getByTestId('program-manager-select-input')
       const adminInput = within(adminSelect).getByRole('combobox')
       const adminSelectInput = screen.getAllByRole('combobox')[1]
 
@@ -184,7 +223,7 @@ describe('DepartmentAdmin', () => {
         screen.getAllByText('Tietojenkäsittelytieteen laitos')[1]
       )
 
-      const createButton = screen.getByTestId('add-department-admin-button')
+      const createButton = screen.getByTestId('add-program-management-button')
       expect(createButton).toBeInTheDocument()
       expect(createButton).toBeEnabled()
       await userEvent.click(createButton)

@@ -122,6 +122,7 @@
     "configurationsAcknowledge": "Olen ymmärtänyt varoituksen ja haluan muokata asetuksia",
     "featureFlagWarning": "Nämä asetukset vaikuttavat ominaisuuksien saatavuuteen koulutusohjelmassa, muokkaaminen saattaa johtaa ongelmatilanteisiin olemassaolevien tutkielmien kanssa.",
     "configurationsTab": "Asetukset",
+    "managePermissionsTab": "Hallinnoi oikeuksia",
     "seminar": {
       "toggle": "Seminaari",
       "tooltip": "tutkielman tulee sisältää seminaarin ohjaaja",

@@ -73,6 +73,8 @@ declare module '@tanstack/react-table' {
 
 const columnHelper = createColumnHelper<Thesis>()
 
+export const DEFAULT_PAGE_SIZE = 25
+
 interface Props {
   rows: Thesis[]
   isLoading?: boolean
@@ -117,7 +119,7 @@ const PrethesisTable = ({
 
   /* Pagination */
   const [pageNumber, setPageNumber] = React.useState(0)
-  const [pageSize, setPageSize] = React.useState(25)
+  const [pageSize, setPageSize] = React.useState(DEFAULT_PAGE_SIZE)
 
   const changePage = React.useCallback(
     (page: number) => {

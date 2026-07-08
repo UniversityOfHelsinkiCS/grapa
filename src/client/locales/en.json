@@ -124,6 +124,7 @@
     "configurationsAcknowledge": "I understand the risks and want to modify configurations",
     "featureFlagWarning": "These settings affect the availability of features in the study programme. Modifying them may lead to problems with existing theses.",
     "configurationsTab": "Configurations",
+    "managePermissionsTab": "Manage permissions",
     "seminar": {
       "toggle": "Seminar",
       "tooltip": "The thesis must include a seminar supervisor",

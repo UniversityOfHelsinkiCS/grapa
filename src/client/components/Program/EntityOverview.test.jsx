@@ -42,6 +42,13 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
   default: useLoggedInUserMock,
 }))
 
+jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
+  default: jest.fn().mockReturnValue({
+    departments: [],
+    isLoading: false,
+  }),
+}))
+
 jest.unstable_mockModule(
   './src/client/components/ThesisPage/ThesesPage',
   () => ({
@@ -69,8 +76,8 @@ const renderProgramOverview = (initialEntry) =>
     <MemoryRouter initialEntries={[initialEntry]}>
       <Routes>
         <Route path="/programs">
-          <Route index element={<EntityOverview />} />
-          <Route path=":programId" element={<EntityOverview />} />
+          <Route index element={<EntityOverview entityType="program" />} />
+          <Route path=":programId" element={<EntityOverview entityType="program" />} />
         </Route>
       </Routes>
     </MemoryRouter>
@@ -98,7 +105,7 @@ describe('EntityOverview', () => {
     renderProgramOverview('/programs/program-2')
 
     const user = userEvent.setup()
-    await user.click(screen.getByRole('tab', { name: 'Ohjelmavastaavat' }))
+    await user.click(screen.getByRole('tab', { name: 'Hallinnoi oikeuksia' }))
 
     expect(screen.getByTestId('entity-management')).toHaveTextContent(
       'program-2-true'

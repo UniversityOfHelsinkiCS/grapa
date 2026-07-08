@@ -124,6 +124,7 @@
     "configurationsAcknowledge": "Jag förstår riskerna och vill ändra inställningarna",
     "featureFlagWarning": "Dessa inställningar påverkar tillgängligheten för funktioner i utbildningsprogrammet. Att ändra dem kan leda till problem med befintliga examensarbeten.",
     "configurationsTab": "Inställningar",
+    "managePermissionsTab": "Hantera behörigheter",
     "seminar": {
       "toggle": "Seminarium",
       "tooltip": "Avhandlingen måste ha en seminariehandledare",
