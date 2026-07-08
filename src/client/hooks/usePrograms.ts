@@ -57,7 +57,7 @@ const usePrograms = (params: UseProgramsParams) => {
     return allTracks.filter((st) => st.isManaged)
   }, [data, params?.includeNotManaged, user?.isAdmin])
 
-  return { programs, studyTracks, ...rest }
+  return { data, programs, studyTracks, ...rest }
 }
 
 interface UpdateProgramParams {

@@ -28,7 +28,11 @@ import { TranslationLanguage } from '@backend/types'
 import LanguageSelect from './LanguageSelect'
 import MobileMenu from './MobileMenu'
 import ProfileMenu from './ProfileMenu'
-import { PositionedMenu, PositionedMenuLinkItem } from './PositionedMenu'
+import {
+  PositionedMenu,
+  PositionedMenuLinkItem,
+  PositionedMenuTextItem,
+} from './PositionedMenu'
 
 export const navStyles = {
   appbar: {
@@ -124,9 +128,13 @@ const sortDepartmentsForMenu = (
 const ProgramMenu = () => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
-  const { programs } = usePrograms({ includeNotManaged: false })
-  const sortedPrograms = programs
-    ? sortProgramsForMenu(programs, language)
+  const { user } = useLoggedInUser()
+  const { data: rawPrograms } = usePrograms({
+    includeNotManaged: false,
+    includeManagedStudyTracks: true,
+  })
+  const sortedPrograms = rawPrograms
+    ? sortProgramsForMenu(rawPrograms, language)
     : undefined
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -151,23 +159,31 @@ const ProgramMenu = () => {
     >
       {sortedPrograms?.map((program) => (
         <Fragment key={program.id}>
-          <PositionedMenuLinkItem
-            to={`/programs/${program.id}`}
-            onClick={handleClose}
-          >
-            {program.name[language]}
-          </PositionedMenuLinkItem>
+          {user?.isAdmin || program.isManaged ? (
+            <PositionedMenuLinkItem
+              to={`/programs/${program.id}`}
+              onClick={handleClose}
+            >
+              {program.name[language]}
+            </PositionedMenuLinkItem>
+          ) : (
+            <PositionedMenuTextItem>
+              {program.name[language]}
+            </PositionedMenuTextItem>
+          )}
           {!program.options?.disableStudyTracks &&
-            program.studyTracks?.map((st: any) => (
-              <PositionedMenuLinkItem
-                key={st.id}
-                to={`/study-tracks/${st.id}`}
-                onClick={handleClose}
-                indented
-              >
-                {st.name[language]}
-              </PositionedMenuLinkItem>
-            ))}
+            program.studyTracks
+              ?.filter((st: any) => user?.isAdmin || st.isManaged)
+              .map((st: any) => (
+                <PositionedMenuLinkItem
+                  key={st.id}
+                  to={`/study-tracks/${st.id}`}
+                  onClick={handleClose}
+                  indented
+                >
+                  {st.name[language]}
+                </PositionedMenuLinkItem>
+              ))}
         </Fragment>
       ))}
     </PositionedMenu>

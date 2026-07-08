@@ -89,3 +89,24 @@ export const PositionedMenuLinkItem = ({
     </Typography>
   </MenuItem>
 )
+
+export const PositionedMenuTextItem = ({
+  children,
+  indented,
+}: Omit<PositionedMenuLinkItemProps, 'to' | 'onClick'>) => (
+  <MenuItem
+    sx={{
+      ...navStyles.link,
+      pl: indented ? 4 : undefined,
+      pointerEvents: 'none',
+      opacity: 0.7,
+    }}
+  >
+    <Typography
+      sx={{ display: 'flex', gap: 2, textTransform: 'uppercase' }}
+      variant="body2"
+    >
+      <NavigateNextIcon /> {children}
+    </Typography>
+  </MenuItem>
+)
