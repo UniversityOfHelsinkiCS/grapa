@@ -2,6 +2,7 @@ import { NextFunction } from 'express'
 import { ServerPostRequest, ServerPutRequest } from '../types'
 import {
   ProgramManagement,
+  Program,
   Thesis,
   Supervision,
   StudyTrackManagement,
@@ -84,6 +85,8 @@ export const authorizeStatusChange = async (
     })
 
     if (supervision) {
+      const program = await Program.findByPk(req.body.programId)
+      const options = (program as any)?.options
       isSupervisor = !!options?.supervisorApproval
     }
   }
