@@ -7,6 +7,13 @@ export const isSupervisor = (thesis: Thesis, user: User) =>
 export const isProgramApprover = (thesis: Thesis, user: User) =>
   Boolean(user && user.approvableProgramIds?.includes(thesis.programId))
 
+export const isStudyTrackManager = (thesis: Thesis, user: User) =>
+  Boolean(
+    user &&
+    thesis.studyTrackId &&
+    user.managedStudyTrackIds?.includes(thesis.studyTrackId)
+  )
+
 export const hasApprovalRights = (thesis: Thesis, user: User) => {
   const supervisorApprovalEnabled = Boolean(
     thesis.program?.options?.supervisorApproval

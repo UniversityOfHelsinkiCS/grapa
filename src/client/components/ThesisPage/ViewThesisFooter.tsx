@@ -65,6 +65,7 @@ import {
   isStudentEthesisActionRequired,
   isEthesisReady,
   isMissingGradersActionRequired,
+  isStudyTrackManager,
 } from '../../util/permissions'
 import { NavLink } from 'react-router-dom'
 
@@ -162,7 +163,7 @@ const ProgramTrack = ({
           (currentUser &&
             thesis &&
             !currentUser.isAdmin &&
-            isProgramApprover(thesis, currentUser))
+            !isProgramApprover(thesis, currentUser))
         }
         sx={{
           transition: '0.1s',
@@ -194,7 +195,8 @@ const ProgramTrack = ({
               (currentUser &&
                 thesis &&
                 !currentUser.isAdmin &&
-                isProgramApprover(thesis, currentUser))
+                !isProgramApprover(thesis, currentUser) &&
+                !isStudyTrackManager(thesis, currentUser))
             }
             sx={{
               transition: '0.1s',
