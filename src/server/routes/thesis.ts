@@ -110,6 +110,7 @@ thesisRouter.get(
 
     const thesisData = await getSingleThesis(id, req.user, {
       onlyAuthored: false,
+      onlySeminarSupervised: req.query.onlySeminarSupervised === 'true',
     })
     res.send(thesisData)
   }

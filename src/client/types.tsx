@@ -27,4 +27,5 @@ export interface ThesisFooterProps {
   handleEditThesis: (thesis: Thesis) => void
   handleDeleteThesis: (thesis: Thesis) => void
   isStudentView?: boolean
+  onlySeminarSupervised?: boolean
 }

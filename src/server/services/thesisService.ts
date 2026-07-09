@@ -317,12 +317,14 @@ export const fetchThesisById = async (
   id: string,
   user: UserType,
   transaction?: Transaction,
-  onlyAuthored?: boolean
+  onlyAuthored?: boolean,
+  onlySeminarSupervised?: boolean
 ) => {
   const where = await buildThesisWhereClause({
     thesisId: id,
     actionUser: user,
     onlyAuthored,
+    onlySeminarSupervised,
   })
 
   const includes = buildThesisIncludes()
@@ -402,13 +404,14 @@ export const checkIdleTheses = async () => {
 export const getSingleThesis = async (
   id: string,
   currentUser: UserType,
-  options: { onlyAuthored: boolean }
+  options: { onlyAuthored?: boolean; onlySeminarSupervised?: boolean }
 ) => {
   const thesis = await fetchThesisById(
     id,
     currentUser,
     undefined,
-    options.onlyAuthored
+    options.onlyAuthored,
+    options.onlySeminarSupervised
   )
 
   if (!thesis) throw new CustomNotFoundError('Thesis not found')

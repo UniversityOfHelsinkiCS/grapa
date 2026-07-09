@@ -492,6 +492,7 @@ const ViewThesisFooter = (
     handleEditThesis,
     handleDeleteThesis,
     isStudentView,
+    onlySeminarSupervised,
   } = props
 
   const thesisId = (rowSelectionModel.ids != undefined &&
@@ -505,7 +506,8 @@ const ViewThesisFooter = (
   const [eventLogOpen, setEventLogOpen] = useState(false)
   const { thesis, isLoading: thesisLoading } = useSingleThesis(
     thesisId,
-    isStudentView
+    isStudentView,
+    onlySeminarSupervised
   )
   const { events } = useEvents({ thesisId, enabled: !isStudentView })
   const { mutateAsync: changeThesisStatus } =

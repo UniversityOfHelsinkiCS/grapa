@@ -488,6 +488,7 @@ const ThesesPage = ({
             handleEditThesis={initializeThesisEdit}
             handleDeleteThesis={initializeThesisDelete}
             isStudentView={isStudentView}
+            onlySeminarSupervised={onlySeminarSupervised}
           ></ViewThesisFooter>
         </Box>
       </Box>

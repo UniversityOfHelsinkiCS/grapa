@@ -149,13 +149,16 @@ export const useExportThesesCsv = (params: UsePaginatedThesesParams) => {
 
 export const useSingleThesis = (
   id: string | GridRowSelectionModel,
-  useStudentApi?: boolean
+  useStudentApi?: boolean,
+  onlySeminarSupervised?: boolean
 ) => {
-  const queryKey = ['theses', id]
+  const queryKey = ['theses', id, onlySeminarSupervised]
 
   const queryFn = async (): Promise<ThesisData> => {
     const endpoint = useStudentApi ? `/student/theses/${id}` : `/theses/${id}`
-    const { data } = await apiClient.get(endpoint)
+    const { data } = await apiClient.get(endpoint, {
+      params: { onlySeminarSupervised },
+    })
 
     return data
   }
