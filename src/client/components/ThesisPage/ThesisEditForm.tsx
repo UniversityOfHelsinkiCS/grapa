@@ -331,9 +331,14 @@ const ThesisEditForm: FC<{
                   ...oldThesis,
                   programId: newProgramId,
                   status: firstAvailableStatus,
-                  studyTrackId: disableStudyTracks
-                    ? undefined
-                    : newStudyTracks[0]?.id,
+                  studyTrackId:
+                    disableStudyTracks || newStudyTracks.length === 0
+                      ? ''
+                      : newStudyTracks.some(
+                            (st) => st.id === oldThesis.studyTrackId
+                          )
+                        ? oldThesis.studyTrackId
+                        : newStudyTracks[0]?.id || '',
                   authors: newAllowMultipleAuthors
                     ? oldThesis.authors
                     : oldThesis.authors.slice(0, 1),
