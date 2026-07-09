@@ -326,6 +326,7 @@ const ThesisEditForm: FC<{
                   ? 'DRAFT'
                   : 'PLANNING'
 
+                console.log(firstAvailableStatus)
                 setEditedThesis((oldThesis) => ({
                   ...oldThesis,
                   programId: newProgramId,
@@ -681,7 +682,7 @@ const ThesisEditForm: FC<{
                 {t('statusHeader')}
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                {t(StatusLocale[initialThesis.status])}
+                {t(StatusLocale[editedThesis.status])}
               </Typography>
             </FormControl>
           )}
