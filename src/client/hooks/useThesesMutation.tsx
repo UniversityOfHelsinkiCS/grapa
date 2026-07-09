@@ -64,10 +64,10 @@ export const useEditThesisMutation = (isStudentView?: boolean) => {
   const mutation = useMutation({
     mutationFn,
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ['theses'],
       })
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ['event-log', variables.thesisId],
       })
     },
@@ -104,11 +104,11 @@ export const useChangeThesisStatusMutation = (isStudentView?: boolean) => {
   const mutation = useMutation({
     mutationFn,
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ['theses'],
       })
       variables.theses.forEach((thesis) => {
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: ['event-log', thesis.id],
         })
       })

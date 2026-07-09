@@ -11,7 +11,7 @@ import initializeSentry from './util/sentry'
 import initializeI18n from './util/il18n'
 
 initializeSentry()
-initializeI18n()
+void initializeI18n()
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(

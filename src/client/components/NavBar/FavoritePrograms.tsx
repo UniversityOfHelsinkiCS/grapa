@@ -34,13 +34,13 @@ const FavoritePrograms = () => {
   )
   const otherPrograms = managedPrograms.filter((program) => !program.isFavorite)
 
-  const handleUpdateFavoritePrograms = (programId: string) => {
+  const handleUpdateFavoritePrograms = async (programId: string) => {
     const newFavoriteProgramIds = user.favoriteProgramIds.includes(programId)
       ? user.favoriteProgramIds.filter((id) => id !== programId)
       : [...user.favoriteProgramIds, programId]
 
     try {
-      mutation.mutateAsync({ favoriteProgramIds: newFavoriteProgramIds })
+      await mutation.mutateAsync({ favoriteProgramIds: newFavoriteProgramIds })
       enqueueSnackbar(t('navbar:favoriteProgramsUpdated'), {
         variant: 'success',
       })

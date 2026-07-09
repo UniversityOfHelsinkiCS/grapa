@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React, { useState } from 'react'
 import {
   Container,
@@ -92,7 +91,7 @@ const EthesisAdminPage = ({
       return data
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['ethesis-admins'] })
+      void queryClient.invalidateQueries({ queryKey: ['ethesis-admins'] })
       setAddDialogOpen(false)
       setSelectedUser(null)
       setUserSearch('')
@@ -110,7 +109,7 @@ const EthesisAdminPage = ({
       await apiClient.delete(`/ethesis-admins/${adminId}`)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['ethesis-admins'] })
+      void queryClient.invalidateQueries({ queryKey: ['ethesis-admins'] })
       setDeleteDialogOpen(false)
       setSelectedAdmin(null)
     },
@@ -133,7 +132,7 @@ const EthesisAdminPage = ({
 
   const handleUserSearchChange = (value: string) => {
     setUserSearch(value)
-    searchUsers(value)
+    void searchUsers(value)
   }
 
   const handleUserSelect = (user: User) => {

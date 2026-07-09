@@ -10,7 +10,7 @@ const LanguageSelect = () => {
   const { language } = i18n
 
   const handleLanguageChange = (newLanguage: string) => {
-    i18n.changeLanguage(newLanguage)
+    void i18n.changeLanguage(newLanguage)
     localStorage.setItem(SELECTED_LANGUAGE_STORAGE_KEY, newLanguage)
   }
 
