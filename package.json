@@ -14,7 +14,7 @@
     "test:front:watch": "DEBUG_PRINT_LIMIT=100000 node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch '**/client/**/*.test.*' --setupFilesAfterEnv ./setupTests.ts --watchAll",
     "test:integration": "NODE_ENV=test PORT=8001 DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --testMatch '**/*.integration-test.*' --globalSetup ./setupDbForTests.cjs --globalTeardown ./teardownDbForTests.cjs --setupFilesAfterEnv ./setupIntegrationTests.ts --forceExit",
     "test:integration:watch": "NODE_ENV=test PORT=8001 DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --testMatch '**/*.integration-test.*' --globalSetup ./setupDbForTests.cjs --globalTeardown ./teardownDbForTests.cjs --setupFilesAfterEnv ./setupIntegrationTests.ts --watchAll",
-    "lint": "eslint 'src/**/*.ts'",
+    "lint": "eslint 'src/**/*.ts' 'src/**/*.tsx'",
     "format": "prettier --write '**/*.{ts,tsx,json,css,md}'",
     "build": "DISABLE_ESLINT_PLUGIN=true vite build",
     "manage": "node scripts/manage.js",
