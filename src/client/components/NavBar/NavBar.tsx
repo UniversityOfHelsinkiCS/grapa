@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 import { AdminPanelSettingsOutlined } from '@mui/icons-material'
@@ -134,8 +134,20 @@ const ProgramMenu = () => {
     includeManagedStudyTracks: true,
   })
 
-  const sortedPrograms = rawPrograms
-    ? sortProgramsForMenu(rawPrograms, language)
+  const managedPrograms = useMemo(() => {
+    if (!rawPrograms) return undefined
+    if (user?.isAdmin) return rawPrograms
+    return rawPrograms.filter(
+      (p) =>
+        user?.managedProgramIds?.includes(p.id) ||
+        p.studyTracks?.some((st: any) =>
+          user?.managedStudyTrackIds?.includes(st.id)
+        )
+    )
+  }, [rawPrograms, user])
+
+  const sortedPrograms = managedPrograms
+    ? sortProgramsForMenu(managedPrograms, language)
     : undefined
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -158,35 +170,45 @@ const ProgramMenu = () => {
       handleClose={handleClose}
       sx={navStyles.navlink}
     >
-      {sortedPrograms?.map((program) => (
-        <Fragment key={program.id}>
-          {user?.isAdmin || program.isManaged ? (
-            <PositionedMenuLinkItem
-              to={`/programs/${program.id}`}
-              onClick={handleClose}
-            >
-              {program.name[language]}
-            </PositionedMenuLinkItem>
-          ) : (
-            <PositionedMenuTextItem>
-              {program.name[language]}
-            </PositionedMenuTextItem>
-          )}
-          {!program.options?.disableStudyTracks &&
-            program.studyTracks
-              ?.filter((st: any) => user?.isAdmin || st.isManaged)
-              .map((st: any) => (
-                <PositionedMenuLinkItem
-                  key={st.id}
-                  to={`/study-tracks/${st.id}`}
-                  onClick={handleClose}
-                  indented
-                >
-                  {st.name[language]}
-                </PositionedMenuLinkItem>
-              ))}
-        </Fragment>
-      ))}
+      {sortedPrograms?.map((program) => {
+        const isProgramManaged = Boolean(
+          user?.isAdmin || user?.managedProgramIds?.includes(program.id)
+        )
+        return (
+          <Fragment key={program.id}>
+            {isProgramManaged ? (
+              <PositionedMenuLinkItem
+                to={`/programs/${program.id}`}
+                onClick={handleClose}
+              >
+                {program.name[language]}
+              </PositionedMenuLinkItem>
+            ) : (
+              <PositionedMenuTextItem>
+                {program.name[language]}
+              </PositionedMenuTextItem>
+            )}
+            {!program.options?.disableStudyTracks &&
+              program.studyTracks
+                ?.filter(
+                  (st: any) =>
+                    user?.isAdmin ||
+                    user?.managedStudyTrackIds?.includes(st.id) ||
+                    isProgramManaged
+                )
+                .map((st: any) => (
+                  <PositionedMenuLinkItem
+                    key={st.id}
+                    to={`/study-tracks/${st.id}`}
+                    onClick={handleClose}
+                    indented
+                  >
+                    {st.name[language]}
+                  </PositionedMenuLinkItem>
+                ))}
+          </Fragment>
+        )
+      })}
     </PositionedMenu>
   )
 }
@@ -194,9 +216,17 @@ const ProgramMenu = () => {
 const DepartmentMenu = () => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
+  const { user } = useLoggedInUser()
   const { departments } = useDepartments({ includeNotManaged: false })
-  const sortedDepartments = departments
-    ? sortDepartmentsForMenu(departments, language)
+
+  const managedDepartments = useMemo(() => {
+    if (!departments) return undefined
+    if (user?.isAdmin) return departments
+    return departments.filter((d) => user?.managedDepartmentIds?.includes(d.id))
+  }, [departments, user])
+
+  const sortedDepartments = managedDepartments
+    ? sortDepartmentsForMenu(managedDepartments, language)
     : undefined
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -323,16 +353,36 @@ const NavBar = () => {
     includeNotManaged: false,
     enabled: hasStaffAccess,
   })
-  const { programs } = usePrograms({
+  const { data: rawPrograms } = usePrograms({
     includeNotManaged: false,
+    includeManagedStudyTracks: true,
     enabled: hasStaffAccess,
   })
   const { language } = i18n as { language: TranslationLanguage }
-  const sortedPrograms = programs
-    ? sortProgramsForMenu(programs, language)
+
+  const managedPrograms = useMemo(() => {
+    if (!rawPrograms) return undefined
+    if (user?.isAdmin) return rawPrograms
+    return rawPrograms.filter(
+      (p) =>
+        user?.managedProgramIds?.includes(p.id) ||
+        p.studyTracks?.some((st: any) =>
+          user?.managedStudyTrackIds?.includes(st.id)
+        )
+    )
+  }, [rawPrograms, user])
+
+  const managedDepartments = useMemo(() => {
+    if (!departments) return undefined
+    if (user?.isAdmin) return departments
+    return departments.filter((d) => user?.managedDepartmentIds?.includes(d.id))
+  }, [departments, user])
+
+  const sortedPrograms = managedPrograms
+    ? sortProgramsForMenu(managedPrograms, language)
     : undefined
-  const sortedDepartments = departments
-    ? sortDepartmentsForMenu(departments, language)
+  const sortedDepartments = managedDepartments
+    ? sortDepartmentsForMenu(managedDepartments, language)
     : undefined
 
   const [mobileOpen, setMobileOpen] = useState(false)
