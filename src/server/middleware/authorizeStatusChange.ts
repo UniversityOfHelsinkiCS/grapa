@@ -21,11 +21,11 @@ export const authorizeStatusChange = async (
     return
   }
 
-  // Allow having/changing status to PLANNING
+  // Allow having/changing status to PLANNING or DRAFT
   // to anyone.
   // But only users with elevated permissions
   // can change the status to anything else.
-  if (req.body.status === 'PLANNING') {
+  if (req.body.status === 'PLANNING' || req.body.status === 'DRAFT') {
     next()
     return
   }
