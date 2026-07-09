@@ -67,7 +67,7 @@ const ThesesPage = ({
     })
   const [deleteConfirmation, setDeleteConfirmation] = useState<string>('')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [editedTesis, setEditedThesis] = useState<Thesis | null>(null)
+  const [editedThesis, setEditedThesis] = useState<Thesis | null>(null)
   const [deletedThesis, setDeletedThesis] = useState<Thesis | null>(null)
 
   const [newThesis, setNewThesis] = useState<Thesis | null>(null)
@@ -491,13 +491,18 @@ const ThesesPage = ({
           ></ViewThesisFooter>
         </Box>
       </Box>
-      {editedTesis && (
+      {editedThesis && (
         <ThesisEditForm
-          programs={programs ?? []}
+          programs={
+            programs?.filter(
+              (p) =>
+                isStudentView || p.isManaged || p.id === editedThesis.programId
+            ) ?? []
+          }
           formTitle={t('thesisForm:editThesisFormTitle')}
-          initialThesis={editedTesis}
+          initialThesis={editedThesis}
           onSubmit={async (updatedThesis) => {
-            await editThesis({ thesisId: editedTesis.id, data: updatedThesis })
+            await editThesis({ thesisId: editedThesis.id, data: updatedThesis })
             setEditedThesis(null)
           }}
           onClose={() => setEditedThesis(null)}
