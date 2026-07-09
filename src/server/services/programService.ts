@@ -78,7 +78,6 @@ export const getPrograms = async (
 
   const managedPrograms = await ProgramManagement.findAll({
     attributes: ['programId'],
-    where: { userId },
     raw: true,
   })
   const managedProgramIds = new Set(
