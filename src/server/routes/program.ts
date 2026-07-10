@@ -1,17 +1,8 @@
 import express, { Response } from 'express'
-import { Op } from 'sequelize'
-import {
-  EventLog,
-  Program,
-  ProgramManagement,
-  Thesis,
-  User,
-} from '../db/models'
+import { Program, ProgramManagement } from '../db/models'
 import { RequestWithUser } from '../types'
 import ethesisUserHandler from '../middleware/ethesisUser'
-import { getPrograms } from '../services/programService'
-import { formatSearchQuery } from '../util/search'
-import { sequelize } from '../db/connection'
+import { getPrograms, getProgramEventLogs } from '../services/programService'
 
 const programRouter = express.Router()
 
@@ -114,71 +105,17 @@ programRouter.get(
 
     const search = req.query.search as string | undefined
 
-    // check if the current usr is an admin
-    // or if they are a program manager for the program
-    const { isAdmin } = req.user
-    const programManagement = await ProgramManagement.findOne({
-      where: { userId: req.user.id, programId },
-    })
-    if (!isAdmin && !programManagement) {
-      return res.status(403).send('Unauthorized')
-    }
-
-    const bind: any = {}
-    const where: any = {}
-
-    if (search) {
-      const formattedSearch = formatSearchQuery(search)
-      if (formattedSearch) {
-        bind.search = formattedSearch
-        where[Op.and] = [
-          sequelize.literal(`(
-            EXISTS (SELECT 1 FROM users WHERE users.id = "EventLog".user_id AND users.fts_index @@ to_tsquery('simple', $search))
-            OR
-            EXISTS (SELECT 1 FROM theses WHERE theses.id = "EventLog".thesis_id AND theses.fts_index @@ to_tsquery('simple', $search))
-            OR
-            EXISTS (SELECT 1 FROM authors INNER JOIN users ON authors.user_id = users.id WHERE authors.thesis_id = "EventLog".thesis_id AND users.fts_index @@ to_tsquery('simple', $search))
-          )`),
-        ]
-      }
-    }
-
-    const result = await EventLog.findAndCountAll({
-      where,
-      bind,
-      limit: limit ? Number(limit) : undefined,
-      offset: offset ? Number(offset) : undefined,
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'firstName', 'lastName', 'email'],
-          where: nonAdminOnly === 'true' ? { isAdmin: false } : {},
-        },
-        {
-          model: Thesis,
-          as: 'thesis',
-          attributes: ['id', 'topic'],
-          include: [
-            {
-              model: Program,
-              as: 'program',
-              attributes: [],
-              where: { id: programId },
-              required: true,
-            },
-            {
-              model: User,
-              as: 'authors',
-              attributes: ['firstName', 'lastName'],
-            },
-          ],
-          required: true,
-        },
-      ],
-      order: [['createdAt', 'DESC']],
-    })
-    return res.json({ events: result.rows, totalCount: result.count })
+    const result = await getProgramEventLogs(
+      programId,
+      {
+        search,
+        limit: limit as string,
+        offset: offset as string,
+        nonAdminOnly: nonAdminOnly as string,
+      },
+      req.user
+    )
+    return res.json(result)
   }
 )
 
