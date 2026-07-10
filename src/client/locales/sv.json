@@ -66,6 +66,7 @@
     "supervisorsUpdated": "Handledare uppdaterade",
     "gradersUpdated": "Bedömare uppdaterade",
     "thesisStatusUpdated": "Avhandlingens skede uppdaterat",
+    "noLogs": "Inga loggar",
     "diffView": {
       "before": "Före ändring",
       "after": "Efter ändring",

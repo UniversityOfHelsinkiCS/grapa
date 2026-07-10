@@ -30,17 +30,30 @@ interface UseProgramEventsParams {
   programId: string | undefined
   enabled: boolean
   showNonAdminOnly: boolean
+  limit?: number
+  offset?: number
 }
 export const useProgramEvents = ({
   programId,
   enabled,
   showNonAdminOnly,
+  limit,
+  offset,
 }: UseProgramEventsParams) => {
-  const queryKey = ['program-event-log', programId, showNonAdminOnly]
+  const queryKey = [
+    'program-event-log',
+    programId,
+    showNonAdminOnly,
+    limit,
+    offset,
+  ]
 
-  const queryFn = async (): Promise<EventLogEntry[]> => {
+  const queryFn = async (): Promise<{
+    events: EventLogEntry[]
+    totalCount: number
+  }> => {
     const { data } = await apiClient.get(`/programs/${programId}/event-log`, {
-      params: { nonAdminOnly: showNonAdminOnly },
+      params: { nonAdminOnly: showNonAdminOnly, limit, offset },
     })
 
     return data
@@ -53,7 +66,11 @@ export const useProgramEvents = ({
     enabled: Boolean(enabled && programId),
   })
 
-  return { events, ...rest }
+  return {
+    events: events?.events,
+    totalCount: events?.totalCount ?? 0,
+    ...rest,
+  }
 }
 
 export default useEvents

@@ -66,6 +66,7 @@
     "supervisorsUpdated": "Ohjaajat päivitetty",
     "gradersUpdated": "Arvioijat päivitetty",
     "thesisStatusUpdated": "Tutkielman vaihe päivitetty",
+    "noLogs": "Ei tapahtumalokeja",
     "diffView": {
       "before": "Ennen muutosta",
       "after": "Muutoksen jälkeen",

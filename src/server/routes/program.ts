@@ -103,7 +103,7 @@ programRouter.get(
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
     const { id: programId } = req.params
-    const { nonAdminOnly } = req.query
+    const { nonAdminOnly, limit, offset } = req.query
 
     if (!programId || typeof programId !== 'string') {
       return res.status(400).send('Program ID is required')
@@ -119,7 +119,9 @@ programRouter.get(
       return res.status(403).send('Unauthorized')
     }
 
-    const events = await EventLog.findAll({
+    const result = await EventLog.findAndCountAll({
+      limit: limit ? Number(limit) : undefined,
+      offset: offset ? Number(offset) : undefined,
       include: [
         {
           model: User,
@@ -145,7 +147,7 @@ programRouter.get(
       ],
       order: [['createdAt', 'DESC']],
     })
-    return res.json(events)
+    return res.json({ events: result.rows, totalCount: result.count })
   }
 )
 
