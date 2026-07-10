@@ -16,7 +16,7 @@ services:
       - grapa_internal
 
   db:
-    image: postgres:15.10
+    image: postgres:18.4
     environment:
       - PGDATA=/data
       - POSTGRES_PASSWORD=postgres
