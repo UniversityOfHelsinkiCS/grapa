@@ -57,6 +57,7 @@
   },
   "eventLog": {
     "thesis": "Avhandling",
+    "author": "Skribent",
     "title": "Händelselogg",
     "changedBy": "Ändrad av",
     "createdBy": "Skapad av",

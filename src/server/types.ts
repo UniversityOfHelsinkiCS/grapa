@@ -203,6 +203,7 @@ export type EventLogType = (typeof VALID_EVENT_LOG_TYPES)[number]
 export interface EventLogEntryThesis {
   id: string
   topic: string
+  authors?: { firstName: string; lastName: string }[]
 }
 export interface EventLogEntryUser {
   id: string

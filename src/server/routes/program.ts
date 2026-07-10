@@ -141,6 +141,11 @@ programRouter.get(
               where: { id: programId },
               required: true,
             },
+            {
+              model: User,
+              as: 'authors',
+              attributes: ['firstName', 'lastName'],
+            },
           ],
           required: true,
         },

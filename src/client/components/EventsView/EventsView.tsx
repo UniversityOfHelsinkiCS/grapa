@@ -32,6 +32,15 @@ const LogEntry = ({ title, entry, doneByString, children }: LogEntryProps) => {
       component="fieldset"
     >
       <h3>{title}</h3>
+      {entry.thesis &&
+        entry.thesis.authors &&
+        entry.thesis.authors.length > 0 && (
+          <p>
+            {`${t('eventLog:author')}: ${entry.thesis.authors
+              .map((a) => `${a.firstName} ${a.lastName}`)
+              .join(', ')}`}
+          </p>
+        )}
       {entry.thesis && (
         <p>{`${t('eventLog:thesis')}: ${entry.thesis.topic}`}</p>
       )}
@@ -42,6 +51,13 @@ const LogEntry = ({ title, entry, doneByString, children }: LogEntryProps) => {
   )
 }
 
+const getDoneByString = (entry: EventLogEntry, actionPrefix: string) => {
+  if (entry.user) {
+    return `${actionPrefix} ${entry.user.firstName} ${entry.user.lastName} (${entry.user.email})`
+  }
+  return `${actionPrefix} SYSTEM`
+}
+
 const ThesisCreatedEntry = (entry: ThesisCreatedEvent) => {
   const { t } = useTranslation()
 
@@ -49,7 +65,7 @@ const ThesisCreatedEntry = (entry: ThesisCreatedEvent) => {
     <LogEntry
       title={t('eventLog:thesisCreated')}
       entry={entry}
-      doneByString={`${t('eventLog:createdBy')} ${entry?.user?.email ?? 'SYSTEM'}`}
+      doneByString={getDoneByString(entry, t('eventLog:createdBy'))}
     />
   )
 }
@@ -61,7 +77,7 @@ const SupervisionsChangedEntry = (entry: SupervisionsChangedEvent) => {
     <LogEntry
       title={t('eventLog:supervisorsUpdated')}
       entry={entry}
-      doneByString={`${t('eventLog:changedBy')} ${entry?.user?.email ?? 'SYSTEM'}`}
+      doneByString={getDoneByString(entry, t('eventLog:changedBy'))}
     >
       <BeforeDiffAfter
         beforeText={JSON.stringify(entry.data.originalSupervisions, null, 2)}
@@ -78,7 +94,7 @@ const GradersChangedEntry = (entry: GradersChangedEvent) => {
     <LogEntry
       title={t('eventLog:gradersUpdated')}
       entry={entry}
-      doneByString={`${t('eventLog:changedBy')} ${entry?.user?.email ?? 'SYSTEM'}`}
+      doneByString={getDoneByString(entry, t('eventLog:changedBy'))}
     >
       <BeforeDiffAfter
         beforeText={JSON.stringify(entry.data.originalGraders, null, 2)}
@@ -95,7 +111,7 @@ const StatusChangedEntry = (entry: StatusChangedEvent) => {
     <LogEntry
       title={t('eventLog:thesisStatusUpdated')}
       entry={entry}
-      doneByString={`${t('eventLog:changedBy')} ${entry?.user?.email ?? 'SYSTEM'}`}
+      doneByString={getDoneByString(entry, t('eventLog:changedBy'))}
     >
       <BeforeDiffAfter beforeText={entry.data.from} afterText={entry.data.to} />
     </LogEntry>

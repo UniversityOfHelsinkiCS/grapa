@@ -57,6 +57,7 @@
   },
   "eventLog": {
     "thesis": "Thesis",
+    "author": "Author",
     "title": "Event log",
     "changedBy": "Changed by",
     "createdBy": "Created by",

@@ -57,6 +57,7 @@
   },
   "eventLog": {
     "thesis": "Tutkielma",
+    "author": "Tekijä",
     "title": "Tapahtumaloki",
     "changedBy": "Käyttäjä:",
     "createdBy": "Käyttäjä:",
