@@ -393,8 +393,8 @@ describe('program router', () => {
           .set({ hygroupcn: 'grp-toska', uid: adminUser.id })
 
         expect(response.status).toEqual(200)
-        expect(response.body).toHaveLength(1)
-        expect(response.body[0]).toMatchObject({
+        expect(response.body.events).toHaveLength(1)
+        expect(response.body.events[0]).toMatchObject({
           thesisId: thesis1.id,
           type: 'THESIS_STATUS_CHANGED',
         })
@@ -408,8 +408,8 @@ describe('program router', () => {
           .set({ hygroupcn: 'hy-employees', uid: user1.id })
 
         expect(response.status).toEqual(200)
-        expect(response.body).toHaveLength(1)
-        expect(response.body[0]).toMatchObject({
+        expect(response.body.events).toHaveLength(1)
+        expect(response.body.events[0]).toMatchObject({
           thesisId: thesis1.id,
           type: 'THESIS_STATUS_CHANGED',
         })
@@ -444,8 +444,8 @@ describe('program router', () => {
             .query({ nonAdminOnly: true })
 
           expect(response.status).toEqual(200)
-          expect(response.body).toHaveLength(1)
-          expect(response.body[0]).toMatchObject({
+          expect(response.body.events).toHaveLength(1)
+          expect(response.body.events[0]).toMatchObject({
             thesisId: thesis1.id,
             type: 'THESIS_STATUS_CHANGED',
           })
@@ -460,7 +460,7 @@ describe('program router', () => {
             .query({ nonAdminOnly: false })
 
           expect(response.status).toEqual(200)
-          expect(response.body).toHaveLength(2)
+          expect(response.body.events).toHaveLength(2)
         })
       })
     })
