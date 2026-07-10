@@ -1,4 +1,5 @@
 import express, { Response } from 'express'
+import { Op } from 'sequelize'
 import {
   EventLog,
   Program,
@@ -9,6 +10,8 @@ import {
 import { RequestWithUser } from '../types'
 import ethesisUserHandler from '../middleware/ethesisUser'
 import { getPrograms } from '../services/programService'
+import { formatSearchQuery } from '../util/search'
+import { sequelize } from '../db/connection'
 
 const programRouter = express.Router()
 
@@ -109,6 +112,8 @@ programRouter.get(
       return res.status(400).send('Program ID is required')
     }
 
+    const search = req.query.search as string | undefined
+
     // check if the current usr is an admin
     // or if they are a program manager for the program
     const { isAdmin } = req.user
@@ -119,7 +124,28 @@ programRouter.get(
       return res.status(403).send('Unauthorized')
     }
 
+    const bind: any = {}
+    const where: any = {}
+
+    if (search) {
+      const formattedSearch = formatSearchQuery(search)
+      if (formattedSearch) {
+        bind.search = formattedSearch
+        where[Op.and] = [
+          sequelize.literal(`(
+            EXISTS (SELECT 1 FROM users WHERE users.id = "EventLog".user_id AND users.fts_index @@ to_tsquery('simple', $search))
+            OR
+            EXISTS (SELECT 1 FROM theses WHERE theses.id = "EventLog".thesis_id AND theses.fts_index @@ to_tsquery('simple', $search))
+            OR
+            EXISTS (SELECT 1 FROM authors INNER JOIN users ON authors.user_id = users.id WHERE authors.thesis_id = "EventLog".thesis_id AND users.fts_index @@ to_tsquery('simple', $search))
+          )`),
+        ]
+      }
+    }
+
     const result = await EventLog.findAndCountAll({
+      where,
+      bind,
       limit: limit ? Number(limit) : undefined,
       offset: offset ? Number(offset) : undefined,
       include: [

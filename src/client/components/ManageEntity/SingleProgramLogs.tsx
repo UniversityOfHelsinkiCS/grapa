@@ -2,13 +2,16 @@ import { useState } from 'react'
 import {
   Box,
   CircularProgress,
+  Stack,
   TablePagination,
+  TextField,
   Typography,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { ProgramData } from '@backend/types'
 import { useProgramEvents } from '../../hooks/useEvents'
 import EventsView from '../EventsView/EventsView'
+import { useDebounce } from '../../hooks/useDebounce'
 
 interface SingleProgramLogsProps {
   program: ProgramData
@@ -18,6 +21,8 @@ const SingleProgramLogs = ({ program }: SingleProgramLogsProps) => {
   const { t } = useTranslation()
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [searchQuery, setSearchQuery] = useState('')
+  const debouncedSearchQuery = useDebounce(searchQuery, 400)
 
   const {
     events,
@@ -29,6 +34,7 @@ const SingleProgramLogs = ({ program }: SingleProgramLogsProps) => {
     showNonAdminOnly: false,
     limit: rowsPerPage,
     offset: page * rowsPerPage,
+    search: debouncedSearchQuery.length > 0 ? debouncedSearchQuery : undefined,
   })
 
   const handleChangePage = (
@@ -47,6 +53,21 @@ const SingleProgramLogs = ({ program }: SingleProgramLogsProps) => {
 
   return (
     <Box>
+      <Stack
+        direction="row"
+        sx={{ justifyContent: 'flex-start', alignItems: 'center', mb: 2 }}
+      >
+        <TextField
+          size="small"
+          placeholder={t('thesesTableToolbar:search')}
+          variant="outlined"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value)
+            setPage(0)
+          }}
+        />
+      </Stack>
       {eventsAreLoading ? (
         <CircularProgress />
       ) : (

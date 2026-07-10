@@ -21,6 +21,7 @@ import {
   getAvailableActionNeeded,
 } from './thesisHelpers'
 import { transformThesisData, transformSingleThesis } from './thesisHelpers'
+import { formatSearchQuery } from '../util/search'
 import { User as UserType, ThesisData } from '../types'
 import CustomValidationError from '../errors/ValidationError'
 import CustomAuthorizationError from '../errors/AuthorizationError'
@@ -130,16 +131,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
 
   const sortByColumn = sortBy ? getSortByColumn(sortBy, language) : undefined
 
-  let formattedSearch = search
-  if (search) {
-    formattedSearch = search
-      .replace(/['|&!():]/g, ' ')
-      .trim()
-      .split(/\s+/)
-      .filter((word) => word.length > 0)
-      .map((word) => `${word}:*`)
-      .join(' & ')
-  }
+  const formattedSearch = formatSearchQuery(search)
 
   const baseWhere = await buildThesisWhereClause({
     programId,
