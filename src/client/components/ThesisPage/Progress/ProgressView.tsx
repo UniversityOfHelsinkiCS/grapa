@@ -182,7 +182,7 @@ export const ProgressView = ({
                 sx={{
                   px: 2,
                   py: 2,
-                  mt: steps[index].milestone ? 4 : 0,
+                  mt: steps[index].milestone ? 2 : 0,
                   maxWidth: '20rem',
                   backgroundColor: step - 1 == index ? '#cfe0eb' : null,
                 }}
