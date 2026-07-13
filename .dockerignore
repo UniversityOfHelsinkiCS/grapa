@@ -81,13 +81,16 @@ gitignored/
 **/toska_login/*
 **/cypress.env.json
 cypress/
-
+**/*Dockerfile
+**/*docker-compose.yml
+**/*.husky
 
 # disallow secrects
 **/.env
 **/.env*
 **/*.env.*
 **/.secrects
+**/*.secrects
 **/*.s3cfg
 
 # disallow backups
@@ -103,12 +106,15 @@ cypress/
 **/privateData
 **/temp
 **/minio-data/*
+**/db_backups
+**/mongo_data
+**/uploads/
 
 # additional inclusions here
 .github
 node_modules
-docker-compose.yml
-Dockerfile
+**/*docker-compose.yml
+**/*Dockerfile
 npm-debug.log
 
 # exclusions here
