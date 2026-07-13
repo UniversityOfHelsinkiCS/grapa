@@ -6,6 +6,7 @@ import { cloneDeep } from 'lodash-es'
 import { Box, Stack, TextField, Typography } from '@mui/material'
 import {
   GridFilterModel,
+  GridPaginationModel,
   GridRowId,
   GridRowSelectionModel,
   GridSortModel,
@@ -240,7 +241,10 @@ const ThesesPage = ({
   }
 
   const clearRowSelection = () => {
-    setRowSelectionModel([])
+    setRowSelectionModel({
+      type: 'include',
+      ids: new Set<GridRowId>([]),
+    })
   }
 
   const onFilterChange = useCallback((filterModel: GridFilterModel) => {
@@ -319,7 +323,9 @@ const ThesesPage = ({
           totalCount={totalCount}
           selection={rowSelectionModel}
           onFilterChange={onFilterChange}
-          onPaginationChange={(newModel) => setPaginationModel(newModel)}
+          onPaginationChange={(newModel: GridPaginationModel) =>
+            setPaginationModel(newModel)
+          }
           onSelection={(newSelection: GridRowSelectionModel) => {
             setRowSelectionModel(newSelection)
           }}
@@ -489,6 +495,7 @@ const ThesesPage = ({
         ></PrethesisTable>
         <Box ref={footerRef}>
           <ViewThesisFooter
+            footerRef={footerRef}
             rowSelectionModel={rowSelectionModel}
             handleEditThesis={initializeThesisEdit}
             handleDeleteThesis={initializeThesisDelete}

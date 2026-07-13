@@ -11,16 +11,14 @@ const userSchema = z.object({
 
 const extUserSchema = z.object({
   firstName: z
-    .string({ required_error: 'formErrors:firstName' })
+    .string({ message: 'formErrors:firstName' })
     .min(1, 'formErrors:firstName'),
   lastName: z
-    .string({ required_error: 'formErrors:lastName' })
+    .string({ message: 'formErrors:lastName' })
     .min(1, 'formErrors:lastName'),
-  email: z
-    .string({ required_error: 'formErrors:email' })
-    .email('formErrors:email'),
+  email: z.email({ message: 'formErrors:email' }),
   affiliation: z
-    .string({ required_error: 'formErrors:affiliation' })
+    .string({ message: 'formErrors:affiliation' })
     .min(1, 'formErrors:affiliation'),
 })
 

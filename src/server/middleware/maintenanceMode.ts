@@ -15,7 +15,8 @@ export const maintenanceMode = async (
     { raw: true }
   )
 
-  const status: boolean = rows.length > 0 ? rows[0].value == 'true' : false
+  const status: boolean =
+    rows.length > 0 ? (rows[0] as any).value == 'true' : false
 
   if (status) {
     res.sendFile(path.join(process.cwd(), 'src/server/assets/maintenance.html'))

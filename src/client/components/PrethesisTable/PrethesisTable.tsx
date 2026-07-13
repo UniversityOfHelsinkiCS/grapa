@@ -8,7 +8,12 @@ import {
   CellContext,
 } from '@tanstack/react-table'
 
-import { ThesisData as Thesis, TranslationLanguage, User } from '@backend/types'
+import {
+  ThesisData as Thesis,
+  TranslationLanguage,
+  User,
+  ProgramData,
+} from '@backend/types'
 
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -241,7 +246,7 @@ const PrethesisTable = ({
     ? usePrograms({
         includeNotManaged: true,
       })
-    : { programs: [], isLoading: false }
+    : { programs: [] as ProgramData[], isLoading: false }
 
   const favoritePrograms =
     programs?.filter((p) => user?.favoriteProgramIds?.includes(p.id)) || []
@@ -1210,9 +1215,9 @@ const PrethesisTable = ({
         onPageChange={(_event, page) => {
           changePage(page)
         }}
-        onRowsPerPageChange={(_e: any, element: { props: { value: any } }) => {
+        onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           try {
-            const new_row_count = element.props.value
+            const new_row_count = parseInt(event.target.value, 10)
             setPageSize(new_row_count)
             onPaginationChange({ page: pageNumber, pageSize: new_row_count })
           } catch {
@@ -1273,21 +1278,24 @@ const PrethesisTable = ({
                     sx={{ alignItems: 'flex-start' }}
                   >
                     <ListItemText
-                      primary={thesis.topic}
-                      secondary={thesis.authors
-                        .toSorted((a, b) =>
-                          a.lastName.localeCompare(b.lastName)
-                        )
-                        .map(
-                          (author) =>
-                            `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
-                        )
-                        .join(', ')}
-                      primaryTypographyProps={{
-                        variant: 'body2',
-                        fontWeight: 500,
-                      }}
-                      secondaryTypographyProps={{ variant: 'caption' }}
+                      primary={
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {thesis.topic}
+                        </Typography>
+                      }
+                      secondary={
+                        <Typography variant="caption" color="text.secondary">
+                          {thesis.authors
+                            .toSorted((a, b) =>
+                              a.lastName.localeCompare(b.lastName)
+                            )
+                            .map(
+                              (author) =>
+                                `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
+                            )
+                            .join(', ')}
+                        </Typography>
+                      }
                     />
                   </ListItem>
                 ))}

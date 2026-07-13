@@ -111,8 +111,9 @@ programManagementRouter.delete(
     const { isAdmin } = editorUser
     const { id: programManagementId } = req.params
 
-    const targetProgramManagement =
-      await ProgramManagement.findByPk(programManagementId)
+    const targetProgramManagement = await ProgramManagement.findByPk(
+      programManagementId as string
+    )
 
     if (!targetProgramManagement) {
       res.status(404).send({ error: 'Program management not found' })
@@ -183,8 +184,9 @@ programManagementRouter.put(
     const { id: programManagementId } = req.params
     const { isAdmin } = req.user
 
-    const targetProgramManagement =
-      await ProgramManagement.findByPk(programManagementId)
+    const targetProgramManagement = await ProgramManagement.findByPk(
+      programManagementId as string
+    )
 
     if (!targetProgramManagement) {
       res.status(404).send({ error: 'Program management not found' })

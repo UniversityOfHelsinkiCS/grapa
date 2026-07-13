@@ -18,6 +18,7 @@ const PercentageInput = ({
     data-testid="percentage-input"
     className="percentage-input-field"
     type="number"
+    variant="outlined"
     sx={{ minWidth: '10%' }}
     InputProps={{
       inputProps: { min: 1, max: 100 },
@@ -28,7 +29,7 @@ const PercentageInput = ({
     onChange={(event) =>
       handlePercentageChange(parseInt(event.target.value, 10))
     }
-    {...percentageInputProps}
+    {...(percentageInputProps as any)}
   />
 )
 

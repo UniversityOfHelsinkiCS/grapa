@@ -150,7 +150,7 @@ departmentAdminRouter.get(
       const startDateObject = new Date(startDate)
 
       function timeDiff(first: Date, second: Date) {
-        return (first - second) / (1000 * 60 * 60 * 24)
+        return (first.getTime() - second.getTime()) / (1000 * 60 * 60 * 24)
       }
 
       const supervisor = statistics.find((s) => s.supervisor.id === user.id)

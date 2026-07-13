@@ -18,7 +18,7 @@ import {
 import type { UserInfo, User as UserType } from '../types'
 import { User } from '../db/models/index'
 
-const claims = inDevelopment
+const claims: any = inDevelopment
   ? {
       claims: {
         id_token: {
@@ -74,6 +74,7 @@ export const getUser = (userinfo: UserInfo): UserType => {
     firstName,
     lastName,
     isAdmin: checkAdmin(iamGroups),
+    isExternal: false,
   }
 }
 

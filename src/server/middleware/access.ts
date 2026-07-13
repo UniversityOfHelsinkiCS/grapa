@@ -1,6 +1,7 @@
 import morgan from 'morgan'
 import { inProduction } from '../../config'
 import logger from '../util/logger'
+import { RequestWithUser } from '../types'
 
 // Morgan excepts a log format string to be returned, but here a separate logger is used instead.
 // Override the first function argument to return void instead of a string.
@@ -13,8 +14,9 @@ const access = morgan as unknown as AccessLogger
 const accessLogger = access((tokens, req, res) => {
   const { uid } = req.headers
   const adminLoggedAs = req.headers['x-admin-logged-in-as']
-  const username = req.user?.username
-  const isAdmin = req.user?.isAdmin
+  const requestWithUser = req as unknown as RequestWithUser
+  const username = requestWithUser.user?.username
+  const isAdmin = requestWithUser.user?.isAdmin
   const method = tokens.method(req, res)
   const url = tokens.url(req, res)
   const status = tokens.status(req, res)

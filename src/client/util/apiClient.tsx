@@ -22,7 +22,7 @@ apiClient.interceptors.request.use((config) => {
     const user = JSON.parse(adminLoggedInAs)
     updatedHeaders[LOGIN_AS_HEADER_KEY] = user.id
   }
-  return { ...config, headers: updatedHeaders }
+  return { ...config, headers: updatedHeaders } as any
 })
 
 export default apiClient

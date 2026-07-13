@@ -3,6 +3,8 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
+import type {} from '@mui/x-data-grid/themeAugmentation'
+
 import { useMemo } from 'react'
 import {
   createTheme,
@@ -22,6 +24,20 @@ declare module '@mui/material/styles' {
   interface PaletteOptions {
     toskaDark: PaletteOptions['primary']
     toskaPrimary: PaletteOptions['primary']
+  }
+
+  interface TypographyVariants {
+    small: React.CSSProperties
+  }
+
+  interface TypographyVariantsOptions {
+    small?: React.CSSProperties
+  }
+}
+
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides {
+    small: true
   }
 }
 
@@ -73,7 +89,7 @@ const themeOptions: ThemeOptions = {
       styleOverrides: {
         root: {
           borderRadius: 0,
-          boxShadow: 0,
+          boxShadow: 'none',
           elevation: 0,
         },
         contained: {
@@ -87,16 +103,8 @@ const themeOptions: ThemeOptions = {
           color: colors.main,
           ':hover': {
             borderWidth: '2px',
-            boxShadow: 0,
+            boxShadow: 'none',
           },
-        },
-      },
-    },
-
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          borderRadius: 5,
         },
       },
     },
@@ -128,10 +136,10 @@ const themeOptions: ThemeOptions = {
         elevation: 10,
       },
       styleOverrides: {
-        paper: {
-          boxShadow: 1,
+        paper: ({ theme }) => ({
+          boxShadow: theme.shadows[1],
           borderRadius: '1rem',
-        },
+        }),
       },
     },
     MuiPopper: {

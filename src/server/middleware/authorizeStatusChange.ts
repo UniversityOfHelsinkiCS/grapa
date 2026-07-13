@@ -31,7 +31,7 @@ export const authorizeStatusChange = async (
     return
   }
 
-  const thesis = await Thesis.findByPk(req.params.id)
+  const thesis = await Thesis.findByPk(req.params.id as string)
 
   const isNewThesisWithStatusCompleted =
     !thesis && req.body.status === 'COMPLETED'

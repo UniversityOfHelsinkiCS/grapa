@@ -39,19 +39,22 @@ interface ProgramConfigurationsProps {
 interface FeatureFlagControlProps {
   isDateInput?: boolean
   program: ProgramData
-  updateMutation: any
   feature: string
-  translation: any
   versioned?: boolean
   isMultilingualInput?: boolean
 }
 
-const FeatureFlagControl = ({
-  program,
-  updateMutation,
-  feature,
-  translation,
-}: FeatureFlagControlProps) => {
+interface OptionValue {
+  value: string | Record<string, string> | null
+}
+
+interface VersionedOption {
+  versions?: OptionValue[][]
+}
+
+const FeatureFlagControl = ({ program, feature }: FeatureFlagControlProps) => {
+  const { t: translation } = useTranslation()
+  const updateMutation = useUpdateProgramMutation()
   const featureStatus = Boolean(
     program.options ? program.options[feature] == true : false
   )
@@ -122,27 +125,31 @@ const FeatureFlagControl = ({
   )
 }
 
+export type ListValue = {
+  value: string | Record<string, string>
+}
+
 const ListInput = ({
   isDateInput = false,
   program,
-  updateMutation,
   feature,
-  translation,
   versioned,
   isMultilingualInput = false,
 }: FeatureFlagControlProps) => {
-  const [listValues, setListValues] = useState(() => {
+  const { t: translation } = useTranslation()
+  const updateMutation = useUpdateProgramMutation()
+  const [listValues, setListValues] = useState<ListValue[]>(() => {
     let initial =
       program.options && program.options[feature]
         ? versioned
-          ? program.options[feature].versions
-            ? program.options[feature].versions.at(-1)
+          ? (program.options[feature] as VersionedOption).versions
+            ? (program.options[feature] as VersionedOption).versions!.at(-1)
             : []
           : program.options[feature]
         : []
 
     if (isMultilingualInput) {
-      initial = initial.map((item: any) => {
+      initial = initial.map((item: ListValue) => {
         const val = item.value
         if (typeof val === 'string') {
           return { value: { fi: val, sv: val, en: val } }
@@ -153,11 +160,11 @@ const ListInput = ({
     return initial
   })
 
-  const [pendingValue, setPendingValue] = useState<any | null>(null)
+  const [pendingValue, setPendingValue] = useState<ListValue[] | null>(null)
 
   const handleSave = () => {
     const validValues = isDateInput
-      ? listValues.filter((v: any) => dayjs(v.value).isValid())
+      ? listValues.filter((v: ListValue) => dayjs(v.value as string).isValid())
       : listValues
 
     if (isDateInput && validValues.length !== listValues.length) {
@@ -178,7 +185,8 @@ const ListInput = ({
     const options = program.options
 
     if (versioned) {
-      const currentVersions = options[feature]?.versions || []
+      const featureOption = options[feature] as VersionedOption | undefined
+      const currentVersions = featureOption?.versions || []
       const lastVersion =
         currentVersions.length > 0 ? currentVersions.at(-1) : []
       if (isEqual(pendingValue, lastVersion)) {
@@ -187,8 +195,10 @@ const ListInput = ({
       }
     }
     if (versioned && !options[feature]) options[feature] = { versions: [] }
-    if (versioned && !options[feature].versions) options[feature].versions = []
-    if (versioned) options[feature].versions.push(pendingValue)
+    if (versioned && !(options[feature] as VersionedOption).versions)
+      (options[feature] as VersionedOption).versions = []
+    if (versioned)
+      (options[feature] as VersionedOption).versions!.push(pendingValue)
     else options[feature] = pendingValue
 
     await updateMutation.mutateAsync({
@@ -212,7 +222,7 @@ const ListInput = ({
         <Typography variant="body1">
           {translation(`programOverviewPage:${feature}:description`)}
         </Typography>
-        {listValues.map((value, index) => {
+        {listValues.map((value: ListValue, index: number) => {
           return (
             <Paper
               variant="outlined"
@@ -237,11 +247,11 @@ const ListInput = ({
                         fullWidth: true,
                       },
                     }}
-                    value={value.value ? dayjs(value.value) : null}
+                    value={value.value ? dayjs(value.value as string) : null}
                     format="DD.MM.YYYY"
                     onChange={(date) => {
                       setListValues(
-                        listValues.map((v, i) => {
+                        listValues.map((v: ListValue, i: number) => {
                           return i == index
                             ? { value: date ? date.format('YYYY-MM-DD') : '' }
                             : v
@@ -263,17 +273,19 @@ const ListInput = ({
                         size="small"
                         variant="outlined"
                         label={lang.toUpperCase()}
-                        value={value.value?.[lang] || ''}
+                        value={
+                          (value.value as Record<string, string>)?.[lang] || ''
+                        }
                         onChange={(
                           event: React.ChangeEvent<HTMLInputElement>
                         ) => {
                           setListValues(
-                            listValues.map((v: any, i: number) => {
+                            listValues.map((v: ListValue, i: number) => {
                               if (i === index) {
                                 return {
                                   ...v,
                                   value: {
-                                    ...v.value,
+                                    ...(v.value as Record<string, string>),
                                     [lang]: event.target.value,
                                   },
                                 }
@@ -292,7 +304,7 @@ const ListInput = ({
                     value={value.value}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                       setListValues(
-                        listValues.map((v: any, i: number) => {
+                        listValues.map((v: ListValue, i: number) => {
                           return i == index ? { value: event.target.value } : v
                         })
                       )
@@ -308,7 +320,9 @@ const ListInput = ({
                       arial-label={translation('deleteButton', 'Poista')}
                       onClick={() => {
                         setListValues(
-                          listValues.filter((_v: any, i: any) => i != index)
+                          listValues.filter(
+                            (_v: ListValue, i: number) => i != index
+                          )
                         )
                       }}
                       color="error"
@@ -364,11 +378,9 @@ const ListInput = ({
   )
 }
 
-const CombinedStudyTracksInput = ({
-  program,
-  updateMutation,
-  translation,
-}: FeatureFlagControlProps) => {
+const CombinedStudyTracksInput = ({ program }: { program: ProgramData }) => {
+  const { t: translation } = useTranslation()
+  const updateMutation = useUpdateProgramMutation()
   const { i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
 
@@ -623,9 +635,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
       return (
         <FeatureFlagControl
           program={program}
-          updateMutation={updateProgramOptionsMutation}
           feature={feature}
-          translation={t}
           key={feature}
         ></FeatureFlagControl>
       )
@@ -663,8 +673,6 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
             feature="milestones"
             isMultilingualInput
             program={program}
-            updateMutation={updateProgramOptionsMutation}
-            translation={t}
             versioned
           ></ListInput>
         )}
@@ -673,17 +681,10 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
           isDateInput={true}
           feature="targetDates"
           program={program}
-          translation={t}
-          updateMutation={updateProgramOptionsMutation}
         ></ListInput>
 
         {Boolean(program.studyTracks?.length) && (
-          <CombinedStudyTracksInput
-            feature="combinedStudyTracks"
-            program={program}
-            translation={t}
-            updateMutation={updateProgramOptionsMutation}
-          />
+          <CombinedStudyTracksInput program={program} />
         )}
 
         <Typography variant="h5">{t(`programOverviewPage:other`)}</Typography>

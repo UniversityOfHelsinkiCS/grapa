@@ -37,7 +37,7 @@ ethesisAdminRouter.post(
   '/',
   ethesisUserHandler,
   adminHandler,
-  // @ts-expect-error the user middleware updates the req object with user field
+
   async (req: any, res: Response) => {
     const { userId } = req.body
 
@@ -86,7 +86,7 @@ ethesisAdminRouter.delete(
   async (req: ServerDeleteRequest, res: Response) => {
     const { id } = req.params
 
-    const ethesisAdmin = await EthesisAdmin.findByPk(id)
+    const ethesisAdmin = await EthesisAdmin.findByPk(id as string)
     if (!ethesisAdmin) {
       return res.status(404).send('Ethesis admin not found')
     }

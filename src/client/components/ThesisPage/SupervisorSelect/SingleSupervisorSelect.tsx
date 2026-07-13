@@ -122,11 +122,13 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
             checkedIcon={<Star />}
             checked={selection.isPrimarySupervisor}
             onChange={handlePrimarySupervisorChange}
-            inputProps={{
-              'aria-invalid':
-                primarySupervisorProps.error && !selection.isPrimarySupervisor
-                  ? 'true'
-                  : 'false',
+            slotProps={{
+              input: {
+                'aria-invalid':
+                  primarySupervisorProps.error && !selection.isPrimarySupervisor
+                    ? true
+                    : false,
+              },
             }}
           />
         </FormControl>
@@ -160,7 +162,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
         onSubmit={handleRemoveSupervisor}
         title={t('thesisForm:removeSupervisorConfirmationTitle')}
         submitText={t('common:deleteButton')}
-        submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
+        submitButtonProps={{ 'data-testid': 'delete-confirm-button' } as any}
         submitColor="error"
         cancelText={t('common:cancelButton')}
       >

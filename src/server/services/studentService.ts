@@ -37,7 +37,12 @@ export const getStudentStudyRights = async (user: User) => {
 }
 
 export const getOwnActiveTheses = async (user: User) => {
-  return await sequelize.query(
+  return await sequelize.query<{
+    program_id: string
+    status: string
+    id: string
+    topic: string
+  }>(
     `select T.program_id, T.status, T.id, T.topic from authors 
      A left join theses T on A.thesis_id = T.id 
      where A.user_id = :user_id AND T.status = any('{IN_PROGRESS,SUGGESTED,ETHESIS_SENT,PLANNING}')`,

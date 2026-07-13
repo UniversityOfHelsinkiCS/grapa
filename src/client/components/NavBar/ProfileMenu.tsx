@@ -88,7 +88,7 @@ const UserInformation = () => {
                       color="text.secondary"
                       sx={{ textAlign: 'right' }}
                     >
-                      {fieldValue}
+                      {fieldValue as string}
                     </Typography>
                     <IconButton
                       size="small"
@@ -117,7 +117,7 @@ const UserInformation = () => {
                     color="text.secondary"
                     sx={{ textAlign: 'right' }}
                   >
-                    {fieldValue}
+                    {fieldValue as string}
                   </Typography>
                 </dd>
               </Box>
@@ -137,8 +137,11 @@ const UserInformation = () => {
   )
 }
 
-const ProfileMenu = (props) => {
-  const { sx } = props
+interface ProfileMenuProps {
+  sx?: object
+}
+
+const ProfileMenu = ({ sx }: ProfileMenuProps) => {
   const { t } = useTranslation()
   const { user, isLoading, hasStaffAccess } = useLoggedInUser()
 

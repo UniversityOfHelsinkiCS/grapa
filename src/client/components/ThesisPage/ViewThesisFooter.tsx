@@ -29,6 +29,7 @@ import {
   User,
   TranslationLanguage,
   ThesisStatus,
+  ProgramData,
 } from '@backend/types'
 
 import { ThesisFooterProps } from '../../types'
@@ -122,7 +123,7 @@ const ProgramTrack = ({
   programId: string
   studyTrackId: string
   isStudentView?: boolean
-  thesisProgram?: any
+  thesisProgram?: ProgramData
   currentUser?: User
   thesis?: Thesis
 }) => {
@@ -254,7 +255,7 @@ const Attachments = ({
       <Stack sx={{ mt: 2, gap: 1 }} direction="row">
         {files.map((fileContainer) => (
           <Link
-            href={`${BASE_PATH}/api/attachments/${fileContainer.file.filename}`}
+            href={`${BASE_PATH}/api/attachments/${(fileContainer.file as FileData).filename}`}
             sx={{ textDecoration: 'none' }}
             key={fileContainer.translation}
           >
@@ -637,7 +638,7 @@ const ViewThesisFooter = (
             >
               {t('viewThesisFooter:thesisLate').replace(
                 '{difference}',
-                difference
+                difference.toString()
               )}{' '}
               {dayjs(thesis.targetDate).format('YYYY-MM-DD')}
             </Alert>
@@ -851,56 +852,67 @@ const ViewThesisFooter = (
             <List dense disablePadding>
               <ListItem disableGutters sx={{ alignItems: 'flex-start' }}>
                 <ListItemText
-                  primary={t('common:topicHeader')}
-                  secondary={thesis.topic}
-                  primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
-                  secondaryTypographyProps={{
-                    variant: 'caption',
-                    color: 'text.secondary',
-                  }}
+                  primary={
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      {t('common:topicHeader')}
+                    </Typography>
+                  }
+                  secondary={
+                    <Typography variant="caption" color="text.secondary">
+                      {thesis.topic}
+                    </Typography>
+                  }
                 />
               </ListItem>
 
               <ListItem disableGutters sx={{ alignItems: 'flex-start' }}>
                 <ListItemText
-                  primary={t('author')}
-                  secondary={thesis.authors
-                    .toSorted((a, b) => a.lastName.localeCompare(b.lastName))
-                    .map(
-                      (author) =>
-                        `${author.lastName} ${author.firstName} ${
-                          author.studentNumber
-                            ? `(${author.studentNumber})`
-                            : ''
-                        }`
-                    )
-                    .join(', ')}
-                  primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
-                  secondaryTypographyProps={{
-                    variant: 'caption',
-                    color: 'text.secondary',
-                  }}
+                  primary={
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      {t('author')}
+                    </Typography>
+                  }
+                  secondary={
+                    <Typography variant="caption" color="text.secondary">
+                      {thesis.authors
+                        .toSorted((a, b) =>
+                          a.lastName.localeCompare(b.lastName)
+                        )
+                        .map(
+                          (author) =>
+                            `${author.lastName} ${author.firstName} ${
+                              author.studentNumber
+                                ? `(${author.studentNumber})`
+                                : ''
+                            }`
+                        )
+                        .join(', ')}
+                    </Typography>
+                  }
                 />
               </ListItem>
 
               {thesis.graders.length > 0 && (
                 <ListItem disableGutters sx={{ alignItems: 'flex-start' }}>
                   <ListItemText
-                    primary={t('thesisForm:graders')}
-                    secondary={thesis.graders.map((grader) => (
-                      <span key={grader.user.id} style={{ display: 'block' }}>
-                        {grader.user.lastName} {grader.user.firstName},{' '}
-                        {grader.title[language]}
-                      </span>
-                    ))}
-                    primaryTypographyProps={{
-                      variant: 'body2',
-                      fontWeight: 500,
-                    }}
-                    secondaryTypographyProps={{
-                      variant: 'caption',
-                      color: 'text.secondary',
-                    }}
+                    primary={
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {t('thesisForm:graders')}
+                      </Typography>
+                    }
+                    secondary={
+                      <Typography variant="caption" color="text.secondary">
+                        {thesis.graders.map((grader) => (
+                          <span
+                            key={grader.user.id}
+                            style={{ display: 'block' }}
+                          >
+                            {grader.user.lastName} {grader.user.firstName},{' '}
+                            {grader.title[language]}
+                          </span>
+                        ))}
+                      </Typography>
+                    }
                   />
                 </ListItem>
               )}

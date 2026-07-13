@@ -6,7 +6,7 @@ import {
   ProgramManagement,
   User,
 } from '../db/models'
-import { RequestWithUser } from '../types'
+import { RequestWithUser, User as UserType } from '../types'
 import ethesisUserHandler from '../middleware/ethesisUser'
 import {
   employeesAndAdminOnly,
@@ -28,7 +28,7 @@ studyTrackManagementRouter.get(
       whereClause = { studyTrackId }
     }
 
-    const managements = await StudyTrackManagement.findAll({
+    const managements = (await StudyTrackManagement.findAll({
       attributes: ['id', 'studyTrackId', 'userId'],
       where: whereClause,
       include: [
@@ -47,11 +47,10 @@ studyTrackManagementRouter.get(
       ],
       raw: true,
       nest: true,
-    })
+    })) as (StudyTrackManagement & { user?: UserType })[]
 
     if (!has_access(req.user)) {
       const filtered = managements.map((management) => {
-        //@ts-expect-error it exists
         if (management.user)
           management.user = cleanUserProperties(management.user)
         return management
@@ -98,9 +97,12 @@ studyTrackManagementRouter.delete(
     const { isAdmin } = editorUser
     const { id: managementId } = req.params
 
-    const targetManagement = await StudyTrackManagement.findByPk(managementId, {
-      include: [{ model: StudyTrack, as: 'studyTrack' }],
-    })
+    const targetManagement = await StudyTrackManagement.findByPk(
+      managementId as string,
+      {
+        include: [{ model: StudyTrack, as: 'studyTrack' }],
+      }
+    )
 
     if (!targetManagement) {
       res.status(404).send({ error: 'Study track management not found' })

@@ -98,7 +98,9 @@ const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
             }}
             title={t('thesisForm:removeGraderConfirmationTitle')}
             submitText={t('common:deleteButton')}
-            submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
+            submitButtonProps={
+              { 'data-testid': 'delete-confirm-button' } as any
+            }
             submitColor="error"
             cancelText={t('common:cancelButton')}
           >

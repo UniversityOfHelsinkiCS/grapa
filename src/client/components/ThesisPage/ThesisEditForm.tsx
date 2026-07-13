@@ -140,8 +140,8 @@ const ThesisEditForm: FC<{
   }
 
   const handleClose = (
-    _: object,
-    reason: 'backdropClick' | 'escapeKeyDown'
+    _?: object,
+    reason?: 'backdropClick' | 'escapeKeyDown'
   ) => {
     if (reason === 'backdropClick') return
 
@@ -233,7 +233,7 @@ const ThesisEditForm: FC<{
       titleProps={{ 'data-testid': 'thesis-form-title' }}
       onSubmit={handleSubmit}
       submitText={t('submitButton')}
-      submitButtonProps={{ 'data-testid': 'submit-button' }}
+      submitButtonProps={{ 'data-testid': 'submit-button' } as any}
       cancelText={t('cancelButton')}
       onCancel={() => {
         clearURL()

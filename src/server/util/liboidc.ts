@@ -10,6 +10,7 @@ import type {
   UserInfoResponse,
 } from 'oauth4webapi'
 import passport from 'passport'
+import { Request } from 'express'
 
 export interface OIDCConfiguration {
   issuer: URL
@@ -228,7 +229,7 @@ export class liboidc_strategy extends passport.Strategy {
 
   async authenticate(
     this: passport.StrategyCreated<this, this & passport.StrategyCreatedStatic>,
-    req: Request
+    req: Request & { session?: any }
   ) {
     if (req.session == undefined) {
       this.error(new Error('Session not defined'))

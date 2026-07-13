@@ -129,10 +129,31 @@ export interface StudyTrackData {
   isManaged?: boolean
 }
 
+export interface ProgramOptions {
+  seminar?: boolean
+  allowMultipleSeminarResponsibles?: boolean
+  allowStudentStartedProcess?: boolean
+  waysOfWorkingRequired?: boolean
+  allowMultipleAuthors?: boolean
+  hideSendToEthesis?: boolean
+  useMilestones?: boolean
+  disableStudyTracks?: boolean
+  useIdleState?: boolean
+  supervisorApproval?: boolean
+  thesisProgramManagerNotRequired?: boolean
+  isBachelorProgram?: boolean
+  numberOfGraders?: number
+  milestones?: {
+    versions?: any[][]
+  }
+  combinedStudyTracks?: Record<string, string>
+  [key: string]: any
+}
+
 export interface ProgramData {
   id: string
   name: TranslatedName
-  options: Record<string, unknown>
+  options: ProgramOptions
   studyTracks: StudyTrackData[]
   allStudyTracks?: StudyTrackData[]
   isFavorite: boolean
@@ -192,10 +213,19 @@ export interface ProgramManagementData {
   id?: string
 }
 
+export interface StudyTrackManagementData {
+  userId: string
+  studyTrackId: string
+  studyTrack?: StudyTrackData
+  user?: User
+  id?: string
+}
+
 export interface DepartmentAdminData {
   userId: string
   departmentId: string
   user?: User
+  department?: DepartmentData
   id?: string
 }
 

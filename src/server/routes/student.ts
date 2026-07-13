@@ -1,5 +1,11 @@
 import express from 'express'
-import { GraderData, ServerPostRequest, ThesisData, User } from '../types'
+import {
+  GraderData,
+  ServerPostRequest,
+  ThesisData,
+  User,
+  StudyTrackData,
+} from '../types'
 import { sequelize } from '../db/connection'
 
 import { EventLog, Thesis, Program } from '../db/models'
@@ -79,8 +85,8 @@ studentRouter.get('/programs', async (req: RequestWithUser, res: any) => {
       )
     })
     .map((program) => {
-      const filteredStudyTracks = program.studyTracks.filter((studytrack) =>
-        studyTracks.has(studytrack.id)
+      const filteredStudyTracks = program.studyTracks.filter(
+        (studytrack: StudyTrackData) => studyTracks.has(studytrack.id)
       )
 
       if (filteredStudyTracks.length > 0) {
@@ -375,7 +381,7 @@ studentRouter.put(
         ...originalThesis,
         ...(isMilestoneUpdate && { milestone: thesisData.milestone }),
         ...(isIdleUpdate && { isIdle: thesisData.isIdle }),
-      }
+      } as any
       bypassChecks = true
     }
 

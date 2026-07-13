@@ -23,7 +23,11 @@ import hyLogo from '../../assets/hy_logo2.svg'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useDepartments from '../../hooks/useDepartments'
 import usePrograms from '../../hooks/usePrograms'
-import { TranslationLanguage } from '@backend/types'
+import {
+  TranslationLanguage,
+  ProgramData,
+  DepartmentData,
+} from '@backend/types'
 
 import LanguageSelect from './LanguageSelect'
 import MobileMenu from './MobileMenu'
@@ -99,11 +103,7 @@ export const navStyles = {
 }
 
 const sortProgramsForMenu = (
-  programs: Array<{
-    id: string
-    name: Record<TranslationLanguage, string>
-    isManaged: boolean
-  }>,
+  programs: ProgramData[],
   language: TranslationLanguage
 ) =>
   [...programs].sort((leftProgram, rightProgram) => {
@@ -115,10 +115,7 @@ const sortProgramsForMenu = (
   })
 
 const sortDepartmentsForMenu = (
-  departments: Array<{
-    id: string
-    name: Record<TranslationLanguage, string>
-  }>,
+  departments: DepartmentData[],
   language: TranslationLanguage
 ) =>
   [...departments].sort((leftDepartment, rightDepartment) =>

@@ -33,7 +33,7 @@ const LoggedInAsBanner = () => {
         backgroundColor: '#fbbf24',
       }}
     >
-      <Typography fontWeight="bold">
+      <Typography sx={{ fontWeight: 'bold' }}>
         Logged in as {user.firstName} {user.lastName} {user.email}
       </Typography>
       <Button

@@ -102,7 +102,7 @@ const SingleSeminarSupervisorSelect: React.FC<
         }}
         title={t('thesisForm:removeSeminarSupervisorConfirmationTitle')}
         submitText={t('common:deleteButton')}
-        submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
+        submitButtonProps={{ 'data-testid': 'delete-confirm-button' } as any}
         submitColor="error"
         cancelText={t('common:cancelButton')}
       >

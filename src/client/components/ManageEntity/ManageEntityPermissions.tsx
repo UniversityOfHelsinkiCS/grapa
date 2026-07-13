@@ -51,6 +51,10 @@ import {
   ProgramManagementData,
   TranslationLanguage,
   DepartmentAdminData,
+  StudyTrackManagementData,
+  ProgramData,
+  StudyTrackData,
+  DepartmentData,
 } from '@backend/types'
 
 interface Props {
@@ -58,6 +62,13 @@ interface Props {
   hideTitle?: boolean
   entityType?: 'program' | 'studyTrack' | 'department'
 }
+
+type EntityPermissionData =
+  | ProgramManagementData
+  | DepartmentAdminData
+  | StudyTrackManagementData
+type EntityData = ProgramData | StudyTrackData | DepartmentData
+
 const ManageEntityPermissions = ({
   filteringEntityId,
   hideTitle,
@@ -72,7 +83,8 @@ const ManageEntityPermissions = ({
   const [isThesisApprover, setIsThesisApprover] = useState(true)
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [deletedPermission, setDeletedPermission] = useState(null)
+  const [deletedPermission, setDeletedPermission] =
+    useState<EntityPermissionData | null>(null)
 
   const { programs: programEntities, studyTracks } = usePrograms({
     includeNotManaged: user?.isAdmin,
@@ -211,10 +223,12 @@ const ManageEntityPermissions = ({
             renderCell: (params: any) => (
               <Tooltip
                 arrow
-                PopperProps={{
-                  sx: {
-                    '& .MuiTooltip-tooltip': {
-                      fontSize: '0.9rem',
+                slotProps={{
+                  popper: {
+                    sx: {
+                      '& .MuiTooltip-tooltip': {
+                        fontSize: '0.9rem',
+                      },
                     },
                   },
                 }}
@@ -251,10 +265,12 @@ const ManageEntityPermissions = ({
       field: 'user',
       headerName: t('userHeader'),
       flex: 1,
-      valueGetter: (value) =>
-        value
-          ? `${value.lastName} ${value.firstName} ${value.email ? ` (${value.email})` : ''}`
-          : '',
+      valueGetter: (value: any, row: any) => {
+        const user = value || row?.user
+        return user
+          ? `${user.lastName} ${user.firstName} ${user.email ? ` (${user.email})` : ''}`
+          : ''
+      },
     },
     {
       field:
@@ -270,7 +286,8 @@ const ManageEntityPermissions = ({
             ? t('studyTrackHeader', 'Study Track')
             : t('departmentHeader'),
       flex: 1,
-      valueGetter: (value) => value?.name?.[language] || '',
+      valueGetter: (value: EntityData | null | undefined) =>
+        value?.name?.[language] || '',
     },
     {
       field: 'actions',
@@ -459,7 +476,7 @@ const ManageEntityPermissions = ({
                 : t('manageEntityPermissions:removeStudyTrackManagementTitle')
           }
           submitText={t('deleteButton')}
-          submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
+          submitButtonProps={{ 'data-testid': 'delete-confirm-button' } as any}
           submitColor="error"
           cancelText={t('cancelButton')}
         >
@@ -467,18 +484,22 @@ const ManageEntityPermissions = ({
             {entityType === 'department'
               ? t('manageEntityPermissions:removeDepartmentManagementContent', {
                   name: `${deletedPermission.user.firstName} ${deletedPermission.user.lastName}`,
-                  department: deletedPermission.department?.name[language],
+                  department: (deletedPermission as DepartmentAdminData)
+                    .department?.name[language],
                 })
               : entityType === 'program'
                 ? t('manageEntityPermissions:removeProgramManagementContent', {
                     name: `${deletedPermission.user.firstName} ${deletedPermission.user.lastName}`,
-                    program: deletedPermission.program?.name[language],
+                    program: (deletedPermission as ProgramManagementData)
+                      .program?.name[language],
                   })
                 : t(
                     'manageEntityPermissions:removeStudyTrackManagementContent',
                     {
                       name: `${deletedPermission.user.firstName} ${deletedPermission.user.lastName}`,
-                      studyTrack: deletedPermission.studyTrack?.name[language],
+                      studyTrack: (
+                        deletedPermission as StudyTrackManagementData
+                      ).studyTrack?.name[language],
                     }
                   )}
           </Box>

@@ -249,7 +249,7 @@ const ExternalPersonInput = ({
         onSubmit={handleRemovePerson}
         title={t(`thesisForm:${deleteConfirmationTitleLocKey}`)}
         submitText={t('deleteButton')}
-        submitButtonProps={{ 'data-testid': 'delete-confirm-button' }}
+        submitButtonProps={{ 'data-testid': 'delete-confirm-button' } as any}
         submitColor="error"
         cancelText={t('cancelButton')}
       >

@@ -27,5 +27,5 @@ export const get = async (key: string): Promise<any | null> => {
 
   if (!value) return null
 
-  return JSON.parse(value)
+  return JSON.parse(value.toString())
 }

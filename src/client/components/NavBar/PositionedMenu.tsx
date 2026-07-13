@@ -12,7 +12,7 @@ interface PositionedMenuProps {
   anchorEl: HTMLElement | null
   handleClick: (event: React.MouseEvent<HTMLElement>) => void
   handleClose: () => void
-  label: string
+  label: React.ReactNode
   children: React.ReactNode
   sx: any
 }

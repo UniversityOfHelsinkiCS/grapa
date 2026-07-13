@@ -172,13 +172,15 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
 
             {tab === 'configurations' && entityType === 'program' && (
               <Box>
-                <ProgramConfigurations program={selectedEntity} />
+                <ProgramConfigurations
+                  program={selectedEntity as ProgramData}
+                />
               </Box>
             )}
 
             {tab === 'logs' && entityType === 'program' && (
               <Box>
-                <SingleProgramLogs program={selectedEntity} />
+                <SingleProgramLogs program={selectedEntity as ProgramData} />
               </Box>
             )}
           </Stack>
