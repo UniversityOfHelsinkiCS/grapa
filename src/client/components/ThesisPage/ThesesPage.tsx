@@ -40,6 +40,7 @@ interface Props {
   onlySeminarSupervised?: boolean
   isStudentView?: boolean
   showSupervisors?: boolean
+  showMilestonePercentage?: boolean
 }
 const ThesesPage = ({
   filteringProgramId,
@@ -50,6 +51,7 @@ const ThesesPage = ({
   onlySeminarSupervised = false,
   isStudentView = false,
   showSupervisors = false,
+  showMilestonePercentage = false,
 }: Props) => {
   const footerRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
@@ -331,6 +333,9 @@ const ThesesPage = ({
           availableMilestones={availableMilestones}
           noAddThesisButton={noAddThesisButton}
           showSupervisors={showSupervisors}
+          showMilestonePercentage={
+            showMilestonePercentage && theses?.some((t) => t.milestone != null)
+          }
           onExportCsv={() =>
             exportCsv(`theses-export-${dayjs().format('YYYY-MM-DD')}.csv`)
           }

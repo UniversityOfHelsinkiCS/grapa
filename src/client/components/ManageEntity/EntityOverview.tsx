@@ -114,14 +114,7 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                     value="statistics"
                   />
                 )}
-                <Tab
-                  label={t(
-                    entityType === 'department'
-                      ? 'departmentOverviewPage:supervisionsTab'
-                      : 'theses'
-                  )}
-                  value="theses"
-                />
+                <Tab label={t('theses')} value="theses" />
                 <Tab
                   label={t('programOverviewPage:managePermissionsTab')}
                   value="managePermissions"
@@ -152,7 +145,8 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                   }
                   noOwnThesesSwitch
                   noAddThesisButton
-                  showSupervisors={entityType === 'department'}
+                  showSupervisors
+                  showMilestonePercentage
                 />
               </Box>
             )}

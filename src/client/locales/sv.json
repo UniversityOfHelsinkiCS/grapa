@@ -118,7 +118,6 @@
     "pageDescription": "Innan du fortsätter måste du välja den avdelning du tillhör"
   },
   "departmentOverviewPage": {
-    "supervisionsTab": "Handledningar",
     "departmentAdminsTab": "Avdelningsadministratörer",
     "supervisionStatisticsTab": "Handledningsstatistik"
   },
@@ -409,6 +408,7 @@
   "thesesPage": {
     "actionRequiredTooltip": "Denna avhandling kräver åtgärder från dig.",
     "primarySupervisorTooltip": "Du är huvudhandledare för denna avhandling",
+    "milestonePercentageHeader": "Framsteg",
     "noRows": "Inga rader"
   },
   "customFilters": {

@@ -93,6 +93,7 @@ interface Props {
   showSupervisors?: boolean
   availableMilestones?: number[]
   onExportCsv?: () => void
+  showMilestonePercentage?: boolean
 }
 
 const PrethesisTable = ({
@@ -113,6 +114,7 @@ const PrethesisTable = ({
   showSupervisors,
   availableMilestones = [],
   onExportCsv,
+  showMilestonePercentage,
 }: Props) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -500,6 +502,41 @@ const PrethesisTable = ({
       header: t('statusHeader'),
       enableResizing: true,
     }),
+    ...(showMilestonePercentage
+      ? [
+          columnHelper.accessor('milestone', {
+            id: 'milestonePercentage',
+            size: 100,
+            cell: (info) => {
+              const thesis = info.row.original
+              const milestone = thesis?.milestone
+              const milestone_version = thesis?.milestoneVersion
+              const useMilestones = thesis?.program?.options?.useMilestones
+              const milestone_count =
+                useMilestones && milestone_version != undefined
+                  ? thesis?.program?.options?.milestones?.versions?.[
+                      milestone_version
+                    ]?.length
+                  : undefined
+
+              if (
+                milestone_count != undefined &&
+                milestone != undefined &&
+                milestone_count > 0
+              ) {
+                return (
+                  <Typography variant="small">
+                    {Math.round((milestone / milestone_count) * 100)}%
+                  </Typography>
+                )
+              }
+              return <Typography variant="small">-</Typography>
+            },
+            header: t('thesesPage:milestonePercentageHeader'),
+            enableResizing: true,
+          }),
+        ]
+      : []),
     columnHelper.accessor('startDate', {
       size: 30,
       cell: (info) => (

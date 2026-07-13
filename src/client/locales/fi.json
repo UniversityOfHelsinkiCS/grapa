@@ -116,7 +116,6 @@
     "pageDescription": "Ennen kuin jatkat, valitse yksikkö missä työskentelet"
   },
   "departmentOverviewPage": {
-    "supervisionsTab": "Ohjaukset",
     "departmentAdminsTab": "Yksikön ylläpitäjät",
     "supervisionStatisticsTab": "Ohjaustilastot"
   },
@@ -408,6 +407,7 @@
   "thesesPage": {
     "actionRequiredTooltip": "Tämä tutkielma vaatii sinulta toimenpiteitä.",
     "primarySupervisorTooltip": "Olet tämän tutkielman pääohjaaja",
+    "milestonePercentageHeader": "Edistyminen",
     "noRows": "Ei rivejä"
   },
   "customFilters": {

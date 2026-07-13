@@ -118,7 +118,6 @@
     "pageDescription": "Before proceeding, you have to select a department you belong to"
   },
   "departmentOverviewPage": {
-    "supervisionsTab": "Supervisions",
     "departmentAdminsTab": "Department admins",
     "supervisionStatisticsTab": "Supervision statistics"
   },
@@ -409,6 +408,7 @@
   "thesesPage": {
     "actionRequiredTooltip": "This thesis requires actions from you.",
     "primarySupervisorTooltip": "You are the primary supervisor of this thesis",
+    "milestonePercentageHeader": "Progress",
     "noRows": "No rows"
   },
   "customFilters": {
