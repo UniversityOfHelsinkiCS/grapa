@@ -53,7 +53,8 @@
     "thesisPreview": "Tutkielman esikatselu",
     "theses": "Tutkielmat",
     "none": "Ei opintosuuntaa",
-    "admin": "admin"
+    "admin": "admin",
+    "copyEmails": "Kopioi sähköpostiosoitteet"
   },
   "eventLog": {
     "thesis": "Tutkielma",

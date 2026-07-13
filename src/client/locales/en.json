@@ -53,7 +53,8 @@
     "thesisPreview": "Thesis preview",
     "theses": "Theses",
     "none": "No studytrack",
-    "admin": "admin"
+    "admin": "admin",
+    "copyEmails": "Copy emails"
   },
   "eventLog": {
     "thesis": "Thesis",

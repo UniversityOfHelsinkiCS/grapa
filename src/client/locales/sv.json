@@ -53,7 +53,8 @@
     "thesisPreview": "Förhandsgranskning av avhandling",
     "theses": "Avhandlingar",
     "none": "Ingen studieinriktning",
-    "admin": "admin"
+    "admin": "admin",
+    "copyEmails": ""
   },
   "eventLog": {
     "thesis": "Avhandling",
