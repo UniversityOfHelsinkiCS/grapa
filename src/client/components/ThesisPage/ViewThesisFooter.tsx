@@ -24,9 +24,6 @@ import Popup from '../Common/Popup'
 
 import {
   FileData,
-  GraderData,
-  SeminarSupervisionData,
-  SupervisionData,
   ThesisData as Thesis,
   TranslatedName,
   User,
@@ -46,6 +43,7 @@ import {
   Bedtime,
   Check,
   ChevronRight,
+  DescriptionOutlined,
   ExpandLess,
   ExpandMore,
   PriorityHigh,
@@ -68,6 +66,7 @@ import {
   isStudyTrackManager,
 } from '../../util/permissions'
 import { NavLink } from 'react-router-dom'
+import { PersonList } from './Person/PersonList'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
@@ -224,118 +223,6 @@ const ProgramTrack = ({
   )
 }
 
-const Supervisors = ({ supervisors }: { supervisors: SupervisionData[] }) => {
-  const { t } = useTranslation()
-
-  return (
-    <Grid>
-      <Typography
-        component="h4"
-        sx={{
-          fontSize: '1rem',
-          fontWeight: 700,
-          textTransform: 'uppercase',
-        }}
-      >
-        {t('thesisForm:supervisors')}
-      </Typography>
-      <List dense>
-        {supervisors.map((supervisor) => {
-          const primaryText = `${supervisor.user.firstName} ${supervisor.user.lastName} (${supervisor.percentage}%)`
-          const secondaryText = supervisor.user.affiliation
-            ? `${supervisor.user.email} (${supervisor.user.affiliation})`
-            : `${supervisor.user.email}`
-
-          return (
-            <ListItem key={supervisor.user.id}>
-              <ListItemText primary={primaryText} secondary={secondaryText} />
-            </ListItem>
-          )
-        })}
-      </List>
-    </Grid>
-  )
-}
-
-const Graders = ({ graders }: { graders: GraderData[] }) => {
-  const { t, i18n } = useTranslation()
-  const { language } = i18n
-  return (
-    <Grid>
-      <Typography
-        component="h4"
-        sx={{
-          fontSize: '1rem',
-          fontWeight: 700,
-          textTransform: 'uppercase',
-        }}
-      >
-        {t('thesisForm:graders')}
-      </Typography>
-      <List dense>
-        {graders.map((grader) => {
-          const title = grader.title.fi
-            ? `(${grader.title[language as keyof TranslatedName]})`
-            : ''
-          const primaryText = `${grader.user?.firstName} ${grader.user?.lastName} ${title}`
-          const secondaryText = grader.user?.affiliation
-            ? `${grader.user?.email} (${grader.user?.affiliation})`
-            : `${grader.user?.email}`
-
-          return (
-            <ListItem key={grader.user.id}>
-              <ListItemText primary={primaryText} secondary={secondaryText} />
-            </ListItem>
-          )
-        })}
-      </List>
-    </Grid>
-  )
-}
-
-const SeminarSupervisor = ({
-  seminarSupervisions,
-}: {
-  seminarSupervisions: SeminarSupervisionData[]
-}) => {
-  const { t } = useTranslation()
-
-  if (!seminarSupervisions.length) return null
-
-  const isPlural = seminarSupervisions.length > 1
-
-  return (
-    <Grid>
-      <Typography
-        component="h4"
-        sx={{
-          fontSize: '1rem',
-          fontWeight: 700,
-          textTransform: 'uppercase',
-        }}
-      >
-        {isPlural
-          ? t('thesisForm:seminarSupervisorsLabel')
-          : t('thesisForm:seminarSupervisor')}
-      </Typography>
-      <List dense>
-        {seminarSupervisions.map((seminarSupervisor) => {
-          const primaryText = `${seminarSupervisor.user.firstName} ${seminarSupervisor.user.lastName}`
-          const secondaryText = seminarSupervisor.user.affiliation
-            ? `${seminarSupervisor.user.email} (${seminarSupervisor.user.affiliation})`
-            : `${seminarSupervisor.user.email}`
-
-          return (
-            <ListItem key={seminarSupervisor.user.id}>
-              <ListItemText primary={primaryText} secondary={secondaryText} />
-            </ListItem>
-          )
-        })}
-      </List>
-    </Grid>
-  )
-}
-
 const Attachments = ({
   researchPlan = undefined,
   waysOfWorking = undefined,
@@ -344,6 +231,13 @@ const Attachments = ({
   waysOfWorking?: FileData | File | undefined
 }) => {
   const { t } = useTranslation()
+
+  const files = [
+    { file: researchPlan, translation: t('thesisForm:researchPlan') },
+    { file: waysOfWorking, translation: t('thesisForm:waysOfWorking') },
+  ].filter(
+    (fileContainer) => fileContainer.file && 'filename' in fileContainer.file
+  )
 
   return (
     <Box>
@@ -357,31 +251,36 @@ const Attachments = ({
       >
         {t('thesisForm:appendices')}
       </Typography>
-      <Stack sx={{ mt: 2, gap: 1 }}>
-        {researchPlan && 'filename' in researchPlan && (
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <Typography variant="body2">
-              {t('thesisForm:researchPlan')}:
-            </Typography>
-            <Link
-              href={`${BASE_PATH}/api/attachments/${researchPlan.filename}`}
-            >
-              {researchPlan.name}
-            </Link>
-          </Box>
-        )}
-        {waysOfWorking && 'filename' in waysOfWorking && (
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <Typography variant="body2">
-              {t('thesisForm:waysOfWorking')}:
-            </Typography>
-            <Link
-              href={`${BASE_PATH}/api/attachments/${waysOfWorking.filename}`}
-            >
-              {waysOfWorking.name}
-            </Link>
-          </Box>
-        )}
+      <Stack sx={{ mt: 2, gap: 1 }} direction="row">
+        {files.map((fileContainer) => (
+          <Link
+            href={`${BASE_PATH}/api/attachments/${fileContainer.file.filename}`}
+            sx={{ textDecoration: 'none' }}
+            key={fileContainer.translation}
+          >
+            <Paper variant="outlined" sx={{}}>
+              <Stack
+                direction="row"
+                sx={{
+                  py: 1,
+                  px: 2,
+                  minWidth: '10rem',
+                  alignItems: 'center',
+                  gap: 2,
+                  ':hover': { backgroundColor: '#EEE' },
+                }}
+              >
+                <DescriptionOutlined></DescriptionOutlined>
+                <Stack>
+                  <Typography sx={{ fontSize: '10pt', fontWeight: 600 }}>
+                    {fileContainer.translation}
+                  </Typography>
+                  <Typography>{researchPlan.name}</Typography>
+                </Stack>
+              </Stack>
+            </Paper>
+          </Link>
+        ))}
       </Stack>
     </Box>
   )
@@ -806,26 +705,41 @@ const ViewThesisFooter = (
             isStudentView={isStudentView}
           ></ProgressView>
 
-          <Box sx={{ p: 2 }}>
-            <Grid
-              container
-              sx={{
-                mt: 4,
-                gap: 4,
-              }}
-            >
-              <Supervisors supervisors={thesis.supervisions} />
-              <SeminarSupervisor
-                seminarSupervisions={thesis.seminarSupervisions ?? []}
-              />
-              <Graders graders={thesis.graders} />
-            </Grid>
-
-            <Attachments
-              researchPlan={thesis?.researchPlan}
-              waysOfWorking={thesis?.waysOfWorking}
+          <Stack
+            direction="row"
+            sx={{
+              mt: 4,
+              gap: 4,
+            }}
+          >
+            <PersonList
+              title={t('thesisForm:supervisors')}
+              users={thesis.supervisions}
             />
-          </Box>
+            <PersonList
+              title={t('thesisForm:seminarSupervisorsLabel')}
+              users={thesis.seminarSupervisions ?? []}
+            />
+            <PersonList
+              title={t('thesisForm:graders')}
+              users={thesis.graders ?? []}
+              showTitle={true}
+            />
+            <PersonList
+              title={t('common:author')}
+              showStudentNumber={true}
+              users={
+                thesis.authors.map((author) => {
+                  return { user: author }
+                }) ?? []
+              }
+            />
+          </Stack>
+
+          <Attachments
+            researchPlan={thesis?.researchPlan}
+            waysOfWorking={thesis?.waysOfWorking}
+          />
 
           {Boolean(events && events.length) &&
             !isStudentView &&
@@ -835,6 +749,7 @@ const ViewThesisFooter = (
                 sx={{
                   p: 2,
                   mb: 2,
+                  mt: 2,
                   border: '1px solid',
                   borderColor: 'divider',
                 }}
