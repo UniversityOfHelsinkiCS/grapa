@@ -37,13 +37,13 @@ services:
 
 
   # login.toska.localhost:
-  #   image: hy-oidc-emu
+  #   image: toska-login-local
   #   ports: 
-  #     - 3001:3001
+  #     - 3042:3042
   #   volumes:
-  #     - ./oidc_emu/accounts.json:/opt/app-root/src/accounts.json
-  #     - ./oidc_emu/configuration.json:/opt/app-root/src/configuration.json
-  #    networks:
+  #     - ./toska_login/accounts.json:/opt/app-root/src/accounts.json
+  #     - ./toska_login/configuration.json:/opt/app-root/src/configuration.json
+  #   networks:
   #      - grapa_internal
 
 volumes:
