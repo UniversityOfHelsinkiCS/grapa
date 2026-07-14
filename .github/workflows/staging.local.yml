@@ -38,6 +38,7 @@ jobs:
 
 
       - run: npm run lint
+      - run: npm run typecheck
       - run: npm test
       - run: npm run test:front
       - run: npm run test:integration

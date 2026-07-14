@@ -19,7 +19,7 @@ jobs:
 
       - name: Run Prettier
         run: npm run format
-    
+
   test:
     if: ${{ github.event.pull_request.user.login != 'renovate[bot]' }}
     runs-on: ubuntu-latest
@@ -32,6 +32,9 @@ jobs:
 
       - name: Run linting
         run: npm run lint
+
+      - name: Run type checking
+        run: npm run typecheck
 
       - name: Run validation tests
         run: npm run test
