@@ -523,6 +523,7 @@
     "requiresApproval": "Vaatii hyväksyntääsi",
     "missingGradersActionRequired": "Odottaa arvioijien määrittämistä",
     "requiresEthesisPermission": "Odottaa että annat opiskelijalle luvan palauttaa E-thesikseen",
+    "requiresEthesisAdminAction": "Odottaa vientiä E-thesikseen",
     "studentActionRequired": "Sinun tulee lähettää tutkielmaluonnos arvioitavaksi, kun olet täyttänyt kaikki tarvittavat tiedot.",
     "studentEthesisActionRequired": "Siirry <1>E-thesikseen</1> palauttamaan tutkielmasi.",
     "ethesisInstructionsLink": "https://studies.helsinki.fi/ohjeet/artikkeli/e-thesis"

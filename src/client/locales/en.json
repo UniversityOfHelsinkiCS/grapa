@@ -524,6 +524,7 @@
     "requiresApproval": "Requires your approval",
     "missingGradersActionRequired": "Waiting for graders to be assigned",
     "requiresEthesisPermission": "Waiting for you to give the student permission to submit to E-thesis",
+    "requiresEthesisAdminAction": "Waiting to be saved to E-thesis",
     "studentActionRequired": "You must submit the thesis draft for review once you have filled in all the required information.",
     "studentEthesisActionRequired": "Go to <1>E-thesis</1> to submit your thesis.",
     "ethesisInstructionsLink": "https://studies.helsinki.fi/instructions/article/e-thesis"

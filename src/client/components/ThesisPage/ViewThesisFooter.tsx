@@ -64,6 +64,7 @@ import {
   isMissingGradersActionRequired,
   isStudyTrackManager,
   isEthesisAdmin,
+  needsEthesisAdminAction,
 } from '../../util/permissions'
 import { NavLink } from 'react-router-dom'
 import { PersonList } from './Person/PersonList'
@@ -694,6 +695,10 @@ const ViewThesisFooter = (
             ) : canSetEthesisMilestones(thesis, currentUser) ? (
               <Alert color="warning" icon={<PriorityHigh />} sx={{ my: 1.5 }}>
                 {t('viewThesisFooter:requiresEthesisPermission')}
+              </Alert>
+            ) : needsEthesisAdminAction(thesis, currentUser) ? (
+              <Alert color="warning" icon={<PriorityHigh />} sx={{ my: 1.5 }}>
+                {t('viewThesisFooter:requiresEthesisAdminAction')}
               </Alert>
             ) : null)}
 

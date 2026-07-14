@@ -66,6 +66,7 @@ import {
   canApprove,
   canSetEthesisMilestones,
   needsStudentAction,
+  needsEthesisAdminAction,
 } from '../../util/permissions'
 import { THESIS_STATUSES } from '../../../config'
 import Popup from '../Common/Popup'
@@ -673,7 +674,8 @@ const PrethesisTable = ({
 
           {(user &&
             (canApprove(info.row.original, user) ||
-              canSetEthesisMilestones(info.row.original, user))) ||
+              canSetEthesisMilestones(info.row.original, user) ||
+              needsEthesisAdminAction(info.row.original, user))) ||
           needsStudentAction(info.row.original, isStudentView) ? (
             <Tooltip title={t('thesesPage:actionRequiredTooltip')}>
               <IconButton>

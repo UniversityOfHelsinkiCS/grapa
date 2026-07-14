@@ -96,3 +96,7 @@ export const needsStudentAction = (thesis: Thesis, isStudentView?: boolean) => {
 export const isEthesisAdmin = (user: User) => {
   return Boolean(user && user.ethesisAdmin)
 }
+
+export const needsEthesisAdminAction = (thesis: Thesis, user: User) => {
+  return isEthesisAdmin(user) && thesis.status === THESIS_STATUSES.ETHESIS_SENT
+}
