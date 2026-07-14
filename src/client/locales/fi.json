@@ -16,6 +16,7 @@
     "statusHeader": "Vaihe",
     "startDateHeader": "Aloituspäivä",
     "supervisorHeader": "Ohjaaja",
+    "gradersHeader": "Arvioijat",
     "supervisionPercentageHeader": "Ohjausprosentti",
     "supervisionsTable": "Ohjaukset",
     "targetDateHeader": "Tavoitepäivä",

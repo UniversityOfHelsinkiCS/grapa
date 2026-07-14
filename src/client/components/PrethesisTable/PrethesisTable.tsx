@@ -102,6 +102,7 @@ interface Props {
   showMilestonePercentage?: boolean
   hideFiltering?: boolean
   showEthesisDateColumn?: boolean
+  showGraders?: boolean
 }
 
 const PrethesisTable = ({
@@ -125,6 +126,7 @@ const PrethesisTable = ({
   showMilestonePercentage,
   hideFiltering = false,
   showEthesisDateColumn = false,
+  showGraders = false,
 }: Props) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -448,6 +450,27 @@ const PrethesisTable = ({
               </Typography>
             ),
             header: t('supervisionPercentageHeader'),
+            enableResizing: true,
+          }),
+        ]
+      : []),
+    ...(showGraders
+      ? [
+          columnHelper.accessor('graders', {
+            id: 'graders',
+            size: 200,
+            cell: (info) => (
+              <Typography variant="small">
+                {info
+                  .getValue()
+                  .map(
+                    (grader) =>
+                      `${grader.user?.lastName} ${grader.user?.firstName}`
+                  )
+                  .join(', ')}
+              </Typography>
+            ),
+            header: t('gradersHeader'),
             enableResizing: true,
           }),
         ]
@@ -1063,6 +1086,7 @@ const PrethesisTable = ({
                         'supervisions',
                         'supervisor',
                         'supervisionPercentage',
+                        'graders',
                         'select',
                       ].includes(header.id) &&
                         !isStudentView && (

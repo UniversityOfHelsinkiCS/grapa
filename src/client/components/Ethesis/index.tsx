@@ -26,6 +26,7 @@ export const EthesisOverview = () => {
         noAddThesisButton
         hideStudentStartedEthesis
         showEthesisDateColumn
+        showGraders
         hideEdit
         hideDelete
         filteringStatuses={['ETHESIS_SENT', 'ETHESIS']}

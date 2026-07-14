@@ -16,6 +16,7 @@
     "statusHeader": "Skede",
     "startDateHeader": "Startdatum",
     "supervisorHeader": "Handledare",
+    "gradersHeader": "Bedömare",
     "supervisionPercentageHeader": "Handledningsprocent",
     "supervisionsTable": "Handledningar",
     "targetDateHeader": "Måldatum",

@@ -48,6 +48,7 @@ interface Props {
   showEthesisDateColumn?: boolean
   hideEdit?: boolean
   hideDelete?: boolean
+  showGraders?: boolean
 }
 const ThesesPage = ({
   filteringProgramId,
@@ -65,6 +66,7 @@ const ThesesPage = ({
   showEthesisDateColumn = false,
   hideEdit = false,
   hideDelete = false,
+  showGraders = false,
 }: Props) => {
   const footerRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
@@ -353,6 +355,7 @@ const ThesesPage = ({
           availableMilestones={availableMilestones}
           noAddThesisButton={noAddThesisButton}
           showSupervisors={showSupervisors}
+          showGraders={showGraders}
           showMilestonePercentage={
             showMilestonePercentage && theses?.some((t) => t.milestone != null)
           }

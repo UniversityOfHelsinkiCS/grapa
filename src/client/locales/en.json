@@ -16,6 +16,7 @@
     "statusHeader": "Status",
     "startDateHeader": "Start date",
     "supervisorHeader": "Supervisor",
+    "gradersHeader": "Graders",
     "supervisionPercentageHeader": "Supervision percentage",
     "supervisionsTable": "Supervisions",
     "targetDateHeader": "Target date",
