@@ -1,12 +1,12 @@
+import { ProgramOptions, StudyTrackData } from '@backend/types'
+
 export const getPrimaryStudyTrackId = (
-  programOptions: any,
+  programOptions: ProgramOptions,
   studyTrackId: string | null | undefined
-): string | null | undefined => {
+) => {
   if (!programOptions || !studyTrackId) return studyTrackId
 
-  const combined = programOptions.combinedStudyTracks as
-    | Record<string, string>
-    | undefined
+  const combined = programOptions.combinedStudyTracks
 
   if (combined?.[studyTrackId]) {
     return combined[studyTrackId]
@@ -15,25 +15,25 @@ export const getPrimaryStudyTrackId = (
   return studyTrackId
 }
 
-export const getVisibleStudyTracks = <T extends { id: string }>(
-  programOptions: any,
-  studyTracks: T[] | undefined
-): T[] => {
+export const getVisibleStudyTracks = (
+  programOptions: ProgramOptions,
+  studyTracks: StudyTrackData[]
+) => {
   if (!studyTracks) return []
   if (!programOptions?.combinedStudyTracks) return studyTracks
 
-  const combined = programOptions.combinedStudyTracks as Record<string, string>
+  const combined = programOptions.combinedStudyTracks
 
   return studyTracks.filter((track) => !combined[track.id])
 }
 
 export const getSecondaryStudyTrackIds = (
-  programOptions: any,
+  programOptions: ProgramOptions,
   primaryStudyTrackId: string | null | undefined
 ): string[] => {
   if (!programOptions?.combinedStudyTracks || !primaryStudyTrackId) return []
 
-  const combined = programOptions.combinedStudyTracks as Record<string, string>
+  const combined = programOptions.combinedStudyTracks
 
   return Object.entries(combined)
     .filter(([, primaryId]) => primaryId === primaryStudyTrackId)
