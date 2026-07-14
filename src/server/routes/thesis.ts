@@ -101,6 +101,7 @@ thesisRouter.get(
 thesisRouter.get(
   '/:id',
   ethesisUserHandler,
+  getEthesisAdminStatus,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
     const { id } = req.params
