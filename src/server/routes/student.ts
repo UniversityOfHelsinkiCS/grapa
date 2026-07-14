@@ -47,7 +47,9 @@ import {
 } from '../services/studentService'
 
 import { deleteThesisAttachments } from './thesisAttachmentHelpers'
-import { type Transaction } from 'sequelize'
+import { QueryTypes, type Transaction } from 'sequelize'
+
+import fs from 'fs'
 
 const studentRouter = express.Router()
 
@@ -460,5 +462,51 @@ studentRouter.put(
     res.send(updatedThesis)
   }
 )
+
+studentRouter.get('/attachments/:filename', async (req, res) => {
+  const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
+
+  const { filename } = req.params
+  const user = req.user as unknown as User
+  if (!filename) {
+    res.status(404).send()
+    return
+  }
+
+  const metadataQuery = await sequelize.query(
+    {
+      query: `select A.file_name, A.original_name from attachments A left join authors T on T.thesis_id = A.thesis_id where A.file_name = ? and T.user_id = ? limit 1;`,
+      values: [filename, user.id],
+    },
+    { raw: true, type: QueryTypes.SELECT }
+  )
+
+  if (!metadataQuery || metadataQuery.length == 0) {
+    res.status(404).send()
+    return
+  }
+
+  const metadata = metadataQuery[0] as unknown as {
+    file_name: string
+    original_name: string
+  }
+
+  try {
+    const file_path = `${PATH_TO_FOLDER}${metadata.file_name}`
+    const stat = fs.statSync(file_path)
+    const file = fs.createReadStream(file_path)
+
+    res.setHeader('Content-Length', stat.size)
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=${metadata.original_name.replace(/,/g, '')}`
+    )
+    file.pipe(res)
+  } catch {
+    res.status(500)
+    res.send('Internal Server Error')
+  }
+})
 
 export default studentRouter
