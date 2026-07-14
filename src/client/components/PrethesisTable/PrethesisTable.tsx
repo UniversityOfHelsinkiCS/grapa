@@ -1047,6 +1047,7 @@ const PrethesisTable = ({
                       <Typography
                         sx={{
                           fontWeight: 'bold',
+                          whiteSpace: 'nowrap',
                         }}
                       >
                         {header.isPlaceholder
