@@ -28,4 +28,6 @@ export interface ThesisFooterProps {
   handleDeleteThesis: (thesis: Thesis) => void
   isStudentView?: boolean
   onlySeminarSupervised?: boolean
+  hideEdit?: boolean
+  hideDelete?: boolean
 }

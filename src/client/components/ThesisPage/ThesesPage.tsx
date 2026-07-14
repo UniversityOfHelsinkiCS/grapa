@@ -46,6 +46,8 @@ interface Props {
   hideFiltering?: boolean
   hideStudentStartedEthesis?: boolean
   showEthesisDateColumn?: boolean
+  hideEdit?: boolean
+  hideDelete?: boolean
 }
 const ThesesPage = ({
   filteringProgramId,
@@ -61,6 +63,8 @@ const ThesesPage = ({
   hideFiltering = false,
   hideStudentStartedEthesis = false,
   showEthesisDateColumn = false,
+  hideEdit = false,
+  hideDelete = false,
 }: Props) => {
   const footerRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
@@ -551,6 +555,8 @@ const ThesesPage = ({
             handleDeleteThesis={initializeThesisDelete}
             isStudentView={isStudentView}
             onlySeminarSupervised={onlySeminarSupervised}
+            hideEdit={hideEdit}
+            hideDelete={hideDelete}
           ></ViewThesisFooter>
         </Box>
       </Box>

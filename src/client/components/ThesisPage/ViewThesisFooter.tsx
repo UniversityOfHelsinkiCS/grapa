@@ -29,10 +29,8 @@ import {
   User,
   TranslationLanguage,
   ThesisStatus,
-  ProgramData,
-} from '@backend/types'
-
-import { ThesisFooterProps } from '../../types'
+  ThesisFooterProps,
+} from '../../types'
 import usePrograms from '../../hooks/usePrograms'
 import useEvents from '../../hooks/useEvents'
 import { useSingleThesis } from '../../hooks/useTheses'
@@ -397,7 +395,9 @@ const ViewThesisFooter = (
     handleDeleteThesis,
     isStudentView,
     onlySeminarSupervised,
-  } = props
+    hideEdit,
+    hideDelete,
+  }: ThesisFooterProps = props
 
   const thesisId = (rowSelectionModel.ids != undefined &&
   rowSelectionModel.ids.size > 0
@@ -574,39 +574,39 @@ const ViewThesisFooter = (
                       Save to Ethesis
                     </Button>
                   )}
-                {(!isStudentView ||
-                  thesis.status === THESIS_STATUSES.DRAFT) && (
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      fontSize: '12px',
-                      height: 24,
-                      px: 2,
-                      fontWeight: 600,
-                    }}
-                    onClick={() => handleEditThesis(thesis)}
-                  >
-                    {t('editButton')}
-                  </Button>
-                )}
+                {(!isStudentView || thesis.status === THESIS_STATUSES.DRAFT) &&
+                  !hideEdit && (
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        fontSize: '12px',
+                        height: 24,
+                        px: 2,
+                        fontWeight: 600,
+                      }}
+                      onClick={() => handleEditThesis(thesis)}
+                    >
+                      {t('editButton')}
+                    </Button>
+                  )}
 
-                {(!isStudentView ||
-                  thesis.status === THESIS_STATUSES.DRAFT) && (
-                  <Button
-                    variant="contained"
-                    color="error"
-                    sx={{
-                      fontSize: '12px',
-                      height: 24,
-                      px: 2,
-                      boxShadow: 0,
-                      fontWeight: 600,
-                    }}
-                    onClick={() => handleDeleteThesis(thesis)}
-                  >
-                    {t('deleteButton')}
-                  </Button>
-                )}
+                {(!isStudentView || thesis.status === THESIS_STATUSES.DRAFT) &&
+                  !hideDelete && (
+                    <Button
+                      variant="contained"
+                      color="error"
+                      sx={{
+                        fontSize: '12px',
+                        height: 24,
+                        px: 2,
+                        boxShadow: 0,
+                        fontWeight: 600,
+                      }}
+                      onClick={() => handleDeleteThesis(thesis)}
+                    >
+                      {t('deleteButton')}
+                    </Button>
+                  )}
               </Box>
             )}
           </Stack>
