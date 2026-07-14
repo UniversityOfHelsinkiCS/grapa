@@ -100,6 +100,7 @@ interface Props {
   onExportCsv?: () => void
   showMilestonePercentage?: boolean
   hideFiltering?: boolean
+  showEthesisDateColumn?: boolean
 }
 
 const PrethesisTable = ({
@@ -122,6 +123,7 @@ const PrethesisTable = ({
   onExportCsv,
   showMilestonePercentage,
   hideFiltering = false,
+  showEthesisDateColumn = false,
 }: Props) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -540,6 +542,23 @@ const PrethesisTable = ({
               return <Typography variant="small">-</Typography>
             },
             header: t('thesesPage:milestonePercentageHeader'),
+            enableResizing: true,
+          }),
+        ]
+      : []),
+    ...(showEthesisDateColumn
+      ? [
+          columnHelper.accessor('ethesisDate', {
+            size: 30,
+            cell: (info) => {
+              const val = info.getValue()
+              return (
+                <Typography variant="small">
+                  {val ? dayjs(val).format('YYYY-MM-DD') : '-'}
+                </Typography>
+              )
+            },
+            header: t('ethesisDateHeader'),
             enableResizing: true,
           }),
         ]

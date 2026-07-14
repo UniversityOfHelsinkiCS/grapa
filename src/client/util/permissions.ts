@@ -92,3 +92,7 @@ export const needsStudentAction = (thesis: Thesis, isStudentView?: boolean) => {
     isStudentEthesisActionRequired(thesis, isStudentView)
   )
 }
+
+export const isEthesisAdmin = (user: User) => {
+  return Boolean(user && user.ethesisAdmin)
+}

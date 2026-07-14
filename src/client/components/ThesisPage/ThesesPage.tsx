@@ -45,6 +45,7 @@ interface Props {
   filteringStatuses?: string[]
   hideFiltering?: boolean
   hideStudentStartedEthesis?: boolean
+  showEthesisDateColumn?: boolean
 }
 const ThesesPage = ({
   filteringProgramId,
@@ -59,6 +60,7 @@ const ThesesPage = ({
   filteringStatuses,
   hideFiltering = false,
   hideStudentStartedEthesis = false,
+  showEthesisDateColumn = false,
 }: Props) => {
   const footerRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
@@ -350,6 +352,7 @@ const ThesesPage = ({
           showMilestonePercentage={
             showMilestonePercentage && theses?.some((t) => t.milestone != null)
           }
+          showEthesisDateColumn={showEthesisDateColumn}
           onExportCsv={() =>
             exportCsv(`theses-export-${dayjs().format('YYYY-MM-DD')}.csv`)
           }

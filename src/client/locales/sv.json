@@ -23,6 +23,7 @@
     "completedDateHeader": "Färdig",
     "validUntilHeader": "Avtal",
     "validUntilTooltip": "Slutdatum för arbetsavtal",
+    "ethesisDateHeader": "E-thesis datum",
     "averageDuration": "Avhandlingens genomsnittliga längd: {{days}} dagar",
     "enabled": "Aktiverad",
     "otherSettings": "Andra inställningar",

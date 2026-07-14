@@ -25,6 +25,7 @@ export const EthesisOverview = () => {
         noOwnThesesSwitch
         noAddThesisButton
         hideStudentStartedEthesis
+        showEthesisDateColumn
         filteringStatuses={['ETHESIS_SENT', 'ETHESIS']}
       />
     </Box>

@@ -23,6 +23,7 @@
     "completedDateHeader": "Completed",
     "validUntilHeader": "Contract",
     "validUntilTooltip": "End date of the ways of working agreement",
+    "ethesisDateHeader": "E-thesis date",
     "averageDuration": "Average thesis duration: {{days}} days",
     "enabled": "Enabled",
     "otherSettings": "Other settings",

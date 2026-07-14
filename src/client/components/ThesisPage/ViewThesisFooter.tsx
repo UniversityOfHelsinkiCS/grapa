@@ -65,9 +65,11 @@ import {
   isEthesisReady,
   isMissingGradersActionRequired,
   isStudyTrackManager,
+  isEthesisAdmin,
 } from '../../util/permissions'
 import { NavLink } from 'react-router-dom'
 import { PersonList } from './Person/PersonList'
+import ThesisModal from '../Ethesis/Modal'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
@@ -421,6 +423,7 @@ const ViewThesisFooter = (
   >(null)
 
   const [ethesisDialogOpen, setEthesisDialogOpen] = useState(false)
+  const [ethesisAdminModalOpen, setEthesisAdminModalOpen] = useState(false)
   const [ethesisTargetStatus, setEthesisTargetStatus] =
     useState<ThesisStatus | null>(null)
 
@@ -552,6 +555,24 @@ const ViewThesisFooter = (
                         </Button>
                       </Box>
                     </Tooltip>
+                  )}
+                {isEthesisAdmin(currentUser!) &&
+                  thesis.status === THESIS_STATUSES.ETHESIS_SENT && (
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        color: '#000',
+                        backgroundColor: '#fcd34d',
+                        borderColor: '#000',
+                        fontSize: '12px',
+                        height: 24,
+                        px: 2,
+                        fontWeight: 600,
+                      }}
+                      onClick={() => setEthesisAdminModalOpen(true)}
+                    >
+                      Save to Ethesis
+                    </Button>
                   )}
                 {(!isStudentView ||
                   thesis.status === THESIS_STATUSES.DRAFT) && (
@@ -922,6 +943,14 @@ const ViewThesisFooter = (
             </List>
           </Box>
         </Popup>
+      )}
+
+      {thesis && (
+        <ThesisModal
+          open={ethesisAdminModalOpen}
+          onClose={() => setEthesisAdminModalOpen(false)}
+          thesis={thesis}
+        />
       )}
     </>
   )
