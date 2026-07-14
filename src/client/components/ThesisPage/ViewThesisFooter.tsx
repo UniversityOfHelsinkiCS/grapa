@@ -227,9 +227,11 @@ const ProgramTrack = ({
 const Attachments = ({
   researchPlan = undefined,
   waysOfWorking = undefined,
+  isStudentView,
 }: {
   researchPlan?: FileData | File | undefined
   waysOfWorking?: FileData | File | undefined
+  isStudentView?: boolean
 }) => {
   const { t } = useTranslation()
 
@@ -255,7 +257,7 @@ const Attachments = ({
       <Stack sx={{ mt: 2, gap: 1 }} direction="row">
         {files.map((fileContainer) => (
           <Link
-            href={`${BASE_PATH}/api/attachments/${(fileContainer.file as FileData).filename}`}
+            href={`${BASE_PATH}/api/${isStudentView ? 'student/' : ''}attachments/${(fileContainer.file as FileData).filename}`}
             sx={{ textDecoration: 'none' }}
             key={fileContainer.translation}
           >
@@ -740,6 +742,7 @@ const ViewThesisFooter = (
           <Attachments
             researchPlan={thesis?.researchPlan}
             waysOfWorking={thesis?.waysOfWorking}
+            isStudentView={isStudentView}
           />
 
           {Boolean(events && events.length) &&
