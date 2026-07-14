@@ -65,7 +65,6 @@ const ThesisModal = ({ open, onClose, thesis }: ThesisModalProps) => {
       const updatedThesis = {
         ...thesis,
         status: 'ETHESIS' as const,
-        ethesisDate: new Date().toISOString(),
       }
 
       editThesisMutation.mutate(
