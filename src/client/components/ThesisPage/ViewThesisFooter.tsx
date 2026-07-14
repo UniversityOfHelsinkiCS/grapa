@@ -21,7 +21,6 @@ import {
   ButtonBase,
 } from '@mui/material'
 import Popup from '../Common/Popup'
-
 import {
   FileData,
   ThesisData as Thesis,
@@ -29,8 +28,10 @@ import {
   User,
   TranslationLanguage,
   ThesisStatus,
-  ThesisFooterProps,
-} from '../../types'
+  ProgramData,
+} from '@backend/types'
+
+import { ThesisFooterProps } from '../../types'
 import usePrograms from '../../hooks/usePrograms'
 import useEvents from '../../hooks/useEvents'
 import { useSingleThesis } from '../../hooks/useTheses'
