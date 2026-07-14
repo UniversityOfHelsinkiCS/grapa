@@ -13,25 +13,12 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
   default: useLoggedInUserMock,
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useTheses', () => ({
-  usePaginatedTheses: jest.fn().mockReturnValue({
-    theses: [
-      {
-        id: 'thesis-1',
-        topic: 'Test thesis',
-        status: 'ETHESIS_SENT',
-        ethesisDate: '2026-04-01T00:00:00.000Z',
-        authors: [{ firstName: 'Ada', lastName: 'Lovelace' }],
-        graders: [],
-      },
-    ],
-    isLoading: false,
-  }),
-}))
-
-jest.unstable_mockModule('./src/client/components/Ethesis/Modal', () => ({
-  default: jest.fn(() => null),
-}))
+jest.unstable_mockModule(
+  './src/client/components/ThesisPage/ThesesPage',
+  () => ({
+    default: jest.fn(() => <div data-testid="theses-page">Theses Page</div>),
+  })
+)
 
 jest.unstable_mockModule('./src/client/components/Ethesis/AdminPage', () => ({
   default: jest.fn(({ disableContainer, hideTitle }) => (
@@ -63,8 +50,7 @@ describe('Ethesis', () => {
     expect(
       screen.getByRole('tab', { name: 'Overview', selected: true })
     ).toBeInTheDocument()
-    expect(screen.getByText('Show:')).toBeInTheDocument()
-    expect(screen.getByText('Test thesis')).toBeInTheDocument()
+    expect(screen.getByTestId('theses-page')).toBeInTheDocument()
     expect(screen.queryByTestId('ethesis-admin-page')).not.toBeInTheDocument()
   })
 
@@ -102,9 +88,7 @@ describe('Ethesis', () => {
     await user.click(screen.getByRole('tab', { name: 'Admins' }))
 
     expect(screen.getByTestId('ethesis-admin-page')).toBeInTheDocument()
-    expect(
-      screen.queryByText('New  theses submitted to Etheses')
-    ).not.toBeInTheDocument()
+    expect(screen.queryByTestId('theses-page')).not.toBeInTheDocument()
   })
 
   it('hides the admins tab for non-admin users even if the URL requests it', () => {
