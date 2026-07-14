@@ -99,6 +99,7 @@ interface Props {
   availableMilestones?: number[]
   onExportCsv?: () => void
   showMilestonePercentage?: boolean
+  hideFiltering?: boolean
 }
 
 const PrethesisTable = ({
@@ -120,6 +121,7 @@ const PrethesisTable = ({
   availableMilestones = [],
   onExportCsv,
   showMilestonePercentage,
+  hideFiltering = false,
 }: Props) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -823,10 +825,12 @@ const PrethesisTable = ({
               </Box>
             )}
 
-            <PrethesisHelp
-              text={t('help:table')}
-              sx={{ height: 24 }}
-            ></PrethesisHelp>
+            {!hideFiltering && (
+              <PrethesisHelp
+                text={t('help:table')}
+                sx={{ height: 24 }}
+              ></PrethesisHelp>
+            )}
           </Stack>
         </Box>
 

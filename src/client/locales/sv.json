@@ -401,6 +401,14 @@
       "ethesisReadyStudentStarted": {
         "name": "Tillstånd att lämna in",
         "tooltip": "Visar avhandlingar som har tillstånd att lämnas in"
+      },
+      "ethesis": {
+        "name": "Sparad i E-thesis",
+        "tooltip": "Visar avhandlingar som är sparade i E-thesis"
+      },
+      "ethesisSent": {
+        "name": "Skickad till E-thesis",
+        "tooltip": "Visar avhandlingar som har skickats till E-thesis"
       }
     },
     "actionNeeded": "Kräver åtgärder"

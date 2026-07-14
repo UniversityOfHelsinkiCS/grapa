@@ -78,6 +78,7 @@ export interface GetPaginatedThesesParams {
   missingSecondGrader?: boolean
   lastMilestone?: boolean
   ethesisReadyStudentStarted?: boolean
+  hideStudentStartedEthesis?: boolean
 }
 
 export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
@@ -104,6 +105,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     missingSecondGrader,
     lastMilestone,
     ethesisReadyStudentStarted,
+    hideStudentStartedEthesis,
   } = params
 
   const allowedLanguages = ['fi', 'sv', 'en']
@@ -150,6 +152,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     missingSecondGrader,
     lastMilestone,
     ethesisReadyStudentStarted,
+    hideStudentStartedEthesis,
   })
 
   const fullWhere = { ...baseWhere }

@@ -42,6 +42,9 @@ interface Props {
   isStudentView?: boolean
   showSupervisors?: boolean
   showMilestonePercentage?: boolean
+  filteringStatuses?: string[]
+  hideFiltering?: boolean
+  hideStudentStartedEthesis?: boolean
 }
 const ThesesPage = ({
   filteringProgramId,
@@ -53,6 +56,9 @@ const ThesesPage = ({
   isStudentView = false,
   showSupervisors = false,
   showMilestonePercentage = false,
+  filteringStatuses,
+  hideFiltering = false,
+  hideStudentStartedEthesis = false,
 }: Props) => {
   const footerRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
@@ -106,10 +112,11 @@ const ThesesPage = ({
     programId: filteringProgramId,
     studyTrackId: filteringStudyTrackId,
     departmentId: filteringDepartmentId,
-    status: filterStatus,
+    status: filterStatus || filteringStatuses,
     missingSecondGrader: filterMissingSecondGrader,
     lastMilestone: filterLastMilestone,
     ethesisReadyStudentStarted: filterEthesisReadyStudentStarted,
+    hideStudentStartedEthesis,
     milestone: filterMilestone !== null ? filterMilestone : undefined,
     topicPartial: debouncedFilterTopic,
     authorsPartial: debouncedFilterAuthors,
@@ -334,6 +341,7 @@ const ThesesPage = ({
           }}
           onSortingChange={handleSortModelChange}
           user={currentUser}
+          hideFiltering={hideFiltering}
           isStudentView={isStudentView}
           initializeNewThesis={initializeNewThesis}
           availableMilestones={availableMilestones}
@@ -345,153 +353,192 @@ const ThesesPage = ({
           onExportCsv={() =>
             exportCsv(`theses-export-${dayjs().format('YYYY-MM-DD')}.csv`)
           }
-          filterViews={[
-            {
-              items: {
-                active: {
-                  filterModel: {
-                    items: [
-                      {
-                        field: 'status',
-                        operator: 'isAnyOf',
-                        value: [
-                          'DRAFT',
-                          'SUGGESTED',
-                          'PLANNING',
-                          'IN_PROGRESS',
-                          'ETHESIS',
-                          'ETHESIS_SENT',
-                        ],
-                      },
-                    ],
+          filterViews={
+            hideFiltering
+              ? []
+              : [
+                  {
+                    items:
+                      filteringStatuses && filteringStatuses.length > 0
+                        ? {
+                            ...filteringStatuses.reduce(
+                              (acc, status) => {
+                                let key = status.toLowerCase()
+                                if (key === 'ethesis_sent') key = 'ethesisSent'
+
+                                acc[key] = {
+                                  filterModel: {
+                                    items: [
+                                      {
+                                        field: 'status',
+                                        operator: 'isAnyOf',
+                                        value: [status],
+                                      },
+                                    ],
+                                  },
+                                  sortingModel: [
+                                    { field: 'startDate', sort: 'desc' },
+                                  ],
+                                }
+                                return acc
+                              },
+                              {} as Record<string, any>
+                            ),
+                            all: {
+                              filterModel: {
+                                items: [],
+                              },
+                              sortingModel: [
+                                { field: 'startDate', sort: 'desc' },
+                              ],
+                            },
+                          }
+                        : {
+                            active: {
+                              filterModel: {
+                                items: [
+                                  {
+                                    field: 'status',
+                                    operator: 'isAnyOf',
+                                    value: [
+                                      'DRAFT',
+                                      'SUGGESTED',
+                                      'PLANNING',
+                                      'IN_PROGRESS',
+                                      'ETHESIS',
+                                      'ETHESIS_SENT',
+                                    ],
+                                  },
+                                ],
+                              },
+                              sortingModel: [
+                                {
+                                  field: 'startDate',
+                                  sort: 'desc',
+                                },
+                              ],
+                            },
+                            inactive: {
+                              filterModel: {
+                                items: [
+                                  {
+                                    field: 'status',
+                                    operator: 'isAnyOf',
+                                    value: ['COMPLETED', 'CANCELLED'],
+                                  },
+                                ],
+                              },
+                              sortingModel: [
+                                {
+                                  field: 'targetDate',
+                                  sort: 'desc',
+                                },
+                              ],
+                            },
+                            all: {
+                              filterModel: {
+                                items: [],
+                              },
+                              sortingModel: [
+                                {
+                                  field: 'startDate',
+                                  sort: 'desc',
+                                },
+                              ],
+                            },
+                          },
                   },
-                  sortingModel: [
-                    {
-                      field: 'startDate',
-                      sort: 'desc',
+                  {
+                    label: t('thesesTableToolbar:actionNeeded'),
+                    items: {
+                      ...(availableActionNeeded?.suggested
+                        ? {
+                            suggested: {
+                              filterModel: {
+                                items: [
+                                  {
+                                    field: 'status',
+                                    operator: 'isAnyOf',
+                                    value: ['SUGGESTED'],
+                                  },
+                                ],
+                              },
+                              sortingModel: [
+                                {
+                                  field: 'startDate',
+                                  sort: 'desc',
+                                },
+                              ],
+                            },
+                          }
+                        : {}),
+                      ...(availableActionNeeded?.missingSecondGrader
+                        ? {
+                            missingSecondGrader: {
+                              filterModel: {
+                                items: [
+                                  {
+                                    field: 'missingSecondGrader',
+                                    operator: 'is',
+                                    value: true,
+                                  },
+                                ],
+                              },
+                              sortingModel: [
+                                {
+                                  field: 'startDate',
+                                  sort: 'desc',
+                                },
+                              ],
+                            },
+                          }
+                        : {}),
+                      ...(availableActionNeeded?.lastMilestone
+                        ? {
+                            lastMilestone: {
+                              filterModel: {
+                                items: [
+                                  {
+                                    field: 'lastMilestone',
+                                    operator: 'is',
+                                    value: true,
+                                  },
+                                ],
+                              },
+                              sortingModel: [
+                                {
+                                  field: 'startDate',
+                                  sort: 'desc',
+                                },
+                              ],
+                            },
+                          }
+                        : {}),
+                      ...(availableActionNeeded?.ethesisReadyStudentStarted
+                        ? {
+                            ethesisReadyStudentStarted: {
+                              filterModel: {
+                                items: [
+                                  {
+                                    field: 'ethesisReadyStudentStarted',
+                                    operator: 'is',
+                                    value: true,
+                                  },
+                                ],
+                              },
+                              sortingModel: [
+                                {
+                                  field: 'startDate',
+                                  sort: 'desc',
+                                },
+                              ],
+                            },
+                          }
+                        : {}),
                     },
-                  ],
-                },
-                inactive: {
-                  filterModel: {
-                    items: [
-                      {
-                        field: 'status',
-                        operator: 'isAnyOf',
-                        value: ['COMPLETED', 'CANCELLED'],
-                      },
-                    ],
                   },
-                  sortingModel: [
-                    {
-                      field: 'targetDate',
-                      sort: 'desc',
-                    },
-                  ],
-                },
-                all: {
-                  filterModel: {
-                    items: [],
-                  },
-                  sortingModel: [
-                    {
-                      field: 'startDate',
-                      sort: 'desc',
-                    },
-                  ],
-                },
-              },
-            },
-            {
-              label: t('thesesTableToolbar:actionNeeded'),
-              items: {
-                ...(availableActionNeeded?.suggested
-                  ? {
-                      suggested: {
-                        filterModel: {
-                          items: [
-                            {
-                              field: 'status',
-                              operator: 'isAnyOf',
-                              value: ['SUGGESTED'],
-                            },
-                          ],
-                        },
-                        sortingModel: [
-                          {
-                            field: 'startDate',
-                            sort: 'desc',
-                          },
-                        ],
-                      },
-                    }
-                  : {}),
-                ...(availableActionNeeded?.missingSecondGrader
-                  ? {
-                      missingSecondGrader: {
-                        filterModel: {
-                          items: [
-                            {
-                              field: 'missingSecondGrader',
-                              operator: 'is',
-                              value: true,
-                            },
-                          ],
-                        },
-                        sortingModel: [
-                          {
-                            field: 'startDate',
-                            sort: 'desc',
-                          },
-                        ],
-                      },
-                    }
-                  : {}),
-                ...(availableActionNeeded?.lastMilestone
-                  ? {
-                      lastMilestone: {
-                        filterModel: {
-                          items: [
-                            {
-                              field: 'lastMilestone',
-                              operator: 'is',
-                              value: true,
-                            },
-                          ],
-                        },
-                        sortingModel: [
-                          {
-                            field: 'startDate',
-                            sort: 'desc',
-                          },
-                        ],
-                      },
-                    }
-                  : {}),
-                ...(availableActionNeeded?.ethesisReadyStudentStarted
-                  ? {
-                      ethesisReadyStudentStarted: {
-                        filterModel: {
-                          items: [
-                            {
-                              field: 'ethesisReadyStudentStarted',
-                              operator: 'is',
-                              value: true,
-                            },
-                          ],
-                        },
-                        sortingModel: [
-                          {
-                            field: 'startDate',
-                            sort: 'desc',
-                          },
-                        ],
-                      },
-                    }
-                  : {}),
-              },
-            },
-          ].filter((group) => Object.keys(group.items).length > 0)}
+                ].filter((group) => Object.keys(group.items).length > 0)
+          }
         ></PrethesisTable>
         <Box ref={footerRef}>
           <ViewThesisFooter

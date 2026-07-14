@@ -26,6 +26,7 @@ interface UsePaginatedThesesParams {
   missingSecondGrader?: boolean
   lastMilestone?: boolean
   ethesisReadyStudentStarted?: boolean
+  hideStudentStartedEthesis?: boolean
 }
 
 export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
@@ -53,6 +54,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     params.missingSecondGrader,
     params.lastMilestone,
     params.ethesisReadyStudentStarted,
+    params.hideStudentStartedEthesis,
     language,
     params.useStudentApi,
   ]
@@ -85,6 +87,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
         missingSecondGrader: params.missingSecondGrader,
         lastMilestone: params.lastMilestone,
         ethesisReadyStudentStarted: params.ethesisReadyStudentStarted,
+        hideStudentStartedEthesis: params.hideStudentStartedEthesis,
         language,
         ...params.order,
       },
@@ -128,6 +131,7 @@ export const useExportThesesCsv = (params: UsePaginatedThesesParams) => {
         missingSecondGrader: params.missingSecondGrader,
         lastMilestone: params.lastMilestone,
         ethesisReadyStudentStarted: params.ethesisReadyStudentStarted,
+        hideStudentStartedEthesis: params.hideStudentStartedEthesis,
         language,
         ...params.order,
       },

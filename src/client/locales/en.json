@@ -401,6 +401,14 @@
       "ethesisReadyStudentStarted": {
         "name": "Permission to submit",
         "tooltip": "Shows theses that have permission to be submitted"
+      },
+      "ethesis": {
+        "name": "Saved to E-thesis",
+        "tooltip": "Shows theses that are saved to E-thesis"
+      },
+      "ethesisSent": {
+        "name": "Submitted to E-thesis",
+        "tooltip": "Shows theses that have been submitted to E-thesis"
       }
     },
     "actionNeeded": "Action needed"

@@ -400,6 +400,14 @@
       "ethesisReadyStudentStarted": {
         "name": "Lupa palauttaa",
         "tooltip": "Näyttää tutkielmat, joilla on lupa palauttaa"
+      },
+      "ethesis": {
+        "name": "E-thesiksessä",
+        "tooltip": "Näyttää tutkielmat, jotka ovat E-thesiksessä"
+      },
+      "ethesisSent": {
+        "name": "E-thesikseen lähetetty",
+        "tooltip": "Näyttää tutkielmat, jotka on lähetetty E-thesikseen"
       }
     },
     "actionNeeded": "Vaatii toimenpiteitä"

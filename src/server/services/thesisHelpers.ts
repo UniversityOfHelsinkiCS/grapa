@@ -83,6 +83,7 @@ export interface ThesisFiltersOptions {
   missingSecondGrader?: boolean
   lastMilestone?: boolean
   ethesisReadyStudentStarted?: boolean
+  hideStudentStartedEthesis?: boolean
 }
 
 export const buildThesisIncludes = (
@@ -263,6 +264,7 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
     missingSecondGrader,
     lastMilestone,
     ethesisReadyStudentStarted,
+    hideStudentStartedEthesis,
   } = options
 
   const whereClause: any = {}
@@ -340,6 +342,14 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
       { status: 'ETHESIS' },
       literal(
         `(SELECT options->>'allowStudentStartedProcess' FROM "programs" WHERE id = "Thesis"."program_id") = 'true'`
+      )
+    )
+  }
+
+  if (hideStudentStartedEthesis) {
+    andConditions.push(
+      literal(
+        `NOT ("Thesis".status = 'ETHESIS' AND COALESCE((SELECT options->>'allowStudentStartedProcess' FROM "programs" WHERE id = "Thesis"."program_id"), 'false') = 'true')`
       )
     )
   }
