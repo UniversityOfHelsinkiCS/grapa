@@ -56,7 +56,10 @@
     "theses": "Theses",
     "none": "No studytrack",
     "admin": "admin",
-    "copyEmails": "Copy emails"
+    "copyEmails": "Copy emails",
+    "rejectButton": "Reject",
+    "rejectButtonConfirmTitle": "Confirm rejection",
+    "rejectButtonConfirmContent": "Are you sure you want to reject this thesis suggestion?"
   },
   "eventLog": {
     "thesis": "Thesis",

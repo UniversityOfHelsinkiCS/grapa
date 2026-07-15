@@ -56,7 +56,10 @@
     "theses": "Tutkielmat",
     "none": "Ei opintosuuntaa",
     "admin": "admin",
-    "copyEmails": "Kopioi sähköpostiosoitteet"
+    "copyEmails": "Kopioi sähköpostiosoitteet",
+    "rejectButton": "Hylkää",
+    "rejectButtonConfirmTitle": "Vahvista hylkäys",
+    "rejectButtonConfirmContent": "Oletko varma, että haluat hylätä tämän tutkielmasuunnitelman?"
   },
   "eventLog": {
     "thesis": "Tutkielma",

@@ -56,7 +56,10 @@
     "theses": "Avhandlingar",
     "none": "Ingen studieinriktning",
     "admin": "admin",
-    "copyEmails": ""
+    "copyEmails": "Kopiera e-postadresser",
+    "rejectButton": "Avslå",
+    "rejectButtonConfirmTitle": "Bekräfta avslag",
+    "rejectButtonConfirmContent": "Är du säker på att du vill avslå denna uppsatsplan?"
   },
   "eventLog": {
     "thesis": "Avhandling",
