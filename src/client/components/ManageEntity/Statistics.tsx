@@ -1,4 +1,3 @@
-import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Box, Tooltip, Typography } from '@mui/material'
 import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid'
@@ -11,43 +10,36 @@ import {
   TranslationLanguage,
 } from '@backend/types'
 
-import useLoggedInUser from '../../hooks/useLoggedInUser'
-import useDepartments from '../../hooks/useDepartments'
-import { useDepartmentStatistics } from '../../hooks/useDepartmentAdmins'
+import { useThesisStatistics } from '../../hooks/useTheses'
 
 interface Props {
   filteringDepartmentId?: string
+  programId?: string
+  studyTrackId?: string
   hideTitle?: boolean
 }
 
-const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
-  const { user, isLoading: userLoading } = useLoggedInUser()
+const Statistics = ({
+  filteringDepartmentId,
+  programId,
+  studyTrackId,
+  hideTitle,
+}: Props) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
 
-  const { departments } = useDepartments({ includeNotManaged: false })
-  const { departmentStatistics, isLoading: departmentStatisticsLoading } =
-    useDepartmentStatistics()
+  const { thesisStatistics, isLoading: thesisStatisticsLoading } =
+    useThesisStatistics({
+      departmentId: filteringDepartmentId,
+      programId,
+      studyTrackId,
+    })
 
-  if (
-    userLoading ||
-    !departments?.length ||
-    departmentStatisticsLoading ||
-    !departmentStatistics
-  )
-    return null
-  if (!user.isAdmin && !user.managedDepartmentIds?.length)
-    return <Navigate to="/" />
+  if (thesisStatisticsLoading || !thesisStatistics) return null
 
-  const departmentStatisticsWithDepartments = departmentStatistics.filter(
+  const filteredDepartmentStatistics = thesisStatistics.filter(
     ({ department }) => Boolean(department?.id)
   )
-
-  const filteredDepartmentStatistics = filteringDepartmentId
-    ? departmentStatisticsWithDepartments.filter(
-        ({ department }) => String(department?.id) === filteringDepartmentId
-      )
-    : departmentStatisticsWithDepartments
 
   const totalThesisCounts = filteredDepartmentStatistics.reduce(
     (acc, { statusCounts, startedWithinHalfYearCount }) => {
@@ -309,4 +301,4 @@ const DepartmentStatistics = ({ filteringDepartmentId, hideTitle }: Props) => {
   )
 }
 
-export default DepartmentStatistics
+export default Statistics

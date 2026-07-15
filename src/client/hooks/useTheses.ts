@@ -1,7 +1,7 @@
 import { GridRowSelectionModel } from '@mui/x-data-grid'
 import { useQuery } from '@tanstack/react-query'
 
-import { ThesisData } from '@backend/types'
+import { ThesisData, ThesisStatistics } from '@backend/types'
 
 import apiClient from '../util/apiClient'
 import { useTranslation } from 'react-i18next'
@@ -174,4 +174,32 @@ export const useSingleThesis = (
   })
 
   return { thesis, ...rest }
+}
+
+export const useThesisStatistics = (params?: {
+  programId?: string
+  studyTrackId?: string
+  departmentId?: string
+}) => {
+  const queryKey = [
+    'theses-statistics',
+    params?.programId,
+    params?.studyTrackId,
+    params?.departmentId,
+  ]
+
+  const queryFn = async (): Promise<ThesisStatistics[]> => {
+    const { data } = await apiClient.get('/theses/statistics', {
+      params,
+    })
+
+    return data
+  }
+
+  const { data: thesisStatistics, ...rest } = useQuery({
+    queryKey,
+    queryFn,
+  })
+
+  return { thesisStatistics, ...rest }
 }

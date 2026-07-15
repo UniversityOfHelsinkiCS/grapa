@@ -23,7 +23,7 @@ import useLoggedInUser from '../../hooks/useLoggedInUser'
 
 import SingleProgramLogs from './SingleProgramLogs'
 import ProgramConfigurations from './ProgramConfigurations'
-import DepartmentStatistics from './DepartmentStatistics'
+import Statistics from './Statistics'
 import useDepartments from '../../hooks/useDepartments'
 
 type EntityType = 'program' | 'studyTrack' | 'department'
@@ -108,12 +108,10 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                 scrollButtons
                 allowScrollButtonsMobile
               >
-                {entityType === 'department' && (
-                  <Tab
-                    label={t('departmentOverviewPage:supervisionStatisticsTab')}
-                    value="statistics"
-                  />
-                )}
+                <Tab
+                  label={t('departmentOverviewPage:supervisionStatisticsTab')}
+                  value="statistics"
+                />
                 <Tab label={t('theses')} value="theses" />
                 <Tab
                   label={t('programOverviewPage:managePermissionsTab')}
@@ -161,10 +159,18 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
               </Box>
             )}
 
-            {tab === 'statistics' && entityType === 'department' && (
+            {tab === 'statistics' && (
               <Box>
-                <DepartmentStatistics
-                  filteringDepartmentId={selectedEntity.id}
+                <Statistics
+                  filteringDepartmentId={
+                    entityType === 'department' ? selectedEntity.id : undefined
+                  }
+                  programId={
+                    entityType === 'program' ? selectedEntity.id : undefined
+                  }
+                  studyTrackId={
+                    entityType === 'studyTrack' ? selectedEntity.id : undefined
+                  }
                   hideTitle
                 />
               </Box>
