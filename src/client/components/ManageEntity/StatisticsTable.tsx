@@ -184,7 +184,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
             </Typography>
           </Tooltip>
         ),
-        cell: (info) => (info.getValue() !== 0 ? info.getValue() : null),
+        cell: (info) => (info.getValue() !== 0 ? info.getValue() : '-'),
       }),
       columnHelper.accessor('avgLateSupervision', {
         id: 'LATE_TIME',
@@ -199,7 +199,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
           </Tooltip>
         ),
         cell: (info) =>
-          info.getValue() !== 0 ? Math.round(info.getValue()) : null,
+          info.getValue() !== 0 ? Math.round(info.getValue()) : '-',
       }),
       columnHelper.accessor('avgCompletedSupervision', {
         id: 'COMPLETE_TIME',
@@ -214,7 +214,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
           </Tooltip>
         ),
         cell: (info) =>
-          info.getValue() !== 0 ? Math.round(info.getValue()) : null,
+          info.getValue() !== 0 ? Math.round(info.getValue()) : '-',
       }),
       columnHelper.accessor('primarySupervisionsCount', {
         id: 'PRIMARY_SUPERVISED',
