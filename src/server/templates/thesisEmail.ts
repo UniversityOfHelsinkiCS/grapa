@@ -29,6 +29,29 @@ Statusen för avhandlingen "${updatedThesis.topic}" har ändrats till PÅGÅR av
   }
 }
 
+export const suggestionRejectedEmailTemplate = (
+  updatedThesis: Thesis,
+  actionUser: UserType
+): TemplateOutput => {
+  return {
+    subject:
+      'Prethesis - Tutkielmaehdotus on palautettu luonnokseksi / Thesis suggestion has been reverted to a draft / Uppsatsförslaget har återförts till utkast',
+    message: `
+Tämä on automaattinen viesti Prethesiksestä.
+
+Käyttäjä ${actionUser.firstName} ${actionUser.lastName} on muuttanut tutkielman "${updatedThesis.topic}" tilaksi LUONNOS.
+---
+This is an automated message from Prethesis.
+
+The status of the thesis "${updatedThesis.topic}" has been changed to DRAFT by ${actionUser.firstName} ${actionUser.lastName}.
+---
+Detta är ett automatiskt meddelande från Prethesis.
+
+Statusen för avhandlingen "${updatedThesis.topic}" har ändrats till UTKAST av ${actionUser.firstName} ${actionUser.lastName}.
+  `,
+  }
+}
+
 export const ethesisSentEmailTemplate = (
   updatedThesis: Thesis,
   author: UserType,
