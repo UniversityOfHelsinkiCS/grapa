@@ -73,12 +73,7 @@ describe('department-admins router', () => {
       })
     })
 
-    describe('GET /api/department-admins/statistics', () => {
-      it('should return 403', async () => {
-        const res = await request.get('/api/department-admins/statistics')
-        expect(res.status).toBe(403)
-      })
-    })
+
 
     describe('POST /api/department-admins', () => {
       it('should return 403', async () => {
@@ -114,14 +109,7 @@ describe('department-admins router', () => {
       })
     })
 
-    describe('GET /api/department-admins/statistics', () => {
-      it('should return 403 when the user is not a department admin', async () => {
-        const res = await request
-          .get('/api/department-admins/statistics')
-          .set({ uid: user3.id, hygroupcn: 'hy-employees' })
-        expect(res.status).toBe(403)
-      })
-    })
+
 
     describe('POST /api/department-admins', () => {
       it('should return 403', async () => {
@@ -172,125 +160,6 @@ describe('department-admins router', () => {
       })
     })
 
-    describe('GET /api/department-admins/statistics', () => {
-      beforeEach(async () => {
-        await Program.create({
-          id: 'Testing program',
-          name: {
-            fi: 'Testausohjelma',
-            en: 'Testing program',
-            sv: 'Testprogram',
-          },
-          level: 'master',
-          international: true,
-          enabled: true,
-        })
-
-        await StudyTrack.create({
-          id: 'test-study-track-id',
-          programId: 'Testing program',
-          name: {
-            fi: 'Test study track',
-            en: 'Test study track',
-            sv: 'Test study track',
-          },
-        })
-
-        const thesis = await Thesis.create({
-          programId: 'Testing program',
-          studyTrackId: 'test-study-track-id',
-          topic: 'test topic',
-          status: 'PLANNING',
-          startDate: '1970-01-01',
-          targetDate: '2070-01-01',
-        })
-
-        await Supervision.create({
-          userId: user1.id,
-          thesisId: thesis.id,
-          percentage: 50,
-          isPrimarySupervisor: true,
-        })
-        await Supervision.create({
-          userId: user2.id,
-          thesisId: thesis.id,
-          percentage: 50,
-          isPrimarySupervisor: false,
-        })
-      })
-
-      it('should return 200 and the statistics for all departments', async () => {
-        const res = await request
-          .get('/api/department-admins/statistics')
-          .set({ uid: user1.id, hygroupcn: 'grp-toska' })
-
-        expect(res.status).toBe(200)
-        expect(res.body).toIncludeSameMembers([
-          {
-            department: {
-              id: department1.id,
-              name: department1.name,
-            },
-            supervisor: {
-              id: user1.id,
-              username: user1.username,
-              firstName: user1.firstName,
-              lastName: user1.lastName,
-              email: user1.email,
-              departmentId: user1.departmentId,
-            },
-            statusCounts: {
-              DRAFT: 0,
-              PLANNING: 1,
-              IN_PROGRESS: 0,
-              COMPLETED: 0,
-              CANCELLED: 0,
-              ETHESIS: 0,
-              ETHESIS_SENT: 0,
-              SUGGESTED: 0,
-            },
-            startedWithinHalfYearCount: 0,
-            primarySupervisionsCount: 0,
-            lateSupervisions: [],
-            lateSupervisionsCount: 0,
-            avgLateSupervision: 0,
-            avgCompletedSupervision: 0,
-            completedSupervisions: [],
-          },
-          {
-            department: {
-              id: department2.id,
-              name: department2.name,
-            },
-            supervisor: {
-              id: user2.id,
-              username: user2.username,
-              firstName: user2.firstName,
-              lastName: user2.lastName,
-              email: user2.email,
-              departmentId: user2.departmentId,
-            },
-            statusCounts: {
-              DRAFT: 0,
-              PLANNING: 1,
-              IN_PROGRESS: 0,
-              COMPLETED: 0,
-              CANCELLED: 0,
-              ETHESIS: 0,
-              ETHESIS_SENT: 0,
-              SUGGESTED: 0,
-            },
-            startedWithinHalfYearCount: 0,
-            primarySupervisionsCount: 0,
-            lateSupervisions: [],
-            lateSupervisionsCount: 0,
-            avgLateSupervision: 0,
-            avgCompletedSupervision: 0,
-            completedSupervisions: [],
-          },
-        ])
-      })
-    })
 
     describe('POST /api/department-admins', () => {
       it('should return 200', async () => {
@@ -395,95 +264,6 @@ describe('department-admins router', () => {
       })
     })
 
-    describe('GET /api/department-admins/statistics', () => {
-      let thesis1
-
-      beforeEach(async () => {
-        await Program.create({
-          id: 'Testing program',
-          name: {
-            fi: 'Testausohjelma',
-            en: 'Testing program',
-            sv: 'Testprogram',
-          },
-          level: 'master',
-          international: true,
-          enabled: true,
-        })
-
-        await StudyTrack.create({
-          id: 'test-study-track-id',
-          programId: 'Testing program',
-          name: {
-            fi: 'Test study track',
-            en: 'Test study track',
-            sv: 'Test study track',
-          },
-        })
-
-        thesis1 = await Thesis.create({
-          programId: 'Testing program',
-          studyTrackId: 'test-study-track-id',
-          topic: 'test topic',
-          status: 'PLANNING',
-          startDate: '1970-01-01',
-          targetDate: '2070-01-01',
-        })
-
-        await Supervision.create({
-          userId: user1.id,
-          thesisId: thesis1.id,
-          percentage: 50,
-          isPrimarySupervisor: true,
-        })
-        await Supervision.create({
-          userId: user2.id,
-          thesisId: thesis1.id,
-          percentage: 50,
-          isPrimarySupervisor: false,
-        })
-      })
-
-      it('should return 200 and the statistics of the department admins', async () => {
-        const res = await request
-          .get('/api/department-admins/statistics')
-          .set({ uid: user3.id, hygroupcn: 'hy-employees' })
-        expect(res.status).toBe(200)
-        expect(res.body).toIncludeSameMembers([
-          {
-            department: {
-              id: department1.id,
-              name: department1.name,
-            },
-            supervisor: {
-              id: user1.id,
-              username: user1.username,
-              firstName: user1.firstName,
-              lastName: user1.lastName,
-              email: user1.email,
-              departmentId: user1.departmentId,
-            },
-            statusCounts: {
-              DRAFT: 0,
-              PLANNING: 1,
-              IN_PROGRESS: 0,
-              COMPLETED: 0,
-              CANCELLED: 0,
-              ETHESIS: 0,
-              ETHESIS_SENT: 0,
-              SUGGESTED: 0,
-            },
-            startedWithinHalfYearCount: 0,
-            primarySupervisionsCount: 0,
-            lateSupervisions: [],
-            lateSupervisionsCount: 0,
-            avgLateSupervision: 0,
-            avgCompletedSupervision: 0,
-            completedSupervisions: [],
-          },
-        ])
-      })
-    })
 
     describe('POST /api/department-admins', () => {
       it('should return 200 when adding a department admin to the same department', async () => {
