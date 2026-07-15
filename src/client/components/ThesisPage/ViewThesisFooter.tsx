@@ -421,7 +421,7 @@ const ViewThesisFooter = (
   const { mutateAsync: editThesis } = useEditThesisMutation(isStudentView)
 
   const [pendingAction, setPendingAction] = useState<
-    'approve' | 'sendDraft' | 'wakeUp' | null
+    'approve' | 'sendDraft' | 'wakeUp' | 'reject' | null
   >(null)
 
   const [ethesisDialogOpen, setEthesisDialogOpen] = useState(false)
@@ -486,6 +486,24 @@ const ViewThesisFooter = (
                     {t('approveButton')}
                   </Button>
                 )}
+                {canApprove(thesis, currentUser!) &&
+                  thesis.program?.options?.allowStudentStartedProcess && (
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        color: '#000',
+                        backgroundColor: '#fc674d',
+                        borderColor: '#000',
+                        fontSize: '12px',
+                        height: 24,
+                        px: 2,
+                        fontWeight: 600,
+                      }}
+                      onClick={() => setPendingAction('reject')}
+                    >
+                      {t('rejectButton')}
+                    </Button>
+                  )}
                 {isStudentView && thesis.status === THESIS_STATUSES.DRAFT && (
                   <Button
                     variant="outlined"
@@ -819,7 +837,12 @@ const ViewThesisFooter = (
               ? t('approveButtonConfirmTitle', 'Confirm Approval')
               : pendingAction === 'wakeUp'
                 ? t('wakeUpFromSleepButtonConfirmTitle', 'Confirm Wake Up')
-                : t('sendDraftButtonConfirmTitle', 'Confirm Send Draft')
+                : pendingAction === 'sendDraft'
+                  ? t('sendDraftButtonConfirmTitle', 'Confirm Send Draft')
+                  : t(
+                      'rejectButtonConfirmTitle',
+                      'Confirm Rejection of Suggestion'
+                    )
           }
           onSubmit={() => {
             if (pendingAction === 'approve') {
@@ -837,6 +860,11 @@ const ViewThesisFooter = (
                 thesisId: thesis.id as string,
                 data: { ...thesis, isIdle: false },
               })
+            } else if (pendingAction === 'reject') {
+              void changeThesisStatus({
+                theses: [thesis],
+                status: THESIS_STATUSES.DRAFT,
+              })
             }
             setPendingAction(null)
           }}
@@ -848,7 +876,9 @@ const ViewThesisFooter = (
               ? t('approveButtonConfirmContent')
               : pendingAction === 'wakeUp'
                 ? t('wakeUpFromSleepButtonConfirmContent')
-                : t('sendDraftButtonConfirmContent')}
+                : pendingAction === 'sendDraft'
+                  ? t('sendDraftButtonConfirmContent')
+                  : t('rejectButtonConfirmContent')}
           </Typography>
         </Popup>
       )}
