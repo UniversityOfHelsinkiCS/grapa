@@ -8,6 +8,7 @@ import {
   Attachment,
   Author,
   Department,
+  DepartmentAdmin,
   EventLog,
   Grader,
   Program,
@@ -5452,6 +5453,100 @@ describe('thesis router', () => {
           expect(response.status).toEqual(200)
           expect(response.body).toBeInstanceOf(Array)
           expect(response.body).toHaveLength(2)
+        })
+      })
+
+      describe('when filtering by departmentId', () => {
+        let departmentAdminUser
+        beforeEach(async () => {
+          departmentAdminUser = await User.create({
+            id: 'depadmin-123',
+            username: 'depadmin',
+            firstName: 'Dep',
+            lastName: 'Admin',
+            email: 'depadmin@test.fi',
+            language: 'fi',
+            departmentId: dep.id,
+          })
+          await DepartmentAdmin.create({
+            userId: departmentAdminUser.id,
+            departmentId: dep.id,
+          })
+        })
+
+        it('should return 200 and the filtered statistics when the user is a department admin', async () => {
+          const response = await request
+            .get(`/api/theses/statistics?departmentId=${dep.id}`)
+            .set({ uid: departmentAdminUser.id, hygroupcn: 'hy-employees' })
+          
+          expect(response.status).toEqual(200)
+          expect(response.body).toBeInstanceOf(Array)
+          expect(response.body).toHaveLength(2)
+          expect(response.body[0]).toHaveProperty('supervisor')
+          expect(response.body[0]).toHaveProperty('statusCounts')
+          expect(response.body[0]).toHaveProperty('startedWithinHalfYearCount')
+          expect(response.body[0]).toHaveProperty('primarySupervisionsCount')
+          expect(response.body[0]).toHaveProperty('lateSupervisions')
+        })
+
+        it('should return 403 when the user is not a department admin of the requested department', async () => {
+          const response = await request
+            .get(`/api/theses/statistics?departmentId=${dep.id}`)
+            .set({ uid: user1.id, hygroupcn: 'hy-employees' }) // user1 is not a department admin
+          
+          expect(response.status).toEqual(403)
+        })
+      })
+
+      describe('when filtering by programId', () => {
+        let programManagerUser
+        beforeEach(async () => {
+          programManagerUser = await User.create({
+            id: 'progadmin-123',
+            username: 'progadmin',
+            firstName: 'Prog',
+            lastName: 'Admin',
+            email: 'progadmin@test.fi',
+            language: 'fi',
+            departmentId: dep.id,
+          })
+          await ProgramManagement.create({
+            userId: programManagerUser.id,
+            programId: 'Testing program',
+          })
+        })
+
+        it('should return 200 when the user is a program manager', async () => {
+          const response = await request
+            .get(`/api/theses/statistics?programId=Testing program`)
+            .set({ uid: programManagerUser.id, hygroupcn: 'hy-employees' })
+            
+          expect(response.status).toEqual(200)
+          expect(response.body).toBeInstanceOf(Array)
+        })
+
+        it('should return 200 and only their own supervised theses statistics when the user is not a program manager', async () => {
+          const response = await request
+            .get(`/api/theses/statistics?programId=Testing program`)
+            .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+            
+          expect(response.status).toEqual(200)
+          expect(response.body).toBeInstanceOf(Array)
+          // Since user1 only supervises thesis1 in this program (along with user3), they should only see those 2 supervisor records
+          expect(response.body).toHaveLength(2)
+          const supervisorIds = response.body.map(stat => stat.supervisor.id)
+          expect(supervisorIds).toContain(user1.id)
+          expect(supervisorIds).toContain(user3.id)
+        })
+
+        it('should return 200 and an empty array when the non-manager user has no theses in the requested program', async () => {
+          const response = await request
+            .get(`/api/theses/statistics?programId=New program`) // user1 does not supervise any theses here
+            .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+            
+          expect(response.status).toEqual(200)
+          expect(response.body).toBeInstanceOf(Array)
+          expect(response.body).toHaveLength(0) // Properly filtered out!
         })
       })
     })
