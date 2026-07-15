@@ -397,7 +397,7 @@
       },
       "missingSecondGrader": {
         "name": "Missing second grader",
-        "tooltip": "Shows theses that have less than two graders assigned"
+        "tooltip": "Shows theses that have fewer than the required number of graders assigned"
       },
       "lastMilestone": {
         "name": "On final milestone",

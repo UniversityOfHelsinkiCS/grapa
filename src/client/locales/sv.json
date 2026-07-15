@@ -396,8 +396,8 @@
         "tooltip": "Visar alla avhandlingar"
       },
       "missingSecondGrader": {
-        "name": "Saknar andra granskare",
-        "tooltip": "Visar avhandlingar som har färre än två granskare tilldelade"
+        "name": "Saknar andra bedömare",
+        "tooltip": "Visar avhandlingar som har färre än det nödvändiga antalet bedömare tilldelade"
       },
       "lastMilestone": {
         "name": "På sista milstolpen",

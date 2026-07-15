@@ -395,8 +395,8 @@
         "tooltip": "Näyttää kaikki tutkielmat"
       },
       "missingSecondGrader": {
-        "name": "Toinen arvostelija puuttuu",
-        "tooltip": "Näyttää tutkielmat, joihin on valittu alle kaksi arvostelijaa"
+        "name": "Toinen arvioija puuttuu",
+        "tooltip": "Näyttää tutkielmat, joihin on valittu alle tarvittava määrä arvioijia"
       },
       "lastMilestone": {
         "name": "Viimeisellä etapilla",
