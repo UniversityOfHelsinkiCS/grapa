@@ -93,7 +93,7 @@ jest.unstable_mockModule(
 )
 
 jest.unstable_mockModule(
-  './src/client/components/PrethesisTable/PrethesisTable',
+  './src/client/components/ThesisPage/ThesisTable',
   () => ({
     DEFAULT_PAGE_SIZE: 25,
     default: jest.fn(({ initializeNewThesis }) => (
