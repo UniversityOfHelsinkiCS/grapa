@@ -110,7 +110,7 @@ export interface ThesisData {
 }
 
 export interface ThesisStatistics {
-  department: DepartmentData
+  department?: DepartmentData
   supervisor: Partial<User>
   statusCounts: Record<ThesisStatus, number>
   startedWithinHalfYearCount: number

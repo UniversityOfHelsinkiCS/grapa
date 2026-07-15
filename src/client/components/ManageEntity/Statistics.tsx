@@ -37,9 +37,7 @@ const Statistics = ({
 
   if (thesisStatisticsLoading || !thesisStatistics) return null
 
-  const filteredDepartmentStatistics = thesisStatistics.filter(
-    ({ department }) => Boolean(department?.id)
-  )
+  const filteredDepartmentStatistics = thesisStatistics
 
   const totalThesisCounts = filteredDepartmentStatistics.reduce(
     (acc, { statusCounts, startedWithinHalfYearCount }) => {
@@ -79,7 +77,7 @@ const Statistics = ({
       headerName: t('departmentStatisticsPage:departmentHeader'),
       headerAlign: 'left',
       flex: 1,
-      valueGetter: ({ name }) => name[language],
+      valueGetter: (_, { department }) => department?.name?.[language] || '-',
     },
     {
       field: 'thesisCount.DRAFT',

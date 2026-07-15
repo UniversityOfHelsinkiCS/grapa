@@ -927,10 +927,6 @@ export const calculateThesisStatistics = async (
       } else {
         const department = departments.find((d) => d.id === user.departmentId)
 
-        if (!department) {
-          return
-        }
-
         statistics.push({
           department,
           supervisor: {
