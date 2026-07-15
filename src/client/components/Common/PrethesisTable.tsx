@@ -83,16 +83,31 @@ export function PrethesisTable<TData>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const canSort = header.column.getCanSort()
+
                   return (
                     <TableCell
                       key={header.id}
                       colSpan={header.colSpan}
                       style={{ width: `${header.getSize()}px` }}
+                      align={header.colSpan > 1 ? 'center' : 'left'}
+                      sx={{
+                        borderLeft:
+                          header.colSpan > 1
+                            ? '1px solid rgba(224, 224, 224, 1)'
+                            : 'none',
+                        borderRight:
+                          header.colSpan > 1
+                            ? '1px solid rgba(224, 224, 224, 1)'
+                            : 'none',
+                        pb: 2,
+                      }}
                     >
                       <Stack
                         direction="row"
                         sx={{
                           alignItems: 'center',
+                          justifyContent:
+                            header.colSpan > 1 ? 'center' : 'flex-start',
                           gap: 1,
                         }}
                       >
@@ -109,7 +124,7 @@ export function PrethesisTable<TData>({
                                 header.getContext()
                               )}
                         </Typography>
-                        {canSort && (
+                        {!header.isPlaceholder && canSort && (
                           <IconButton
                             sx={{
                               opacity: (
