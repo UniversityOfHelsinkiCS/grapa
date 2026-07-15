@@ -184,7 +184,7 @@
     "milestones": {
       "fieldTitle": "Milstolpe",
       "title": "Milstolpar",
-      "description": "Etapper aktiveras endast för examensarbeten som skapas efter att etapperna har sparats. För äldre examensarbeten förblir etapperna i sitt tidigare tillstånd. En etapp kan markeras som slutförd av studenten och handledarna för examensarbetet (inklusive eventuella seminariehandledare). Handledare, samt andra med tillgång till information om examensarbetet, kan följa etappernas framsteg. Etapperna är specifika för utbildningsprogrammet och kan inte konfigureras separat för studieinriktningar.",
+      "description": "Att spara etapperna för en ny version påverkar som standard endast avhandlingar som skapas efter sparandet. Etappversionen för en befintlig avhandling kan också ändras av personalen.",
       "confirmTitle": "Bekräfta ändringar för milstolpar",
       "enableConfirm": "Är du säker på att du vill spara ändringar för milstolpar?"
     },

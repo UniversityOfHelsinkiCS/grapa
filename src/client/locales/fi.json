@@ -182,7 +182,7 @@
     "milestones": {
       "fieldTitle": "Etappi",
       "title": "Etapit",
-      "description": "Etapit otetaan käyttöön vain tutkielmissa, jotka on luotu etappien tallentamisen jälkeen. Vanhemmissa tutkielmissa etapit säilyvät samassa tilassa. Etapin voi merkitä suoritetuksi opiskelija, sekä tutkielman ohjaajat (myös mahdolliset seminaariohjaajat). Ohjaajat, sekä muut joilla pääsy tutkielman tietoihin voivat seurata etappien edistymistä. Etapit ovat koulutusohjelmakohtaisia, eikä niitä voi määrittää erikseen opintosuunnille. ",
+      "description": "Uuden version etapeista tallentaminen vaikuttaa oletuksena vain tutkielmiin jotka on luotu tallentamisen jälkeen. Olemassaolevan tutkielman etappiversiota voidaan muuttaa myös henkilökunnan toimesta.",
       "confirmTitle": "Vahvista muutokset etappeihin",
       "enableConfirm": "Haluatko vahvistaa muutoksesis etappeihin?"
     },

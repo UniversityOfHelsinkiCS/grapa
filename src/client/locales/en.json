@@ -184,7 +184,7 @@
     "milestones": {
       "fieldTitle": "Milestone",
       "title": "Milestones",
-      "description": "New milestones are only applied to theses created after the new milestones have been saved. For older theses, the milestones will remain in their previous state. A milestone can be marked as completed by student's and thesis supervisors (including any seminar supervisors). Supervisors, as well as others with access to the thesis information, can monitor the progress of the milestones. The milestones are specific to the study programme and cannot be configured separately for study tracks.",
+      "description": "Saving a new milestones version affects by default only theses that are created after saving. The milestone version of an existing thesis can also be changed by staff.",
       "confirmTitle": "Confirm changes to milestones",
       "enableConfirm": "Are you sure you want to save changes to milestones?"
     },
