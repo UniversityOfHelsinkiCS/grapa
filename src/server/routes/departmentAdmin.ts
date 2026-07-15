@@ -1,25 +1,14 @@
 import express, { Response } from 'express'
 import { literal, Op } from 'sequelize'
 
-import {
-  Department,
-  DepartmentAdmin,
-  Supervision,
-  Thesis,
-  User,
-} from '../db/models'
+import { Department, DepartmentAdmin, User } from '../db/models'
 
 import { validateDepartmentAdminData } from '../validators/departmentAdmin'
 
-import { RequestWithUser, ThesisStatistics } from '../types'
+import { RequestWithUser } from '../types'
 import ethesisUserHandler from '../middleware/ethesisUser'
 
 const departmentAdminRouter = express.Router()
-
-const HALF_YEAR = (1000 * 60 * 60 * 24 * 365) / 2
-
-const isWithinLastHalfYear = (date: Date) =>
-  date.getTime() > Date.now() - HALF_YEAR
 
 departmentAdminRouter.get(
   '/',
@@ -57,188 +46,6 @@ departmentAdminRouter.get(
     })
 
     res.send(departments)
-  }
-)
-
-departmentAdminRouter.get(
-  '/statistics',
-  ethesisUserHandler,
-  // @ts-expect-error the user middleware updates the req object with user field
-  async (req: RequestWithUser, res: Response) => {
-    const { id: userId, isAdmin } = req.user
-
-    const managedDepartments = isAdmin
-      ? []
-      : await DepartmentAdmin.findAll({
-          where: { userId },
-        })
-    const managedDepartmentIds = managedDepartments.map(
-      (department) => department.departmentId
-    )
-
-    if (!isAdmin && managedDepartmentIds.length === 0) {
-      res.status(403).send({
-        error:
-          'Forbidden, only department admins can view department statistics',
-      })
-      return
-    }
-
-    const departments = await Department.findAll({
-      attributes: ['id', 'name'],
-      where: isAdmin
-        ? undefined
-        : {
-            id: {
-              [Op.in]: managedDepartmentIds,
-            },
-          },
-    })
-    const departmentSupervisions = (await Supervision.findAll({
-      attributes: [
-        'id',
-        'thesisId',
-        'userId',
-        'percentage',
-        'isPrimarySupervisor',
-      ],
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: [
-            'id',
-            'username',
-            'firstName',
-            'lastName',
-            'email',
-            'departmentId',
-          ],
-          where: isAdmin
-            ? {
-                isExternal: false,
-              }
-            : {
-                departmentId: {
-                  [Op.in]: managedDepartmentIds,
-                },
-                isExternal: false,
-              },
-        },
-        {
-          model: Thesis,
-          as: 'thesis',
-        },
-      ],
-    })) as unknown as {
-      id: string
-      thesisId: string
-      userId: string
-      percentage: number
-      isPrimarySupervisor: boolean
-      user: User
-      thesis: Thesis
-    }[]
-
-    let statistics: ThesisStatistics[] = []
-
-    departmentSupervisions.forEach((supervision) => {
-      const { user, thesis, isPrimarySupervisor } = supervision
-      const { status, startDate, targetDate } = thesis
-
-      const targetDateObject = new Date(targetDate)
-      const startDateObject = new Date(startDate)
-
-      function timeDiff(first: Date, second: Date) {
-        return (first.getTime() - second.getTime()) / (1000 * 60 * 60 * 24)
-      }
-
-      const supervisor = statistics.find((s) => s.supervisor.id === user.id)
-      if (supervisor) {
-        supervisor.statusCounts[status] =
-          (supervisor.statusCounts[status] || 0) + 1
-        supervisor.startedWithinHalfYearCount += isWithinLastHalfYear(
-          new Date(startDate)
-        )
-          ? 1
-          : 0
-        supervisor.primarySupervisionsCount +=
-          isPrimarySupervisor && status == 'IN_PROGRESS' ? 1 : 0
-        supervisor.lateSupervisions.push(
-          status != 'COMPLETED' ? timeDiff(new Date(), targetDateObject) : 0
-        )
-        if (status === 'COMPLETED')
-          supervisor.completedSupervisions.push(
-            timeDiff(targetDateObject, startDateObject)
-          )
-      } else {
-        const department = departments.find((d) => d.id === user.departmentId)
-
-        if (!department) {
-          return
-        }
-
-        statistics.push({
-          department,
-          supervisor: {
-            id: user.id,
-            username: user.username,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            departmentId: user.departmentId,
-          },
-          statusCounts: {
-            DRAFT: status === 'DRAFT' ? 1 : 0,
-            SUGGESTED: status === 'SUGGESTED' ? 1 : 0,
-            PLANNING: status === 'PLANNING' ? 1 : 0,
-            IN_PROGRESS: status === 'IN_PROGRESS' ? 1 : 0,
-            COMPLETED: status === 'COMPLETED' ? 1 : 0,
-            CANCELLED: status === 'CANCELLED' ? 1 : 0,
-            ETHESIS_SENT: status === 'ETHESIS_SENT' ? 1 : 0,
-            ETHESIS: status === 'ETHESIS' ? 1 : 0,
-          },
-          startedWithinHalfYearCount: isWithinLastHalfYear(startDateObject)
-            ? 1
-            : 0,
-          primarySupervisionsCount:
-            isPrimarySupervisor && status == 'IN_PROGRESS' ? 1 : 0,
-          lateSupervisions: [
-            status != 'COMPLETED' ? timeDiff(new Date(), targetDateObject) : 0,
-          ],
-          lateSupervisionsCount: 0,
-          avgLateSupervision: 0,
-          avgCompletedSupervision: 0,
-          completedSupervisions:
-            status === 'COMPLETED'
-              ? [timeDiff(targetDateObject, startDateObject)]
-              : [],
-        })
-      }
-    })
-
-    statistics = statistics.map((supervisor) => {
-      const current = {
-        ...supervisor,
-        lateSupervisions: supervisor.lateSupervisions.filter(
-          (x: number) => x > 30
-        ),
-      }
-      current['lateSupervisionsCount'] = current.lateSupervisions.length
-      current['avgLateSupervision'] =
-        current.lateSupervisions.length > 0
-          ? current.lateSupervisions.reduce((a, b) => a + b) /
-            current.lateSupervisions.length
-          : 0
-      current['avgCompletedSupervision'] =
-        current.completedSupervisions.length > 0
-          ? current.completedSupervisions.reduce((a, b) => a + b) /
-            current.completedSupervisions.length
-          : 0
-      return current
-    })
-
-    res.status(200).send(statistics)
   }
 )
 
