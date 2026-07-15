@@ -28,9 +28,7 @@ import ViewThesisFooter from './ViewThesisFooter'
 import Popup from '../Common/Popup'
 import { useDebounce } from '../../hooks/useDebounce'
 
-import PrethesisTable, {
-  DEFAULT_PAGE_SIZE,
-} from '../PrethesisTable/PrethesisTable'
+import ThesisTable, { DEFAULT_PAGE_SIZE } from './ThesisTable'
 
 interface Props {
   filteringProgramId?: string
@@ -332,7 +330,7 @@ const ThesesPage = ({
       )}
 
       <Box>
-        <PrethesisTable
+        <ThesisTable
           rows={theses ?? []}
           isLoading={isThesesLoading}
           totalCount={totalCount}
@@ -549,7 +547,7 @@ const ThesesPage = ({
                   },
                 ].filter((group) => Object.keys(group.items).length > 0)
           }
-        ></PrethesisTable>
+        ></ThesisTable>
         <Box ref={footerRef}>
           <ViewThesisFooter
             footerRef={footerRef}

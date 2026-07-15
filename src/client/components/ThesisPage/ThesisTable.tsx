@@ -2,7 +2,6 @@ import * as React from 'react'
 
 import {
   createColumnHelper,
-  flexRender,
   getCoreRowModel,
   useReactTable,
   CellContext,
@@ -15,13 +14,7 @@ import {
   ProgramData,
 } from '@backend/types'
 
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
 import Chip from '@mui/material/Chip'
-import TableRow from '@mui/material/TableRow'
 import {
   Box,
   Button,
@@ -32,9 +25,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  Skeleton,
   Stack,
-  TablePagination,
   TextField,
   Tooltip,
   Typography,
@@ -51,9 +42,6 @@ import {
   PriorityHigh,
   Star,
   MoreVert as MoreVertIcon,
-  ArrowDownward,
-  ArrowUpward,
-  Sort,
   Bedtime,
   Close,
   Check,
@@ -70,6 +58,8 @@ import {
 } from '../../util/permissions'
 import { THESIS_STATUSES } from '../../../config'
 import Popup from '../Common/Popup'
+
+import PrethesisTable from '../Common/PrethesisTable'
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData, TValue> {
@@ -105,7 +95,7 @@ interface Props {
   showGraders?: boolean
 }
 
-const PrethesisTable = ({
+const ThesisTable = ({
   rows,
   isLoading,
   totalCount,
@@ -241,12 +231,23 @@ const PrethesisTable = ({
   const activeData =
     !isStudentView && activeBaseView ? getFilterViewData(activeBaseView) : null
 
-  const [sortedField, setSortedField] = React.useState(
+  const [sortedField, setSortedField] = React.useState<string | null>(
     activeData?.sortingModel[0]?.field || null
   )
-  const [sortedDir, setSortedDir] = React.useState(
+  const [sortedDir, setSortedDir] = React.useState<'asc' | 'desc'>(
     activeData?.sortingModel[0]?.sort || 'asc'
   )
+
+  const handleSortChange = (field: string, dir: 'asc' | 'desc') => {
+    setSortedField(field)
+    setSortedDir(dir)
+    onSortingChange([
+      {
+        field,
+        sort: dir,
+      },
+    ])
+  }
 
   /* New thesis button */
   const { programs, isLoading: programsLoading } = !isStudentView
@@ -307,6 +308,7 @@ const PrethesisTable = ({
           columnHelper.display({
             id: 'select',
             size: 50,
+            enableSorting: false,
             header: () => {
               const allSelected =
                 eligibleRows.length > 0 &&
@@ -373,6 +375,7 @@ const PrethesisTable = ({
     columnHelper.accessor('program', {
       id: 'programId',
       size: 5,
+      enableSorting: !isStudentView,
       cell: (info) => {
         const data = info.getValue()
         return data ? (
@@ -396,6 +399,7 @@ const PrethesisTable = ({
     }),
     columnHelper.accessor('topic', {
       size: 800,
+      enableSorting: !isStudentView,
       cell: (info) => (
         <Typography variant="small">{info.getValue()}</Typography>
       ),
@@ -404,6 +408,7 @@ const PrethesisTable = ({
     }),
     columnHelper.accessor('authors', {
       size: 300,
+      enableSorting: !isStudentView,
       cell: (info) => (
         <Typography variant="small">
           {info
@@ -424,6 +429,7 @@ const PrethesisTable = ({
           columnHelper.accessor('supervisions', {
             id: 'supervisor',
             size: 250,
+            enableSorting: false,
             cell: (info) => (
               <Typography variant="small">
                 {info
@@ -441,6 +447,7 @@ const PrethesisTable = ({
           columnHelper.accessor('supervisions', {
             id: 'supervisionPercentage',
             size: 100,
+            enableSorting: false,
             cell: (info) => (
               <Typography variant="small">
                 {info
@@ -459,6 +466,7 @@ const PrethesisTable = ({
           columnHelper.accessor('graders', {
             id: 'graders',
             size: 200,
+            enableSorting: false,
             cell: (info) => (
               <Typography variant="small">
                 {info
@@ -477,6 +485,7 @@ const PrethesisTable = ({
       : []),
     columnHelper.accessor('status', {
       size: 50,
+      enableSorting: !isStudentView,
       cell: (info) => {
         const status = info.getValue() as keyof typeof StatusLocale
         const isEthesisStudentStarted =
@@ -540,6 +549,7 @@ const PrethesisTable = ({
           columnHelper.accessor('milestone', {
             id: 'milestonePercentage',
             size: 100,
+            enableSorting: !isStudentView,
             cell: (info) => {
               const thesis = info.row.original
               const milestone = thesis?.milestone
@@ -574,6 +584,7 @@ const PrethesisTable = ({
       ? [
           columnHelper.accessor('ethesisDate', {
             size: 30,
+            enableSorting: !isStudentView,
             cell: (info) => {
               const val = info.getValue()
               return (
@@ -589,6 +600,7 @@ const PrethesisTable = ({
       : []),
     columnHelper.accessor('startDate', {
       size: 30,
+      enableSorting: !isStudentView,
       cell: (info) => (
         <Typography variant="small">
           {dayjs(info.getValue()).format('YYYY-MM-DD')}
@@ -599,6 +611,7 @@ const PrethesisTable = ({
     }),
     columnHelper.accessor('targetDate', {
       size: 30,
+      enableSorting: !isStudentView,
       cell: (info) => (
         <Typography variant="small">
           {dayjs(info.getValue()).format('YYYY-MM-DD')}
@@ -639,6 +652,7 @@ const PrethesisTable = ({
           columnHelper.accessor('waysOfWorkingValidUntil', {
             id: 'waysOfWorkingValidUntil',
             size: 30,
+            enableSorting: !isStudentView,
             cell: (info) => (
               <Typography variant="small">
                 {info.getValue()
@@ -673,17 +687,17 @@ const PrethesisTable = ({
           }),
         ]
       : []),
-    columnHelper.accessor('supervisions', {
+    columnHelper.display({
+      id: 'actions',
       size: 0,
+      enableSorting: false,
       cell: (info) => (
         <Stack direction="row">
-          {info
-            .getValue()
-            .filter(
-              (supervision) =>
-                supervision.user?.id == user?.id &&
-                supervision.isPrimarySupervisor
-            ).length != 0 ? (
+          {info.row.original.supervisions.filter(
+            (supervision) =>
+              supervision.user?.id == user?.id &&
+              supervision.isPrimarySupervisor
+          ).length != 0 ? (
             <Tooltip title={t('thesesPage:primarySupervisorTooltip')}>
               <IconButton>
                 <Star
@@ -742,539 +756,341 @@ const PrethesisTable = ({
   const selectedTheses = Array.from(bulkSelection.values())
   const selectedApprovable = selectedTheses.filter((t) => canApprove(t, user))
 
-  return (
-    <Stack
-      sx={{
-        overflowX: 'scoll',
-        p: 2,
-      }}
-    >
-      <Stack direction="column" sx={{ mb: 2 }}>
-        {/* Row 1: Main Views and Actions */}
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-            borderBottom: 1,
-            borderColor: 'divider',
-            mb: 2,
-          }}
-        >
-          {/* Base View Tabs */}
-          {!isStudentView &&
-          filterViews &&
-          Array.isArray(filterViews) &&
-          filterViews[0] ? (
-            <Tabs
-              value={activeBaseView}
-              onChange={(_, newValue) => {
-                const viewData = filterViews[0].items[newValue]
-                setActiveBaseView(newValue)
-                setActiveToggles([])
-                setActiveMilestoneFilter('all')
-                setSortedDir(viewData.sortingModel[0]['sort'])
-                setSortedField(viewData.sortingModel[0]['field'])
-                onSortingChange(viewData.sortingModel)
-                onFilterChange({
-                  items: getCombinedFilterItems(newValue, [], 'all'),
-                })
-                changePage(0)
-              }}
+  const toolbar = (
+    <>
+      {/* Row 1: Main Views and Actions */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          borderBottom: 1,
+          borderColor: 'divider',
+          mb: 2,
+        }}
+      >
+        {/* Base View Tabs */}
+        {!isStudentView &&
+        filterViews &&
+        Array.isArray(filterViews) &&
+        filterViews[0] ? (
+          <Tabs
+            value={activeBaseView}
+            onChange={(_, newValue) => {
+              const viewData = filterViews[0].items[newValue]
+              setActiveBaseView(newValue)
+              setActiveToggles([])
+              setActiveMilestoneFilter('all')
+
+              const newDir = viewData.sortingModel[0]['sort']
+              const newField = viewData.sortingModel[0]['field']
+              handleSortChange(newField, newDir)
+
+              onFilterChange({
+                items: getCombinedFilterItems(newValue, [], 'all'),
+              })
+              changePage(0)
+            }}
+            sx={{
+              minHeight: 'auto',
+              '& .MuiTabs-indicator': {
+                height: 3,
+                borderTopLeftRadius: 3,
+                borderTopRightRadius: 3,
+              },
+            }}
+          >
+            {Object.keys(filterViews[0].items).map((filterView) => (
+              <Tab
+                key={filterView}
+                value={filterView}
+                label={t(`thesesTableToolbar:filterViews:${filterView}:name`)}
+                sx={{
+                  textTransform: 'none',
+                  minHeight: 'auto',
+                  py: 1.5,
+                  px: 3,
+                  fontSize: '0.95rem',
+                  fontWeight: activeBaseView === filterView ? 700 : 500,
+                }}
+              />
+            ))}
+          </Tabs>
+        ) : (
+          <Box />
+        )}
+
+        {/* Global Actions */}
+        <Stack direction="row" sx={{ gap: 2, pb: 1, alignItems: 'center' }}>
+          {selectedApprovable.length > 0 && (
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
               sx={{
-                minHeight: 'auto',
-                '& .MuiTabs-indicator': {
-                  height: 3,
-                  borderTopLeftRadius: 3,
-                  borderTopRightRadius: 3,
-                },
+                fontSize: '12px',
+                height: 24,
+                px: 2,
+                fontWeight: 700,
+                boxShadow: 0,
               }}
+              onClick={() => setPendingAction('approve')}
             >
-              {Object.keys(filterViews[0].items).map((filterView) => (
-                <Tab
-                  key={filterView}
-                  value={filterView}
-                  label={t(`thesesTableToolbar:filterViews:${filterView}:name`)}
-                  sx={{
-                    textTransform: 'none',
-                    minHeight: 'auto',
-                    py: 1.5,
-                    px: 3,
-                    fontSize: '0.95rem',
-                    fontWeight: activeBaseView === filterView ? 700 : 500,
-                  }}
-                />
-              ))}
-            </Tabs>
-          ) : (
-            <Box />
+              {t('approveButton', 'Approve')} ({selectedApprovable.length})
+            </Button>
           )}
 
-          {/* Global Actions */}
-          <Stack direction="row" sx={{ gap: 2, pb: 1, alignItems: 'center' }}>
-            {selectedApprovable.length > 0 && (
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                sx={{
-                  fontSize: '12px',
-                  height: 24,
-                  px: 2,
-                  fontWeight: 700,
-                  boxShadow: 0,
-                }}
-                onClick={() => setPendingAction('approve')}
-              >
-                {t('approveButton', 'Approve')} ({selectedApprovable.length})
-              </Button>
-            )}
+          {!noAddThesisButton && !showHiddenNewThesisButton && (
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                fontSize: '12px',
+                height: 24,
+                px: 2,
+                fontWeight: 700,
+                boxShadow: 0,
+              }}
+              onClick={handleNewThesisClick}
+            >
+              {t('thesesTableToolbar:newThesisButton')}
+            </Button>
+          )}
 
-            {!noAddThesisButton && !showHiddenNewThesisButton && (
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  fontSize: '12px',
-                  height: 24,
-                  px: 2,
-                  fontWeight: 700,
-                  boxShadow: 0,
-                }}
-                onClick={handleNewThesisClick}
+          {!noAddThesisButton && showHiddenNewThesisButton && (
+            <Box>
+              <IconButton onClick={handleMenuClick} size="small">
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={openMenu}
+                onClose={handleMenuClose}
               >
-                {t('thesesTableToolbar:newThesisButton')}
-              </Button>
-            )}
-
-            {!noAddThesisButton && showHiddenNewThesisButton && (
-              <Box>
-                <IconButton onClick={handleMenuClick} size="small">
-                  <MoreVertIcon />
-                </IconButton>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={openMenu}
-                  onClose={handleMenuClose}
+                <MenuItem
+                  onClick={() => {
+                    handleMenuClose()
+                    handleNewThesisClick()
+                  }}
                 >
-                  <MenuItem
-                    onClick={() => {
-                      handleMenuClose()
-                      handleNewThesisClick()
+                  {t('thesesTableToolbar:newThesisButton')}
+                </MenuItem>
+              </Menu>
+            </Box>
+          )}
+
+          {!hideFiltering && (
+            <PrethesisHelp
+              text={t('help:table')}
+              sx={{ height: 24 }}
+            ></PrethesisHelp>
+          )}
+        </Stack>
+      </Box>
+
+      {/* Row 2: Table Filters and Search */}
+      <Stack
+        direction="row"
+        sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+      >
+        {/* Table Data Filters */}
+        <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
+          {!isStudentView &&
+            filterViews &&
+            Array.isArray(filterViews) &&
+            filterViews[1] && (
+              <Stack
+                direction="row"
+                sx={{ gap: 1, alignItems: 'center', flexWrap: 'wrap' }}
+              >
+                {filterViews[1].label && (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 600,
+                      color: 'text.secondary',
+                      mr: 0.5,
                     }}
                   >
-                    {t('thesesTableToolbar:newThesisButton')}
-                  </MenuItem>
-                </Menu>
-              </Box>
-            )}
-
-            {!hideFiltering && (
-              <PrethesisHelp
-                text={t('help:table')}
-                sx={{ height: 24 }}
-              ></PrethesisHelp>
-            )}
-          </Stack>
-        </Box>
-
-        {/* Row 2: Table Filters and Search */}
-        <Stack
-          direction="row"
-          sx={{ justifyContent: 'space-between', alignItems: 'center' }}
-        >
-          {/* Table Data Filters */}
-          <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
-            {!isStudentView &&
-              filterViews &&
-              Array.isArray(filterViews) &&
-              filterViews[1] && (
-                <Stack
-                  direction="row"
-                  sx={{ gap: 1, alignItems: 'center', flexWrap: 'wrap' }}
-                >
-                  {filterViews[1].label && (
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontWeight: 600,
-                        color: 'text.secondary',
-                        mr: 0.5,
-                      }}
-                    >
-                      {filterViews[1].label}:
-                    </Typography>
-                  )}
-                  {Object.keys(filterViews[1].items).map((filterView) => {
-                    const isChecked = activeToggles.includes(filterView)
-                    return (
-                      <Chip
-                        key={filterView}
-                        {...(isChecked && {
-                          icon: <Check fontSize="small" />,
-                        })}
-                        label={t(
-                          `thesesTableToolbar:filterViews:${filterView}:name`
-                        )}
-                        color={isChecked ? 'primary' : 'default'}
-                        variant={isChecked ? 'filled' : 'outlined'}
-                        onClick={() => {
-                          let newToggles = [...activeToggles]
-                          if (isChecked) {
-                            newToggles = newToggles.filter(
-                              (t) => t !== filterView
-                            )
-                          } else {
-                            newToggles.push(filterView)
-                          }
-                          setActiveToggles(newToggles)
-                          onFilterChange({
-                            items: getCombinedFilterItems(
-                              activeBaseView,
-                              newToggles,
-                              activeMilestoneFilter
-                            ),
-                          })
-                          changePage(0)
-                        }}
-                      />
-                    )
-                  })}
-                  {activeToggles.length > 0 && (
-                    <IconButton
-                      size="small"
+                    {filterViews[1].label}:
+                  </Typography>
+                )}
+                {Object.keys(filterViews[1].items).map((filterView) => {
+                  const isChecked = activeToggles.includes(filterView)
+                  return (
+                    <Chip
+                      key={filterView}
+                      {...(isChecked && {
+                        icon: <Check fontSize="small" />,
+                      })}
+                      label={t(
+                        `thesesTableToolbar:filterViews:${filterView}:name`
+                      )}
+                      color={isChecked ? 'primary' : 'default'}
+                      variant={isChecked ? 'filled' : 'outlined'}
                       onClick={() => {
-                        setActiveToggles([])
+                        let newToggles = [...activeToggles]
+                        if (isChecked) {
+                          newToggles = newToggles.filter(
+                            (t) => t !== filterView
+                          )
+                        } else {
+                          newToggles.push(filterView)
+                        }
+                        setActiveToggles(newToggles)
                         onFilterChange({
                           items: getCombinedFilterItems(
                             activeBaseView,
-                            [],
+                            newToggles,
                             activeMilestoneFilter
                           ),
                         })
                         changePage(0)
                       }}
-                      sx={{ padding: '2px' }}
-                    >
-                      <Close fontSize="small" />
-                    </IconButton>
-                  )}
-                </Stack>
-              )}
-
-            {!isStudentView && availableMilestones.length > 0 && (
-              <FormControl size="small" sx={{ minWidth: 150 }}>
-                <InputLabel id="milestone-filter-label">
-                  {t('thesesTableToolbar:milestone')}
-                </InputLabel>
-                <Select
-                  labelId="milestone-filter-label"
-                  id="milestone-filter"
-                  value={activeMilestoneFilter}
-                  label={t('thesesTableToolbar:milestone')}
-                  onChange={(e) => {
-                    const val = e.target.value as string
-                    setActiveMilestoneFilter(val)
-                    onFilterChange({
-                      items: getCombinedFilterItems(
-                        activeBaseView,
-                        activeToggles,
-                        val
-                      ),
-                    })
-                    changePage(0)
-                  }}
-                >
-                  <MenuItem value="all">{t('thesesTableToolbar:all')}</MenuItem>
-                  {Array.from(
-                    new Set([
-                      ...availableMilestones,
-                      ...(activeMilestoneFilter !== 'all'
-                        ? [Number(activeMilestoneFilter)]
-                        : []),
-                    ])
+                    />
                   )
-                    .sort((a, b) => a - b)
-                    .map((milestoneVal) => (
-                      <MenuItem key={milestoneVal} value={String(milestoneVal)}>
-                        {milestoneVal}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-            )}
-          </Stack>
-
-          {/* Search Input and Export */}
-          {!isStudentView && (
-            <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
-              {onExportCsv && (
-                <Tooltip title={t('common:exportCsvTooltip')} placement="top">
-                  <Button
-                    variant="outlined"
-                    color="secondary"
+                })}
+                {activeToggles.length > 0 && (
+                  <IconButton
                     size="small"
-                    startIcon={<Download />}
-                    sx={{
-                      height: 36,
-                      fontWeight: 600,
-                      textTransform: 'none',
-                    }}
-                    onClick={onExportCsv}
-                  >
-                    {t('common:exportCsv')}
-                  </Button>
-                </Tooltip>
-              )}
-
-              <TextField
-                size="small"
-                placeholder={t('thesesTableToolbar:search')}
-                variant="outlined"
-                onChange={(e) => {
-                  if (debounceTimeout != null) {
-                    clearTimeout(debounceTimeout)
-                  }
-                  setDebounceTimeout(
-                    setTimeout(() => {
-                      onSearch(e.target.value)
+                    onClick={() => {
+                      setActiveToggles([])
+                      onFilterChange({
+                        items: getCombinedFilterItems(
+                          activeBaseView,
+                          [],
+                          activeMilestoneFilter
+                        ),
+                      })
                       changePage(0)
-                    }, 400)
-                  )
+                    }}
+                    sx={{ padding: '2px' }}
+                  >
+                    <Close fontSize="small" />
+                  </IconButton>
+                )}
+              </Stack>
+            )}
+
+          {!isStudentView && availableMilestones.length > 0 && (
+            <FormControl size="small" sx={{ minWidth: 150 }}>
+              <InputLabel id="milestone-filter-label">
+                {t('thesesTableToolbar:milestone')}
+              </InputLabel>
+              <Select
+                labelId="milestone-filter-label"
+                id="milestone-filter"
+                value={activeMilestoneFilter}
+                label={t('thesesTableToolbar:milestone')}
+                onChange={(e) => {
+                  const val = e.target.value as string
+                  setActiveMilestoneFilter(val)
+                  onFilterChange({
+                    items: getCombinedFilterItems(
+                      activeBaseView,
+                      activeToggles,
+                      val
+                    ),
+                  })
+                  changePage(0)
                 }}
-              />
-            </Stack>
+              >
+                <MenuItem value="all">{t('thesesTableToolbar:all')}</MenuItem>
+                {Array.from(
+                  new Set([
+                    ...availableMilestones,
+                    ...(activeMilestoneFilter !== 'all'
+                      ? [Number(activeMilestoneFilter)]
+                      : []),
+                  ])
+                )
+                  .sort((a, b) => a - b)
+                  .map((milestoneVal) => (
+                    <MenuItem key={milestoneVal} value={String(milestoneVal)}>
+                      {milestoneVal}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
           )}
         </Stack>
-      </Stack>
-      <TableContainer>
-        <Table
-          size="small"
-          sx={{
-            tableLayout: 'auto',
-          }}
-        >
-          <TableHead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableCell
-                    key={header.id}
-                    style={{ width: `${header.getSize()}px` }}
-                  >
-                    <Stack
-                      direction="row"
-                      sx={{
-                        alignItems: 'center',
-                        gap: 1,
-                      }}
-                    >
-                      <Typography
-                        sx={{
-                          fontWeight: 'bold',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </Typography>
-                      {![
-                        'supervisions',
-                        'supervisor',
-                        'supervisionPercentage',
-                        'graders',
-                        'select',
-                      ].includes(header.id) &&
-                        !isStudentView && (
-                          <IconButton
-                            sx={{
-                              opacity: sortedField == header.id ? 1 : 0.3,
-                              ':hover': {
-                                opacity: 0.5,
-                              },
-                            }}
-                            onClick={() => {
-                              const sortingDir =
-                                sortedField == header.id
-                                  ? sortedDir == 'asc'
-                                    ? 'desc'
-                                    : 'asc'
-                                  : 'asc'
-                              setSortedField(header.id)
-                              setSortedDir(sortingDir)
-                              onSortingChange([
-                                {
-                                  field: header.id,
-                                  sort: sortingDir,
-                                },
-                              ])
-                            }}
-                          >
-                            {sortedField == header.id ? (
-                              sortedDir == 'desc' ? (
-                                <ArrowDownward></ArrowDownward>
-                              ) : (
-                                <ArrowUpward></ArrowUpward>
-                              )
-                            ) : (
-                              <Sort></Sort>
-                            )}
-                          </IconButton>
-                        )}
-                    </Stack>
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              table.getRowModel().rows.length > 0 ? (
-                table.getRowModel().rows.map((row, index) => (
-                  <TableRow key={index}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} sx={{ position: 'relative' }}>
-                        <Box sx={{ visibility: 'hidden' }}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </Box>
-                        <Box
-                          sx={{
-                            position: 'absolute',
-                            top: 0,
-                            bottom: 0,
-                            left: 16,
-                            right: 16,
-                            display: 'flex',
-                            alignItems: 'center',
-                          }}
-                        >
-                          {cell.column.id === 'select' ? (
-                            <Checkbox
-                              size="small"
-                              sx={{ visibility: 'hidden' }}
-                            />
-                          ) : (
-                            <Skeleton
-                              variant="rectangular"
-                              height={32}
-                              width="100%"
-                              sx={{ borderRadius: 1 }}
-                            />
-                          )}
-                        </Box>
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                Array.from(new Array(skeletonCount)).map((_, index) => (
-                  <TableRow key={index}>
-                    {table.getVisibleLeafColumns().map((column) => (
-                      <TableCell key={column.id}>
-                        {column.id === 'select' ? (
-                          <Checkbox
-                            size="small"
-                            sx={{ visibility: 'hidden' }}
-                          />
-                        ) : (
-                          <Skeleton
-                            variant="rectangular"
-                            height={32}
-                            sx={{ borderRadius: 1 }}
-                          />
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              )
-            ) : rows.length > 0 ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  onClick={() => {
-                    onSelection({
-                      type: 'include',
-                      ids: new Set([row.original.id]),
-                    })
-                  }}
-                  selected={
-                    isSelected(row.original.id) ||
-                    bulkSelection.has(row.original.id)
-                  }
-                  sx={{
-                    cursor: 'pointer',
-                    ':hover': {
-                      backgroundColor: '#e7e7e7',
-                    },
-                  }}
-                >
-                  {row.getVisibleCells().map((cell) => {
-                    const isTextColumn = ![
-                      'select',
-                      'supervisions',
-                      'status',
-                    ].includes(cell.column.id)
-                    const metaProps: any = cell.column.columnDef.meta
-                      ? cell.column.columnDef.meta.getCellContext(
-                          cell.getContext()
-                        )
-                      : {}
 
-                    return (
-                      <TableCell
-                        key={cell.id}
-                        {...metaProps}
-                        sx={{
-                          ...(metaProps?.sx || {}),
-                          opacity:
-                            row.original.isIdle && isTextColumn ? 0.5 : 1,
-                        }}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    )
-                  })}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={1000} sx={{ textAlign: 'center' }}>
-                  {' '}
-                  <Typography>{t('thesesPage:noRows')}</Typography>
-                </TableCell>
-              </TableRow>
+        {/* Search Input and Export */}
+        {!isStudentView && (
+          <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
+            {onExportCsv && (
+              <Tooltip title={t('common:exportCsvTooltip')} placement="top">
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  size="small"
+                  startIcon={<Download />}
+                  sx={{
+                    height: 36,
+                    fontWeight: 600,
+                    textTransform: 'none',
+                  }}
+                  onClick={onExportCsv}
+                >
+                  {t('common:exportCsv')}
+                </Button>
+              </Tooltip>
             )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        count={totalCount ?? previousData.current.totalCount}
-        rowsPerPage={pageSize}
-        page={pageNumber}
-        onPageChange={(_event, page) => {
-          changePage(page)
+
+            <TextField
+              size="small"
+              placeholder={t('thesesTableToolbar:search')}
+              variant="outlined"
+              onChange={(e) => {
+                if (debounceTimeout != null) {
+                  clearTimeout(debounceTimeout)
+                }
+                setDebounceTimeout(
+                  setTimeout(() => {
+                    onSearch(e.target.value)
+                    changePage(0)
+                  }, 400)
+                )
+              }}
+            />
+          </Stack>
+        )}
+      </Stack>
+    </>
+  )
+
+  return (
+    <>
+      <PrethesisTable
+        table={table}
+        isLoading={isLoading}
+        skeletonCount={skeletonCount}
+        onRowClick={(row) => {
+          onSelection({
+            type: 'include',
+            ids: new Set([row.original.id]),
+          })
         }}
-        onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          try {
-            const new_row_count = parseInt(event.target.value, 10)
-            setPageSize(new_row_count)
-            onPaginationChange({ page: pageNumber, pageSize: new_row_count })
-          } catch {
-            console.log('Page size change error')
-          }
+        isSelected={(row: any) =>
+          isSelected(row.id) || bulkSelection.has(row.id)
+        }
+        isRowDimmed={(row) => !!row.original.isIdle}
+        pagination={{
+          totalCount: totalCount ?? previousData.current.totalCount,
+          page: pageNumber,
+          pageSize: pageSize,
+          onPageChange: changePage,
+          onPageSizeChange: (newPageSize) => {
+            setPageSize(newPageSize)
+            onPaginationChange({ page: pageNumber, pageSize: newPageSize })
+          },
         }}
-        component="div"
+        sorting={{
+          sortedField,
+          sortedDir,
+          onSortChange: handleSortChange,
+        }}
+        toolbar={toolbar}
       />
       <Popup
         open={pendingAction !== null}
@@ -1354,8 +1170,8 @@ const PrethesisTable = ({
           </>
         )}
       </Popup>
-    </Stack>
+    </>
   )
 }
 
-export default PrethesisTable
+export default ThesisTable
