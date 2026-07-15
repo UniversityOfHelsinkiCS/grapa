@@ -10,6 +10,7 @@ export const userFields = [
   'studentNumber',
   'iamGroups',
   'isExternal',
+  'departmentId',
 ]
 
 export const restrictedUserFields = [

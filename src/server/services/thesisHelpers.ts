@@ -16,12 +16,18 @@ import {
   Author,
   Approver,
   StudyTrackManagement,
+  Department,
 } from '../db/models'
 import {
   getSecondaryStudyTrackIds,
   getPrimaryStudyTrackId,
 } from '../util/studyTracks'
-import { ThesisData, User as UserType, SupervisionData } from '../types'
+import {
+  ThesisData,
+  User as UserType,
+  SupervisionData,
+  ThesisStatistics,
+} from '../types'
 import logger from '../util/logger'
 
 import { Literal } from 'sequelize/types/utils'
@@ -868,6 +874,123 @@ export const getAvailableActionNeeded = async (
     lastMilestone: !!hasLastMilestone,
     ethesisReadyStudentStarted: !!hasEthesisReadyStudentStarted,
   }
+}
+
+const HALF_YEAR = (1000 * 60 * 60 * 24 * 365) / 2
+const isWithinLastHalfYear = (date: Date) =>
+  date.getTime() > Date.now() - HALF_YEAR
+
+export const calculateThesisStatistics = async (
+  theses: ThesisData[]
+): Promise<ThesisStatistics[]> => {
+  const departments = await Department.findAll({
+    attributes: ['id', 'name'],
+  })
+
+  const statistics: ThesisStatistics[] = []
+
+  theses.forEach((thesis) => {
+    const { status, startDate, targetDate } = thesis
+    const targetDateObject = targetDate
+      ? new Date(targetDate as string)
+      : new Date()
+    const startDateObject = new Date(startDate)
+
+    function timeDiff(first: Date, second: Date) {
+      return (first.getTime() - second.getTime()) / (1000 * 60 * 60 * 24)
+    }
+
+    thesis.supervisions.forEach((supervision) => {
+      const { user, isPrimarySupervisor, isExternal } = supervision
+
+      // Ignore external supervisors and missing users
+      if (!user || isExternal) return
+
+      const supervisor = statistics.find((s) => s.supervisor.id === user.id)
+      if (supervisor) {
+        supervisor.statusCounts[status] =
+          (supervisor.statusCounts[status] || 0) + 1
+        supervisor.startedWithinHalfYearCount += isWithinLastHalfYear(
+          new Date(startDate)
+        )
+          ? 1
+          : 0
+        supervisor.primarySupervisionsCount +=
+          isPrimarySupervisor && status == 'IN_PROGRESS' ? 1 : 0
+        supervisor.lateSupervisions.push(
+          status != 'COMPLETED' ? timeDiff(new Date(), targetDateObject) : 0
+        )
+        if (status === 'COMPLETED')
+          supervisor.completedSupervisions.push(
+            timeDiff(targetDateObject, startDateObject)
+          )
+      } else {
+        const department = departments.find((d) => d.id === user.departmentId)
+
+        if (!department) {
+          return
+        }
+
+        statistics.push({
+          department,
+          supervisor: {
+            id: user.id,
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            departmentId: user.departmentId,
+          },
+          statusCounts: {
+            DRAFT: status === 'DRAFT' ? 1 : 0,
+            SUGGESTED: status === 'SUGGESTED' ? 1 : 0,
+            PLANNING: status === 'PLANNING' ? 1 : 0,
+            IN_PROGRESS: status === 'IN_PROGRESS' ? 1 : 0,
+            COMPLETED: status === 'COMPLETED' ? 1 : 0,
+            CANCELLED: status === 'CANCELLED' ? 1 : 0,
+            ETHESIS_SENT: status === 'ETHESIS_SENT' ? 1 : 0,
+            ETHESIS: status === 'ETHESIS' ? 1 : 0,
+          },
+          startedWithinHalfYearCount: isWithinLastHalfYear(startDateObject)
+            ? 1
+            : 0,
+          primarySupervisionsCount:
+            isPrimarySupervisor && status == 'IN_PROGRESS' ? 1 : 0,
+          lateSupervisions: [
+            status != 'COMPLETED' ? timeDiff(new Date(), targetDateObject) : 0,
+          ],
+          lateSupervisionsCount: 0,
+          avgLateSupervision: 0,
+          avgCompletedSupervision: 0,
+          completedSupervisions:
+            status === 'COMPLETED'
+              ? [timeDiff(targetDateObject, startDateObject)]
+              : [],
+        })
+      }
+    })
+  })
+
+  return statistics.map((supervisor) => {
+    const current = {
+      ...supervisor,
+      lateSupervisions: supervisor.lateSupervisions.filter(
+        (x: number) => x > 30
+      ),
+    }
+    current['lateSupervisionsCount'] = current.lateSupervisions.length
+    current['avgLateSupervision'] =
+      current.lateSupervisions.length > 0
+        ? current.lateSupervisions.reduce((a, b) => a + b) /
+          current.lateSupervisions.length
+        : 0
+    current['avgCompletedSupervision'] =
+      current.completedSupervisions.length > 0
+        ? current.completedSupervisions.reduce((a, b) => a + b) /
+          current.completedSupervisions.length
+        : 0
+    return current
+  })
 }
 
 export const escapeCsv = (str: unknown) => {

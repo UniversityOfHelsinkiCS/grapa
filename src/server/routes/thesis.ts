@@ -14,9 +14,14 @@ import { sequelize } from '../db/connection'
 import { validateThesisDataMiddleware } from '../validators/thesis'
 import { getPrimaryStudyTrackId } from '../util/studyTracks'
 
-import { getPaginatedTheses, createThesis } from '../services/thesisService'
+import {
+  getPaginatedTheses,
+  createThesis,
+  getThesesForStatistics,
+} from '../services/thesisService'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import {
+  calculateThesisStatistics,
   handleGradersChangeEventLog,
   handleStatusChangeEventLog,
   handleSupervisionsChangeEventLog,
@@ -76,6 +81,21 @@ thesisRouter.get(
   async (req: ServerGetRequest, res: Response) => {
     const result = await getPaginatedTheses(getPaginatedQuery(req))
     return res.send(result)
+  }
+)
+
+thesisRouter.get(
+  '/statistics',
+  ethesisUserHandler,
+  getEthesisAdminStatus,
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: ServerGetRequest, res: Response) => {
+    const query = getPaginatedQuery(req)
+    const theses = await getThesesForStatistics(query)
+
+    const statistics = await calculateThesisStatistics(theses)
+
+    res.status(200).send(statistics)
   }
 )
 

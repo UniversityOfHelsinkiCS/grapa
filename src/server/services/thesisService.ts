@@ -226,6 +226,93 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
   }
 }
 
+export const getThesesForStatistics = async (
+  params: GetPaginatedThesesParams
+) => {
+  const {
+    currentUser,
+    onlyAuthored,
+    onlySupervised,
+    onlySeminarSupervised,
+    language = 'en',
+    programId,
+    studyTrackId,
+    programNamePartial,
+    topicPartial,
+    authorsPartial,
+    status,
+    departmentId,
+    search,
+  } = params
+
+  if (departmentId && !currentUser.isAdmin) {
+    const depAdmin = await DepartmentAdmin.findOne({
+      where: { userId: currentUser.id, departmentId },
+    })
+
+    if (!depAdmin) {
+      throw new CustomAuthorizationError(
+        'Access denied: insufficient permissions for this department',
+        {}
+      )
+    }
+  }
+
+  const formattedSearch = formatSearchQuery(search)
+
+  const baseWhere = await buildThesisWhereClause({
+    programId,
+    studyTrackId,
+    departmentId,
+    programNamePartial,
+    topicPartial,
+    authorsPartial,
+    status,
+    language,
+    actionUser: currentUser,
+    onlyAuthored: String(onlyAuthored) === 'true',
+    onlySupervised: String(onlySupervised) === 'true',
+    onlySeminarSupervised: String(onlySeminarSupervised) === 'true',
+    search: formattedSearch || undefined,
+  })
+
+  const rows = await Thesis.findAll({
+    where: baseWhere,
+    attributes: ['id', 'status', 'startDate', 'targetDate'],
+    include: [
+      {
+        model: Supervision,
+        as: 'supervisions',
+        attributes: ['id', 'isPrimarySupervisor', 'percentage'],
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: [
+              'id',
+              'username',
+              'firstName',
+              'lastName',
+              'email',
+              'departmentId',
+            ],
+            where: departmentId
+              ? { departmentId, isExternal: false }
+              : { isExternal: false },
+          },
+        ],
+      },
+    ],
+    bind: {
+      language,
+      search: formattedSearch,
+      authorSearch: authorsPartial ? `%${authorsPartial.trim()}%` : null,
+    },
+  })
+
+  return rows.map((t) => t.toJSON()) as ThesisData[]
+}
+
 export const createThesis = async (thesisData: ThesisData, t: Transaction) => {
   const createdThesis = await Thesis.create(thesisData, { transaction: t })
 

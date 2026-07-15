@@ -73,10 +73,17 @@ describe('thesis router', () => {
         expect(response.status).toEqual(403)
       })
     })
+
+    describe('GET /api/theses/statistics', () => {
+      it('should return 403', async () => {
+        const response = await request.get('/api/theses/statistics')
+        expect(response.status).toEqual(403)
+      })
+    })
   })
 
   describe('when there are no theses', () => {
-    describe('GET /api/theses', () => {
+    describe('GET /api/theses/paginate', () => {
       it('should return 200 and an empty array', async () => {
         const response = await request
           .get('/api/theses/paginate')
@@ -93,6 +100,16 @@ describe('thesis router', () => {
             suggested: false,
           },
         })
+      })
+    })
+
+    describe('GET /api/theses/statistics', () => {
+      it('should return 200 and an empty array', async () => {
+        const response = await request
+          .get('/api/theses/statistics')
+          .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
+        expect(response.status).toEqual(200)
+        expect(response.body).toEqual([])
       })
     })
   })
@@ -5408,6 +5425,33 @@ describe('thesis router', () => {
           expect(response.status).toEqual(200)
           expect(response.body).toHaveLength(1)
           expect(response.body[0].type).toEqual('THESIS_CREATED')
+        })
+      })
+    })
+
+    describe('GET /api/theses/statistics', () => {
+      describe('when the user is an admin', () => {
+        it('should return 200 and the statistics', async () => {
+          const response = await request
+            .get('/api/theses/statistics')
+            .set({ uid: 'hy-person-123', hygroupcn: 'grp-toska' })
+          expect(response.status).toEqual(200)
+          expect(response.body).toBeInstanceOf(Array)
+          expect(response.body).toHaveLength(2)
+          expect(response.body[0]).toHaveProperty('supervisor')
+          expect(response.body[0]).toHaveProperty('statusCounts')
+          expect(response.body[0].statusCounts).toHaveProperty('PLANNING')
+        })
+      })
+
+      describe('when the user is a teacher-supervisor', () => {
+        it('should return 200 and the statistics', async () => {
+          const response = await request
+            .get('/api/theses/statistics')
+            .set({ uid: user1.id, hygroupcn: 'hy-employees' })
+          expect(response.status).toEqual(200)
+          expect(response.body).toBeInstanceOf(Array)
+          expect(response.body).toHaveLength(2)
         })
       })
     })
