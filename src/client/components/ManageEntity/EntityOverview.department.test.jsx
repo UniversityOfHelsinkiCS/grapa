@@ -66,7 +66,7 @@ jest.unstable_mockModule(
 )
 
 jest.unstable_mockModule(
-  './src/client/components/ManageEntity/DepartmentStatistics',
+  './src/client/components/ManageEntity/Statistics',
   () => ({
     default: jest.fn(({ filteringDepartmentId, hideTitle }) => (
       <div data-testid="department-statistics">{`${filteringDepartmentId}-${String(hideTitle)}`}</div>
