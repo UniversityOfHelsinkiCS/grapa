@@ -38,6 +38,7 @@ import { useSingleThesis } from '../../hooks/useTheses'
 
 import { BASE_PATH, THESIS_STATUSES } from '../../../config'
 import EventsView from '../EventsView/EventsView'
+import EditTopicModal from './EditTopicModal'
 import { useState } from 'react'
 import {
   Bedtime,
@@ -429,6 +430,7 @@ const ViewThesisFooter = (
     'approve' | 'sendDraft' | 'wakeUp' | 'reject' | null
   >(null)
 
+  const [editTopicModalOpen, setEditTopicModalOpen] = useState(false)
   const [ethesisDialogOpen, setEthesisDialogOpen] = useState(false)
   const [ethesisAdminModalOpen, setEthesisAdminModalOpen] = useState(false)
   const [ethesisTargetStatus, setEthesisTargetStatus] =
@@ -612,6 +614,23 @@ const ViewThesisFooter = (
                       onClick={() => handleEditThesis(thesis)}
                     >
                       {t('editButton')}
+                    </Button>
+                  )}
+
+                {isStudentView &&
+                  thesis.status === THESIS_STATUSES.IN_PROGRESS &&
+                  !hideEdit && (
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        fontSize: '12px',
+                        height: 24,
+                        px: 2,
+                        fontWeight: 600,
+                      }}
+                      onClick={() => setEditTopicModalOpen(true)}
+                    >
+                      {t('thesisForm:editTopicTitle', 'Edit topic')}
                     </Button>
                   )}
 
@@ -884,6 +903,23 @@ const ViewThesisFooter = (
                   : t('rejectButtonConfirmContent')}
           </Typography>
         </Popup>
+      )}
+
+      {thesis && editTopicModalOpen && (
+        <EditTopicModal
+          open={editTopicModalOpen}
+          initialTopic={thesis.topic}
+          onClose={() => setEditTopicModalOpen(false)}
+          onSubmit={async (newTopic) => {
+            await editThesis({
+              thesisId: thesis.id as string,
+              data: {
+                ...thesis,
+                topic: newTopic,
+              },
+            })
+          }}
+        />
       )}
 
       {thesis && (
