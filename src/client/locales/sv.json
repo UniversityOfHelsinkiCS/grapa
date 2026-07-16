@@ -290,6 +290,8 @@
   },
   "thesisForm": {
     "milestoneVersion": "Milstolpsversion",
+    "milestoneVersionWarning": "Observera: 'Milstolpsversion'-menyn ändrar milstolpsversionen, inte avhandlingens milstolpe. Använd den senaste versionen som standard.",
+    "milestoneVersionTooltip": "Använd den senaste versionen som standard",
     "version": "Version",
     "approverHeader": "Ansvarig",
     "approverInstructions": "Välj den programansvariga vars expertis ligger närmast avhandlingens ämne för att hantera processen.",

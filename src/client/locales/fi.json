@@ -288,6 +288,8 @@
   },
   "thesisForm": {
     "milestoneVersion": "Etappien versio",
+    "milestoneVersionWarning": "Huomio: 'Etappien versio' -valikko muuttaa etappien versiota, ei tutkielman etappia. Käytä oletuksena uusinta versiota.",
+    "milestoneVersionTooltip": "Käytä oletuksena uusinta versiota",
     "version": "Versio",
     "approverHeader": "Vastaava",
     "approverInstructions": "Valitse ohjelmavastaava, joka on lähimpänä tutkielman aihepiiriä, hallinnoimaan prosessia.",

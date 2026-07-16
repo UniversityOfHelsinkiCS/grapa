@@ -290,6 +290,8 @@
   },
   "thesisForm": {
     "milestoneVersion": "Milestone version",
+    "milestoneVersionWarning": "Please note: The 'Milestone version' dropdown changes the milestone version, not the current milestone. You should use the latest version by default.",
+    "milestoneVersionTooltip": "Use the latest version by default",
     "version": "Version",
     "approverHeader": "Program manager",
     "approverInstructions": "Select a program manager, whose expertise is closest to the topic of the thesis, to manage the process.",
