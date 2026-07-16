@@ -22,9 +22,7 @@ import {
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import {
   calculateThesisStatistics,
-  handleGradersChangeEventLog,
-  handleStatusChangeEventLog,
-  handleSupervisionsChangeEventLog,
+  handleChangeEventLogs,
   thesesToCsv,
 } from '../services/thesisHelpers'
 
@@ -235,24 +233,7 @@ thesisRouter.put(
 
       updatedThesis = await fetchThesisById(id as string, req.user, t)
 
-      await handleStatusChangeEventLog(
-        originalThesis,
-        updatedThesis,
-        req.user,
-        t
-      )
-      await handleGradersChangeEventLog(
-        originalThesis,
-        updatedThesis,
-        req.user,
-        t
-      )
-      await handleSupervisionsChangeEventLog(
-        originalThesis,
-        updatedThesis,
-        req.user,
-        t
-      )
+      await handleChangeEventLogs(originalThesis, updatedThesis, req.user, t)
       await handleStatusChangeEmail(originalThesis, updatedThesis, req.user)
     })
 

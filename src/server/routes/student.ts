@@ -27,11 +27,7 @@ import { validateThesisDataStudentMiddleware } from '../validators/thesis'
 
 import { handleAttachmentByLabel } from './thesisAttachmentHelpers'
 
-import {
-  handleGradersChangeEventLog,
-  handleStatusChangeEventLog,
-  handleSupervisionsChangeEventLog,
-} from '../services/thesisHelpers'
+import { handleChangeEventLogs } from '../services/thesisHelpers'
 
 import {
   handleStatusChangeEmail,
@@ -440,24 +436,7 @@ studentRouter.put(
       //@ts-expect-error it only need isAdmin in this case
       updatedThesis = await fetchThesisById(id as string, { isAdmin: true }, t)
 
-      await handleStatusChangeEventLog(
-        originalThesis,
-        updatedThesis,
-        req.user,
-        t
-      )
-      await handleGradersChangeEventLog(
-        originalThesis,
-        updatedThesis,
-        req.user,
-        t
-      )
-      await handleSupervisionsChangeEventLog(
-        originalThesis,
-        updatedThesis,
-        req.user,
-        t
-      )
+      await handleChangeEventLogs(originalThesis, updatedThesis, req.user, t)
       await handleStatusChangeEmail(originalThesis, updatedThesis, req.user)
     })
     res.send(updatedThesis)

@@ -638,6 +638,32 @@ export const handleSupervisionsChangeEventLog = async (
     )
   }
 }
+
+export const handleChangeEventLogs = async (
+  originalThesis: Thesis,
+  updatedThesis: Thesis,
+  actionUser: UserType,
+  transaction: Transaction
+) => {
+  await handleStatusChangeEventLog(
+    originalThesis,
+    updatedThesis,
+    actionUser,
+    transaction
+  )
+  await handleGradersChangeEventLog(
+    originalThesis,
+    updatedThesis,
+    actionUser,
+    transaction
+  )
+  await handleSupervisionsChangeEventLog(
+    originalThesis,
+    updatedThesis,
+    actionUser,
+    transaction
+  )
+}
 export const getGraderTitles = async (thesis: ThesisData | Thesis) => {
   const graderUsernames = thesis.graders
     .map((grader) => (grader.user.isExternal ? null : grader.user.username))
