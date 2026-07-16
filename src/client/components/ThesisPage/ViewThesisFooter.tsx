@@ -415,7 +415,10 @@ const ViewThesisFooter = (
     isStudentView,
     onlySeminarSupervised
   )
-  const { events } = useEvents({ thesisId, enabled: !isStudentView })
+  const { events } = useEvents({
+    thesisId,
+    enabled: !isStudentView && eventLogOpen,
+  })
   const { mutateAsync: changeThesisStatus } =
     useChangeThesisStatusMutation(isStudentView)
   const { mutateAsync: editThesis } = useEditThesisMutation(isStudentView)
@@ -790,39 +793,37 @@ const ViewThesisFooter = (
             isStudentView={isStudentView}
           />
 
-          {Boolean(events && events.length) &&
-            !isStudentView &&
-            currentUser.isAdmin && (
-              <Paper
-                elevation={0}
+          {!isStudentView && currentUser.isAdmin && (
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2,
+                mb: 2,
+                mt: 2,
+                border: '1px solid',
+                borderColor: 'divider',
+              }}
+            >
+              <Typography
+                component="legend"
                 sx={{
-                  p: 2,
-                  mb: 2,
-                  mt: 2,
-                  border: '1px solid',
-                  borderColor: 'divider',
+                  cursor: 'pointer',
+                  color: 'text.primary',
+                  display: 'flex',
+                  alignItems: 'flex-start',
                 }}
+                onClick={() => setEventLogOpen(!eventLogOpen)}
               >
-                <Typography
-                  component="legend"
-                  sx={{
-                    cursor: 'pointer',
-                    color: 'text.primary',
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                  }}
-                  onClick={() => setEventLogOpen(!eventLogOpen)}
-                >
-                  <span style={{ marginRight: '0.5rem' }}>
-                    {eventLogOpen ? <ExpandLess /> : <ExpandMore />}
-                  </span>
-                  {t('eventLog:title')}
-                </Typography>
-                <Collapse in={eventLogOpen}>
-                  <EventsView events={events} />
-                </Collapse>
-              </Paper>
-            )}
+                <span style={{ marginRight: '0.5rem' }}>
+                  {eventLogOpen ? <ExpandLess /> : <ExpandMore />}
+                </span>
+                {t('eventLog:title')}
+              </Typography>
+              <Collapse in={eventLogOpen}>
+                <EventsView events={events} />
+              </Collapse>
+            </Paper>
+          )}
         </Box>
       ) : (
         thesisLoading && <PreviewSkeleton />

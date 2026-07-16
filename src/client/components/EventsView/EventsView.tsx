@@ -134,9 +134,23 @@ const TopicChangedEntry = (entry: TopicChangedEvent) => {
 }
 
 interface EventsViewProps {
-  events: EventLogEntry[]
+  events?: EventLogEntry[]
 }
 const EventsView: React.FC<EventsViewProps> = ({ events }) => {
+  const { t } = useTranslation()
+
+  if (!events) {
+    return null
+  }
+
+  if (events.length === 0) {
+    return (
+      <Typography color="text.secondary" sx={{ py: 2 }}>
+        {t('eventLog:noLogs')}
+      </Typography>
+    )
+  }
+
   return (
     <Stack
       spacing={3}
