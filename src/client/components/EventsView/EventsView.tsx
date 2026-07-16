@@ -5,6 +5,7 @@ import {
   StatusChangedEvent,
   SupervisionsChangedEvent,
   ThesisCreatedEvent,
+  TopicChangedEvent,
 } from '@backend/types'
 import { Divider, Stack, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
@@ -118,6 +119,20 @@ const StatusChangedEntry = (entry: StatusChangedEvent) => {
   )
 }
 
+const TopicChangedEntry = (entry: TopicChangedEvent) => {
+  const { t } = useTranslation()
+
+  return (
+    <LogEntry
+      title={t('eventLog:thesisTopicUpdated', 'Thesis topic updated')}
+      entry={entry}
+      doneByString={getDoneByString(entry, t('eventLog:changedBy'))}
+    >
+      <BeforeDiffAfter beforeText={entry.data.from} afterText={entry.data.to} />
+    </LogEntry>
+  )
+}
+
 interface EventsViewProps {
   events: EventLogEntry[]
 }
@@ -156,6 +171,13 @@ const EventsView: React.FC<EventsViewProps> = ({ events }) => {
               <StatusChangedEntry
                 key={index}
                 {...(event as StatusChangedEvent)}
+              />
+            )
+          case 'THESIS_TOPIC_CHANGED':
+            return (
+              <TopicChangedEntry
+                key={index}
+                {...(event as TopicChangedEvent)}
               />
             )
           default:

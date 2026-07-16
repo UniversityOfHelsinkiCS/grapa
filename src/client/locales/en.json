@@ -73,6 +73,7 @@
     "supervisorsUpdated": "Supervisors updated",
     "gradersUpdated": "Graders updated",
     "thesisStatusUpdated": "Thesis status updated",
+    "thesisTopicUpdated": "Thesis topic updated",
     "noLogs": "No logs",
     "diffView": {
       "before": "Before change",
