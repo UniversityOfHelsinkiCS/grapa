@@ -626,6 +626,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     useIdleState: 'boolean',
     supervisorApproval: 'boolean',
     thesisProgramManagerNotRequired: 'boolean',
+    allowStatusChanges: 'boolean',
     isBachelorProgram: 'boolean',
   }
 

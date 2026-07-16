@@ -223,6 +223,13 @@
       "enableConfirm": "Are you sure you want to enable supervisor approval?",
       "disableConfirm": "Are you sure you want to disable supervisor approval?"
     },
+    "allowStatusChanges": {
+      "toggle": "Allow manual status changes",
+      "tooltip": "Allow staff to manually change the status of theses in this programme",
+      "confirmTitle": "Confirm manual status changes setting",
+      "enableConfirm": "Are you sure you want to allow manual status changes?",
+      "disableConfirm": "Are you sure you want to disable manual status changes?"
+    },
     "targetDates": {
       "fieldTitle": "Target date",
       "title": "Target dates",

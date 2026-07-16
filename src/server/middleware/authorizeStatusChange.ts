@@ -1,5 +1,5 @@
 import { NextFunction } from 'express'
-import { ServerPostRequest, ServerPutRequest } from '../types'
+import { ServerPostRequest, ServerPutRequest, ProgramOptions } from '../types'
 import {
   ProgramManagement,
   Program,
@@ -60,7 +60,8 @@ export const authorizeStatusChange = async (
   // and the user is trying to update it
   // to something else than PLANNING,
   // then we need to check permissions i.e.
-  // only allow it if the user is a program-manager or supervisor
+  // only allow it if the program allows status changes,
+  // or if the user is a program-manager, study-track-manager, or supervisor.
   const programsWhereUserIsManager = await ProgramManagement.findAll({
     attributes: ['programId'],
     where: { userId: actionUser.id },
@@ -76,6 +77,11 @@ export const authorizeStatusChange = async (
   const studyTrackIds = studyTrackManagement.map((stm) => stm.studyTrackId)
 
   let isSupervisor = false
+
+  const program = await Program.findByPk(req.body.programId)
+  const options = program?.options as ProgramOptions | undefined
+  const allowStatusChanges = !!options?.allowStatusChanges
+
   if (thesis) {
     const supervision = await Supervision.findOne({
       where: {
@@ -85,18 +91,18 @@ export const authorizeStatusChange = async (
     })
 
     if (supervision) {
-      const program = await Program.findByPk(req.body.programId)
-      const options = (program as any)?.options
       isSupervisor = !!options?.supervisorApproval
     }
   }
 
   if (
+    !allowStatusChanges &&
     !programIdsWhereUserIsManager.includes(req.body.programId) &&
     !studyTrackIds.includes(req.body.studyTrackId) &&
     !isSupervisor
   ) {
-    // if the user is not a program-manager, study-track-manager, or supervisor and the status
+    // if manual status changes are not allowed and the user is not a program-manager,
+    // study-track-manager, or supervisor, and the status
     // is changed or the thesis a new one throw an Authorization error
     if (!thesis || thesis.status !== req.body.status) {
       throw new CustomAuthorizationError(

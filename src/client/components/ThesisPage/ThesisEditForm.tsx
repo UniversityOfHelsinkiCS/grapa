@@ -169,11 +169,17 @@ const ThesisEditForm: FC<{
         )
       : []
 
+  const allowStatusChanges = Boolean(
+    selectedProgram?.options?.allowStatusChanges
+  )
+  const canChangeStatus = user.isAdmin || allowStatusChanges
+
   const showStatusForm =
-    user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(initialThesis.status)
+    canChangeStatus ||
+    ['IN_PROGRESS', 'CANCELLED'].includes(initialThesis.status)
 
   const showMilestoneForm = Boolean(
-    user.isAdmin &&
+    canChangeStatus &&
     selectedProgram?.options?.useMilestones &&
     selectedProgram?.options?.milestones?.versions?.length
   )
@@ -191,19 +197,19 @@ const ThesisEditForm: FC<{
 
   const isOptionNative = {
     DRAFT: Boolean(
-      user.isAdmin && selectedProgram?.options?.allowStudentStartedProcess
+      canChangeStatus && selectedProgram?.options?.allowStudentStartedProcess
     ),
     SUGGESTED: Boolean(
-      user.isAdmin && selectedProgram?.options?.allowStudentStartedProcess
+      canChangeStatus && selectedProgram?.options?.allowStudentStartedProcess
     ),
     PLANNING: Boolean(
-      user.isAdmin && !selectedProgram?.options?.allowStudentStartedProcess
+      canChangeStatus && !selectedProgram?.options?.allowStudentStartedProcess
     ),
     IN_PROGRESS: Boolean(
-      user.isAdmin || ['IN_PROGRESS', 'CANCELLED'].includes(currentStatus)
+      canChangeStatus || ['IN_PROGRESS', 'CANCELLED'].includes(currentStatus)
     ),
     ETHESIS_SENT: Boolean(
-      user.isAdmin &&
+      canChangeStatus &&
       !selectedProgram?.options?.hideSendToEthesis &&
       !selectedProgram?.options?.allowStudentStartedProcess
     ),
@@ -212,16 +218,12 @@ const ThesisEditForm: FC<{
     CANCELLED: true,
   }
 
-  const showOption = {
-    DRAFT: isOptionNative.DRAFT || currentStatus === 'DRAFT',
-    SUGGESTED: isOptionNative.SUGGESTED || currentStatus === 'SUGGESTED',
-    PLANNING: isOptionNative.PLANNING || currentStatus === 'PLANNING',
-    IN_PROGRESS: isOptionNative.IN_PROGRESS || currentStatus === 'IN_PROGRESS',
-    ETHESIS_SENT:
-      isOptionNative.ETHESIS_SENT || currentStatus === 'ETHESIS_SENT',
-    ETHESIS: isOptionNative.ETHESIS || currentStatus === 'ETHESIS',
-    COMPLETED: isOptionNative.COMPLETED || currentStatus === 'COMPLETED',
-  }
+  const showOption = Object.fromEntries(
+    Object.entries(isOptionNative).map(([key, value]) => [
+      key,
+      value || currentStatus === key,
+    ])
+  ) as Record<keyof typeof isOptionNative, boolean>
 
   return (
     <Popup
@@ -594,11 +596,6 @@ const ThesisEditForm: FC<{
               <Select
                 data-testid="status-select-input"
                 required
-                disabled={
-                  initialThesis.status === 'PLANNING' &&
-                  !user.isAdmin &&
-                  !user.managedProgramIds?.includes(editedThesis.programId)
-                }
                 value={editedThesis.status}
                 label={t('statusHeader')}
                 id="status"

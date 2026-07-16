@@ -221,6 +221,13 @@
       "enableConfirm": "Oletko varma, että haluat ottaa ohjaajan hyväksynnän käyttöön?",
       "disableConfirm": "Oletko varma, että haluat poistaa ohjaajan hyväksynnän käytöstä?"
     },
+    "allowStatusChanges": {
+      "toggle": "Salli manuaaliset tilamuutokset",
+      "tooltip": "Salli henkilökunnan muuttaa manuaalisesti tutkielmien tilaa tässä koulutusohjelmassa",
+      "confirmTitle": "Vahvista manuaalisten tilamuutosten asetus",
+      "enableConfirm": "Oletko varma, että haluat sallia manuaaliset tilamuutokset?",
+      "disableConfirm": "Oletko varma, että haluat poistaa manuaaliset tilamuutokset käytöstä?"
+    },
     "targetDates": {
       "fieldTitle": "Tavoitepäivä",
       "title": "Tavoitepäivät",

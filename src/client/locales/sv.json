@@ -223,6 +223,13 @@
       "enableConfirm": "Är du säker på att du vill tillåta handledares godkännande?",
       "disableConfirm": "Är du säker på att du vill inaktivera handledares godkännande?"
     },
+    "allowStatusChanges": {
+      "toggle": "Tillåt manuella statusändringar",
+      "tooltip": "Tillåt personal att manuellt ändra status för avhandlingar i detta program",
+      "confirmTitle": "Bekräfta inställning för manuella statusändringar",
+      "enableConfirm": "Är du säker på att du vill tillåta manuella statusändringar?",
+      "disableConfirm": "Är du säker på att du vill inaktivera manuella statusändringar?"
+    },
     "targetDates": {
       "fieldTitle": "Måldatum",
       "title": "Måldatum",
