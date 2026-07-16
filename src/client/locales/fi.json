@@ -229,6 +229,13 @@
       "enableConfirm": "Oletko varma, että haluat sallia manuaaliset tilamuutokset?",
       "disableConfirm": "Oletko varma, että haluat poistaa manuaaliset tilamuutokset käytöstä?"
     },
+    "showEventLogs": {
+      "toggle": "Näytä tapahtumalokit",
+      "tooltip": "Näytä tapahtumalokit tutkielmasivulla",
+      "confirmTitle": "Vahvista tapahtumalokien asetus",
+      "enableConfirm": "Oletko varma, että haluat näyttää tapahtumalokit?",
+      "disableConfirm": "Oletko varma, että haluat piilottaa tapahtumalokit?"
+    },
     "targetDates": {
       "fieldTitle": "Tavoitepäivä",
       "title": "Tavoitepäivät",

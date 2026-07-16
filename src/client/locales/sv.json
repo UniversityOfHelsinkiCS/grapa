@@ -231,6 +231,13 @@
       "enableConfirm": "Är du säker på att du vill tillåta manuella statusändringar?",
       "disableConfirm": "Är du säker på att du vill inaktivera manuella statusändringar?"
     },
+    "showEventLogs": {
+      "toggle": "Visa händelseloggar",
+      "tooltip": "Visa händelseloggen på avhandlingssidan",
+      "confirmTitle": "Bekräfta inställning för händelseloggar",
+      "enableConfirm": "Är du säker på att du vill visa händelseloggar?",
+      "disableConfirm": "Är du säker på att du vill dölja händelseloggar?"
+    },
     "targetDates": {
       "fieldTitle": "Måldatum",
       "title": "Måldatum",

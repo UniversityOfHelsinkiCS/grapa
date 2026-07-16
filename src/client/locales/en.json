@@ -231,6 +231,13 @@
       "enableConfirm": "Are you sure you want to allow manual status changes?",
       "disableConfirm": "Are you sure you want to disable manual status changes?"
     },
+    "showEventLogs": {
+      "toggle": "Show event logs",
+      "tooltip": "Show the event log section on the thesis page",
+      "confirmTitle": "Confirm event log visibility setting",
+      "enableConfirm": "Are you sure you want to enable event logs visibility?",
+      "disableConfirm": "Are you sure you want to disable event logs visibility?"
+    },
     "targetDates": {
       "fieldTitle": "Target date",
       "title": "Target dates",

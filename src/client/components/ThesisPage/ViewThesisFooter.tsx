@@ -415,6 +415,8 @@ const ViewThesisFooter = (
     isStudentView,
     onlySeminarSupervised
   )
+  const showEventLogs = thesis?.program?.options?.showEventLogs === true
+
   const { events } = useEvents({
     thesisId,
     enabled: !isStudentView && eventLogOpen,
@@ -793,7 +795,7 @@ const ViewThesisFooter = (
             isStudentView={isStudentView}
           />
 
-          {!isStudentView && currentUser.isAdmin && (
+          {!isStudentView && (currentUser?.isAdmin || showEventLogs) && (
             <Paper
               elevation={0}
               sx={{
