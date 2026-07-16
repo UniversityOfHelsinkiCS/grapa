@@ -375,11 +375,18 @@ studentRouter.put(
       originalThesis.isIdle !== thesisData.isIdle &&
       typeof thesisData.isIdle === 'boolean'
 
-    if (isMilestoneUpdate || isIdleUpdate) {
+    const isTopicUpdate =
+      originalThesis.status === 'IN_PROGRESS' &&
+      originalThesis.topic !== thesisData.topic &&
+      typeof thesisData.topic === 'string' &&
+      thesisData.topic.trim().length > 0
+
+    if (isMilestoneUpdate || isIdleUpdate || isTopicUpdate) {
       thesisData = {
         ...originalThesis,
         ...(isMilestoneUpdate && { milestone: thesisData.milestone }),
         ...(isIdleUpdate && { isIdle: thesisData.isIdle }),
+        ...(isTopicUpdate && { topic: thesisData.topic }),
       } as any
       bypassChecks = true
     }
