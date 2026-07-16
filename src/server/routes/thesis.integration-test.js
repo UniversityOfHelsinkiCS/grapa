@@ -5419,13 +5419,11 @@ describe('thesis router', () => {
       })
 
       describe('when the user is not a supervisor of the thesis', () => {
-        it('should return 200 and the event log for the specified thesis', async () => {
+        it('should return 404', async () => {
           const response = await request
             .get(`/api/theses/${thesis1.id}/event-log`)
             .set({ uid: user2.id, hygroupcn: 'hy-employees' })
-          expect(response.status).toEqual(200)
-          expect(response.body).toHaveLength(1)
-          expect(response.body[0].type).toEqual('THESIS_CREATED')
+          expect(response.status).toEqual(404)
         })
       })
     })
