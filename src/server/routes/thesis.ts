@@ -18,6 +18,7 @@ import {
   getPaginatedTheses,
   createThesis,
   getThesesForStatistics,
+  getThesisEventLogs,
 } from '../services/thesisService'
 import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
 import {
@@ -139,6 +140,7 @@ thesisRouter.get(
 thesisRouter.get(
   '/:id/event-log',
   ethesisUserHandler,
+  getEthesisAdminStatus,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
     const { id: thesisId } = req.params
@@ -147,11 +149,7 @@ thesisRouter.get(
       return res.status(400).send('Thesis ID is required')
     }
 
-    const events = await EventLog.findAll({
-      include: ['user'],
-      where: { thesisId },
-      order: [['createdAt', 'DESC']],
-    })
+    const events = await getThesisEventLogs(thesisId, req.user)
     return res.json(events)
   }
 )

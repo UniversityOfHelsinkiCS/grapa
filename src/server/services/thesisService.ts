@@ -9,6 +9,7 @@ import {
   Approver,
   User,
   Program,
+  EventLog,
 } from '../db/models'
 import {
   buildThesisIncludes,
@@ -576,4 +577,17 @@ export const updateThesis = async (
       { transaction, validate: true, individualHooks: true }
     )
   }
+}
+
+export const getThesisEventLogs = async (id: string, currentUser: UserType) => {
+  const thesis = await fetchThesisById(id, currentUser)
+  if (!thesis) throw new CustomNotFoundError('Thesis not found')
+
+  const events = await EventLog.findAll({
+    include: ['user'],
+    where: { thesisId: id },
+    order: [['createdAt', 'DESC']],
+  })
+
+  return events
 }
