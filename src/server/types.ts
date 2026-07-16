@@ -288,3 +288,11 @@ export interface StatusChangedEvent extends EventLogEntry {
     to: ThesisStatus
   }
 }
+
+export interface TopicChangedEvent extends EventLogEntry {
+  type: 'THESIS_TOPIC_CHANGED'
+  data: {
+    from: string
+    to: string
+  }
+}

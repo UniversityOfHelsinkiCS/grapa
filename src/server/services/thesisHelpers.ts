@@ -639,6 +639,28 @@ export const handleSupervisionsChangeEventLog = async (
   }
 }
 
+export const handleTopicChangeEventLog = async (
+  originalThesis: Thesis,
+  updatedThesis: Thesis,
+  actionUser: UserType | null,
+  transaction: Transaction
+) => {
+  if (originalThesis.topic !== updatedThesis.topic) {
+    await EventLog.create(
+      {
+        userId: actionUser?.id,
+        thesisId: originalThesis.id,
+        type: 'THESIS_TOPIC_CHANGED',
+        data: {
+          from: originalThesis.topic,
+          to: updatedThesis.topic,
+        },
+      },
+      { transaction }
+    )
+  }
+}
+
 export const handleChangeEventLogs = async (
   originalThesis: Thesis,
   updatedThesis: Thesis,
@@ -646,6 +668,12 @@ export const handleChangeEventLogs = async (
   transaction: Transaction
 ) => {
   await handleStatusChangeEventLog(
+    originalThesis,
+    updatedThesis,
+    actionUser,
+    transaction
+  )
+  await handleTopicChangeEventLog(
     originalThesis,
     updatedThesis,
     actionUser,
