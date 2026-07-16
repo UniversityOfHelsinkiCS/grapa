@@ -122,6 +122,7 @@ studentRouter.get('/theses', async (req: RequestWithUser, res: any) => {
     missingSecondGrader: req.query.missingSecondGrader === 'true',
     lastMilestone: req.query.lastMilestone === 'true',
     ethesisReadyStudentStarted: req.query.ethesisReadyStudentStarted === 'true',
+    hideStudentStartedEthesis: req.query.hideStudentStartedEthesis === 'true',
     hideUserProperties: true,
   })
 
