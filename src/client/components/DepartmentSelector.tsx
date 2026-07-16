@@ -19,9 +19,7 @@ interface DepartmentSelectorProps {
   onSuccess?: () => void
 }
 
-const DepartmentSelector: React.FC<DepartmentSelectorProps> = ({
-  onSuccess,
-}) => {
+const DepartmentSelector = ({ onSuccess }: DepartmentSelectorProps) => {
   const { i18n, t } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
   const [selectedDepartment, setSelectedDepartment] = useState('')

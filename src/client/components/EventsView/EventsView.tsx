@@ -136,7 +136,7 @@ const TopicChangedEntry = (entry: TopicChangedEvent) => {
 interface EventsViewProps {
   events?: EventLogEntry[]
 }
-const EventsView: React.FC<EventsViewProps> = ({ events }) => {
+const EventsView = ({ events }: EventsViewProps) => {
   const { t } = useTranslation()
 
   if (!events) {

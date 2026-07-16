@@ -20,19 +20,21 @@ import {
 import ExternalPersonInput from '../ExternalPerson'
 import NewPersonControls from '../NewPersonControls'
 
-const SupervisorSelect: React.FC<{
+interface SupervisorSelectProps {
   errors: ZodIssue[]
   setErrors: (errors: ZodIssue[]) => void
   supervisorSelections: SupervisorSelection[]
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
   disabledMode: boolean
-}> = ({
+}
+
+const SupervisorSelect = ({
   errors,
   setErrors,
   supervisorSelections,
   setSupervisorSelections,
   disabledMode,
-}) => {
+}: SupervisorSelectProps) => {
   const { t } = useTranslation()
 
   const totalPercentage = getTotalPercentage(supervisorSelections)

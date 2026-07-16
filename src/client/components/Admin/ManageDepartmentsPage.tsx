@@ -19,7 +19,7 @@ import ManageEntityAdmin from './ManageEntityAdmin'
 import { TranslatedName } from '@backend/types'
 import Popup from '../Common/Popup'
 
-const ManageDepartmentsPage: React.FC = () => {
+const ManageDepartmentsPage = () => {
   const { t } = useTranslation()
   const { user, isLoading: userLoading } = useLoggedInUser()
 

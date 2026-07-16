@@ -1,6 +1,6 @@
 import philosopher from '../assets/philosopher.jpeg'
 
-const NoAccess: React.FC = () => (
+const NoAccess = () => (
   <div
     style={{
       display: 'flex',

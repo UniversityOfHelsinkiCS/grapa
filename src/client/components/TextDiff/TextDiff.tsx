@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import type { FC } from 'react'
 import { css } from '@emotion/react'
 import { diffWords } from 'diff'
 
@@ -33,7 +32,7 @@ const getHighlightedText = (leftText: string, rightText: string) => {
   })
 }
 
-const TextDiff: FC<TextDiffProps> = ({ leftText, rightText }) => {
+const TextDiff = ({ leftText, rightText }: TextDiffProps) => {
   return <div>{getHighlightedText(leftText, rightText)}</div>
 }
 

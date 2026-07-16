@@ -1,4 +1,4 @@
-import { useState, FC } from 'react'
+import { useState } from 'react'
 import { ZodIssue } from 'zod'
 import 'dayjs/locale/fi'
 import dayjs from 'dayjs'
@@ -42,21 +42,23 @@ import FilePreview from './Dropzone/FilePreview'
 import TargetDateSelect from './TargetDateSelect'
 import Popup from '../Common/Popup'
 
-const ThesisEditForm: FC<{
+interface ThesisEditFormProps {
   programs: Program[]
   formTitle: string
   initialThesis: ThesisData
   onClose: () => void
   onSubmit: (data: ThesisData) => Promise<void>
   isStudentView: boolean
-}> = ({
+}
+
+const ThesisEditForm = ({
   programs,
   formTitle,
   initialThesis,
   onSubmit,
   onClose,
   isStudentView,
-}) => {
+}: ThesisEditFormProps) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
   const [formErrors, setFormErrors] = useState<ZodIssue[]>([])

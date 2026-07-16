@@ -25,14 +25,14 @@ interface SingleGraderSelectProps {
   iconButtonProps: ButtonProps
 }
 
-const SingleGraderSelect: React.FC<SingleGraderSelectProps> = ({
+const SingleGraderSelect = ({
   index,
   selection,
   handleGraderChange,
   handleRemoveGrader,
   inputProps,
   iconButtonProps,
-}) => {
+}: SingleGraderSelectProps) => {
   const { t } = useTranslation()
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [userSearch, setUserSearch] = React.useState('')

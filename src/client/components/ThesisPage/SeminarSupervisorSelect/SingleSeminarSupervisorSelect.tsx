@@ -29,16 +29,14 @@ interface SingleSeminarSupervisorSelectProps {
   iconButtonProps: ButtonProps
 }
 
-const SingleSeminarSupervisorSelect: React.FC<
-  SingleSeminarSupervisorSelectProps
-> = ({
+const SingleSeminarSupervisorSelect = ({
   index,
   selection,
   handleSeminarSupervisorChange,
   handleRemoveSeminarSupervisor,
   inputProps,
   iconButtonProps,
-}) => {
+}: SingleSeminarSupervisorSelectProps) => {
   const { t } = useTranslation()
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [userSearch, setUserSearch] = React.useState('')

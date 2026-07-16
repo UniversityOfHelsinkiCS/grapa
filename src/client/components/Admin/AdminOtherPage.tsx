@@ -15,7 +15,7 @@ import Popup from '../Common/Popup'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import { useRunUpdaterMutation } from '../../hooks/useAdmin'
 
-const AdminOtherPage: React.FC = () => {
+const AdminOtherPage = () => {
   const { t } = useTranslation()
   const { user, isLoading: userLoading } = useLoggedInUser()
   const [confirmOpen, setConfirmOpen] = useState(false)

@@ -14,7 +14,7 @@ import { useState } from 'react'
 import SingleSeminarSupervisorSelect from './SingleSeminarSupervisorSelect'
 import NewPersonControls from '../NewPersonControls'
 
-const SeminarSupervisorSelect: React.FC<{
+interface SeminarSupervisorSelectProps {
   errors: ZodIssue[]
   setErrors: (errors: ZodIssue[]) => void
   seminarSupervisorSelections: SeminarSupervisionData[]
@@ -22,13 +22,15 @@ const SeminarSupervisorSelect: React.FC<{
     seminarSupervisions: SeminarSupervisionData[]
   ) => void
   allowMultiple?: boolean
-}> = ({
+}
+
+const SeminarSupervisorSelect = ({
   errors,
   setErrors,
   seminarSupervisorSelections,
   setSeminarSupervisorSelections,
   allowMultiple = false,
-}) => {
+}: SeminarSupervisorSelectProps) => {
   const { t } = useTranslation()
   const [userSearch, setUserSearch] = useState('')
   const debouncedSearch = useDebounce(userSearch, 700)

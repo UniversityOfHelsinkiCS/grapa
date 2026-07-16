@@ -6,21 +6,23 @@ import SingleGraderSelect from './SingleGraderSelect'
 import NewPersonControls from '../NewPersonControls'
 import ExternalPersonInput from '../ExternalPerson'
 
-const GraderSelect: React.FC<{
+interface GraderSelectProps {
   errors: ZodIssue[]
   setErrors: (errors: ZodIssue[]) => void
   graderSelections: GraderData[]
   setGraderSelections: (newAuthors: GraderData[]) => void
   disabledMode: boolean
   maxGraders?: number
-}> = ({
+}
+
+const GraderSelect = ({
   errors,
   setErrors,
   graderSelections,
   setGraderSelections,
   disabledMode,
   maxGraders = 2,
-}) => {
+}: GraderSelectProps) => {
   const { t } = useTranslation()
   const generalGraderErrors = errors.filter((error) =>
     error.path.join('-').endsWith('general-grader-error')

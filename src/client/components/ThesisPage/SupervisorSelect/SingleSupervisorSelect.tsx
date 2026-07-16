@@ -39,7 +39,7 @@ interface SingleSupervisorSelectProps {
   primarySupervisorProps: FormControlProps
 }
 
-const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
+const SingleSupervisorSelect = ({
   index,
   selection,
   handleSupervisorChange,
@@ -50,7 +50,7 @@ const SingleSupervisorSelect: React.FC<SingleSupervisorSelectProps> = ({
   iconButtonProps,
   percentageInputProps,
   primarySupervisorProps,
-}) => {
+}: SingleSupervisorSelectProps) => {
   const { t } = useTranslation()
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [userSearch, setUserSearch] = React.useState('')

@@ -6,7 +6,7 @@ import usePrograms, { useUpdateProgramMutation } from '../../hooks/usePrograms'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import ManageEntityAdmin from './ManageEntityAdmin'
 
-const ManageProgramsPage: React.FC = () => {
+const ManageProgramsPage = () => {
   const { t } = useTranslation()
   const { user, isLoading: userLoading } = useLoggedInUser()
 

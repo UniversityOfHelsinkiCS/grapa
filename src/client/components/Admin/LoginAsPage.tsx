@@ -16,7 +16,7 @@ import useUsers from '../../hooks/useUsers'
 import { loginAs } from '../../util/loginAs'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 
-const LoginAsPage: React.FC = () => {
+const LoginAsPage = () => {
   const { t } = useTranslation()
   const { user, isLoading } = useLoggedInUser()
 
