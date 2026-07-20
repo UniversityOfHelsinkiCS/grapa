@@ -39,9 +39,23 @@ const Statistics = ({
       acc.active += curr.statusCounts['IN_PROGRESS'] || 0
       acc.ethesis += curr.statusCounts['ETHESIS'] || 0
       acc.late += curr.lateSupervisionsCount || 0
+
+      acc.total += Object.values(curr.statusCounts).reduce(
+        (sum, count) => sum + count,
+        0
+      )
+
       return acc
     },
-    { draft: 0, suggested: 0, planning: 0, active: 0, ethesis: 0, late: 0 }
+    {
+      draft: 0,
+      suggested: 0,
+      planning: 0,
+      active: 0,
+      ethesis: 0,
+      late: 0,
+      total: 0,
+    }
   )
 
   const onTimeActive = Math.max(0, totals.active - totals.late)
@@ -231,6 +245,79 @@ const Statistics = ({
         </Typography>
       )}
 
+      {/* Overview Numbers */}
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '2rem',
+          mt: '2rem',
+          justifyContent: 'center',
+        }}
+      >
+        <Paper
+          variant="outlined"
+          sx={{
+            p: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            borderRadius: 2,
+            flex: '1 1 200px',
+            bgcolor: 'primary.main',
+            color: 'primary.contrastText',
+          }}
+        >
+          <Typography variant="h6">
+            {t('departmentStatisticsPage:total')}
+          </Typography>
+          <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
+            {totals.total}
+          </Typography>
+        </Paper>
+
+        <Paper
+          variant="outlined"
+          sx={{
+            p: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            borderRadius: 2,
+            flex: '1 1 200px',
+            bgcolor: 'info.main',
+            color: 'info.contrastText',
+          }}
+        >
+          <Typography variant="h6">
+            {t('departmentStatisticsPage:active')}
+          </Typography>
+          <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
+            {totals.active}
+          </Typography>
+        </Paper>
+
+        <Paper
+          variant="outlined"
+          sx={{
+            p: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            borderRadius: 2,
+            flex: '1 1 200px',
+            bgcolor: 'error.main',
+            color: 'error.contrastText',
+          }}
+        >
+          <Typography variant="h6">
+            {t('departmentStatisticsPage:late')}
+          </Typography>
+          <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
+            {totals.late}
+          </Typography>
+        </Paper>
+      </Box>
+
       {hasPipelineData && (
         <Box
           sx={{
@@ -240,26 +327,6 @@ const Statistics = ({
             justifyContent: 'center',
           }}
         >
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              borderRadius: 2,
-              flex: '1 1 400px',
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              {t('departmentStatisticsPage:thesisPipeline')}
-            </Typography>
-            <ReactECharts
-              option={pieOption}
-              style={{ height: '350px', width: '100%' }}
-            />
-          </Paper>
-
           {hasCompletionData && (
             <Paper
               variant="outlined"
@@ -281,6 +348,26 @@ const Statistics = ({
               />
             </Paper>
           )}
+
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              borderRadius: 2,
+              flex: '1 1 400px',
+            }}
+          >
+            <Typography variant="h6" gutterBottom>
+              {t('departmentStatisticsPage:thesisPipeline')}
+            </Typography>
+            <ReactECharts
+              option={pieOption}
+              style={{ height: '350px', width: '100%' }}
+            />
+          </Paper>
 
           <Paper
             variant="outlined"

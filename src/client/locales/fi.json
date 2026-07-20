@@ -486,6 +486,8 @@
     "avgCompletion": "Valmistuminen KA",
     "primarySupervisions": "Pääohjattavat",
     "primarySupervisionsTooltip": "Tutkielmat joissa merkitty pääohjaajaksi",
+    "total": "Tutkielmia yhteensä",
+    "active": "Aktiiviset tutkielmat",
     "onTime": "Ajallaan",
     "status": "Tila",
     "details": "Tiedot",

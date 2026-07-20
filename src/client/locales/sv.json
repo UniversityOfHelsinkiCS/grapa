@@ -487,6 +487,8 @@
     "avgCompletion": "Snittid slutförande",
     "primarySupervisions": "Huvudhandledning",
     "primarySupervisionsTooltip": "Examensarbeten där du är huvudhandledare",
+    "total": "Avhandlingar totalt",
+    "active": "Aktiva avhandlingar",
     "onTime": "I tid",
     "status": "Status",
     "details": "Detaljer",

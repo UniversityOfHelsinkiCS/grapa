@@ -487,6 +487,8 @@
     "avgCompletion": "avg. Completed",
     "primarySupervisions": "Primary supervisions",
     "primarySupervisionsTooltip": "Theses where marked as primary supervisor",
+    "total": "Total theses",
+    "active": "Active theses",
     "onTime": "On time",
     "status": "Status",
     "details": "Details",
