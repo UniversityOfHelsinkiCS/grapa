@@ -66,9 +66,7 @@ export interface GetPaginatedThesesParams {
   language?: string
   programId?: string
   studyTrackId?: string
-  programNamePartial?: string
-  topicPartial?: string
-  authorsPartial?: string
+
   status?: string
   departmentId?: string
   sortBy?: string
@@ -93,9 +91,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     language = 'en',
     programId,
     studyTrackId,
-    programNamePartial,
-    topicPartial,
-    authorsPartial,
+
     status,
     departmentId,
     sortBy,
@@ -140,9 +136,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     programId,
     studyTrackId,
     departmentId,
-    programNamePartial,
-    topicPartial,
-    authorsPartial,
+
     status,
     language,
     actionUser: currentUser,
@@ -162,7 +156,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     fullWhere.status = 'IN_PROGRESS'
   }
 
-  const includes = buildThesisIncludes(programNamePartial, language)
+  const includes = buildThesisIncludes(language)
 
   const { count, rows } = await Thesis.findAndCountAll({
     where: fullWhere,
@@ -193,7 +187,6 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     bind: {
       language,
       search: formattedSearch,
-      authorSearch: authorsPartial ? `%${authorsPartial.trim()}%` : null,
     },
   })
 
@@ -211,7 +204,6 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
   const bindParams = {
     language,
     search: formattedSearch,
-    authorSearch: authorsPartial ? `%${authorsPartial.trim()}%` : null,
   }
 
   const [availableMilestones, availableActionNeeded] = await Promise.all([
@@ -238,9 +230,7 @@ export const getThesesForStatistics = async (
     language = 'en',
     programId,
     studyTrackId,
-    programNamePartial,
-    topicPartial,
-    authorsPartial,
+
     status,
     departmentId,
     search,
@@ -265,9 +255,7 @@ export const getThesesForStatistics = async (
     programId,
     studyTrackId,
     departmentId,
-    programNamePartial,
-    topicPartial,
-    authorsPartial,
+
     status,
     language,
     actionUser: currentUser,
@@ -307,7 +295,6 @@ export const getThesesForStatistics = async (
     bind: {
       language,
       search: formattedSearch,
-      authorSearch: authorsPartial ? `%${authorsPartial.trim()}%` : null,
     },
   })
 

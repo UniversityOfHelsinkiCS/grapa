@@ -11,9 +11,7 @@ interface UsePaginatedThesesParams {
   programId?: string
   studyTrackId?: string
   departmentId?: string
-  programNamePartial?: string
-  topicPartial?: string
-  authorsPartial?: string
+
   status?: string | string[]
   onlyAuthored?: boolean
   onlySupervised: boolean
@@ -44,9 +42,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     params.studyTrackId,
     params.departmentId,
     params.status,
-    params.topicPartial,
-    params.authorsPartial,
-    params.programNamePartial,
+
     params.order.sortBy,
     params.order.sortOrder,
     params.search,
@@ -79,9 +75,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
         studyTrackId: params.studyTrackId,
         departmentId: params.departmentId,
         status: params.status,
-        topicPartial: params.topicPartial,
-        authorsPartial: params.authorsPartial,
-        programNamePartial: params.programNamePartial,
+
         search: params.search,
         milestone: params.milestone,
         missingSecondGrader: params.missingSecondGrader,
@@ -123,9 +117,7 @@ export const useExportThesesCsv = (params: UsePaginatedThesesParams) => {
         studyTrackId: params.studyTrackId,
         departmentId: params.departmentId,
         status: params.status,
-        topicPartial: params.topicPartial,
-        authorsPartial: params.authorsPartial,
-        programNamePartial: params.programNamePartial,
+
         search: params.search,
         milestone: params.milestone,
         missingSecondGrader: params.missingSecondGrader,

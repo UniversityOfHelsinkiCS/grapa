@@ -76,9 +76,7 @@ export interface ThesisFiltersOptions {
   programId?: string
   studyTrackId?: string
   departmentId?: string
-  programNamePartial?: string
-  topicPartial?: string
-  authorsPartial?: string
+
   status?: string
   language?: string
   actionUser: UserType
@@ -92,23 +90,12 @@ export interface ThesisFiltersOptions {
   hideStudentStartedEthesis?: boolean
 }
 
-export const buildThesisIncludes = (
-  programNamePartial?: string,
-  language?: string
-): Includeable[] => {
+export const buildThesisIncludes = (language?: string): Includeable[] => {
   const actualLanguage = language ?? 'en'
   const allowedLanguages = ['fi', 'sv', 'en']
   if (!allowedLanguages.includes(actualLanguage)) {
     throw new Error('Invalid language key')
   }
-
-  const programWhere = programNamePartial
-    ? {
-        [`name.${actualLanguage}`]: {
-          [Op.iLike]: `%${programNamePartial.trim()}%`,
-        },
-      }
-    : undefined
 
   return [
     {
@@ -151,7 +138,6 @@ export const buildThesisIncludes = (
       model: Program,
       as: 'program',
       attributes: ['id', 'name', 'options'],
-      where: programWhere,
       required: true,
     },
   ]
@@ -259,8 +245,6 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
     programId,
     studyTrackId,
     departmentId,
-    topicPartial,
-    authorsPartial,
     status,
     search,
     actionUser,
@@ -281,21 +265,9 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
     whereClause.id = thesisId
   }
 
-  // 2. Authors
-  if (authorsPartial) {
-    andConditions.push(
-      literal(
-        `EXISTS (SELECT 1 FROM "authors" INNER JOIN "users" ON "authors"."user_id" = "users"."id" WHERE "authors"."thesis_id" = "Thesis"."id" AND ("users"."first_name" || ' ' || "users"."last_name" ILIKE $authorSearch OR "users"."last_name" || ' ' || "users"."first_name" ILIKE $authorSearch OR "users"."username" ILIKE $authorSearch OR "users"."student_number" ILIKE $authorSearch OR "users"."email" ILIKE $authorSearch))`
-      )
-    )
-  }
-
   // 3. Exact matches
   if (programId) whereClause.programId = programId
   if (status) whereClause.status = status
-  if (topicPartial) {
-    whereClause.topic = { [Op.iLike]: `%${topicPartial.trim()}%` }
-  }
 
   // 4. Study Track (with secondary expansion)
   if (studyTrackId) {

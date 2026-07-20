@@ -108,9 +108,7 @@ studentRouter.get('/theses', async (req: RequestWithUser, res: any) => {
     sortBy: req.query.sortBy as string,
     departmentId: req.query.departmentId as string,
     status: req.query.status as string,
-    authorsPartial: req.query.authorsPartial as string,
-    topicPartial: req.query.topicPartial as string,
-    programNamePartial: req.query.programNamePartial as string,
+
     programId: req.query.programId as string,
     language: req.query.language as string,
     limit: req.query.limit as string,

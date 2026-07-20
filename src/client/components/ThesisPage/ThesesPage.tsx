@@ -26,7 +26,6 @@ import usePrograms from '../../hooks/usePrograms'
 import ThesisEditForm from './ThesisEditForm'
 import ViewThesisFooter from './ViewThesisFooter'
 import Popup from '../Common/Popup'
-import { useDebounce } from '../../hooks/useDebounce'
 
 import ThesisTable, { DEFAULT_PAGE_SIZE } from './ThesisTable'
 
@@ -98,15 +97,6 @@ const ThesesPage = ({
     setFilterEthesisReadyStudentStarted,
   ] = useState<boolean>(false)
 
-  const [filterTopic, setFilterTopic] = useState<string | null>(null)
-  const [filterAuthors, setFilterAuthors] = useState<string | null>(null)
-  const [filterProgramName, setFilterProgramName] = useState<string | null>(
-    null
-  )
-  const debouncedFilterTopic = useDebounce(filterTopic, 500)
-  const debouncedFilterAuthors = useDebounce(filterAuthors, 500)
-  const debouncedFilterProgramName = useDebounce(filterProgramName, 500)
-
   const [searchQuery, setSearchQuery] = useState('')
 
   const [order, setOrder] = useState({})
@@ -124,9 +114,7 @@ const ThesesPage = ({
     ethesisReadyStudentStarted: filterEthesisReadyStudentStarted,
     hideStudentStartedEthesis,
     milestone: filterMilestone !== null ? filterMilestone : undefined,
-    topicPartial: debouncedFilterTopic,
-    authorsPartial: debouncedFilterAuthors,
-    programNamePartial: debouncedFilterProgramName,
+
     onlyAuthored: isStudentView,
     onlySupervised: isStudentView ? false : showOnlyOwnTheses,
     onlySeminarSupervised,
@@ -267,9 +255,6 @@ const ThesesPage = ({
     setFilterMissingSecondGrader(false)
     setFilterLastMilestone(false)
     setFilterEthesisReadyStudentStarted(false)
-    setFilterTopic(null)
-    setFilterAuthors(null)
-    setFilterProgramName(null)
 
     setCurrentFilters(filterModel)
 
@@ -294,15 +279,7 @@ const ThesesPage = ({
         case 'ethesisReadyStudentStarted':
           setFilterEthesisReadyStudentStarted(true)
           break
-        case 'topic':
-          setFilterTopic(item.value)
-          break
-        case 'authors':
-          setFilterAuthors(item.value)
-          break
-        case 'programId':
-          setFilterProgramName(item.value)
-          break
+
         default:
           break
       }

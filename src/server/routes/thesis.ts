@@ -53,9 +53,7 @@ const getPaginatedQuery = (req: ServerGetRequest) => ({
   sortBy: req.query.sortBy as string,
   departmentId: req.query.departmentId as string,
   status: req.query.status as string,
-  authorsPartial: req.query.authorsPartial as string,
-  topicPartial: req.query.topicPartial as string,
-  programNamePartial: req.query.programNamePartial as string,
+
   programId: req.query.programId as string,
   studyTrackId: req.query.studyTrackId as string,
   language: req.query.language as string,
