@@ -123,7 +123,7 @@
   },
   "departmentOverviewPage": {
     "departmentAdminsTab": "Yksikön ylläpitäjät",
-    "supervisionStatisticsTab": "Ohjaustilastot"
+    "statisticsTab": "Tilastot"
   },
   "programOverviewPage": {
     "configurationsWarning": "Ole varovainen muokatessasi näitä asetuksia. Ne vaikuttavat kaikkiin ohjelman käyttäjiin ja tutkielmalomakkeisiin.",

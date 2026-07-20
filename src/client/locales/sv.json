@@ -125,7 +125,7 @@
   },
   "departmentOverviewPage": {
     "departmentAdminsTab": "Avdelningsadministratörer",
-    "supervisionStatisticsTab": "Handledningsstatistik"
+    "statisticsTab": "Statistik"
   },
   "programOverviewPage": {
     "configurationsWarning": "Var försiktig när du ändrar dessa inställningar. De påverkar alla användare och avhandlingsblanketter i programmet.",

@@ -109,7 +109,7 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                 allowScrollButtonsMobile
               >
                 <Tab
-                  label={t('departmentOverviewPage:supervisionStatisticsTab')}
+                  label={t('departmentOverviewPage:statisticsTab')}
                   value="statistics"
                 />
                 <Tab label={t('theses')} value="theses" />
