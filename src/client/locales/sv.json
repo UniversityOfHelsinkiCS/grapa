@@ -486,7 +486,15 @@
     "avgCompletionTooltip": "Genomsnittlig tid till slutförande, dagar",
     "avgCompletion": "Snittid slutförande",
     "primarySupervisions": "Huvudhandledning",
-    "primarySupervisionsTooltip": "Examensarbeten där du är huvudhandledare"
+    "primarySupervisionsTooltip": "Examensarbeten där du är huvudhandledare",
+    "onTime": "I tid",
+    "status": "Status",
+    "details": "Detaljer",
+    "days": "Dagar",
+    "supervisors": "Handledare",
+    "onTimeRatio": "I tid-andel",
+    "thesisPipeline": "Aktiva avhandlingar",
+    "avgCompletionDist": "Genomsnittlig slutförandetid"
   },
   "loginAsPage": {
     "title": "Välj en användare att logga in som",

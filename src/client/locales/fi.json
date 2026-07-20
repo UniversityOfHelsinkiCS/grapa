@@ -485,7 +485,15 @@
     "avgCompletionTooltip": "Keskimääräinen valmistuminen, päivää",
     "avgCompletion": "Valmistuminen KA",
     "primarySupervisions": "Pääohjattavat",
-    "primarySupervisionsTooltip": "Tutkielmat joissa merkitty pääohjaajaksi"
+    "primarySupervisionsTooltip": "Tutkielmat joissa merkitty pääohjaajaksi",
+    "onTime": "Ajallaan",
+    "status": "Tila",
+    "details": "Tiedot",
+    "days": "Päiviä",
+    "supervisors": "Ohjaajia",
+    "onTimeRatio": "Ajallaan-osuus",
+    "thesisPipeline": "Aktiiviset tutkielmat",
+    "avgCompletionDist": "Keskim. valmistumisaika"
   },
   "loginAsPage": {
     "title": "Valitse käyttäjä, jona haluat kirjautua",

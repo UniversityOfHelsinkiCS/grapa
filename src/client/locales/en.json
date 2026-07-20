@@ -486,7 +486,15 @@
     "avgCompletionTooltip": "Average completion, days",
     "avgCompletion": "avg. Completed",
     "primarySupervisions": "Primary supervisions",
-    "primarySupervisionsTooltip": "Theses where marked as primary supervisor"
+    "primarySupervisionsTooltip": "Theses where marked as primary supervisor",
+    "onTime": "On time",
+    "status": "Status",
+    "details": "Details",
+    "days": "Days",
+    "supervisors": "Supervisors",
+    "onTimeRatio": "On-Time Ratio",
+    "thesisPipeline": "Active Pipeline",
+    "avgCompletionDist": "Avg Completion Time Distribution"
   },
   "loginAsPage": {
     "title": "Choose a user to log in as",
