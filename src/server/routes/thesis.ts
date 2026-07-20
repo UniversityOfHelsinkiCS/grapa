@@ -13,6 +13,13 @@ import { Thesis, EventLog, Program } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisDataMiddleware } from '../validators/thesis'
 import { getPrimaryStudyTrackId } from '../util/studyTracks'
+import { z } from 'zod'
+import {
+  PaginatedThesesSchema,
+  ThesisStatisticsSchema,
+  PublicThesisSchema,
+  EventLogSchema,
+} from '../validators/thesisResponse'
 
 import {
   getPaginatedTheses,
@@ -77,7 +84,8 @@ thesisRouter.get(
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
     const result = await getPaginatedTheses(getPaginatedQuery(req))
-    return res.send(result)
+    const safeData = PaginatedThesesSchema.parse(result)
+    return res.send(safeData)
   }
 )
 
@@ -91,8 +99,9 @@ thesisRouter.get(
     const theses = await getThesesForStatistics(query)
 
     const statistics = await calculateThesisStatistics(theses)
+    const safeData = z.array(ThesisStatisticsSchema).parse(statistics)
 
-    res.status(200).send(statistics)
+    res.status(200).send(safeData)
   }
 )
 
@@ -131,7 +140,8 @@ thesisRouter.get(
       onlyAuthored: false,
       onlySeminarSupervised: req.query.onlySeminarSupervised === 'true',
     })
-    res.send(thesisData)
+    const safeData = PublicThesisSchema.parse(thesisData)
+    res.send(safeData)
   }
 )
 
@@ -148,7 +158,8 @@ thesisRouter.get(
     }
 
     const events = await getThesisEventLogs(thesisId, req.user)
-    return res.json(events)
+    const safeData = z.array(EventLogSchema).parse(events)
+    return res.json(safeData)
   }
 )
 
@@ -190,7 +201,8 @@ thesisRouter.post(
       return newThesis.toJSON()
     })
 
-    res.status(201).send(createdThesis)
+    const safeData = PublicThesisSchema.parse(createdThesis)
+    res.status(201).send(safeData)
   }
 )
 
@@ -233,7 +245,8 @@ thesisRouter.put(
       await handleStatusChangeEmail(originalThesis, updatedThesis, req.user)
     })
 
-    res.send(updatedThesis)
+    const safeData = PublicThesisSchema.parse(updatedThesis)
+    res.send(safeData)
   }
 )
 
