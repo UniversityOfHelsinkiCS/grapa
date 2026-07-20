@@ -71,6 +71,10 @@ jest.unstable_mockModule('./src/client/hooks/useTheses', () => ({
 
 jest.unstable_mockModule('react-router-dom', () => ({ Navigate: jest.fn() }))
 
+jest.unstable_mockModule('echarts-for-react', () => ({
+  default: () => <div data-testid="echarts-mock" />,
+}))
+
 const Statistics = (await import('./Statistics')).default
 
 describe('Statistics', () => {

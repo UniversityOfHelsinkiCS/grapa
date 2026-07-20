@@ -122,7 +122,7 @@ describe('EntityOverview (Department)', () => {
     renderDepartmentOverview('/departments/department-2')
 
     const user = userEvent.setup()
-    await user.click(screen.getByRole('tab', { name: 'Ohjaustilastot' }))
+    await user.click(screen.getByRole('tab', { name: 'Tilastot' }))
 
     await waitFor(() => {
       expect(screen.getByTestId('department-statistics')).toHaveTextContent(
