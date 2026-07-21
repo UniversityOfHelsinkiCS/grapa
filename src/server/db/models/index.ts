@@ -61,13 +61,16 @@ Supervision.belongsTo(Thesis, { as: 'thesis' })
 SeminarSupervision.belongsTo(User, { as: 'user' })
 SeminarSupervision.belongsTo(Thesis, { as: 'thesis' })
 
-ProgramManagement.belongsTo(User, { as: 'user' })
-ProgramManagement.belongsTo(Program, { as: 'program' })
-Program.hasMany(ProgramManagement)
+ProgramManagement.belongsTo(User, { as: 'user', foreignKey: 'userId' })
+ProgramManagement.belongsTo(Program, { as: 'program', foreignKey: 'programId' })
+Program.hasMany(ProgramManagement, { foreignKey: 'programId' })
 
-DepartmentAdmin.belongsTo(User, { as: 'user' })
-DepartmentAdmin.belongsTo(Department, { as: 'department' })
-Department.hasMany(DepartmentAdmin)
+DepartmentAdmin.belongsTo(User, { as: 'user', foreignKey: 'userId' })
+DepartmentAdmin.belongsTo(Department, {
+  as: 'department',
+  foreignKey: 'departmentId',
+})
+Department.hasMany(DepartmentAdmin, { foreignKey: 'departmentId' })
 
 Grader.belongsTo(User, { as: 'user' })
 
@@ -102,9 +105,12 @@ Program.hasMany(Thesis, { as: 'theses', foreignKey: 'programId' })
 Program.hasMany(StudyTrack, { as: 'studyTracks', foreignKey: 'programId' })
 StudyTrack.belongsTo(Program, { as: 'program', foreignKey: 'programId' })
 
-StudyTrackManagement.belongsTo(User, { as: 'user' })
-StudyTrackManagement.belongsTo(StudyTrack, { as: 'studyTrack' })
-StudyTrack.hasMany(StudyTrackManagement)
+StudyTrackManagement.belongsTo(User, { as: 'user', foreignKey: 'userId' })
+StudyTrackManagement.belongsTo(StudyTrack, {
+  as: 'studyTrack',
+  foreignKey: 'studyTrackId',
+})
+StudyTrack.hasMany(StudyTrackManagement, { foreignKey: 'studyTrackId' })
 
 EventLog.belongsTo(User, { as: 'user' })
 EventLog.belongsTo(Thesis, { as: 'thesis' })
