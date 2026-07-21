@@ -3,6 +3,8 @@ import { Includeable, literal } from 'sequelize'
 import { RequestWithUser } from '../types'
 import { Department, DepartmentAdmin } from '../db/models'
 import ethesisUserHandler from '../middleware/ethesisUser'
+import { z } from 'zod'
+import { DepartmentDataSchema } from '../validators/departmentResponse'
 
 const departmentRouter = express.Router()
 
@@ -46,7 +48,8 @@ departmentRouter.get(
       bind: { language },
     })
 
-    res.send(departments)
+    const safeData = z.array(DepartmentDataSchema).parse(departments)
+    res.send(safeData)
   }
 )
 
@@ -86,7 +89,8 @@ departmentRouter.put(
       returning: true,
     })
 
-    return res.status(200).send(updatedDepartments[0])
+    const safeData = DepartmentDataSchema.parse(updatedDepartments[0])
+    return res.status(200).send(safeData)
   }
 )
 
@@ -113,7 +117,8 @@ departmentRouter.post(
 
     try {
       const department = await Department.create(newDepartmentData)
-      return res.status(201).send(department)
+      const safeData = DepartmentDataSchema.parse(department)
+      return res.status(201).send(safeData)
     } catch (error: any) {
       return res
         .status(400)

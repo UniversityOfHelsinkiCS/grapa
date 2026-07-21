@@ -10,6 +10,8 @@ import {
 import ethesisUserHandler from '../middleware/ethesisUser'
 import { getUsersBySearchStudents } from '../services/userService'
 import { has_access } from '../middleware/employeesAndAdmin'
+import { z } from 'zod'
+import { PublicUserSchema } from '../validators/userResponse'
 
 const USER_FETCH_LIMIT = 100
 
@@ -42,7 +44,8 @@ usersRouter.get('/', ethesisUserHandler, async (req, res) => {
       onlyWithStudyRight,
       onlyEmployees
     )
-    res.send(result)
+    const safeData = z.array(PublicUserSchema).parse(result)
+    res.send(safeData)
     return
   }
 
@@ -93,7 +96,8 @@ usersRouter.get('/', ethesisUserHandler, async (req, res) => {
     where: whereClauses,
     limit: USER_FETCH_LIMIT,
   })
-  res.send(users)
+  const safeData = z.array(PublicUserSchema).parse(users)
+  res.send(safeData)
 })
 
 export default usersRouter

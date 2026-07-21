@@ -1,68 +1,11 @@
 import { z } from 'zod'
 import { VALID_EVENT_LOG_TYPES, VALID_THESIS_STATUSES } from '../../config'
-
-export const TranslatedNameSchema = z.object({
-  fi: z.string(),
-  sv: z.string(),
-  en: z.string(),
-})
-
-export const PublicUserSchema = z.object({
-  id: z.string(),
-  username: z.string(),
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string().nullable().optional(),
-  affiliation: z.string().nullable().optional(),
-  isExternal: z.boolean(),
-  studentNumber: z.string().nullable().optional(),
-})
-
-export const DepartmentDataSchema = z.object({
-  id: z.string(),
-  name: TranslatedNameSchema,
-})
-
-export const StudyTrackDataSchema = z.object({
-  id: z.string(),
-  name: TranslatedNameSchema,
-  programId: z.string(),
-  isManaged: z.boolean().optional(),
-})
-
-export const ProgramOptionsSchema = z
-  .object({
-    seminar: z.boolean().optional(),
-    allowMultipleSeminarResponsibles: z.boolean().optional(),
-    allowStudentStartedProcess: z.boolean().optional(),
-    waysOfWorkingRequired: z.boolean().optional(),
-    allowMultipleAuthors: z.boolean().optional(),
-    hideSendToEthesis: z.boolean().optional(),
-    useMilestones: z.boolean().optional(),
-    disableStudyTracks: z.boolean().optional(),
-    useIdleState: z.boolean().optional(),
-    supervisorApproval: z.boolean().optional(),
-    thesisProgramManagerNotRequired: z.boolean().optional(),
-    isBachelorProgram: z.boolean().optional(),
-    numberOfGraders: z.number().optional(),
-    milestones: z
-      .object({
-        versions: z.array(z.array(z.any())).optional(),
-      })
-      .optional(),
-    combinedStudyTracks: z.record(z.string(), z.string()).optional(),
-  })
-  .catchall(z.any())
-
-export const ProgramDataSchema = z.object({
-  id: z.string(),
-  name: TranslatedNameSchema,
-  options: ProgramOptionsSchema.optional(),
-  studyTracks: z.array(StudyTrackDataSchema).optional(),
-  allStudyTracks: z.array(StudyTrackDataSchema).optional(),
-  isFavorite: z.boolean().optional(),
-  isManaged: z.boolean().optional(),
-})
+import { PublicUserSchema } from './userResponse'
+import {
+  DepartmentDataSchema,
+  TranslatedNameSchema,
+} from './departmentResponse'
+import { ProgramDataSchema } from './programResponse'
 
 export const PublicSupervisionSchema = z.object({
   user: PublicUserSchema.partial(),
@@ -177,7 +120,7 @@ export const EventLogEntryUserSchema = z.object({
   email: z.string(),
 })
 
-export const EventLogSchema = z.object({
+const BaseEventLogSchema = z.object({
   id: z.string(),
   type: z.enum(VALID_EVENT_LOG_TYPES),
   thesisId: z.string().nullable(),
@@ -189,4 +132,55 @@ export const EventLogSchema = z.object({
     .transform((val) => new Date(val).toISOString()),
   user: EventLogEntryUserSchema.optional().nullable(),
   thesis: EventLogEntryThesisSchema.optional().nullable(),
+})
+
+// Schemas for event log data
+const payloadSchemas: Record<string, z.ZodTypeAny> = {
+  THESIS_GRADERS_CHANGED: z
+    .object({
+      originalGraders: z.array(PublicGraderSchema).optional(),
+      updatedGraders: z.array(PublicGraderSchema).optional(),
+    })
+    .catchall(z.any()),
+
+  THESIS_SUPERVISIONS_CHANGED: z
+    .object({
+      originalSupervisions: z.array(PublicSupervisionSchema).optional(),
+      updatedSupervisions: z.array(PublicSupervisionSchema).optional(),
+    })
+    .catchall(z.any()),
+
+  THESIS_DELETED: PublicThesisSchema.partial(),
+
+  THESIS_STATUS_CHANGED: z
+    .object({
+      to: z.string(),
+      from: z.string().optional().nullable(),
+    })
+    .catchall(z.any()),
+
+  THESIS_TOPIC_CHANGED: z
+    .object({
+      to: z.string(),
+      from: z.string().optional().nullable(),
+    })
+    .catchall(z.any()),
+}
+
+export const EventLogSchema = BaseEventLogSchema.transform((log) => {
+  if (!log.data) return log
+
+  const schema = payloadSchemas[log.type]
+
+  // No schema defined for this event type, drop the data.
+  if (!schema) {
+    return { ...log, data: null }
+  }
+
+  const parsed = schema.safeParse(log.data)
+
+  return {
+    ...log,
+    data: parsed.success ? parsed.data : null, // Drops data if validation fails
+  }
 })

@@ -1,0 +1,16 @@
+import { z } from 'zod'
+
+export const TranslatedNameSchema = z.object({
+  fi: z.string(),
+  sv: z.string(),
+  en: z.string(),
+})
+
+export const DepartmentDataSchema = z.object({
+  id: z.string(),
+  name: TranslatedNameSchema,
+  enabled: z.boolean().optional(),
+})
+
+export type TranslatedName = z.infer<typeof TranslatedNameSchema>
+export type DepartmentData = z.infer<typeof DepartmentDataSchema>

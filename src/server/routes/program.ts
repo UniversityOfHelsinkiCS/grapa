@@ -3,6 +3,9 @@ import { Program, ProgramManagement } from '../db/models'
 import { RequestWithUser } from '../types'
 import ethesisUserHandler from '../middleware/ethesisUser'
 import { getPrograms, getProgramEventLogs } from '../services/programService'
+import { z } from 'zod'
+import { ProgramDataSchema } from '../validators/programResponse'
+import { EventLogSchema } from '../validators/thesisResponse'
 
 const programRouter = express.Router()
 
@@ -35,7 +38,8 @@ programRouter.get(
       id,
       includeManagedStudyTracks
     )
-    res.send(result)
+    const safeData = z.array(ProgramDataSchema).parse(result)
+    res.send(safeData)
   }
 )
 
@@ -87,7 +91,8 @@ programRouter.put(
       returning: true,
     })
 
-    return res.status(200).send(updatedPrograms[0])
+    const safeData = ProgramDataSchema.parse(updatedPrograms[0])
+    return res.status(200).send(safeData)
   }
 )
 
@@ -115,7 +120,8 @@ programRouter.get(
       },
       req.user
     )
-    return res.json(result)
+    const safeEvents = z.array(EventLogSchema).parse(result.events)
+    return res.json({ ...result, events: safeEvents })
   }
 )
 
