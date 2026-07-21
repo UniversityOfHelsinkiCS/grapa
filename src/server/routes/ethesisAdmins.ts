@@ -3,6 +3,8 @@ import { ServerDeleteRequest, ServerGetRequest } from '../types'
 import { EthesisAdmin, User } from '../db/models'
 import adminHandler from '../middleware/admin'
 import ethesisUserHandler from '../middleware/ethesisUser'
+import { EthesisAdminResponseSchema } from '../validators/managementResponse'
+import { z } from 'zod'
 
 const ethesisAdminRouter = express.Router()
 
@@ -29,7 +31,8 @@ ethesisAdminRouter.get(
       user: (admin as any).user,
     }))
 
-    res.send(admins)
+    const safeData = z.array(EthesisAdminResponseSchema).parse(admins)
+    res.send(safeData)
   }
 )
 
@@ -74,7 +77,8 @@ ethesisAdminRouter.post(
       user: (createdAdmin as any).user,
     }
 
-    res.status(201).send(adminData)
+    const safeData = EthesisAdminResponseSchema.parse(adminData)
+    res.status(201).send(safeData)
   }
 )
 

@@ -4,6 +4,8 @@ import { literal, Op } from 'sequelize'
 import { Department, DepartmentAdmin, User } from '../db/models'
 
 import { validateDepartmentAdminData } from '../validators/departmentAdmin'
+import { DepartmentAdminResponseSchema } from '../validators/managementResponse'
+import { z } from 'zod'
 
 import { RequestWithUser } from '../types'
 import ethesisUserHandler from '../middleware/ethesisUser'
@@ -45,7 +47,8 @@ departmentAdminRouter.get(
       bind: { editorUserId: req.user.id },
     })
 
-    res.send(departments)
+    const safeData = z.array(DepartmentAdminResponseSchema).parse(departments)
+    res.send(safeData)
   }
 )
 
@@ -82,7 +85,8 @@ departmentAdminRouter.post(
       userId: targetUserId,
     })
 
-    res.status(201).send(departmentAdmin)
+    const safeData = DepartmentAdminResponseSchema.parse(departmentAdmin)
+    res.status(201).send(safeData)
   }
 )
 

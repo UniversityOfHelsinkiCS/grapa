@@ -13,6 +13,14 @@ import {
   has_access,
 } from '../middleware/employeesAndAdmin'
 import { cleanUserProperties } from '../services/studentService'
+import { StudyTrackManagementResponseSchema } from '../validators/managementResponse'
+import { StudentUserSchema } from '../validators/userResponse'
+import { z } from 'zod'
+
+const StudentStudyTrackManagementResponseSchema =
+  StudyTrackManagementResponseSchema.extend({
+    user: StudentUserSchema.optional(),
+  })
 
 const studyTrackManagementRouter = express.Router()
 
@@ -55,11 +63,17 @@ studyTrackManagementRouter.get(
           management.user = cleanUserProperties(management.user)
         return management
       })
-      res.send(filtered)
+      const safeData = z
+        .array(StudentStudyTrackManagementResponseSchema)
+        .parse(filtered)
+      res.send(safeData)
       return
     }
 
-    res.send(managements)
+    const safeData = z
+      .array(StudyTrackManagementResponseSchema)
+      .parse(managements)
+    res.send(safeData)
   }
 )
 
@@ -159,7 +173,9 @@ studyTrackManagementRouter.post(
       studyTrackId,
       userId: targetUserId,
     })
-    res.status(201).send(studyTrackManagement)
+    const safeData =
+      StudyTrackManagementResponseSchema.parse(studyTrackManagement)
+    res.status(201).send(safeData)
   }
 )
 

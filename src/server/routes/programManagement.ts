@@ -9,6 +9,14 @@ import {
   has_access,
 } from '../middleware/employeesAndAdmin'
 import { cleanUserProperties } from '../services/studentService'
+import { ProgramManagementResponseSchema } from '../validators/managementResponse'
+import { StudentUserSchema } from '../validators/userResponse'
+import { z } from 'zod'
+
+const StudentProgramManagementResponseSchema =
+  ProgramManagementResponseSchema.extend({
+    user: StudentUserSchema.optional(),
+  })
 
 const programManagementRouter = express.Router()
 
@@ -92,11 +100,15 @@ programManagementRouter.get(
         if (program.user) program.user = cleanUserProperties(program.user)
         return program
       })
-      res.send(filtered)
+      const safeData = z
+        .array(StudentProgramManagementResponseSchema)
+        .parse(filtered)
+      res.send(safeData)
       return
     }
 
-    res.send(programs)
+    const safeData = z.array(ProgramManagementResponseSchema).parse(programs)
+    res.send(safeData)
   }
 )
 
@@ -170,7 +182,8 @@ programManagementRouter.post(
       userId: targetUserId,
       isThesisApprover,
     })
-    res.status(201).send(programManagement)
+    const safeData = ProgramManagementResponseSchema.parse(programManagement)
+    res.status(201).send(safeData)
   }
 )
 
@@ -209,7 +222,7 @@ programManagementRouter.put(
       }
     }
 
-    const [, updatedProgramManagement] = await ProgramManagement.update(
+    const [, [updatedProgramManagement]] = await ProgramManagement.update(
       {
         isThesisApprover,
       },
@@ -221,7 +234,10 @@ programManagementRouter.put(
       }
     )
 
-    res.status(200).send(updatedProgramManagement)
+    const safeData = ProgramManagementResponseSchema.parse(
+      updatedProgramManagement
+    )
+    res.status(200).send(safeData)
   }
 )
 
