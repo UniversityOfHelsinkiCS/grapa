@@ -15,9 +15,9 @@ import { validateThesisDataMiddleware } from '../validators/thesis'
 import { getPrimaryStudyTrackId } from '../util/studyTracks'
 import { z } from 'zod'
 import {
-  PaginatedThesesSchema,
+  PaginatedEmployeeThesesSchema,
   ThesisStatisticsSchema,
-  PublicThesisSchema,
+  EmployeeThesisSchema,
   EventLogSchema,
 } from '../validators/thesisResponse'
 
@@ -84,7 +84,7 @@ thesisRouter.get(
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerGetRequest, res: Response) => {
     const result = await getPaginatedTheses(getPaginatedQuery(req))
-    const safeData = PaginatedThesesSchema.parse(result)
+    const safeData = PaginatedEmployeeThesesSchema.parse(result)
     return res.send(safeData)
   }
 )
@@ -140,7 +140,7 @@ thesisRouter.get(
       onlyAuthored: false,
       onlySeminarSupervised: req.query.onlySeminarSupervised === 'true',
     })
-    const safeData = PublicThesisSchema.parse(thesisData)
+    const safeData = EmployeeThesisSchema.parse(thesisData)
     res.send(safeData)
   }
 )
@@ -201,7 +201,7 @@ thesisRouter.post(
       return newThesis.toJSON()
     })
 
-    const safeData = PublicThesisSchema.parse(createdThesis)
+    const safeData = EmployeeThesisSchema.parse(createdThesis)
     res.status(201).send(safeData)
   }
 )
@@ -245,7 +245,7 @@ thesisRouter.put(
       await handleStatusChangeEmail(originalThesis, updatedThesis, req.user)
     })
 
-    const safeData = PublicThesisSchema.parse(updatedThesis)
+    const safeData = EmployeeThesisSchema.parse(updatedThesis)
     res.send(safeData)
   }
 )

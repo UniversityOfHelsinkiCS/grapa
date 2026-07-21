@@ -24,6 +24,10 @@ import ethesisUserHandler from '../middleware/ethesisUser'
 import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMultipartFormData from '../middleware/attachment'
 import { validateThesisDataStudentMiddleware } from '../validators/thesis'
+import {
+  StudentThesisSchema,
+  PaginatedStudentThesesSchema,
+} from '../validators/thesisResponse'
 
 import { handleAttachmentByLabel } from './thesisAttachmentHelpers'
 
@@ -128,7 +132,8 @@ studentRouter.get('/theses', async (req: RequestWithUser, res: any) => {
   //@ts-expect-error these are the same type
   result.theses = filtered_theses
 
-  return res.send(result)
+  const safeData = PaginatedStudentThesesSchema.parse(result)
+  return res.send(safeData)
 })
 
 studentRouter.get('/theses/:id', async (req: RequestWithUser, res: any) => {
@@ -146,7 +151,8 @@ studentRouter.get('/theses/:id', async (req: RequestWithUser, res: any) => {
     return
   }
 
-  res.send(thesisData)
+  const safeData = StudentThesisSchema.parse(thesisData)
+  res.send(safeData)
 })
 
 const validateThesisDataStudent = async (
@@ -265,7 +271,9 @@ studentRouter.post(
 
       return newThesis.toJSON()
     })
-    res.status(201).send(createdThesis)
+
+    const safeData = StudentThesisSchema.parse(createdThesis)
+    res.status(201).send(safeData)
   }
 )
 
@@ -444,7 +452,9 @@ studentRouter.put(
       await handleChangeEventLogs(originalThesis, updatedThesis, req.user, t)
       await handleStatusChangeEmail(originalThesis, updatedThesis, req.user)
     })
-    res.send(updatedThesis)
+
+    const safeData = StudentThesisSchema.parse(updatedThesis)
+    res.send(safeData)
   }
 )
 

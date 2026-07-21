@@ -8,30 +8,7 @@ export const StudyTrackDataSchema = z.object({
   isManaged: z.boolean().optional(),
 })
 
-export const ProgramOptionsSchema = z
-  .object({
-    seminar: z.boolean().optional(),
-    allowMultipleSeminarResponsibles: z.boolean().optional(),
-    allowStudentStartedProcess: z.boolean().optional(),
-    waysOfWorkingRequired: z.boolean().optional(),
-    allowMultipleAuthors: z.boolean().optional(),
-    hideSendToEthesis: z.boolean().optional(),
-    useMilestones: z.boolean().optional(),
-    disableStudyTracks: z.boolean().optional(),
-    useIdleState: z.boolean().optional(),
-    supervisorApproval: z.boolean().optional(),
-    thesisProgramManagerNotRequired: z.boolean().optional(),
-    isBachelorProgram: z.boolean().optional(),
-    numberOfGraders: z.number().optional(),
-    milestones: z
-      .object({
-        versions: z.array(z.array(z.any())).optional(),
-      })
-      .optional(),
-    combinedStudyTracks: z.record(z.string(), z.string()).optional(),
-  })
-  .catchall(z.any())
-
+export const ProgramOptionsSchema = z.record(z.string(), z.any())
 export const ProgramDataSchema = z.object({
   id: z.string(),
   name: TranslatedNameSchema,

@@ -1,28 +1,28 @@
 import { z } from 'zod'
 import { VALID_EVENT_LOG_TYPES, VALID_THESIS_STATUSES } from '../../config'
-import { PublicUserSchema } from './userResponse'
+import { EmployeeUserSchema, StudentUserSchema } from './userResponse'
 import {
   DepartmentDataSchema,
   TranslatedNameSchema,
 } from './departmentResponse'
 import { ProgramDataSchema } from './programResponse'
 
-export const PublicSupervisionSchema = z.object({
-  user: PublicUserSchema.partial(),
+export const EmployeeSupervisionSchema = z.object({
+  user: EmployeeUserSchema.partial(),
   percentage: z.number(),
   isExternal: z.boolean().nullable().optional(),
   isPrimarySupervisor: z.boolean(),
   creationTimeIdentifier: z.string().optional(),
 })
 
-export const PublicSeminarSupervisionSchema = z.object({
-  user: PublicUserSchema.partial(),
+export const EmployeeSeminarSupervisionSchema = z.object({
+  user: EmployeeUserSchema.partial(),
   isExternal: z.boolean().nullable().optional(),
   creationTimeIdentifier: z.string().optional(),
 })
 
-export const PublicGraderSchema = z.object({
-  user: PublicUserSchema.partial(),
+export const EmployeeGraderSchema = z.object({
+  user: EmployeeUserSchema.partial(),
   isPrimaryGrader: z.boolean(),
   title: TranslatedNameSchema.optional(),
   isExternal: z.boolean().nullable().optional(),
@@ -34,7 +34,7 @@ export const FileDataSchema = z.object({
   mimetype: z.string(),
 })
 
-export const PublicThesisSchema = z.object({
+export const EmployeeThesisSchema = z.object({
   id: z.string().optional(),
   milestone: z.number().optional().nullable(),
   milestoneVersion: z.number().optional().nullable(),
@@ -54,14 +54,14 @@ export const PublicThesisSchema = z.object({
     .transform((val) => new Date(val).toISOString())
     .optional()
     .nullable(),
-  supervisions: z.array(PublicSupervisionSchema).optional().default([]),
+  supervisions: z.array(EmployeeSupervisionSchema).optional().default([]),
   seminarSupervisions: z
-    .array(PublicSeminarSupervisionSchema)
+    .array(EmployeeSeminarSupervisionSchema)
     .optional()
     .default([]),
-  authors: z.array(PublicUserSchema).optional().default([]),
-  approvers: z.array(PublicUserSchema).optional().default([]),
-  graders: z.array(PublicGraderSchema).optional().default([]),
+  authors: z.array(EmployeeUserSchema).optional().default([]),
+  approvers: z.array(EmployeeUserSchema).optional().default([]),
+  graders: z.array(EmployeeGraderSchema).optional().default([]),
   researchPlan: z.any().optional(), // Could be FileData or File, hard to parse precisely here
   waysOfWorking: z.any().optional(),
   waysOfWorkingValidUntil: z
@@ -85,16 +85,45 @@ export const PublicThesisSchema = z.object({
     .nullable(),
 })
 
-export const PaginatedThesesSchema = z.object({
-  theses: z.array(PublicThesisSchema),
+export const PaginatedEmployeeThesesSchema = z.object({
+  theses: z.array(EmployeeThesisSchema),
   totalCount: z.number(),
   availableMilestones: z.array(z.number()),
   availableActionNeeded: z.any(), // The service returns an object, not an array
 })
 
+export const StudentSupervisionSchema = EmployeeSupervisionSchema.extend({
+  user: StudentUserSchema.partial(),
+})
+
+export const StudentSeminarSupervisionSchema =
+  EmployeeSeminarSupervisionSchema.extend({
+    user: StudentUserSchema.partial(),
+  })
+
+export const StudentGraderSchema = EmployeeGraderSchema.extend({
+  user: StudentUserSchema.partial(),
+})
+
+export const StudentThesisSchema = EmployeeThesisSchema.extend({
+  supervisions: z.array(StudentSupervisionSchema).optional().default([]),
+  seminarSupervisions: z
+    .array(StudentSeminarSupervisionSchema)
+    .optional()
+    .default([]),
+  authors: z.array(StudentUserSchema).optional().default([]),
+  approvers: z.array(StudentUserSchema).optional().default([]),
+  graders: z.array(StudentGraderSchema).optional().default([]),
+})
+
+export const PaginatedStudentThesesSchema =
+  PaginatedEmployeeThesesSchema.extend({
+    theses: z.array(StudentThesisSchema),
+  })
+
 export const ThesisStatisticsSchema = z.object({
   department: DepartmentDataSchema.optional(),
-  supervisor: PublicUserSchema.partial(),
+  supervisor: EmployeeUserSchema.partial(),
   statusCounts: z.record(z.enum(VALID_THESIS_STATUSES), z.number()),
   startedWithinHalfYearCount: z.number(),
   primarySupervisionsCount: z.number(),
@@ -138,19 +167,19 @@ const BaseEventLogSchema = z.object({
 const payloadSchemas: Record<string, z.ZodTypeAny> = {
   THESIS_GRADERS_CHANGED: z
     .object({
-      originalGraders: z.array(PublicGraderSchema).optional(),
-      updatedGraders: z.array(PublicGraderSchema).optional(),
+      originalGraders: z.array(EmployeeGraderSchema).optional(),
+      updatedGraders: z.array(EmployeeGraderSchema).optional(),
     })
     .catchall(z.any()),
 
   THESIS_SUPERVISIONS_CHANGED: z
     .object({
-      originalSupervisions: z.array(PublicSupervisionSchema).optional(),
-      updatedSupervisions: z.array(PublicSupervisionSchema).optional(),
+      originalSupervisions: z.array(EmployeeSupervisionSchema).optional(),
+      updatedSupervisions: z.array(EmployeeSupervisionSchema).optional(),
     })
     .catchall(z.any()),
 
-  THESIS_DELETED: PublicThesisSchema.partial(),
+  THESIS_DELETED: EmployeeThesisSchema.partial(),
 
   THESIS_STATUS_CHANGED: z
     .object({
