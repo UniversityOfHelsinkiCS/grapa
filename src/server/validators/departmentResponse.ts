@@ -1,9 +1,9 @@
 import { z } from 'zod'
 
 export const TranslatedNameSchema = z.object({
-  fi: z.string(),
-  sv: z.string(),
-  en: z.string(),
+  fi: z.string().optional(),
+  sv: z.string().optional(),
+  en: z.string().optional(),
 })
 
 export const DepartmentDataSchema = z.object({
