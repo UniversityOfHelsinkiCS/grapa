@@ -17,6 +17,7 @@ import {
   Approver,
   StudyTrackManagement,
   Department,
+  DepartmentAdmin,
 } from '../db/models'
 import {
   getSecondaryStudyTrackIds,
@@ -203,6 +204,16 @@ const buildPermissionsConditions = async (
 
   const studyTrackIds = studyTrackManagement.map((stm) => stm.studyTrackId)
 
+  const departmentAdmins =
+    onlySupervised || onlySeminarSupervised || onlyAuthored
+      ? []
+      : await DepartmentAdmin.findAll({
+          attributes: ['departmentId'],
+          where: { userId: actionUser.id },
+        })
+
+  const departmentIds = departmentAdmins.map((da) => da.departmentId)
+
   const expandedStudyTrackIds = new Set<string>(studyTrackIds)
   if (studyTrackIds.length > 0) {
     const studyTracks = await StudyTrack.findAll({
@@ -232,6 +243,14 @@ const buildPermissionsConditions = async (
   }
   if (expandedStudyTrackIds.size > 0) {
     orConditions.push({ studyTrackId: Array.from(expandedStudyTrackIds) })
+  }
+  if (departmentIds.length > 0) {
+    const departmentIdsStr = departmentIds.map((id) => `'${id}'`).join(', ')
+    orConditions.push(
+      literal(
+        `EXISTS (SELECT 1 FROM "${Supervision.tableName}" INNER JOIN "${User.tableName}" ON "${Supervision.tableName}"."user_id" = "${User.tableName}"."id" WHERE "${Supervision.tableName}"."thesis_id" = "Thesis"."id" AND "${User.tableName}"."department_id" IN (${departmentIdsStr}))`
+      )
+    )
   }
 
   return {
