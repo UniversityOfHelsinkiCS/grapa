@@ -1,6 +1,6 @@
 import { Op } from 'sequelize'
 import { User } from '../db/models'
-import { restrictedUserFields } from '../routes/config'
+import { StudentUserSchema } from '../validators/userResponse'
 
 import {
   getWhereClauseForManyWordSearch,
@@ -60,7 +60,7 @@ export const getUsersBySearchStudents = async (
   }
 
   const users = await User.findAll({
-    attributes: restrictedUserFields,
+    attributes: Object.keys(StudentUserSchema.shape),
     where: whereClauses,
     limit: USER_FETCH_LIMIT,
   })

@@ -1,7 +1,7 @@
 import { Includeable, literal, Op, Order, Transaction } from 'sequelize'
 import dayjs from 'dayjs'
 import { uniqBy } from 'lodash-es'
-import { userFields } from '../routes/config'
+import { EmployeeUserSchema } from '../validators/userResponse'
 import {
   Grader,
   SeminarSupervision,
@@ -104,23 +104,49 @@ export const buildThesisIncludes = (language?: string): Includeable[] => {
       as: 'supervisions',
       attributes: ['percentage', 'isPrimarySupervisor'],
       separate: true,
-      include: [{ model: User, as: 'user', attributes: userFields }],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: Object.keys(EmployeeUserSchema.shape),
+        },
+      ],
     },
     {
       model: SeminarSupervision,
       as: 'seminarSupervisions',
       separate: true,
-      include: [{ model: User, as: 'user', attributes: userFields }],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: Object.keys(EmployeeUserSchema.shape),
+        },
+      ],
     },
     {
       model: Grader,
       as: 'graders',
       attributes: ['isPrimaryGrader'],
       separate: true,
-      include: [{ model: User, as: 'user', attributes: userFields }],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: Object.keys(EmployeeUserSchema.shape),
+        },
+      ],
     },
-    { model: User, as: 'authors', attributes: userFields },
-    { model: User, as: 'approvers', attributes: userFields },
+    {
+      model: User,
+      as: 'authors',
+      attributes: Object.keys(EmployeeUserSchema.shape),
+    },
+    {
+      model: User,
+      as: 'approvers',
+      attributes: Object.keys(EmployeeUserSchema.shape),
+    },
     {
       model: Attachment,
       as: 'researchPlan',

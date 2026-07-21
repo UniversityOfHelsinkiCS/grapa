@@ -1,7 +1,7 @@
 import { Op } from 'sequelize'
 import express from 'express'
 import { User } from '../db/models'
-import { userFields } from './config'
+
 import {
   getWhereClauseForManyWordSearch,
   getWhereClauseForOneWordSearch,
@@ -95,7 +95,7 @@ usersRouter.get('/', ethesisUserHandler, async (req, res) => {
   }
 
   const users = await User.findAll({
-    attributes: userFields,
+    attributes: Object.keys(EmployeeUserSchema.shape),
     where: whereClauses,
     limit: USER_FETCH_LIMIT,
   })

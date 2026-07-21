@@ -12,9 +12,9 @@ import {
   User,
   ProgramManagement,
 } from '../db/models'
-import { userFields } from './config'
+import { EmployeeUserSchema } from '../validators/userResponse'
 
-const userAttributesToFetch = userFields
+const userAttributesToFetch = Object.keys(EmployeeUserSchema.shape)
 
 jest.unstable_mockModule('./src/server/mailer/pate', () => ({
   default: jest.fn(),

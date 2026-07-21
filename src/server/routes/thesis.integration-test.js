@@ -19,9 +19,9 @@ import {
   Thesis,
   User,
 } from '../db/models'
-import { userFields } from './config'
+import { EmployeeUserSchema } from '../validators/userResponse'
 
-const userAttributesToFetch = userFields
+const userAttributesToFetch = Object.keys(EmployeeUserSchema.shape)
 
 // We have to mock the pate mailer as there are tests that changes
 // status from PLANNING to IN_PROGRESS and that triggers a mail to be sent

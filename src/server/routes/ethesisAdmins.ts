@@ -5,6 +5,7 @@ import adminHandler from '../middleware/admin'
 import ethesisUserHandler from '../middleware/ethesisUser'
 import { EthesisAdminResponseSchema } from '../validators/managementResponse'
 import { z } from 'zod'
+import { EmployeeUserSchema } from '../validators/userResponse'
 
 const ethesisAdminRouter = express.Router()
 
@@ -19,7 +20,7 @@ ethesisAdminRouter.get(
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'firstName', 'lastName', 'email', 'username'],
+          attributes: Object.keys(EmployeeUserSchema.shape),
           required: true,
         },
       ],
@@ -65,7 +66,7 @@ ethesisAdminRouter.post(
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'firstName', 'lastName', 'email', 'username'],
+          attributes: Object.keys(EmployeeUserSchema.shape),
           required: true,
         },
       ],
