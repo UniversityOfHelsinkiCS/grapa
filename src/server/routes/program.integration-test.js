@@ -48,19 +48,19 @@ describe('program router', () => {
     })
 
     await StudyTrack.create({
-      name: 'test1',
+      name: { fi: 'test1', en: 'test1', sv: 'test1' },
       programId: 'test1',
     })
     await StudyTrack.create({
-      name: 'test2',
+      name: { fi: 'test2', en: 'test2', sv: 'test2' },
       programId: 'test1',
     })
     await StudyTrack.create({
-      name: 'test3',
+      name: { fi: 'test3', en: 'test3', sv: 'test3' },
       programId: 'test2',
     })
     await StudyTrack.create({
-      name: 'test4',
+      name: { fi: 'test4', en: 'test4', sv: 'test4' },
       programId: 'test2',
     })
   })
@@ -90,8 +90,8 @@ describe('program router', () => {
               },
               isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
-                expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test1' }) }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test2' }) }),
               ]),
             },
           ])
@@ -116,8 +116,8 @@ describe('program router', () => {
               },
               isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
-                expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test1' }) }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test2' }) }),
               ]),
             },
           ])
@@ -145,8 +145,8 @@ describe('program router', () => {
               isManaged: true,
               enabled: true,
               studyTracks: expect.toIncludeSameMembers([
-                expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test1' }) }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test2' }) }),
               ]),
             }),
           ])
@@ -174,8 +174,8 @@ describe('program router', () => {
               isManaged: true,
               enabled: true,
               studyTracks: expect.toIncludeSameMembers([
-                expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test1' }) }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test2' }) }),
               ]),
             }),
           ])
@@ -203,8 +203,8 @@ describe('program router', () => {
               isManaged: true,
               enabled: true,
               studyTracks: expect.toIncludeSameMembers([
-                expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test1' }) }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test2' }) }),
               ]),
             }),
             expect.objectContaining({
@@ -219,8 +219,8 @@ describe('program router', () => {
               isManaged: false,
               enabled: false,
               studyTracks: expect.toIncludeSameMembers([
-                expect.objectContaining({ name: 'test3' }),
-                expect.objectContaining({ name: 'test4' }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test3' }) }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test4' }) }),
               ]),
             }),
           ])
@@ -245,8 +245,8 @@ describe('program router', () => {
               },
               isManaged: true,
               studyTracks: expect.toIncludeSameMembers([
-                expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test1' }) }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test2' }) }),
               ]),
             },
           ])
@@ -270,8 +270,8 @@ describe('program router', () => {
                 sv: 'test1pasvenska',
               },
               studyTracks: expect.toIncludeSameMembers([
-                expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test1' }) }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test2' }) }),
               ]),
             },
           ])
@@ -299,8 +299,8 @@ describe('program router', () => {
               isManaged: true,
               enabled: true,
               studyTracks: expect.toIncludeSameMembers([
-                expect.objectContaining({ name: 'test1' }),
-                expect.objectContaining({ name: 'test2' }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test1' }) }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test2' }) }),
               ]),
             }),
             expect.objectContaining({
@@ -315,8 +315,8 @@ describe('program router', () => {
               isManaged: false,
               enabled: false,
               studyTracks: expect.toIncludeSameMembers([
-                expect.objectContaining({ name: 'test3' }),
-                expect.objectContaining({ name: 'test4' }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test3' }) }),
+                expect.objectContaining({ name: expect.objectContaining({ fi: 'test4' }) }),
               ]),
             }),
           ])
