@@ -12,6 +12,7 @@ import {
 import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus'
 import ethesisUserHandler from '../middleware/ethesisUser'
 import employeesAndAdminOnly from '../middleware/employeesAndAdmin'
+import { LoggedInUserSchema } from '../validators/userResponse'
 
 const userRouter = express.Router()
 
@@ -50,7 +51,7 @@ userRouter.get(
 
     const thesesTableFilters = { items: <any>[] }
 
-    return res.send({
+    const safeData = LoggedInUserSchema.parse({
       ...user,
       managedProgramIds,
       managedStudyTrackIds,
@@ -59,6 +60,8 @@ userRouter.get(
       hasSeminarSupervisions,
       thesesTableFilters,
     })
+
+    return res.send(safeData)
   }
 )
 

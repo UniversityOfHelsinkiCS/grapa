@@ -12,7 +12,10 @@ import {
   DialogContentText,
 } from '@mui/material'
 import Popup from '../Common/Popup'
-import { TranslatedName, TranslationLanguage } from '@backend/types'
+import {
+  TranslatedName,
+  TranslationLanguage,
+} from '@backend/validators/departmentResponse'
 
 export interface ManageableItem {
   id: string

@@ -8,13 +8,13 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 
+import { TranslationLanguage } from '@backend/validators/departmentResponse'
+
+import PrethesisTable from '../Common/PrethesisTable'
 import {
   ThesisStatistics,
   ThesisStatus,
-  TranslationLanguage,
-} from '@backend/types'
-
-import PrethesisTable from '../Common/PrethesisTable'
+} from '@backend/validators/thesisResponse'
 
 interface Props {
   statistics: ThesisStatistics[]

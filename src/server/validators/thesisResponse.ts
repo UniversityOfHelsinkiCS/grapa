@@ -163,37 +163,41 @@ const BaseEventLogSchema = z.object({
   thesis: EventLogEntryThesisSchema.optional().nullable(),
 })
 
+export const GradersChangedEventSchema = z
+  .object({
+    originalGraders: z.array(EmployeeGraderSchema).optional(),
+    updatedGraders: z.array(EmployeeGraderSchema).optional(),
+  })
+  .catchall(z.any())
+
+export const SupervisionsChangedEventSchema = z
+  .object({
+    originalSupervisions: z.array(EmployeeSupervisionSchema).optional(),
+    updatedSupervisions: z.array(EmployeeSupervisionSchema).optional(),
+  })
+  .catchall(z.any())
+
+export const StatusChangedEventSchema = z
+  .object({
+    to: z.string(),
+    from: z.string().optional().nullable(),
+  })
+  .catchall(z.any())
+
+export const TopicChangedEventSchema = z
+  .object({
+    to: z.string(),
+    from: z.string().optional().nullable(),
+  })
+  .catchall(z.any())
+
 // Schemas for event log data
 const payloadSchemas: Record<string, z.ZodTypeAny> = {
-  THESIS_GRADERS_CHANGED: z
-    .object({
-      originalGraders: z.array(EmployeeGraderSchema).optional(),
-      updatedGraders: z.array(EmployeeGraderSchema).optional(),
-    })
-    .catchall(z.any()),
-
-  THESIS_SUPERVISIONS_CHANGED: z
-    .object({
-      originalSupervisions: z.array(EmployeeSupervisionSchema).optional(),
-      updatedSupervisions: z.array(EmployeeSupervisionSchema).optional(),
-    })
-    .catchall(z.any()),
-
+  THESIS_GRADERS_CHANGED: GradersChangedEventSchema,
+  THESIS_SUPERVISIONS_CHANGED: SupervisionsChangedEventSchema,
   THESIS_DELETED: EmployeeThesisSchema.partial(),
-
-  THESIS_STATUS_CHANGED: z
-    .object({
-      to: z.string(),
-      from: z.string().optional().nullable(),
-    })
-    .catchall(z.any()),
-
-  THESIS_TOPIC_CHANGED: z
-    .object({
-      to: z.string(),
-      from: z.string().optional().nullable(),
-    })
-    .catchall(z.any()),
+  THESIS_STATUS_CHANGED: StatusChangedEventSchema,
+  THESIS_TOPIC_CHANGED: TopicChangedEventSchema,
 }
 
 export const EventLogSchema = BaseEventLogSchema.transform((log) => {
@@ -213,3 +217,36 @@ export const EventLogSchema = BaseEventLogSchema.transform((log) => {
     data: parsed.success ? parsed.data : null, // Drops data if validation fails
   }
 })
+
+export type ThesisData = z.infer<typeof EmployeeThesisSchema>
+export type ThesisStatistics = z.infer<typeof ThesisStatisticsSchema>
+export type EventLogEntry = z.infer<typeof EventLogSchema>
+export type SupervisionData = z.infer<typeof EmployeeSupervisionSchema>
+export type SeminarSupervisionData = z.infer<
+  typeof EmployeeSeminarSupervisionSchema
+>
+export type GraderData = z.infer<typeof EmployeeGraderSchema>
+export type FileData = z.infer<typeof FileDataSchema>
+export type EventLogEntryThesis = z.infer<typeof EventLogEntryThesisSchema>
+export interface GradersChangedEvent extends Omit<EventLogEntry, 'data'> {
+  type: 'THESIS_GRADERS_CHANGED'
+  data: z.infer<typeof GradersChangedEventSchema>
+}
+export interface SupervisionsChangedEvent extends Omit<EventLogEntry, 'data'> {
+  type: 'THESIS_SUPERVISIONS_CHANGED'
+  data: z.infer<typeof SupervisionsChangedEventSchema>
+}
+export interface StatusChangedEvent extends Omit<EventLogEntry, 'data'> {
+  type: 'THESIS_STATUS_CHANGED'
+  data: z.infer<typeof StatusChangedEventSchema>
+}
+export interface TopicChangedEvent extends Omit<EventLogEntry, 'data'> {
+  type: 'THESIS_TOPIC_CHANGED'
+  data: z.infer<typeof TopicChangedEventSchema>
+}
+export interface ThesisCreatedEvent extends Omit<EventLogEntry, 'data'> {
+  type: 'THESIS_CREATED'
+  data: z.infer<typeof EmployeeThesisSchema>
+}
+
+export type ThesisStatus = (typeof VALID_THESIS_STATUSES)[number]

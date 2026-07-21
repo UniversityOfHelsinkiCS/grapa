@@ -7,12 +7,10 @@ import {
   CellContext,
 } from '@tanstack/react-table'
 
-import {
-  ThesisData as Thesis,
-  TranslationLanguage,
-  User,
-  ProgramData,
-} from '@backend/types'
+import { LoggedInUser as User } from '@backend/validators/userResponse'
+import { TranslationLanguage } from '@backend/validators/departmentResponse'
+import { ProgramData } from '@backend/validators/programResponse'
+import { ThesisData as Thesis } from '@backend/validators/thesisResponse'
 
 import Chip from '@mui/material/Chip'
 import {

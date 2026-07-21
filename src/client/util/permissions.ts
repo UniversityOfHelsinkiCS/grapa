@@ -1,4 +1,5 @@
-import { ThesisData as Thesis, User } from '../../server/types'
+import { ThesisData as Thesis } from '@backend/validators/thesisResponse'
+import { LoggedInUser as User } from '@backend/validators/userResponse'
 import { THESIS_STATUSES } from '../../config'
 
 export const isSupervisor = (thesis: Thesis, user: User) =>

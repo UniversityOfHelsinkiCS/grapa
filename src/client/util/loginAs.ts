@@ -1,4 +1,4 @@
-import { User } from '@backend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
 
 import { LOGIN_AS_LOCAL_STORAGE_KEY } from '../../config'
 

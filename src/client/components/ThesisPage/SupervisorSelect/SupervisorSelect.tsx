@@ -7,8 +7,9 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { User, SupervisionData } from '@backend/types'
-import { SupervisorSelection } from '@frontend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
+import { SupervisionData } from '@backend/validators/thesisResponse'
+
 import { v4 as uuidv4 } from 'uuid'
 import { useTranslation } from 'react-i18next'
 import { ZodIssue } from 'zod'
@@ -23,7 +24,7 @@ import NewPersonControls from '../NewPersonControls'
 interface SupervisorSelectProps {
   errors: ZodIssue[]
   setErrors: (errors: ZodIssue[]) => void
-  supervisorSelections: SupervisorSelection[]
+  supervisorSelections: SupervisionData[]
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
   disabledMode: boolean
 }

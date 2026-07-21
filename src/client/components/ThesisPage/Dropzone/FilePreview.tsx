@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Chip, Link } from '@mui/material'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 
-import { FileData } from '@backend/types'
+import { FileData } from '@backend/validators/thesisResponse'
 
 import Popup from '../../Common/Popup'
 

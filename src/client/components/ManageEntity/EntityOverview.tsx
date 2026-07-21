@@ -13,10 +13,12 @@ import usePrograms from '../../hooks/usePrograms'
 import { useTranslation } from 'react-i18next'
 import {
   ProgramData,
-  TranslationLanguage,
   StudyTrackData,
+} from '@backend/validators/programResponse'
+import {
+  TranslationLanguage,
   DepartmentData,
-} from '@backend/types'
+} from '@backend/validators/departmentResponse'
 import ThesesPage from '../ThesisPage/ThesesPage'
 import ManageEntityPermissions from './ManageEntityPermissions'
 import useLoggedInUser from '../../hooks/useLoggedInUser'

@@ -1,3 +1,5 @@
+import { Divider, Stack, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import {
   EventLogEntry,
   EventLogEntryThesis,
@@ -6,9 +8,7 @@ import {
   SupervisionsChangedEvent,
   ThesisCreatedEvent,
   TopicChangedEvent,
-} from '@backend/types'
-import { Divider, Stack, Typography } from '@mui/material'
-import { useTranslation } from 'react-i18next'
+} from '@backend/validators/thesisResponse'
 import BeforeDiffAfter from '../BeforeDiffAfter/BeforeDiffAfter'
 
 const EventDate = ({ date }: { date: string }) => (

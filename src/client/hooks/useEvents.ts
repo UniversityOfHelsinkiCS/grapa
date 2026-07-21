@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { EventLogEntry } from '@backend/types'
+import { EventLogEntry } from '@backend/validators/thesisResponse'
 
 import apiClient from '../util/apiClient'
 

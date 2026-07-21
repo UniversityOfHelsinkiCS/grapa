@@ -23,14 +23,12 @@ import {
   Paper,
 } from '@mui/material'
 import Popup from '../Common/Popup'
+import { StudyTrackData } from '@backend/validators/programResponse'
 import { useUpdateProgramMutation } from '../../hooks/usePrograms'
 import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined'
 import { useTranslation } from 'react-i18next'
-import {
-  ProgramData,
-  TranslationLanguage,
-  StudyTrackData,
-} from '@backend/types'
+import { TranslationLanguage } from '@backend/validators/departmentResponse'
+import { ProgramData } from '@backend/validators/programResponse'
 
 interface ProgramConfigurationsProps {
   program: ProgramData

@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { StudyTrackManagementData } from '@backend/types'
+import { StudyTrackManagementData } from '@backend/validators/managementResponse'
 import apiClient from '../util/apiClient'
 import queryClient from '../util/queryClient'
 

@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { User } from '@backend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
 
 import { useDebounce } from '../../hooks/useDebounce'
 import useUsers from '../../hooks/useUsers'

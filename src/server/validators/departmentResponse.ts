@@ -13,4 +13,5 @@ export const DepartmentDataSchema = z.object({
 })
 
 export type TranslatedName = z.infer<typeof TranslatedNameSchema>
+export type TranslationLanguage = keyof TranslatedName
 export type DepartmentData = z.infer<typeof DepartmentDataSchema>

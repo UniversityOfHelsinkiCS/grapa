@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { ProgramData, TranslatedName } from '@backend/types'
+import { ProgramData } from '@backend/validators/programResponse'
+import { TranslatedName } from '@backend/validators/departmentResponse'
 
 import apiClient from '../util/apiClient'
 import queryClient from '../util/queryClient'

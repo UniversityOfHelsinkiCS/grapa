@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { User } from '@backend/types'
+import { LoggedInUser as User } from '@backend/validators/userResponse'
 
 import apiClient from '../util/apiClient'
 

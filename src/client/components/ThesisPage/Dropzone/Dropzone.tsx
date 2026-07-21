@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import FileUploadIcon from '@mui/icons-material/FileUpload'
 import CheckIcon from '@mui/icons-material/Check'
-import { FileData } from '@backend/types'
+import { FileData } from '@backend/validators/thesisResponse'
 import { getBgColor, getColor } from './utils'
 
 interface FileDropzoneProps {

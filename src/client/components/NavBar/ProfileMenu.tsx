@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TranslatedName, User } from '@backend/types'
+import { LoggedInUser } from '@backend/validators/userResponse'
+import { TranslatedName } from '@backend/validators/departmentResponse'
 import {
   Box,
   Divider,
@@ -39,7 +40,7 @@ const UserInformation = () => {
     return <Skeleton variant="text" width={100} />
 
   const { language } = i18n
-  const displayedFields: (keyof User)[] = [
+  const displayedFields: (keyof LoggedInUser)[] = [
     'username',
     'email',
     'departmentId',

@@ -7,7 +7,7 @@ import queryClient from '../util/queryClient'
 import {
   DepartmentData as Department,
   TranslatedName,
-} from '../../server/types'
+} from '@backend/validators/departmentResponse'
 
 interface UseDepartmentsParams {
   includeNotManaged?: boolean

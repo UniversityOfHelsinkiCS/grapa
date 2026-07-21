@@ -33,3 +33,12 @@ export const EthesisAdminResponseSchema = z.object({
   userId: z.string(),
   user: EmployeeUserSchema.optional(),
 })
+
+export type DepartmentAdminData = z.infer<typeof DepartmentAdminResponseSchema>
+export type ProgramManagementData = z.infer<
+  typeof ProgramManagementResponseSchema
+>
+export type StudyTrackManagementData = z.infer<
+  typeof StudyTrackManagementResponseSchema
+>
+export type EthesisAdminData = z.infer<typeof EthesisAdminResponseSchema>

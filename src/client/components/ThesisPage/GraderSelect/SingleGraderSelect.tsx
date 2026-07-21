@@ -10,7 +10,8 @@ import {
   TextFieldProps,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { User, GraderData } from '@backend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
+import { GraderData } from '@backend/validators/thesisResponse'
 import { useTranslation } from 'react-i18next'
 import { useDebounce } from '../../../hooks/useDebounce'
 import useUsers from '../../../hooks/useUsers'

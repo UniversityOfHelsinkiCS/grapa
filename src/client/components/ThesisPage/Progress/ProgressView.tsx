@@ -11,7 +11,7 @@ import Popup from '../../Common/Popup'
 import { useTranslation } from 'react-i18next'
 import { useEditThesisMutation } from '../../../hooks/useThesesMutation'
 import { useState } from 'react'
-import { TranslationLanguage } from '@backend/types'
+import { TranslationLanguage } from '@backend/validators/departmentResponse'
 
 interface ProgressViewProps {
   thesis: any

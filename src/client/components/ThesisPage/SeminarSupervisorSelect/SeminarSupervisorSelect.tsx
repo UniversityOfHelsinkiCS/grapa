@@ -5,7 +5,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { SeminarSupervisionData, User } from '@backend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
+import { SeminarSupervisionData } from '@backend/validators/thesisResponse'
 import { useTranslation } from 'react-i18next'
 import { ZodIssue } from 'zod'
 import { useDebounce } from '../../../hooks/useDebounce'
@@ -145,7 +146,7 @@ const SeminarSupervisorSelect = ({
           <SingleSeminarSupervisorSelect
             key={selection.user?.id ?? `seminarSupervisions-${index}`}
             index={index}
-            selection={selection}
+            selection={selection as SeminarSupervisionData}
             handleSeminarSupervisorChange={(value) =>
               handleSeminarSupervisorChange(index, value)
             }

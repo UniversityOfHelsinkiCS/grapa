@@ -1,4 +1,4 @@
-import { User } from '@backend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
 import {
   Autocomplete,
   Stack,

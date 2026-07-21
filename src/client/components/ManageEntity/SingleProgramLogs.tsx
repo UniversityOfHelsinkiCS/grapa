@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { ProgramData } from '@backend/types'
+import { ProgramData } from '@backend/validators/programResponse'
 import { useProgramEvents } from '../../hooks/useEvents'
 import EventsView from '../EventsView/EventsView'
 import { useDebounce } from '../../hooks/useDebounce'

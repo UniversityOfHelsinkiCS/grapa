@@ -1,5 +1,6 @@
 import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
-import { User, GraderData } from '@backend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
+import { GraderData } from '@backend/validators/thesisResponse'
 import { useTranslation } from 'react-i18next'
 import { ZodIssue } from 'zod'
 import SingleGraderSelect from './SingleGraderSelect'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { User } from '@backend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
 import { Button, Paper, Typography } from '@mui/material'
 
 import { LOGIN_AS_LOCAL_STORAGE_KEY } from '../../../config'

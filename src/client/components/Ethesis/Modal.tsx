@@ -10,7 +10,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useEditThesisMutation } from '../../hooks/useThesesMutation'
 import usePrograms from '../../hooks/usePrograms'
-import { TranslatedName } from '@backend/types'
+import { TranslatedName } from '@backend/validators/departmentResponse'
 
 interface ThesisModalProps {
   open: boolean

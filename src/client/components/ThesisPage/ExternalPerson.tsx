@@ -1,5 +1,5 @@
 import React from 'react'
-import { User } from '@backend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
 import {
   Stack,
   TextField,
@@ -22,26 +22,16 @@ type ExternalPersonInputErrors = {
   affiliation?: string | null
 }
 
-type SupervisorSelection = {
-  user: Partial<User> | null
-  percentage: number
-}
-
-type SeminarSupervisorSelection = {
-  user: Partial<User> | null
-  isExternal: boolean
-}
-
-type GraderSelection = {
-  user: Partial<User> | null
-  isPrimaryGrader: boolean
-  isExternal: boolean
-}
+import {
+  SupervisionData,
+  GraderData,
+  SeminarSupervisionData,
+} from '@backend/validators/thesisResponse'
 
 interface BaseExternalPersonInputProps {
   index: number
   inputGroup: 'supervisions' | 'graders' | 'seminarSupervisions'
-  selection: SupervisorSelection | GraderSelection | SeminarSupervisorSelection
+  selection: SupervisionData | GraderData | SeminarSupervisionData
   handlePersonChange: (value: Partial<User> | null) => void
   handleRemovePerson: () => void
   inputErrors: ExternalPersonInputErrors
@@ -219,7 +209,7 @@ const ExternalPersonInput = ({
           {inputGroup === 'supervisions' && (
             <PercentageInput
               label={t('thesisForm:selectSupervisorPercentage')}
-              value={(selection as SupervisorSelection).percentage}
+              value={(selection as SupervisionData).percentage}
               onChange={handlePercentageChange}
               percentageInputProps={percentageInputProps}
             />

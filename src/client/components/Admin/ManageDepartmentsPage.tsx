@@ -16,7 +16,7 @@ import useDepartments, {
 } from '../../hooks/useDepartments'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import ManageEntityAdmin from './ManageEntityAdmin'
-import { TranslatedName } from '@backend/types'
+import { TranslatedName } from '@backend/validators/departmentResponse'
 import Popup from '../Common/Popup'
 
 const ManageDepartmentsPage = () => {

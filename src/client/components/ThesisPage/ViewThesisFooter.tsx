@@ -21,15 +21,17 @@ import {
   ButtonBase,
 } from '@mui/material'
 import Popup from '../Common/Popup'
+import { LoggedInUser as User } from '@backend/validators/userResponse'
+import {
+  TranslatedName,
+  TranslationLanguage,
+} from '@backend/validators/departmentResponse'
+import { ProgramData } from '@backend/validators/programResponse'
 import {
   FileData,
   ThesisData as Thesis,
-  TranslatedName,
-  User,
-  TranslationLanguage,
   ThesisStatus,
-  ProgramData,
-} from '@backend/types'
+} from '@backend/validators/thesisResponse'
 
 import { ThesisFooterProps } from '../../types'
 import usePrograms from '../../hooks/usePrograms'

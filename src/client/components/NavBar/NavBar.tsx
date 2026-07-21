@@ -25,9 +25,9 @@ import useDepartments from '../../hooks/useDepartments'
 import usePrograms from '../../hooks/usePrograms'
 import {
   TranslationLanguage,
-  ProgramData,
   DepartmentData,
-} from '@backend/types'
+} from '@backend/validators/departmentResponse'
+import { ProgramData } from '@backend/validators/programResponse'
 
 import LanguageSelect from './LanguageSelect'
 import MobileMenu from './MobileMenu'

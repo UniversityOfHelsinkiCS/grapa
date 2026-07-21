@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { ThesisData } from '@backend/types'
+import { ThesisData } from '@backend/validators/thesisResponse'
 import apiClient from '../util/apiClient'
 import queryClient from '../util/queryClient'
 

@@ -1,4 +1,4 @@
-import { User } from '@backend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
 import {
   Autocomplete,
   Stack,
@@ -16,13 +16,11 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import useUsers from '../../../hooks/useUsers'
 import { useDebounce } from '../../../hooks/useDebounce'
 import Popup from '../../Common/Popup'
+import { SeminarSupervisionData } from '@backend/validators/thesisResponse'
 
 interface SingleSeminarSupervisorSelectProps {
   index: number
-  selection: {
-    user: Partial<User> | null
-    isExternal: boolean
-  }
+  selection: SeminarSupervisionData
   handleSeminarSupervisorChange: (value: Partial<User> | null) => void
   handleRemoveSeminarSupervisor: () => void
   inputProps: TextFieldProps

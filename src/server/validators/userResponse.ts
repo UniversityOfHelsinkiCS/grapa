@@ -17,3 +17,21 @@ export const EmployeeUserSchema = StudentUserSchema.extend({
 })
 
 export type EmployeeUser = z.infer<typeof EmployeeUserSchema>
+
+export const LoggedInUserSchema = EmployeeUserSchema.extend({
+  isAdmin: z.boolean().optional(),
+  iamGroups: z.array(z.string()).optional(),
+  language: z.string().optional(),
+  departmentId: z.string().optional().nullable(),
+  thesesTableFilters: z.any().optional(),
+  ethesisAdmin: z.boolean().optional(),
+  managedProgramIds: z.array(z.string()).optional(),
+  managedStudyTrackIds: z.array(z.string()).optional(),
+  approvableProgramIds: z.array(z.string()).optional(),
+  managedDepartmentIds: z.array(z.string()).optional(),
+  favoriteProgramIds: z.array(z.string()).optional(),
+  hasSeminarSupervisions: z.boolean().optional(),
+  hasStudyRight: z.boolean().optional(),
+})
+
+export type LoggedInUser = z.infer<typeof LoggedInUserSchema>

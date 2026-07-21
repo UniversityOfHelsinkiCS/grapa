@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { TranslatedName } from '@backend/types'
+import { TranslatedName } from '@backend/validators/departmentResponse'
 import {
   ListItemIcon,
   ListItemText,

@@ -10,7 +10,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { TranslationLanguage } from '@backend/types'
+import { TranslationLanguage } from '@backend/validators/departmentResponse'
 import useDepartments from '../hooks/useDepartments'
 
 import useUserDepartmentMutation from '../hooks/useUserDepartmentMutation'

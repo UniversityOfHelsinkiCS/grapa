@@ -38,6 +38,30 @@ export default [
       globals: globals.jest,
     },
   },
+  {
+    files: ['src/client/**/*.{js,mjs,cjs,ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@backend/types',
+              message:
+                'Please import types from validators (e.g. @backend/validators/...) instead of @backend/types to ensure frontend types exactly match the validated API response.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['../backend/types', '../../backend/types', '../../../backend/types'],
+              message:
+                'Please import types from validators (e.g. @backend/validators/...) instead of backend types.',
+            },
+          ],
+        },
+      ],
+    },
+  },
 ]
 
 

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { User } from '@backend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
 import apiClient from '../util/apiClient'
 
 interface UseUsersOptions {

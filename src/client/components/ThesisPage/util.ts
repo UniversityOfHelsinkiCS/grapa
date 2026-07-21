@@ -1,5 +1,5 @@
-import { SupervisionData, ThesisData } from '@backend/types'
-import { SupervisorSelection } from '@frontend/types'
+import { SupervisionData, ThesisData } from '@backend/validators/thesisResponse'
+
 import { ThesisSchema, ThesisDateSchema } from './thesisValidator'
 
 export const getTotalPercentage = (supervisions: SupervisionData[]) =>
@@ -7,7 +7,7 @@ export const getTotalPercentage = (supervisions: SupervisionData[]) =>
 
 export const getEqualSupervisorSelectionWorkloads = (
   numberOfSupervisors: number,
-  supervisorSelections: SupervisorSelection[]
+  supervisorSelections: SupervisionData[]
 ) => {
   const defaultPercentage = (1 / numberOfSupervisors) * 100
   const roundedDefaultPercentage = Math.floor(defaultPercentage)

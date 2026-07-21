@@ -1,4 +1,4 @@
-import { User } from '@backend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
 import { Stack, Typography } from '@mui/material'
 
 export const Person = ({

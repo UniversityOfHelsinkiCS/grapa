@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { DepartmentAdminData } from '@backend/types'
+import { DepartmentAdminData } from '@backend/validators/managementResponse'
 import apiClient from '../util/apiClient'
 
 const useDepartmentAdmins = () => {

@@ -1,7 +1,10 @@
 import { GridRowSelectionModel } from '@mui/x-data-grid'
 import { useQuery } from '@tanstack/react-query'
 
-import { ThesisData, ThesisStatistics } from '@backend/types'
+import {
+  ThesisData,
+  ThesisStatistics,
+} from '@backend/validators/thesisResponse'
 
 import apiClient from '../util/apiClient'
 import { useTranslation } from 'react-i18next'

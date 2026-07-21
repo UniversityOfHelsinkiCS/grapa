@@ -12,7 +12,7 @@ import {
   GridSortModel,
 } from '@mui/x-data-grid'
 
-import { ThesisData as Thesis } from '@backend/types'
+import { ThesisData as Thesis } from '@backend/validators/thesisResponse'
 
 import { usePaginatedTheses, useExportThesesCsv } from '../../hooks/useTheses'
 import useLoggedInUser from '../../hooks/useLoggedInUser'

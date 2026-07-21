@@ -49,13 +49,17 @@ import Popup from '../Common/Popup'
 
 import {
   ProgramManagementData,
-  TranslationLanguage,
   DepartmentAdminData,
   StudyTrackManagementData,
+} from '@backend/validators/managementResponse'
+import {
   ProgramData,
   StudyTrackData,
+} from '@backend/validators/programResponse'
+import {
   DepartmentData,
-} from '@backend/types'
+  TranslationLanguage,
+} from '@backend/validators/departmentResponse'
 
 interface Props {
   filteringEntityId?: string

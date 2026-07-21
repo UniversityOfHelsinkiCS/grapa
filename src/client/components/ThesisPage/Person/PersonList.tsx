@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Stack, Typography, Tooltip, IconButton } from '@mui/material'
 
-import { TranslatedName, User } from '@backend/types'
+import { EmployeeUser as User } from '@backend/validators/userResponse'
+import { TranslatedName } from '@backend/validators/departmentResponse'
 
 import { ContentCopy } from '@mui/icons-material'
 import { Person } from './Person'
