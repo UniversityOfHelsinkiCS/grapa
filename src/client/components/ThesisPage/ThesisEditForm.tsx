@@ -177,11 +177,12 @@ const ThesisEditForm = ({
   const allowStatusChanges = Boolean(
     selectedProgram?.options?.allowStatusChanges
   )
-  const canChangeStatus = user.isAdmin || allowStatusChanges
+  const canChangeStatus = !isStudentView && (user.isAdmin || allowStatusChanges)
 
   const showStatusForm =
-    canChangeStatus ||
-    ['IN_PROGRESS', 'CANCELLED'].includes(initialThesis.status)
+    !isStudentView &&
+    (canChangeStatus ||
+      ['IN_PROGRESS', 'CANCELLED'].includes(initialThesis.status))
 
   const showMilestoneForm = Boolean(
     canChangeStatus &&
