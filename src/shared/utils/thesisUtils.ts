@@ -20,3 +20,9 @@ export const isThesisLate = (
 ): boolean => {
   return getThesisLateDays(targetDate) >= LATE_THESIS_THRESHOLD_DAYS
 }
+
+export const isThesisVeryLate = (
+  targetDate: string | Date | null | undefined
+): boolean => {
+  return getThesisLateDays(targetDate) >= VERY_LATE_THESIS_THRESHOLD_DAYS
+}

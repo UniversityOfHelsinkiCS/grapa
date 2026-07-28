@@ -4,6 +4,8 @@ import {
   isThesisLate,
   getThesisLateDays,
   LATE_THESIS_THRESHOLD_DAYS,
+  isThesisVeryLate,
+  VERY_LATE_THESIS_THRESHOLD_DAYS,
 } from '../../shared/utils/thesisUtils'
 import { uniqBy } from 'lodash-es'
 import { EmployeeUserSchema } from '../validators/userResponse'
@@ -976,6 +978,7 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
     ),
     milestoneCounts: {} as Record<string, number>,
     lateActiveSupervisionsCount: 0,
+    veryLateActiveSupervisionsCount: 0,
     completedThesesTimes: [] as number[],
   }
 
@@ -996,6 +999,9 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
       totals.milestoneCounts[mKey] = (totals.milestoneCounts[mKey] || 0) + 1
       if (isThesisLate(targetDate)) {
         totals.lateActiveSupervisionsCount++
+      }
+      if (isThesisVeryLate(targetDate)) {
+        totals.veryLateActiveSupervisionsCount++
       }
     }
     if (status === 'COMPLETED') {
@@ -1052,6 +1058,7 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
           startedWithinHalfYearCount: isWithinLastHalfYear(startDateObject)
             ? 1
             : 0,
+          veryLateSupervisionsCount: 0,
           primarySupervisionsCount:
             isPrimarySupervisor && status == 'IN_PROGRESS' ? 1 : 0,
           lateSupervisions: [
@@ -1078,6 +1085,9 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
         ),
       }
       current['lateSupervisionsCount'] = current.lateSupervisions.length
+      current['veryLateSupervisionsCount'] = current.lateSupervisions.filter(
+        (x: number) => x >= VERY_LATE_THESIS_THRESHOLD_DAYS
+      ).length
       current['avgLateSupervision'] =
         current.lateSupervisions.length > 0
           ? current.lateSupervisions.reduce(

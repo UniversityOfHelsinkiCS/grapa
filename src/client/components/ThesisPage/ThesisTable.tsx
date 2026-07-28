@@ -58,9 +58,7 @@ import { THESIS_STATUSES } from '../../../config'
 import Popup from '../Common/Popup'
 import {
   isThesisLate,
-  getThesisLateDays,
-  LATE_THESIS_THRESHOLD_DAYS,
-  VERY_LATE_THESIS_THRESHOLD_DAYS,
+  isThesisVeryLate,
 } from '../../../shared/utils/thesisUtils'
 
 import PrethesisTable from '../Common/PrethesisTable'
@@ -623,15 +621,14 @@ const ThesisTable = ({
           const targetDate = context.row.original.targetDate
           const status = context.row.original.status
           const isIdle = context.row.original.isIdle
-          const difference = getThesisLateDays(targetDate)
           return {
             sx: {
               backgroundColor: isIdle
                 ? '#c8d7ff'
                 : targetDate && status == 'IN_PROGRESS'
-                  ? difference >= VERY_LATE_THESIS_THRESHOLD_DAYS
+                  ? isThesisVeryLate(targetDate)
                     ? '#ffc8c8'
-                    : difference >= LATE_THESIS_THRESHOLD_DAYS
+                    : isThesisLate(targetDate)
                       ? '#fff6c8'
                       : ''
                   : '',

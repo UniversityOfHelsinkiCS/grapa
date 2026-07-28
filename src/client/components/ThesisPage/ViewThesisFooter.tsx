@@ -76,7 +76,7 @@ import ThesisModal from '../Ethesis/Modal'
 import {
   isThesisLate,
   getThesisLateDays,
-  VERY_LATE_THESIS_THRESHOLD_DAYS,
+  isThesisVeryLate,
 } from '../../../shared/utils/thesisUtils'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
@@ -703,9 +703,7 @@ const ViewThesisFooter = (
           {thesis.status == 'IN_PROGRESS' && isLate != false && (
             <Alert
               severity={
-                difference >= VERY_LATE_THESIS_THRESHOLD_DAYS
-                  ? 'error'
-                  : 'warning'
+                isThesisVeryLate(thesis?.targetDate) ? 'error' : 'warning'
               }
               sx={{ my: 1.5 }}
             >

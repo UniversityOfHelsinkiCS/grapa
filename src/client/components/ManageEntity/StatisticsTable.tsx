@@ -194,6 +194,21 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
         ),
         cell: (info) => (info.getValue() !== 0 ? info.getValue() : '-'),
       }),
+      columnHelper.accessor('veryLateSupervisionsCount', {
+        id: 'VERY_LATE_COUNT',
+        header: () => (
+          <Tooltip title={t('departmentStatisticsPage:veryLateTooltip')}>
+            <Typography
+              variant="body2"
+              component="span"
+              sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
+            >
+              {t('departmentStatisticsPage:veryLate')}
+            </Typography>
+          </Tooltip>
+        ),
+        cell: (info) => (info.getValue() !== 0 ? info.getValue() : '-'),
+      }),
       columnHelper.accessor('avgLateSupervision', {
         id: 'LATE_TIME',
         header: () => (

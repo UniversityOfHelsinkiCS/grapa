@@ -57,6 +57,9 @@ const Statistics = ({
   )
 
   const lateActive = thesisStatistics.totals.lateActiveSupervisionsCount || 0
+  const veryLateActive =
+    thesisStatistics.totals.veryLateActiveSupervisionsCount || 0
+  const justLateActive = lateActive - veryLateActive
   const onTimeActive = Math.max(
     0,
     (statusCounts['IN_PROGRESS'] || 0) - lateActive
@@ -89,11 +92,20 @@ const Statistics = ({
           itemStyle: { color: theme.palette.info.light },
         })
       }
-      if (lateActive > 0) {
+      if (justLateActive > 0) {
         pieOuterData.push({
-          value: lateActive,
+          value: justLateActive,
           name: t('departmentStatisticsPage:late'),
           itemStyle: { color: theme.palette.error.light },
+          tooltipDesc: t('departmentStatisticsPage:lateTooltip'),
+        })
+      }
+      if (veryLateActive > 0) {
+        pieOuterData.push({
+          value: veryLateActive,
+          name: t('departmentStatisticsPage:veryLate'),
+          itemStyle: { color: theme.palette.error.main },
+          tooltipDesc: t('departmentStatisticsPage:veryLateTooltip'),
         })
       }
     } else {
@@ -163,7 +175,10 @@ const Statistics = ({
       inProgressTotal > 0
         ? ((params.value / inProgressTotal) * 100).toFixed(2)
         : '0.00'
-    return `${params.seriesName} <br/>${params.marker || ''} ${params.name}: ${params.value} (${percent}%)`
+    const desc = params.data?.tooltipDesc
+      ? `<br/><span style="font-size: 0.9em; max-width: 200px; display: inline-block; white-space: normal; margin-top: 4px;">${params.data.tooltipDesc}</span>`
+      : ''
+    return `${params.seriesName} <br/>${params.marker || ''} ${params.name}: ${params.value} (${percent}%)${desc}`
   }
 
   const pieOption = {
