@@ -418,13 +418,21 @@
         "name": "Missing second grader",
         "tooltip": "Shows theses that have fewer than the required number of graders assigned"
       },
+      "isThesisLate": {
+        "name": "Late",
+        "tooltip": "Shows theses that are more than a month late according to the target date"
+      },
+      "isThesisVeryLate": {
+        "name": "Very late",
+        "tooltip": "Shows theses that are more than six months late according to the target date"
+      },
       "lastMilestone": {
         "name": "On final milestone",
         "tooltip": "Shows theses that are currently on their final milestone"
       },
       "ethesisReadyStudentStarted": {
         "name": "Permission to submit",
-        "tooltip": "Shows theses that have permission to be submitted"
+        "tooltip": "Shows theses that have permission to be submitted to E-thesis"
       },
       "ethesis": {
         "name": "Saved to E-thesis",

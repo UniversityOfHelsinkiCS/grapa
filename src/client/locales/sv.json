@@ -418,13 +418,21 @@
         "name": "Saknar andra bedömare",
         "tooltip": "Visar avhandlingar som har färre än det nödvändiga antalet bedömare tilldelade"
       },
+      "isThesisLate": {
+        "name": "Sena",
+        "tooltip": "Visar avhandlingar som är mer än en månad försenade enligt måldatumet"
+      },
+      "isThesisVeryLate": {
+        "name": "Mycket sena",
+        "tooltip": "Visar avhandlingar som är mer än sex månader försenade enligt måldatumet"
+      },
       "lastMilestone": {
         "name": "På sista milstolpen",
         "tooltip": "Visar avhandlingar som är på sin sista milstolpe"
       },
       "ethesisReadyStudentStarted": {
         "name": "Tillstånd att lämna in",
-        "tooltip": "Visar avhandlingar som har tillstånd att lämnas in"
+        "tooltip": "Visar avhandlingar som har tillstånd att lämnas in till E-thesis"
       },
       "ethesis": {
         "name": "Sparad i E-thesis",

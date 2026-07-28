@@ -99,6 +99,8 @@ export interface ThesisFiltersOptions {
   lastMilestone?: boolean
   ethesisReadyStudentStarted?: boolean
   hideStudentStartedEthesis?: boolean
+  isThesisLate?: boolean
+  isThesisVeryLate?: boolean
 }
 
 export const buildThesisIncludes = (language?: string): Includeable[] => {
@@ -310,6 +312,8 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
     lastMilestone,
     ethesisReadyStudentStarted,
     hideStudentStartedEthesis,
+    isThesisLate,
+    isThesisVeryLate,
   } = options
 
   const whereClause: any = {}
@@ -384,6 +388,32 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
       literal(
         `NOT ("Thesis".status = 'ETHESIS' AND COALESCE((SELECT options->>'allowStudentStartedProcess' FROM "programs" WHERE id = "Thesis"."program_id"), 'false') = 'true')`
       )
+    )
+  }
+
+  if (isThesisLate) {
+    andConditions.push(
+      { status: 'IN_PROGRESS' },
+      {
+        targetDate: {
+          [Op.lte]: dayjs()
+            .subtract(LATE_THESIS_THRESHOLD_DAYS, 'day')
+            .toDate(),
+        },
+      }
+    )
+  }
+
+  if (isThesisVeryLate) {
+    andConditions.push(
+      { status: 'IN_PROGRESS' },
+      {
+        targetDate: {
+          [Op.lte]: dayjs()
+            .subtract(VERY_LATE_THESIS_THRESHOLD_DAYS, 'day')
+            .toDate(),
+        },
+      }
     )
   }
 
@@ -889,6 +919,8 @@ export const getAvailableActionNeeded = async (
     hasMissingSecondGrader,
     hasLastMilestone,
     hasEthesisReadyStudentStarted,
+    hasIsThesisLate,
+    hasIsThesisVeryLate,
   ] = await Promise.all([
     Thesis.findOne({
       where: {
@@ -947,6 +979,44 @@ export const getAvailableActionNeeded = async (
       raw: true,
       bind: bindParams,
     }),
+    Thesis.findOne({
+      where: {
+        ...baseWhere,
+        [Op.and]: [
+          ...baseAnd,
+          { status: 'IN_PROGRESS' },
+          {
+            targetDate: {
+              [Op.lte]: dayjs()
+                .subtract(LATE_THESIS_THRESHOLD_DAYS, 'day')
+                .toDate(),
+            },
+          },
+        ],
+      },
+      attributes: ['id'],
+      raw: true,
+      bind: bindParams,
+    }),
+    Thesis.findOne({
+      where: {
+        ...baseWhere,
+        [Op.and]: [
+          ...baseAnd,
+          { status: 'IN_PROGRESS' },
+          {
+            targetDate: {
+              [Op.lte]: dayjs()
+                .subtract(VERY_LATE_THESIS_THRESHOLD_DAYS, 'day')
+                .toDate(),
+            },
+          },
+        ],
+      },
+      attributes: ['id'],
+      raw: true,
+      bind: bindParams,
+    }),
   ])
 
   return {
@@ -954,6 +1024,8 @@ export const getAvailableActionNeeded = async (
     missingSecondGrader: !!hasMissingSecondGrader,
     lastMilestone: !!hasLastMilestone,
     ethesisReadyStudentStarted: !!hasEthesisReadyStudentStarted,
+    isThesisLate: !!hasIsThesisLate,
+    isThesisVeryLate: !!hasIsThesisVeryLate,
   }
 }
 

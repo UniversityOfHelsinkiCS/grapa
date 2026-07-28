@@ -96,6 +96,9 @@ const ThesesPage = ({
     filterEthesisReadyStudentStarted,
     setFilterEthesisReadyStudentStarted,
   ] = useState<boolean>(false)
+  const [filterIsThesisLate, setFilterIsThesisLate] = useState<boolean>(false)
+  const [filterIsThesisVeryLate, setFilterIsThesisVeryLate] =
+    useState<boolean>(false)
 
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -113,6 +116,8 @@ const ThesesPage = ({
     lastMilestone: filterLastMilestone,
     ethesisReadyStudentStarted: filterEthesisReadyStudentStarted,
     hideStudentStartedEthesis,
+    isThesisLate: filterIsThesisLate,
+    isThesisVeryLate: filterIsThesisVeryLate,
     milestone: filterMilestone !== null ? filterMilestone : undefined,
 
     onlyAuthored: isStudentView,
@@ -255,6 +260,8 @@ const ThesesPage = ({
     setFilterMissingSecondGrader(false)
     setFilterLastMilestone(false)
     setFilterEthesisReadyStudentStarted(false)
+    setFilterIsThesisLate(false)
+    setFilterIsThesisVeryLate(false)
 
     setCurrentFilters(filterModel)
 
@@ -278,6 +285,12 @@ const ThesesPage = ({
           break
         case 'ethesisReadyStudentStarted':
           setFilterEthesisReadyStudentStarted(true)
+          break
+        case 'isThesisLate':
+          setFilterIsThesisLate(true)
+          break
+        case 'isThesisVeryLate':
+          setFilterIsThesisVeryLate(true)
           break
 
         default:
@@ -515,6 +528,48 @@ const ThesesPage = ({
                                 {
                                   field: 'startDate',
                                   sort: 'desc',
+                                },
+                              ],
+                            },
+                          }
+                        : {}),
+                      ...(availableActionNeeded?.isThesisLate
+                        ? {
+                            isThesisLate: {
+                              filterModel: {
+                                items: [
+                                  {
+                                    field: 'isThesisLate',
+                                    operator: 'is',
+                                    value: true,
+                                  },
+                                ],
+                              },
+                              sortingModel: [
+                                {
+                                  field: 'targetDate',
+                                  sort: 'asc',
+                                },
+                              ],
+                            },
+                          }
+                        : {}),
+                      ...(availableActionNeeded?.isThesisVeryLate
+                        ? {
+                            isThesisVeryLate: {
+                              filterModel: {
+                                items: [
+                                  {
+                                    field: 'isThesisVeryLate',
+                                    operator: 'is',
+                                    value: true,
+                                  },
+                                ],
+                              },
+                              sortingModel: [
+                                {
+                                  field: 'targetDate',
+                                  sort: 'asc',
                                 },
                               ],
                             },

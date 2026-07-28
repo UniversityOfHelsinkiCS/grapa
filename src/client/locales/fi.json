@@ -417,13 +417,21 @@
         "name": "Toinen arvioija puuttuu",
         "tooltip": "Näyttää tutkielmat, joihin on valittu alle tarvittava määrä arvioijia"
       },
+      "isThesisLate": {
+        "name": "Myöhässä",
+        "tooltip": "Näyttää tutkielmat, jotka ovat ylittäneet tavoitepäivänsä kuukaudella"
+      },
+      "isThesisVeryLate": {
+        "name": "Todella myöhässä",
+        "tooltip": "Näyttää tutkielmat, jotka ovat ylittäneet tavoitepäivänsä yli puolella vuodella"
+      },
       "lastMilestone": {
         "name": "Viimeisellä etapilla",
         "tooltip": "Näyttää tutkielmat, jotka ovat viimeisellä etapilla"
       },
       "ethesisReadyStudentStarted": {
         "name": "Lupa palauttaa",
-        "tooltip": "Näyttää tutkielmat, joilla on lupa palauttaa"
+        "tooltip": "Näyttää tutkielmat, joilla on lupa palauttaa E-thesikseen"
       },
       "ethesis": {
         "name": "E-thesiksessä",
