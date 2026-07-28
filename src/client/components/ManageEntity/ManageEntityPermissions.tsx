@@ -68,9 +68,7 @@ interface Props {
 }
 
 type EntityPermissionData =
-  | ProgramManagementData
-  | DepartmentAdminData
-  | StudyTrackManagementData
+  ProgramManagementData | DepartmentAdminData | StudyTrackManagementData
 type EntityData = ProgramData | StudyTrackData | DepartmentData
 
 const ManageEntityPermissions = ({
