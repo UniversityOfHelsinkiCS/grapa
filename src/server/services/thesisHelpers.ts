@@ -24,6 +24,7 @@ import {
   getPrimaryStudyTrackId,
 } from '../util/studyTracks'
 import { ThesisData, User as UserType, SupervisionData } from '../types'
+import { VALID_THESIS_STATUSES } from '../../config'
 import logger from '../util/logger'
 
 import { Literal } from 'sequelize/types/utils'
@@ -954,16 +955,13 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
   const statistics: any[] = []
 
   const totals = {
-    statusCounts: {
-      DRAFT: 0,
-      SUGGESTED: 0,
-      PLANNING: 0,
-      IN_PROGRESS: 0,
-      COMPLETED: 0,
-      CANCELLED: 0,
-      ETHESIS_SENT: 0,
-      ETHESIS: 0,
-    } as Record<string, number>,
+    statusCounts: VALID_THESIS_STATUSES.reduce(
+      (acc, status) => {
+        acc[status] = 0
+        return acc
+      },
+      {} as Record<string, number>
+    ),
     milestoneCounts: {} as Record<string, number>,
     lateActiveSupervisionsCount: 0,
     completedThesesTimes: [] as number[],
@@ -1034,16 +1032,13 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
             email: user.email,
             departmentId: user.departmentId,
           },
-          statusCounts: {
-            DRAFT: status === 'DRAFT' ? 1 : 0,
-            SUGGESTED: status === 'SUGGESTED' ? 1 : 0,
-            PLANNING: status === 'PLANNING' ? 1 : 0,
-            IN_PROGRESS: status === 'IN_PROGRESS' ? 1 : 0,
-            COMPLETED: status === 'COMPLETED' ? 1 : 0,
-            CANCELLED: status === 'CANCELLED' ? 1 : 0,
-            ETHESIS_SENT: status === 'ETHESIS_SENT' ? 1 : 0,
-            ETHESIS: status === 'ETHESIS' ? 1 : 0,
-          },
+          statusCounts: VALID_THESIS_STATUSES.reduce(
+            (acc, s) => {
+              acc[s] = status === s ? 1 : 0
+              return acc
+            },
+            {} as Record<string, number>
+          ),
           startedWithinHalfYearCount: isWithinLastHalfYear(startDateObject)
             ? 1
             : 0,
@@ -1075,13 +1070,17 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
       current['lateSupervisionsCount'] = current.lateSupervisions.length
       current['avgLateSupervision'] =
         current.lateSupervisions.length > 0
-          ? current.lateSupervisions.reduce((a, b) => a + b) /
-            current.lateSupervisions.length
+          ? current.lateSupervisions.reduce(
+              (a: number, b: number) => a + b,
+              0
+            ) / current.lateSupervisions.length
           : 0
       current['avgCompletedSupervision'] =
         current.completedSupervisions.length > 0
-          ? current.completedSupervisions.reduce((a, b) => a + b) /
-            current.completedSupervisions.length
+          ? current.completedSupervisions.reduce(
+              (a: number, b: number) => a + b,
+              0
+            ) / current.completedSupervisions.length
           : 0
       return current
     }),

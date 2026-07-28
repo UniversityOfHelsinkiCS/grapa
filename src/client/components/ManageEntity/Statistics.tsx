@@ -27,73 +27,41 @@ const Statistics = ({
       studyTrackId,
     })
 
-  if (thesisStatisticsLoading || !thesisStatistics) return null
-
   const theme = useTheme()
 
-  const totals = {
-    draft: thesisStatistics.totals.statusCounts['DRAFT'] || 0,
-    suggested: thesisStatistics.totals.statusCounts['SUGGESTED'] || 0,
-    planning: thesisStatistics.totals.statusCounts['PLANNING'] || 0,
-    inProgress: thesisStatistics.totals.statusCounts['IN_PROGRESS'] || 0,
-    ethesisSent: thesisStatistics.totals.statusCounts['ETHESIS_SENT'] || 0,
-    ethesis: thesisStatistics.totals.statusCounts['ETHESIS'] || 0,
-    completed: thesisStatistics.totals.statusCounts['COMPLETED'] || 0,
-    lateActive: thesisStatistics.totals.lateActiveSupervisionsCount || 0,
-    total: Object.values(thesisStatistics.totals.statusCounts).reduce(
-      (a: any, b: any) => a + b,
-      0
-    ),
-    milestoneCounts: thesisStatistics.totals.milestoneCounts || {},
-    completedThesesTimes: thesisStatistics.totals.completedThesesTimes || [],
-  }
+  if (thesisStatisticsLoading || !thesisStatistics) return null
 
-  const activeTotal =
-    totals.draft +
-    totals.suggested +
-    totals.planning +
-    totals.inProgress +
-    totals.ethesisSent +
-    totals.ethesis
+  const statusCounts = thesisStatistics.totals.statusCounts
+  const completedTotal = statusCounts['COMPLETED'] || 0
+  const totalTheses = Object.values(statusCounts).reduce(
+    (a: any, b: any) => a + b,
+    0
+  )
 
-  const onTimeActive = Math.max(0, totals.inProgress - totals.lateActive)
-  const lateActive = totals.lateActive
+  const PIPELINE_STAGES = [
+    { key: 'DRAFT', trans: 'draft', color: theme.palette.grey[400] },
+    { key: 'SUGGESTED', trans: 'suggested', color: theme.palette.grey[500] },
+    { key: 'PLANNING', trans: 'planned', color: theme.palette.grey[600] },
+    { key: 'IN_PROGRESS', trans: 'inProgress', color: theme.palette.info.main },
+    {
+      key: 'ETHESIS_SENT',
+      trans: 'ethesisSent',
+      color: theme.palette.success.light,
+    },
+    { key: 'ETHESIS', trans: 'ethesis', color: theme.palette.success.main },
+  ] as const
 
-  // 1. Active Pipeline (Pie Chart)
-  const pieInnerData = [
-    {
-      value: totals.draft,
-      name: t('thesisStages:draft'),
-      itemStyle: { color: theme.palette.grey[400] },
-    },
-    {
-      value: totals.suggested,
-      name: t('thesisStages:suggested'),
-      itemStyle: { color: theme.palette.grey[500] },
-    },
-    {
-      value: totals.planning,
-      name: t('thesisStages:planned'),
-      itemStyle: { color: theme.palette.grey[600] },
-    },
-    {
-      value: totals.inProgress,
-      name: t('thesisStages:inProgress'),
-      itemStyle: { color: theme.palette.info.main },
-    },
-    {
-      value: totals.ethesisSent,
-      name: t('thesisStages:ethesisSent'),
-      itemStyle: { color: theme.palette.success.light },
-    },
-    {
-      value: totals.ethesis,
-      name: t('thesisStages:ethesis'),
-      itemStyle: { color: theme.palette.success.main },
-    },
-  ].filter((d) => d.value > 0)
+  const activeTotal = PIPELINE_STAGES.reduce(
+    (sum, stage) => sum + (statusCounts[stage.key] || 0),
+    0
+  )
 
-  const pieOuterData = []
+  const lateActive = thesisStatistics.totals.lateActiveSupervisionsCount || 0
+  const onTimeActive = Math.max(
+    0,
+    (statusCounts['IN_PROGRESS'] || 0) - lateActive
+  )
+
   const transparentSpacer = {
     itemStyle: { color: 'transparent' },
     label: { show: false },
@@ -101,124 +69,99 @@ const Statistics = ({
     tooltip: { show: false },
   }
 
-  if (totals.draft > 0)
-    pieOuterData.push({ value: totals.draft, name: '', ...transparentSpacer })
-  if (totals.suggested > 0)
-    pieOuterData.push({
-      value: totals.suggested,
-      name: '',
-      ...transparentSpacer,
-    })
-  if (totals.planning > 0)
-    pieOuterData.push({
-      value: totals.planning,
-      name: '',
-      ...transparentSpacer,
-    })
-  if (totals.inProgress > 0) {
-    pieOuterData.push(
-      {
-        value: onTimeActive,
-        name: t('departmentStatisticsPage:onTime'),
-        itemStyle: { color: theme.palette.info.light },
-      },
-      {
-        value: lateActive,
-        name: t('departmentStatisticsPage:late'),
-        itemStyle: { color: theme.palette.error.light },
-      }
-    )
-  }
-  if (totals.ethesisSent > 0)
-    pieOuterData.push({
-      value: totals.ethesisSent,
-      name: '',
-      ...transparentSpacer,
-    })
-  if (totals.ethesis > 0)
-    pieOuterData.push({ value: totals.ethesis, name: '', ...transparentSpacer })
+  // 1. Active Pipeline (Pie Chart)
+  const pieInnerData = PIPELINE_STAGES.map((stage) => ({
+    value: statusCounts[stage.key] || 0,
+    name: t(`thesisStages:${stage.trans}`),
+    itemStyle: { color: stage.color },
+  })).filter((d) => d.value > 0)
 
-  const hasMilestones = Object.keys(totals.milestoneCounts).some(
-    (m) => m !== '0' && totals.milestoneCounts[m] > 0
-  )
+  const pieOuterData: any[] = []
+  PIPELINE_STAGES.forEach((stage) => {
+    const value = statusCounts[stage.key] || 0
+    if (value === 0) return
 
-  const pieOuterOuterData = []
-  if (totals.draft > 0)
-    pieOuterOuterData.push({
-      value: totals.draft,
-      name: '',
-      ...transparentSpacer,
-    })
-  if (totals.suggested > 0)
-    pieOuterOuterData.push({
-      value: totals.suggested,
-      name: '',
-      ...transparentSpacer,
-    })
-  if (totals.planning > 0)
-    pieOuterOuterData.push({
-      value: totals.planning,
-      name: '',
-      ...transparentSpacer,
-    })
-  if (totals.inProgress > 0) {
-    Object.entries(totals.milestoneCounts).forEach(([milestone, count]) => {
-      if (count > 0) {
-        const milestoneIndex = parseInt(milestone, 10)
-        const milestoneLabel = Number.isNaN(milestoneIndex)
-          ? t('departmentStatisticsPage:unknown')
-          : milestoneIndex === 0
-            ? t('progressView:noMilestone')
-            : `${t('progressView:milestone')} ${milestoneIndex}`
-        const milestoneColors = [
-          theme.palette.primary.light,
-          theme.palette.primary.main,
-          theme.palette.primary.dark,
-          theme.palette.secondary.light,
-          theme.palette.secondary.main,
-          theme.palette.secondary.dark,
-        ]
-
-        const color =
-          Number.isNaN(milestoneIndex) || milestoneIndex === 0
-            ? theme.palette.grey[300]
-            : milestoneColors[(milestoneIndex - 1) % milestoneColors.length]
-
-        pieOuterOuterData.push({
-          value: count,
-          name: milestoneLabel,
-          itemStyle: { color },
+    if (stage.key === 'IN_PROGRESS') {
+      if (onTimeActive > 0) {
+        pieOuterData.push({
+          value: onTimeActive,
+          name: t('departmentStatisticsPage:onTime'),
+          itemStyle: { color: theme.palette.info.light },
         })
       }
-    })
-  }
-  if (totals.ethesisSent > 0)
-    pieOuterOuterData.push({
-      value: totals.ethesisSent,
-      name: '',
-      ...transparentSpacer,
-    })
-  if (totals.ethesis > 0)
-    pieOuterOuterData.push({
-      value: totals.ethesis,
-      name: '',
-      ...transparentSpacer,
-    })
+      if (lateActive > 0) {
+        pieOuterData.push({
+          value: lateActive,
+          name: t('departmentStatisticsPage:late'),
+          itemStyle: { color: theme.palette.error.light },
+        })
+      }
+    } else {
+      pieOuterData.push({ value, name: '', ...transparentSpacer })
+    }
+  })
+
+  const milestoneCounts = thesisStatistics.totals.milestoneCounts || {}
+  const hasMilestones = Object.keys(milestoneCounts).some(
+    (m) => m !== '0' && milestoneCounts[m] > 0
+  )
+
+  const pieOuterOuterData: any[] = []
+  PIPELINE_STAGES.forEach((stage) => {
+    const value = statusCounts[stage.key] || 0
+    if (value === 0) return
+
+    if (stage.key === 'IN_PROGRESS') {
+      Object.entries(milestoneCounts).forEach(([milestone, count]) => {
+        if (count > 0) {
+          const milestoneIndex = parseInt(milestone, 10)
+          const milestoneLabel = Number.isNaN(milestoneIndex)
+            ? t('departmentStatisticsPage:unknown')
+            : milestoneIndex === 0
+              ? t('progressView:noMilestone')
+              : `${t('progressView:milestone')} ${milestoneIndex}`
+          const milestoneColors = [
+            theme.palette.primary.light,
+            theme.palette.primary.main,
+            theme.palette.primary.dark,
+            theme.palette.secondary.light,
+            theme.palette.secondary.main,
+            theme.palette.secondary.dark,
+          ]
+
+          const color =
+            Number.isNaN(milestoneIndex) || milestoneIndex === 0
+              ? theme.palette.grey[300]
+              : milestoneColors[(milestoneIndex - 1) % milestoneColors.length]
+
+          pieOuterOuterData.push({
+            value: count,
+            name: milestoneLabel,
+            itemStyle: { color },
+          })
+        }
+      })
+    } else {
+      pieOuterOuterData.push({ value, name: '', ...transparentSpacer })
+    }
+  })
 
   const formatOuterLayerLabel = (params: any) => {
     if (params.name === '') return ''
+    const inProgressTotal = statusCounts['IN_PROGRESS'] || 0
     const percent =
-      totals.inProgress > 0
-        ? ((params.value / totals.inProgress) * 100).toFixed(2)
+      inProgressTotal > 0
+        ? ((params.value / inProgressTotal) * 100).toFixed(2)
         : '0.00'
     return `${params.name}\n${params.value} (${percent}%)`
   }
 
   const formatOuterLayerTooltip = (params: any) => {
     if (params.name === '') return ''
+    const inProgressTotal = statusCounts['IN_PROGRESS'] || 0
     const percent =
-      totals.inProgress > 0
-        ? ((params.value / totals.inProgress) * 100).toFixed(2)
+      inProgressTotal > 0
+        ? ((params.value / inProgressTotal) * 100).toFixed(2)
         : '0.00'
     return `${params.seriesName} <br/>${params.marker || ''} ${params.name}: ${params.value} (${percent}%)`
   }
@@ -272,8 +215,11 @@ const Statistics = ({
   completionBuckets[`> ${maxBucketLimit}`] = 0
 
   let hasCompletionData = false
-  if (totals.completedThesesTimes && totals.completedThesesTimes.length > 0) {
-    totals.completedThesesTimes.forEach((days: number) => {
+  if (
+    thesisStatistics.totals.completedThesesTimes &&
+    thesisStatistics.totals.completedThesesTimes.length > 0
+  ) {
+    thesisStatistics.totals.completedThesesTimes.forEach((days: number) => {
       if (days > 0) {
         hasCompletionData = true
         if (days < bucketSize) {
@@ -363,7 +309,7 @@ const Statistics = ({
             {t('departmentStatisticsPage:total')}
           </Typography>
           <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
-            {totals.total}
+            {totalTheses}
           </Typography>
         </Paper>
 
@@ -405,7 +351,7 @@ const Statistics = ({
             {t('departmentStatisticsPage:completed')}
           </Typography>
           <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
-            {totals.completed}
+            {completedTotal}
           </Typography>
         </Paper>
       </Box>
