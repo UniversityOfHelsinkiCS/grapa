@@ -73,6 +73,11 @@ import {
 import { NavLink } from 'react-router-dom'
 import { PersonList } from './Person/PersonList'
 import ThesisModal from '../Ethesis/Modal'
+import {
+  isThesisLate,
+  getThesisLateDays,
+  VERY_LATE_THESIS_THRESHOLD_DAYS,
+} from '../../../shared/utils/thesisUtils'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
   <Box
@@ -440,13 +445,8 @@ const ViewThesisFooter = (
 
   const ethesisReady = thesis && currentUser && isEthesisReady(thesis)
 
-  const difference =
-    currentUser &&
-    thesis?.targetDate &&
-    dayjs(thesis.targetDate).isBefore(dayjs())
-      ? dayjs(thesis.targetDate).diff(dayjs(), 'day') * -1
-      : 0
-  const isLate = difference && difference > 30
+  const difference = getThesisLateDays(thesis?.targetDate)
+  const isLate = isThesisLate(thesis?.targetDate)
 
   return (
     <>
@@ -702,7 +702,11 @@ const ViewThesisFooter = (
 
           {thesis.status == 'IN_PROGRESS' && isLate != false && (
             <Alert
-              severity={difference > 180 ? 'error' : 'warning'}
+              severity={
+                difference >= VERY_LATE_THESIS_THRESHOLD_DAYS
+                  ? 'error'
+                  : 'warning'
+              }
               sx={{ my: 1.5 }}
             >
               {t('viewThesisFooter:thesisLate').replace(

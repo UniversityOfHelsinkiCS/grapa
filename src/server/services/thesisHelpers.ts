@@ -1,5 +1,10 @@
 import { Includeable, literal, Op, Order, Transaction } from 'sequelize'
 import dayjs from 'dayjs'
+import {
+  isThesisLate,
+  getThesisLateDays,
+  LATE_THESIS_THRESHOLD_DAYS,
+} from '../../shared/utils/thesisUtils'
 import { uniqBy } from 'lodash-es'
 import { EmployeeUserSchema } from '../validators/userResponse'
 import {
@@ -978,13 +983,11 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
       return (first.getTime() - second.getTime()) / (1000 * 60 * 60 * 24)
     }
 
-    const diff = timeDiff(new Date(), targetDateObject)
-
     totals.statusCounts[status] = (totals.statusCounts[status] || 0) + 1
     if (status === 'IN_PROGRESS') {
       const mKey = thesis.milestone?.toString() || '0'
       totals.milestoneCounts[mKey] = (totals.milestoneCounts[mKey] || 0) + 1
-      if (diff > 30) {
+      if (isThesisLate(targetDate)) {
         totals.lateActiveSupervisionsCount++
       }
     }
@@ -1013,7 +1016,7 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
         supervisor.primarySupervisionsCount +=
           isPrimarySupervisor && status == 'IN_PROGRESS' ? 1 : 0
         supervisor.lateSupervisions.push(
-          status != 'COMPLETED' ? timeDiff(new Date(), targetDateObject) : 0
+          status != 'COMPLETED' ? getThesisLateDays(targetDateObject) : 0
         )
         if (status === 'COMPLETED')
           supervisor.completedSupervisions.push(
@@ -1045,7 +1048,7 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
           primarySupervisionsCount:
             isPrimarySupervisor && status == 'IN_PROGRESS' ? 1 : 0,
           lateSupervisions: [
-            status != 'COMPLETED' ? timeDiff(new Date(), targetDateObject) : 0,
+            status != 'COMPLETED' ? getThesisLateDays(targetDateObject) : 0,
           ],
           lateSupervisionsCount: 0,
           avgLateSupervision: 0,
@@ -1064,7 +1067,7 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
       const current = {
         ...supervisor,
         lateSupervisions: supervisor.lateSupervisions.filter(
-          (x: number) => x > 30
+          (x: number) => x >= LATE_THESIS_THRESHOLD_DAYS
         ),
       }
       current['lateSupervisionsCount'] = current.lateSupervisions.length

@@ -56,6 +56,12 @@ import {
 } from '../../util/permissions'
 import { THESIS_STATUSES } from '../../../config'
 import Popup from '../Common/Popup'
+import {
+  isThesisLate,
+  getThesisLateDays,
+  LATE_THESIS_THRESHOLD_DAYS,
+  VERY_LATE_THESIS_THRESHOLD_DAYS,
+} from '../../../shared/utils/thesisUtils'
 
 import PrethesisTable from '../Common/PrethesisTable'
 
@@ -496,14 +502,10 @@ const ThesisTable = ({
 
         const targetDate = info.row.original?.targetDate
 
-        const difference =
-          targetDate && dayjs(targetDate).isBefore(dayjs())
-            ? dayjs(targetDate).diff(dayjs(), 'day') * -1
-            : 0
-
         const labelText = info.row.original?.isIdle
           ? `${t(translationKey)} (${t('thesisStages:idle')})`
-          : difference >= 30 && info.row.original.status == 'IN_PROGRESS'
+          : isThesisLate(targetDate) &&
+              info.row.original.status == 'IN_PROGRESS'
             ? `${t(translationKey)} (${t('thesisStages:late')})`
             : t(translationKey)
 
@@ -621,18 +623,15 @@ const ThesisTable = ({
           const targetDate = context.row.original.targetDate
           const status = context.row.original.status
           const isIdle = context.row.original.isIdle
-          const difference =
-            targetDate && dayjs(targetDate).isBefore(dayjs())
-              ? dayjs(targetDate).diff(dayjs(), 'day') * -1
-              : 0
+          const difference = getThesisLateDays(targetDate)
           return {
             sx: {
               backgroundColor: isIdle
                 ? '#c8d7ff'
                 : targetDate && status == 'IN_PROGRESS'
-                  ? difference >= 180
+                  ? difference >= VERY_LATE_THESIS_THRESHOLD_DAYS
                     ? '#ffc8c8'
-                    : difference >= 30
+                    : difference >= LATE_THESIS_THRESHOLD_DAYS
                       ? '#fff6c8'
                       : ''
                   : '',
