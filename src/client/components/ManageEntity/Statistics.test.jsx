@@ -81,31 +81,41 @@ describe('Statistics', () => {
   beforeEach(() => {
     initializeI18n()
     mockUseThesisStatistics.mockReturnValue({
-      thesisStatistics: [
-        {
-          department: {
-            id: 1,
-            name: {
-              en: 'Department of Computer Science',
-              fi: 'Tietojenkäsittelytieteen laitos',
-            },
-          },
+      thesisStatistics: {
+        totals: {
           statusCounts: {
             PLANNING: 3,
             IN_PROGRESS: 1,
             COMPLETED: 1,
             CANCELLED: 0,
           },
-          supervisor: {
-            id: 1,
-            firstName: 'John',
-            lastName: 'Doe',
-            username: 'johndoe',
-            email: 'test@test.fi',
-            departmentId: 1,
-          },
         },
-      ],
+        supervisors: [
+          {
+            department: {
+              id: 1,
+              name: {
+                en: 'Department of Computer Science',
+                fi: 'Tietojenkäsittelytieteen laitos',
+              },
+            },
+            statusCounts: {
+              PLANNING: 3,
+              IN_PROGRESS: 1,
+              COMPLETED: 1,
+              CANCELLED: 0,
+            },
+            supervisor: {
+              id: 1,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+              email: 'test@test.fi',
+              departmentId: 1,
+            },
+          },
+        ],
+      },
     })
   })
 
