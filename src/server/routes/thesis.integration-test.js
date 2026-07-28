@@ -96,6 +96,8 @@ describe('thesis router', () => {
           availableMilestones: [],
           availableActionNeeded: {
             ethesisReadyStudentStarted: false,
+            isThesisLate: false,
+            isThesisVeryLate: false,
             lastMilestone: false,
             missingSecondGrader: false,
             suggested: false,
