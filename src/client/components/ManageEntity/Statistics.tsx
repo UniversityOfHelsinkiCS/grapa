@@ -172,8 +172,8 @@ const Statistics = ({
       {
         name: t('departmentStatisticsPage:status'),
         type: 'pie',
-        selectedMode: 'single',
         radius: [0, '35%'],
+        minShowLabelAngle: 360 / pieInnerData.length - 1,
         label: { position: 'inner', fontSize: 11, color: '#fff' },
         labelLine: { show: false },
         data: pieInnerData,
