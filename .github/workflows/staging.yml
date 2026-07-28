@@ -45,7 +45,7 @@ jobs:
       - run: npm run test:front
       - run: npm run test:integration
 
-      - name: Push to quay.io
+      - name: Push to registry.version.helsinki.fi
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ steps.build-image.outputs.image }}
