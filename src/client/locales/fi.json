@@ -196,7 +196,7 @@
     },
     "useIdleState": {
       "toggle": "Ota lepotilan seuranta käyttöön",
-      "tooltip": "Seuraa, onko tutkielma ollut epäaktiivinen puoli vuotta (kandidaatti) tai vuoden (maisteri), ja merkitsee sen lepotilaan.",
+      "tooltip": "Seuraa, onko tutkielma ollut ei aktiivinen puoli vuotta (kandidaatti) tai vuoden (maisteri), ja merkitsee sen lepotilaan.",
       "confirmTitle": "Vahvista lepotilan seurannan asetus",
       "enableConfirm": "Oletko varma, että haluat ottaa lepotilan seurannan käyttöön?",
       "disableConfirm": "Oletko varma, että haluat poistaa lepotilan seurannan käytöstä?"
@@ -402,7 +402,7 @@
         "tooltip": "Näyttää keskeneräiset tutkielmat"
       },
       "inactive": {
-        "name": "Epäaktiiviset",
+        "name": "Ei aktiiviset",
         "tooltip": "Näyttää valmiit ja keskeytetyt tutkielmat"
       },
       "suggested": {
@@ -533,7 +533,7 @@
     "inProgress": "Käynnissä"
   },
   "help": {
-    "table": "<b>Rajaustyökalut</b><br><br>Taulukon ylälaidassa on valittavana useita rajausvaihtoehtoja, kuten aktiiviset tai epäaktiiviset tutkielmat. Osoittimen vieminen painikkeen päälle näyttää lisätietoja kyseisestä valinnasta.<br><br><b>Tavoitepäivä</b><br><br>Tavoitepäivä-sarake värjäytyy tavoitepäivän ylittyessä. Kun tavoitepäivä ylittyy kuukaudella, sarake värjäytyy keltaiseksi, ja puolen vuoden jälkeen punaiseksi.<br><br><b>Vaihe</b><br><br>Vaihe-sarake värjäytyy sitä vihreämmäksi, mitä pidemmälle tutkielman etapit ovat edenneet. Tämä toiminnallisuus on käytössä vain etappeja käyttävissä koulutusohjelmissa.<br><br><b>Kuvakkeet</b><br><br>Rivin lopussa voi näkyä kuvakkeita. Osoittimen vieminen kuvakkeen päälle näyttää lisätietoja. Tähtikuvake merkitsee, että olet tutkielman pääohjaaja. Huutomerkki ilmaisee, että tutkielma odottaa hyväksyntääsi.",
+    "table": "<b>Rajaustyökalut</b><br><br>Taulukon ylälaidassa on valittavana useita rajausvaihtoehtoja, kuten aktiiviset tai ei aktiiviset tutkielmat. Osoittimen vieminen painikkeen päälle näyttää lisätietoja kyseisestä valinnasta.<br><br><b>Tavoitepäivä</b><br><br>Tavoitepäivä-sarake värjäytyy tavoitepäivän ylittyessä. Kun tavoitepäivä ylittyy kuukaudella, sarake värjäytyy keltaiseksi, ja puolen vuoden jälkeen punaiseksi.<br><br><b>Vaihe</b><br><br>Vaihe-sarake värjäytyy sitä vihreämmäksi, mitä pidemmälle tutkielman etapit ovat edenneet. Tämä toiminnallisuus on käytössä vain etappeja käyttävissä koulutusohjelmissa.<br><br><b>Kuvakkeet</b><br><br>Rivin lopussa voi näkyä kuvakkeita. Osoittimen vieminen kuvakkeen päälle näyttää lisätietoja. Tähtikuvake merkitsee, että olet tutkielman pääohjaaja. Huutomerkki ilmaisee, että tutkielma odottaa hyväksyntääsi.",
     "button": "Ohje"
   },
   "adminOtherPage": {
