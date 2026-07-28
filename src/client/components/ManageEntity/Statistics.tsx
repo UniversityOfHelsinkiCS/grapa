@@ -31,34 +31,33 @@ const Statistics = ({
 
   const theme = useTheme()
 
-  const totals = thesisStatistics.reduce(
-    (acc, curr) => {
-      acc.draft += curr.statusCounts['DRAFT'] || 0
-      acc.suggested += curr.statusCounts['SUGGESTED'] || 0
-      acc.planning += curr.statusCounts['PLANNING'] || 0
-      acc.active += curr.statusCounts['IN_PROGRESS'] || 0
-      acc.ethesis += curr.statusCounts['ETHESIS'] || 0
-      acc.late += curr.lateSupervisionsCount || 0
+  const totals = {
+    draft: thesisStatistics.totals.statusCounts['DRAFT'] || 0,
+    suggested: thesisStatistics.totals.statusCounts['SUGGESTED'] || 0,
+    planning: thesisStatistics.totals.statusCounts['PLANNING'] || 0,
+    inProgress: thesisStatistics.totals.statusCounts['IN_PROGRESS'] || 0,
+    ethesisSent: thesisStatistics.totals.statusCounts['ETHESIS_SENT'] || 0,
+    ethesis: thesisStatistics.totals.statusCounts['ETHESIS'] || 0,
+    completed: thesisStatistics.totals.statusCounts['COMPLETED'] || 0,
+    late: thesisStatistics.totals.lateSupervisionsCount || 0,
+    lateActive: thesisStatistics.totals.lateActiveSupervisionsCount || 0,
+    total: Object.values(thesisStatistics.totals.statusCounts).reduce(
+      (a: any, b: any) => a + b,
+      0
+    ),
+    milestoneCounts: thesisStatistics.totals.milestoneCounts || {},
+  }
 
-      acc.total += Object.values(curr.statusCounts).reduce(
-        (sum, count) => sum + count,
-        0
-      )
+  const activeTotal =
+    totals.draft +
+    totals.suggested +
+    totals.planning +
+    totals.inProgress +
+    totals.ethesisSent +
+    totals.ethesis
 
-      return acc
-    },
-    {
-      draft: 0,
-      suggested: 0,
-      planning: 0,
-      active: 0,
-      ethesis: 0,
-      late: 0,
-      total: 0,
-    }
-  )
-
-  const onTimeActive = Math.max(0, totals.active - totals.late)
+  const onTimeActive = Math.max(0, totals.inProgress - totals.lateActive)
+  const lateActive = totals.lateActive
 
   // 1. Active Pipeline (Pie Chart)
   const pieInnerData = [
@@ -78,9 +77,19 @@ const Statistics = ({
       itemStyle: { color: theme.palette.grey[600] },
     },
     {
-      value: totals.active,
+      value: totals.inProgress,
       name: t('thesisStages:inProgress'),
       itemStyle: { color: theme.palette.info.main },
+    },
+    {
+      value: totals.ethesisSent,
+      name: t('thesisStages:ethesisSent'),
+      itemStyle: { color: theme.palette.success.light },
+    },
+    {
+      value: totals.ethesis,
+      name: t('thesisStages:ethesis'),
+      itemStyle: { color: theme.palette.success.main },
     },
   ].filter((d) => d.value > 0)
 
@@ -106,7 +115,7 @@ const Statistics = ({
       name: '',
       ...transparentSpacer,
     })
-  if (totals.active > 0) {
+  if (totals.inProgress > 0) {
     pieOuterData.push(
       {
         value: onTimeActive,
@@ -114,11 +123,104 @@ const Statistics = ({
         itemStyle: { color: theme.palette.info.light },
       },
       {
-        value: totals.late,
+        value: lateActive,
         name: t('departmentStatisticsPage:late'),
         itemStyle: { color: theme.palette.error.light },
       }
     )
+  }
+  if (totals.ethesisSent > 0)
+    pieOuterData.push({
+      value: totals.ethesisSent,
+      name: '',
+      ...transparentSpacer,
+    })
+  if (totals.ethesis > 0)
+    pieOuterData.push({ value: totals.ethesis, name: '', ...transparentSpacer })
+
+  const hasMilestones = Object.keys(totals.milestoneCounts).some(
+    (m) => m !== '0' && totals.milestoneCounts[m] > 0
+  )
+
+  const pieOuterOuterData = []
+  if (totals.draft > 0)
+    pieOuterOuterData.push({
+      value: totals.draft,
+      name: '',
+      ...transparentSpacer,
+    })
+  if (totals.suggested > 0)
+    pieOuterOuterData.push({
+      value: totals.suggested,
+      name: '',
+      ...transparentSpacer,
+    })
+  if (totals.planning > 0)
+    pieOuterOuterData.push({
+      value: totals.planning,
+      name: '',
+      ...transparentSpacer,
+    })
+  if (totals.inProgress > 0) {
+    Object.entries(totals.milestoneCounts).forEach(([milestone, count]) => {
+      if (count > 0) {
+        const milestoneIndex = parseInt(milestone, 10)
+        const milestoneLabel = Number.isNaN(milestoneIndex)
+          ? t('departmentStatisticsPage:unknown')
+          : milestoneIndex === 0
+            ? t('progressView:noMilestone')
+            : `${t('progressView:milestone')} ${milestoneIndex}`
+        const milestoneColors = [
+          theme.palette.primary.light,
+          theme.palette.primary.main,
+          theme.palette.primary.dark,
+          theme.palette.secondary.light,
+          theme.palette.secondary.main,
+          theme.palette.secondary.dark,
+        ]
+
+        const color =
+          Number.isNaN(milestoneIndex) || milestoneIndex === 0
+            ? theme.palette.grey[300]
+            : milestoneColors[(milestoneIndex - 1) % milestoneColors.length]
+
+        pieOuterOuterData.push({
+          value: count,
+          name: milestoneLabel,
+          itemStyle: { color },
+        })
+      }
+    })
+  }
+  if (totals.ethesisSent > 0)
+    pieOuterOuterData.push({
+      value: totals.ethesisSent,
+      name: '',
+      ...transparentSpacer,
+    })
+  if (totals.ethesis > 0)
+    pieOuterOuterData.push({
+      value: totals.ethesis,
+      name: '',
+      ...transparentSpacer,
+    })
+
+  const formatOuterLayerLabel = (params: any) => {
+    if (params.name === '') return ''
+    const percent =
+      totals.inProgress > 0
+        ? ((params.value / totals.inProgress) * 100).toFixed(2)
+        : '0.00'
+    return `${params.name}\n${params.value} (${percent}%)`
+  }
+
+  const formatOuterLayerTooltip = (params: any) => {
+    if (params.name === '') return ''
+    const percent =
+      totals.inProgress > 0
+        ? ((params.value / totals.inProgress) * 100).toFixed(2)
+        : '0.00'
+    return `${params.seriesName} <br/>${params.marker || ''} ${params.name}: ${params.value} (${percent}%)`
   }
 
   const pieOption = {
@@ -137,10 +239,24 @@ const Statistics = ({
         name: t('departmentStatisticsPage:details'),
         type: 'pie',
         radius: ['45%', '60%'],
-        label: { formatter: '{b}\n{c} ({d}%)' },
+        label: { formatter: formatOuterLayerLabel },
         labelLine: { length: 10, length2: 10 },
+        tooltip: { formatter: formatOuterLayerTooltip },
         data: pieOuterData,
       },
+      ...(hasMilestones
+        ? [
+            {
+              name: t('progressView:milestone'),
+              type: 'pie',
+              radius: ['70%', '85%'],
+              label: { formatter: formatOuterLayerLabel },
+              labelLine: { length: 10, length2: 10 },
+              tooltip: { formatter: formatOuterLayerTooltip },
+              data: pieOuterOuterData,
+            },
+          ]
+        : []),
     ],
   }
 
@@ -156,7 +272,7 @@ const Statistics = ({
   completionBuckets[`> ${maxBucketLimit}`] = 0
 
   let hasCompletionData = false
-  thesisStatistics.forEach((stat) => {
+  thesisStatistics.supervisors.forEach((stat: any) => {
     if (stat.avgCompletedSupervision > 0) {
       hasCompletionData = true
       const days = stat.avgCompletedSupervision
@@ -193,31 +309,6 @@ const Statistics = ({
         type: 'bar',
         barCategoryGap: '2%',
         color: theme.palette.secondary.main,
-      },
-    ],
-  }
-
-  // 3. Department Health / On-Time Ratio (Gauge Chart)
-  const onTimeRatio =
-    totals.active > 0 ? Math.round((onTimeActive / totals.active) * 100) : 0
-  const gaugeOption = {
-    tooltip: { formatter: '{a} <br/>{b} : {c}%' },
-    series: [
-      {
-        name: t('departmentStatisticsPage:onTimeRatio'),
-        type: 'gauge',
-        progress: {
-          show: true,
-          width: 18,
-          itemStyle: { color: theme.palette.success.main },
-        },
-        axisLine: { lineStyle: { width: 10 } },
-        axisTick: { show: false },
-        splitLine: { length: 15, lineStyle: { width: 2, color: '#999' } },
-        detail: { valueAnimation: true, formatter: '{value}%', fontSize: 30 },
-        data: [
-          { value: onTimeRatio, name: t('departmentStatisticsPage:onTime') },
-        ],
       },
     ],
   }
@@ -292,7 +383,7 @@ const Statistics = ({
             {t('departmentStatisticsPage:active')}
           </Typography>
           <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
-            {totals.active}
+            {activeTotal}
           </Typography>
         </Paper>
 
@@ -305,15 +396,15 @@ const Statistics = ({
             alignItems: 'center',
             borderRadius: 2,
             flex: '1 1 200px',
-            bgcolor: 'error.main',
-            color: 'error.contrastText',
+            bgcolor: 'success.main',
+            color: 'success.contrastText',
           }}
         >
           <Typography variant="h6">
-            {t('departmentStatisticsPage:late')}
+            {t('departmentStatisticsPage:completed')}
           </Typography>
           <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
-            {totals.late}
+            {totals.completed}
           </Typography>
         </Paper>
       </Box>
@@ -369,25 +460,6 @@ const Statistics = ({
             />
           </Paper>
 
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              borderRadius: 2,
-              flex: '1 1 400px',
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              {t('departmentStatisticsPage:onTimeRatio')}
-            </Typography>
-            <ReactECharts
-              option={gaugeOption}
-              style={{ height: '350px', width: '100%' }}
-            />
-          </Paper>
         </Box>
       )}
 
@@ -400,7 +472,7 @@ const Statistics = ({
         }}
       >
         <StatisticsTable
-          statistics={thesisStatistics}
+          statistics={thesisStatistics.supervisors}
           isLoading={thesisStatisticsLoading}
         />
       </Box>

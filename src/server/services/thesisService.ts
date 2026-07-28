@@ -267,7 +267,7 @@ export const getThesesForStatistics = async (
 
   const rows = await Thesis.findAll({
     where: baseWhere,
-    attributes: ['id', 'status', 'startDate', 'targetDate'],
+    attributes: ['id', 'status', 'startDate', 'targetDate', 'milestone'],
     include: [
       {
         model: Supervision,

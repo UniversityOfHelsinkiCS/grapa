@@ -110,7 +110,7 @@ describe('thesis router', () => {
           .get('/api/theses/statistics')
           .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
         expect(response.status).toEqual(200)
-        expect(response.body).toEqual([])
+        expect(response.body.supervisors).toEqual([])
       })
     })
   })
@@ -5044,7 +5044,7 @@ describe('thesis router', () => {
             .get(`/api/theses/${thesis1.id}/event-log`)
             .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
           expect(response.status).toEqual(200)
-          expect(response.body).toHaveLength(1)
+          expect(response.body.supervisors).toHaveLength(1)
           expect(response.body[0].type).toEqual('THESIS_CREATED')
         })
       })
@@ -5055,7 +5055,7 @@ describe('thesis router', () => {
             .get(`/api/theses/${thesis1.id}/event-log`)
             .set({ uid: user1.id, hygroupcn: 'hy-employees' })
           expect(response.status).toEqual(200)
-          expect(response.body).toHaveLength(1)
+          expect(response.body.supervisors).toHaveLength(1)
           expect(response.body[0].type).toEqual('THESIS_CREATED')
         })
       })
@@ -5077,10 +5077,10 @@ describe('thesis router', () => {
             .get('/api/theses/statistics')
             .set({ uid: 'hy-person-123', hygroupcn: 'grp-toska' })
           expect(response.status).toEqual(200)
-          expect(response.body).toBeInstanceOf(Array)
-          expect(response.body).toHaveLength(2)
-          expect(response.body[0]).toHaveProperty('supervisor')
-          expect(response.body[0]).toHaveProperty('statusCounts')
+          expect(response.body.supervisors).toBeInstanceOf(Array)
+          expect(response.body.supervisors).toHaveLength(2)
+          expect(response.body.supervisors[0]).toHaveProperty('supervisor')
+          expect(response.body.supervisors[0]).toHaveProperty('statusCounts')
           expect(response.body[0].statusCounts).toHaveProperty('PLANNING')
         })
       })
@@ -5091,8 +5091,8 @@ describe('thesis router', () => {
             .get('/api/theses/statistics')
             .set({ uid: user1.id, hygroupcn: 'hy-employees' })
           expect(response.status).toEqual(200)
-          expect(response.body).toBeInstanceOf(Array)
-          expect(response.body).toHaveLength(2)
+          expect(response.body.supervisors).toBeInstanceOf(Array)
+          expect(response.body.supervisors).toHaveLength(2)
         })
       })
 
@@ -5120,13 +5120,13 @@ describe('thesis router', () => {
             .set({ uid: departmentAdminUser.id, hygroupcn: 'hy-employees' })
           
           expect(response.status).toEqual(200)
-          expect(response.body).toBeInstanceOf(Array)
-          expect(response.body).toHaveLength(2)
-          expect(response.body[0]).toHaveProperty('supervisor')
-          expect(response.body[0]).toHaveProperty('statusCounts')
-          expect(response.body[0]).toHaveProperty('startedWithinHalfYearCount')
-          expect(response.body[0]).toHaveProperty('primarySupervisionsCount')
-          expect(response.body[0]).toHaveProperty('lateSupervisions')
+          expect(response.body.supervisors).toBeInstanceOf(Array)
+          expect(response.body.supervisors).toHaveLength(2)
+          expect(response.body.supervisors[0]).toHaveProperty('supervisor')
+          expect(response.body.supervisors[0]).toHaveProperty('statusCounts')
+          expect(response.body.supervisors[0]).toHaveProperty('startedWithinHalfYearCount')
+          expect(response.body.supervisors[0]).toHaveProperty('primarySupervisionsCount')
+          expect(response.body.supervisors[0]).toHaveProperty('lateSupervisions')
         })
 
         it('should return 403 when the user is not a department admin of the requested department', async () => {
@@ -5162,7 +5162,7 @@ describe('thesis router', () => {
             .set({ uid: programManagerUser.id, hygroupcn: 'hy-employees' })
             
           expect(response.status).toEqual(200)
-          expect(response.body).toBeInstanceOf(Array)
+          expect(response.body.supervisors).toBeInstanceOf(Array)
         })
 
         it('should return 200 and only their own supervised theses statistics when the user is not a program manager', async () => {
@@ -5171,10 +5171,10 @@ describe('thesis router', () => {
             .set({ uid: user1.id, hygroupcn: 'hy-employees' })
             
           expect(response.status).toEqual(200)
-          expect(response.body).toBeInstanceOf(Array)
+          expect(response.body.supervisors).toBeInstanceOf(Array)
           // Since user1 only supervises thesis1 in this program (along with user3), they should only see those 2 supervisor records
-          expect(response.body).toHaveLength(2)
-          const supervisorIds = response.body.map(stat => stat.supervisor.id)
+          expect(response.body.supervisors).toHaveLength(2)
+          const supervisorIds = response.body.supervisors.map(stat => stat.supervisor.id)
           expect(supervisorIds).toContain(user1.id)
           expect(supervisorIds).toContain(user3.id)
         })
@@ -5185,8 +5185,8 @@ describe('thesis router', () => {
             .set({ uid: user1.id, hygroupcn: 'hy-employees' })
             
           expect(response.status).toEqual(200)
-          expect(response.body).toBeInstanceOf(Array)
-          expect(response.body).toHaveLength(0) // Properly filtered out!
+          expect(response.body.supervisors).toBeInstanceOf(Array)
+          expect(response.body.supervisors).toHaveLength(0) // Properly filtered out!
         })
       })
     })

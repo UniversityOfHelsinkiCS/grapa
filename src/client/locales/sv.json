@@ -477,9 +477,11 @@
     "supervisorHeader": "Handledare",
     "departmentHeader": "Avdelning",
     "thesisCountHeader": "Antal avhandlingar",
+    "unknown": "Okänd",
     "startedWithinHalfYearCount": "Påbörjade",
     "startedWithinHalfYearTooltip": "Avhandlingar som har påbörjats inom de senaste sex månaderna",
     "late": "Försenade",
+    "completed": "Färdiga",
     "lateTooltip": "Dessa examensarbeten är mer än en månad försenade enligt måldatumet. Detta inkluderar alla ej slutförda examensarbeten.",
     "avgLateTooltip": "Genomsnittlig försening, dagar",
     "avgLate": "Snittförsening",
@@ -524,6 +526,7 @@
     "deleteWarning": "Obs: En avdelning kan inte tas bort när den väl har skapats"
   },
   "progressView": {
+    "noMilestone": "Ingen etapp",
     "lastMilestoneConfirmationTitle": "Bekräftelse",
     "lastMilestoneConfirmationText": "Är du säker på att du vill slutföra det sista steget? Detta kan inte ångras.",
     "markAsSentToEthesis": "Markera som skickad till E-thesis",

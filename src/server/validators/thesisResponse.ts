@@ -121,17 +121,29 @@ export const PaginatedStudentThesesSchema =
     theses: z.array(StudentThesisSchema),
   })
 
-export const ThesisStatisticsSchema = z.object({
+export const ThesisSupervisorStatisticsSchema = z.object({
   department: DepartmentDataSchema.optional(),
   supervisor: EmployeeUserSchema.partial(),
   statusCounts: z.record(z.enum(VALID_THESIS_STATUSES), z.number()),
+  milestoneCounts: z.record(z.string(), z.number()).optional(),
   startedWithinHalfYearCount: z.number(),
   primarySupervisionsCount: z.number(),
   lateSupervisions: z.array(z.number()),
   lateSupervisionsCount: z.number(),
+  lateActiveSupervisionsCount: z.number().optional(),
   avgLateSupervision: z.number(),
   avgCompletedSupervision: z.number(),
   completedSupervisions: z.array(z.number()),
+})
+
+export const ThesisStatisticsResponseSchema = z.object({
+  supervisors: z.array(ThesisSupervisorStatisticsSchema),
+  totals: z.object({
+    statusCounts: z.record(z.enum(VALID_THESIS_STATUSES), z.number()),
+    milestoneCounts: z.record(z.string(), z.number()).optional(),
+    lateSupervisionsCount: z.number(),
+    lateActiveSupervisionsCount: z.number(),
+  }),
 })
 
 export const EventLogEntryThesisSchema = z.object({
@@ -219,7 +231,10 @@ export const EventLogSchema = BaseEventLogSchema.transform((log) => {
 })
 
 export type ThesisData = z.infer<typeof EmployeeThesisSchema>
-export type ThesisStatistics = z.infer<typeof ThesisStatisticsSchema>
+export type ThesisStatistics = z.infer<typeof ThesisSupervisorStatisticsSchema>
+export type ThesisStatisticsResponse = z.infer<
+  typeof ThesisStatisticsResponseSchema
+>
 export type EventLogEntry = z.infer<typeof EventLogSchema>
 export type SupervisionData = z.infer<typeof EmployeeSupervisionSchema>
 export type SeminarSupervisionData = z.infer<

@@ -16,8 +16,8 @@ import { getPrimaryStudyTrackId } from '../util/studyTracks'
 import { z } from 'zod'
 import {
   PaginatedEmployeeThesesSchema,
-  ThesisStatisticsSchema,
   EmployeeThesisSchema,
+  ThesisStatisticsResponseSchema,
   EventLogSchema,
 } from '../validators/thesisResponse'
 
@@ -99,7 +99,7 @@ thesisRouter.get(
     const theses = await getThesesForStatistics(query)
 
     const statistics = await calculateThesisStatistics(theses)
-    const safeData = z.array(ThesisStatisticsSchema).parse(statistics)
+    const safeData = ThesisStatisticsResponseSchema.parse(statistics)
 
     res.status(200).send(safeData)
   }

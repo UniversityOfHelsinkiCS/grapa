@@ -23,12 +23,7 @@ import {
   getSecondaryStudyTrackIds,
   getPrimaryStudyTrackId,
 } from '../util/studyTracks'
-import {
-  ThesisData,
-  User as UserType,
-  SupervisionData,
-  ThesisStatistics,
-} from '../types'
+import { ThesisData, User as UserType, SupervisionData } from '../types'
 import logger from '../util/logger'
 
 import { Literal } from 'sequelize/types/utils'
@@ -951,14 +946,28 @@ const HALF_YEAR = (1000 * 60 * 60 * 24 * 365) / 2
 const isWithinLastHalfYear = (date: Date) =>
   date.getTime() > Date.now() - HALF_YEAR
 
-export const calculateThesisStatistics = async (
-  theses: ThesisData[]
-): Promise<ThesisStatistics[]> => {
+export const calculateThesisStatistics = async (theses: ThesisData[]) => {
   const departments = await Department.findAll({
     attributes: ['id', 'name'],
   })
 
-  const statistics: ThesisStatistics[] = []
+  const statistics: any[] = []
+
+  const totals = {
+    statusCounts: {
+      DRAFT: 0,
+      SUGGESTED: 0,
+      PLANNING: 0,
+      IN_PROGRESS: 0,
+      COMPLETED: 0,
+      CANCELLED: 0,
+      ETHESIS_SENT: 0,
+      ETHESIS: 0,
+    } as Record<string, number>,
+    milestoneCounts: {} as Record<string, number>,
+    lateSupervisionsCount: 0,
+    lateActiveSupervisionsCount: 0,
+  }
 
   theses.forEach((thesis) => {
     const { status, startDate, targetDate } = thesis
@@ -971,6 +980,20 @@ export const calculateThesisStatistics = async (
       return (first.getTime() - second.getTime()) / (1000 * 60 * 60 * 24)
     }
 
+    const diff = timeDiff(new Date(), targetDateObject)
+
+    totals.statusCounts[status] = (totals.statusCounts[status] || 0) + 1
+    if (status === 'IN_PROGRESS') {
+      const mKey = thesis.milestone?.toString() || '0'
+      totals.milestoneCounts[mKey] = (totals.milestoneCounts[mKey] || 0) + 1
+      if (diff > 30) {
+        totals.lateActiveSupervisionsCount++
+      }
+    }
+    if (status !== 'COMPLETED' && diff > 30) {
+      totals.lateSupervisionsCount++
+    }
+
     thesis.supervisions.forEach((supervision) => {
       const { user, isPrimarySupervisor, isExternal } = supervision
 
@@ -981,6 +1004,20 @@ export const calculateThesisStatistics = async (
       if (supervisor) {
         supervisor.statusCounts[status] =
           (supervisor.statusCounts[status] || 0) + 1
+
+        if (status === 'IN_PROGRESS') {
+          const mKey = thesis.milestone?.toString() || '0'
+          supervisor.milestoneCounts = supervisor.milestoneCounts || {}
+          supervisor.milestoneCounts[mKey] =
+            (supervisor.milestoneCounts[mKey] || 0) + 1
+
+          const diff = timeDiff(new Date(), targetDateObject)
+          if (diff > 30) {
+            supervisor.lateActiveSupervisionsCount =
+              (supervisor.lateActiveSupervisionsCount || 0) + 1
+          }
+        }
+
         supervisor.startedWithinHalfYearCount += isWithinLastHalfYear(
           new Date(startDate)
         )
@@ -1018,6 +1055,15 @@ export const calculateThesisStatistics = async (
             ETHESIS_SENT: status === 'ETHESIS_SENT' ? 1 : 0,
             ETHESIS: status === 'ETHESIS' ? 1 : 0,
           },
+          milestoneCounts:
+            status === 'IN_PROGRESS'
+              ? { [thesis.milestone?.toString() || '0']: 1 }
+              : {},
+          lateActiveSupervisionsCount:
+            status === 'IN_PROGRESS' &&
+            timeDiff(new Date(), targetDateObject) > 30
+              ? 1
+              : 0,
           startedWithinHalfYearCount: isWithinLastHalfYear(startDateObject)
             ? 1
             : 0,
@@ -1038,26 +1084,29 @@ export const calculateThesisStatistics = async (
     })
   })
 
-  return statistics.map((supervisor) => {
-    const current = {
-      ...supervisor,
-      lateSupervisions: supervisor.lateSupervisions.filter(
-        (x: number) => x > 30
-      ),
-    }
-    current['lateSupervisionsCount'] = current.lateSupervisions.length
-    current['avgLateSupervision'] =
-      current.lateSupervisions.length > 0
-        ? current.lateSupervisions.reduce((a, b) => a + b) /
-          current.lateSupervisions.length
-        : 0
-    current['avgCompletedSupervision'] =
-      current.completedSupervisions.length > 0
-        ? current.completedSupervisions.reduce((a, b) => a + b) /
-          current.completedSupervisions.length
-        : 0
-    return current
-  })
+  return {
+    supervisors: statistics.map((supervisor) => {
+      const current = {
+        ...supervisor,
+        lateSupervisions: supervisor.lateSupervisions.filter(
+          (x: number) => x > 30
+        ),
+      }
+      current['lateSupervisionsCount'] = current.lateSupervisions.length
+      current['avgLateSupervision'] =
+        current.lateSupervisions.length > 0
+          ? current.lateSupervisions.reduce((a, b) => a + b) /
+            current.lateSupervisions.length
+          : 0
+      current['avgCompletedSupervision'] =
+        current.completedSupervisions.length > 0
+          ? current.completedSupervisions.reduce((a, b) => a + b) /
+            current.completedSupervisions.length
+          : 0
+      return current
+    }),
+    totals,
+  }
 }
 
 export const escapeCsv = (str: unknown) => {

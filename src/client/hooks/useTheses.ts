@@ -1,9 +1,8 @@
 import { GridRowSelectionModel } from '@mui/x-data-grid'
 import { useQuery } from '@tanstack/react-query'
-
 import {
   ThesisData,
-  ThesisStatistics,
+  ThesisStatisticsResponse,
 } from '@backend/validators/thesisResponse'
 
 import apiClient from '../util/apiClient'
@@ -183,7 +182,7 @@ export const useThesisStatistics = (params?: {
     params?.departmentId,
   ]
 
-  const queryFn = async (): Promise<ThesisStatistics[]> => {
+  const queryFn = async (): Promise<ThesisStatisticsResponse> => {
     const { data } = await apiClient.get('/theses/statistics', {
       params,
     })
