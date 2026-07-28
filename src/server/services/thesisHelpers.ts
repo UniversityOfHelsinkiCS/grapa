@@ -60,9 +60,15 @@ export const getOrdering = ({
 }: GetOrderingProps): Order => {
   if (orderBy && orderDirection) {
     if (Array.isArray(orderBy)) {
-      return [[...orderBy, orderDirection]] as Order
+      return [
+        [...orderBy, orderDirection],
+        ['id', 'ASC'],
+      ] as Order
     }
-    return [[orderBy, orderDirection]] as Order
+    return [
+      [orderBy, orderDirection],
+      ['id', 'ASC'],
+    ] as Order
   }
 
   // If no ordering is specified, we want to order the theses
@@ -70,6 +76,7 @@ export const getOrdering = ({
   return [
     [getOrderLiteralBasedOnThesesApprovals(currentUser), 'DESC'],
     ['targetDate', 'ASC'],
+    ['id', 'ASC'],
   ]
 }
 
