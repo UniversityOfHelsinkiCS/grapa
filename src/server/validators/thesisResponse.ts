@@ -125,12 +125,10 @@ export const ThesisSupervisorStatisticsSchema = z.object({
   department: DepartmentDataSchema.optional(),
   supervisor: EmployeeUserSchema.partial(),
   statusCounts: z.record(z.enum(VALID_THESIS_STATUSES), z.number()),
-  milestoneCounts: z.record(z.string(), z.number()).optional(),
   startedWithinHalfYearCount: z.number(),
   primarySupervisionsCount: z.number(),
   lateSupervisions: z.array(z.number()),
   lateSupervisionsCount: z.number(),
-  lateActiveSupervisionsCount: z.number().optional(),
   avgLateSupervision: z.number(),
   avgCompletedSupervision: z.number(),
   completedSupervisions: z.array(z.number()),
@@ -141,8 +139,8 @@ export const ThesisStatisticsResponseSchema = z.object({
   totals: z.object({
     statusCounts: z.record(z.enum(VALID_THESIS_STATUSES), z.number()),
     milestoneCounts: z.record(z.string(), z.number()).optional(),
-    lateSupervisionsCount: z.number(),
     lateActiveSupervisionsCount: z.number(),
+    completedThesesTimes: z.array(z.number()),
   }),
 })
 

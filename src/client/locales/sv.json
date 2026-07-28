@@ -496,9 +496,10 @@
     "details": "Detaljer",
     "days": "Dagar",
     "supervisors": "Handledare",
+    "students": "Studerande",
     "onTimeRatio": "I tid-andel",
     "thesisPipeline": "Aktiva avhandlingar",
-    "avgCompletionDist": "Genomsnittlig slutförandetid"
+    "avgCompletionDist": "Fördelning av slutförandetid"
   },
   "loginAsPage": {
     "title": "Välj en användare att logga in som",

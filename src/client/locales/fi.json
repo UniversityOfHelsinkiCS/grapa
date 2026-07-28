@@ -495,9 +495,10 @@
     "details": "Tiedot",
     "days": "Päiviä",
     "supervisors": "Ohjaajia",
+    "students": "Opiskelijoita",
     "onTimeRatio": "Ajallaan-osuus",
     "thesisPipeline": "Aktiiviset tutkielmat",
-    "avgCompletionDist": "Keskim. valmistumisaika"
+    "avgCompletionDist": "Valmistumisaikojen jakauma"
   },
   "loginAsPage": {
     "title": "Valitse käyttäjä, jona haluat kirjautua",

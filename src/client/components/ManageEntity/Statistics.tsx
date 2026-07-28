@@ -46,6 +46,7 @@ const Statistics = ({
       0
     ),
     milestoneCounts: thesisStatistics.totals.milestoneCounts || {},
+    completedThesesTimes: thesisStatistics.totals.completedThesesTimes || [],
   }
 
   const activeTotal =
@@ -261,8 +262,8 @@ const Statistics = ({
   }
 
   // 2. Average Completion Time Distribution (Histogram)
-  const bucketSize = 90
-  const maxBucketLimit = 540
+  const bucketSize = 30
+  const maxBucketLimit = 510
   const completionBuckets: Record<string, number> = {}
 
   completionBuckets[`< ${bucketSize}`] = 0
@@ -272,20 +273,21 @@ const Statistics = ({
   completionBuckets[`> ${maxBucketLimit}`] = 0
 
   let hasCompletionData = false
-  thesisStatistics.supervisors.forEach((stat: any) => {
-    if (stat.avgCompletedSupervision > 0) {
-      hasCompletionData = true
-      const days = stat.avgCompletedSupervision
-      if (days < bucketSize) {
-        completionBuckets[`< ${bucketSize}`]++
-      } else if (days >= maxBucketLimit) {
-        completionBuckets[`> ${maxBucketLimit}`]++
-      } else {
-        const bucketStart = Math.floor(days / bucketSize) * bucketSize
-        completionBuckets[`${bucketStart}-${bucketStart + bucketSize}`]++
+  if (totals.completedThesesTimes && totals.completedThesesTimes.length > 0) {
+    totals.completedThesesTimes.forEach((days: number) => {
+      if (days > 0) {
+        hasCompletionData = true
+        if (days < bucketSize) {
+          completionBuckets[`< ${bucketSize}`]++
+        } else if (days >= maxBucketLimit) {
+          completionBuckets[`> ${maxBucketLimit}`]++
+        } else {
+          const bucketStart = Math.floor(days / bucketSize) * bucketSize
+          completionBuckets[`${bucketStart}-${bucketStart + bucketSize}`]++
+        }
       }
-    }
-  })
+    })
+  }
 
   const completionHistogramOption = {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
@@ -300,7 +302,7 @@ const Statistics = ({
     },
     yAxis: {
       type: 'value',
-      name: t('departmentStatisticsPage:supervisors'),
+      name: t('departmentStatisticsPage:students'),
       minInterval: 1,
     },
     series: [
@@ -459,7 +461,6 @@ const Statistics = ({
               style={{ height: '350px', width: '100%' }}
             />
           </Paper>
-
         </Box>
       )}
 

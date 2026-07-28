@@ -496,9 +496,10 @@
     "details": "Details",
     "days": "Days",
     "supervisors": "Supervisors",
+    "students": "Students",
     "onTimeRatio": "On-Time Ratio",
     "thesisPipeline": "Active Pipeline",
-    "avgCompletionDist": "Avg Completion Time Distribution"
+    "avgCompletionDist": "Completion Time Distribution"
   },
   "loginAsPage": {
     "title": "Choose a user to log in as",
