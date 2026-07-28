@@ -80,6 +80,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
             header: () => (
               <Typography
                 variant="body2"
+                component="span"
                 sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
               >
                 {t('thesisStages:draft') + ` (${totalThesisCounts.DRAFT})`}
@@ -92,6 +93,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
             header: () => (
               <Typography
                 variant="body2"
+                component="span"
                 sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
               >
                 {t('thesisStages:suggested') +
@@ -105,6 +107,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
             header: () => (
               <Typography
                 variant="body2"
+                component="span"
                 sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
               >
                 {t('thesisStages:planned') + ` (${totalThesisCounts.PLANNING})`}
@@ -117,6 +120,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
             header: () => (
               <Typography
                 variant="body2"
+                component="span"
                 sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
               >
                 {t('thesisStages:inProgress') +
@@ -130,6 +134,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
             header: () => (
               <Typography
                 variant="body2"
+                component="span"
                 sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
               >
                 {t('thesisStages:completed') +
@@ -143,6 +148,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
             header: () => (
               <Typography
                 variant="body2"
+                component="span"
                 sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
               >
                 {t('thesisStages:cancelled') +
@@ -161,6 +167,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
               >
                 <Typography
                   variant="body2"
+                  component="span"
                   sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
                 >
                   {t('departmentStatisticsPage:startedWithinHalfYearCount') +
@@ -178,6 +185,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
           <Tooltip title={t('departmentStatisticsPage:lateTooltip')}>
             <Typography
               variant="body2"
+              component="span"
               sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
             >
               {t('departmentStatisticsPage:late')}
@@ -192,6 +200,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
           <Tooltip title={t('departmentStatisticsPage:avgLateTooltip')}>
             <Typography
               variant="body2"
+              component="span"
               sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
             >
               {t('departmentStatisticsPage:avgLate')}
@@ -207,6 +216,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
           <Tooltip title={t('departmentStatisticsPage:avgCompletionTooltip')}>
             <Typography
               variant="body2"
+              component="span"
               sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
             >
               {t('departmentStatisticsPage:avgCompletion')}
@@ -224,6 +234,7 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
           >
             <Typography
               variant="body2"
+              component="span"
               sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
             >
               {t('departmentStatisticsPage:primarySupervisions')}
