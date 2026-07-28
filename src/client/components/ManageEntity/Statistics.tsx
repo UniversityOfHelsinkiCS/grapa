@@ -39,7 +39,6 @@ const Statistics = ({
     ethesisSent: thesisStatistics.totals.statusCounts['ETHESIS_SENT'] || 0,
     ethesis: thesisStatistics.totals.statusCounts['ETHESIS'] || 0,
     completed: thesisStatistics.totals.statusCounts['COMPLETED'] || 0,
-    late: thesisStatistics.totals.lateSupervisionsCount || 0,
     lateActive: thesisStatistics.totals.lateActiveSupervisionsCount || 0,
     total: Object.values(thesisStatistics.totals.statusCounts).reduce(
       (a: any, b: any) => a + b,

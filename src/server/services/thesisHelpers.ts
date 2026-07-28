@@ -965,7 +965,6 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
       ETHESIS: 0,
     } as Record<string, number>,
     milestoneCounts: {} as Record<string, number>,
-    lateSupervisionsCount: 0,
     lateActiveSupervisionsCount: 0,
     completedThesesTimes: [] as number[],
   }
@@ -991,9 +990,6 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
         totals.lateActiveSupervisionsCount++
       }
     }
-    if (status !== 'COMPLETED' && diff > 30) {
-      totals.lateSupervisionsCount++
-    }
     if (status === 'COMPLETED') {
       totals.completedThesesTimes.push(
         timeDiff(targetDateObject, startDateObject)
@@ -1010,19 +1006,6 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
       if (supervisor) {
         supervisor.statusCounts[status] =
           (supervisor.statusCounts[status] || 0) + 1
-
-        if (status === 'IN_PROGRESS') {
-          const mKey = thesis.milestone?.toString() || '0'
-          supervisor.milestoneCounts = supervisor.milestoneCounts || {}
-          supervisor.milestoneCounts[mKey] =
-            (supervisor.milestoneCounts[mKey] || 0) + 1
-
-          const diff = timeDiff(new Date(), targetDateObject)
-          if (diff > 30) {
-            supervisor.lateActiveSupervisionsCount =
-              (supervisor.lateActiveSupervisionsCount || 0) + 1
-          }
-        }
 
         supervisor.startedWithinHalfYearCount += isWithinLastHalfYear(
           new Date(startDate)
@@ -1061,15 +1044,6 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
             ETHESIS_SENT: status === 'ETHESIS_SENT' ? 1 : 0,
             ETHESIS: status === 'ETHESIS' ? 1 : 0,
           },
-          milestoneCounts:
-            status === 'IN_PROGRESS'
-              ? { [thesis.milestone?.toString() || '0']: 1 }
-              : {},
-          lateActiveSupervisionsCount:
-            status === 'IN_PROGRESS' &&
-            timeDiff(new Date(), targetDateObject) > 30
-              ? 1
-              : 0,
           startedWithinHalfYearCount: isWithinLastHalfYear(startDateObject)
             ? 1
             : 0,
