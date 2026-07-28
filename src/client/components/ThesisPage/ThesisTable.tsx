@@ -912,36 +912,42 @@ const ThesisTable = ({
                 {Object.keys(filterViews[1].items).map((filterView) => {
                   const isChecked = activeToggles.includes(filterView)
                   return (
-                    <Chip
+                    <Tooltip
                       key={filterView}
-                      {...(isChecked && {
-                        icon: <Check fontSize="small" />,
-                      })}
-                      label={t(
-                        `thesesTableToolbar:filterViews:${filterView}:name`
+                      title={t(
+                        `thesesTableToolbar:filterViews:${filterView}:tooltip`
                       )}
-                      color={isChecked ? 'primary' : 'default'}
-                      variant={isChecked ? 'filled' : 'outlined'}
-                      onClick={() => {
-                        let newToggles = [...activeToggles]
-                        if (isChecked) {
-                          newToggles = newToggles.filter(
-                            (t) => t !== filterView
-                          )
-                        } else {
-                          newToggles.push(filterView)
-                        }
-                        setActiveToggles(newToggles)
-                        onFilterChange({
-                          items: getCombinedFilterItems(
-                            activeBaseView,
-                            newToggles,
-                            activeMilestoneFilter
-                          ),
-                        })
-                        changePage(0)
-                      }}
-                    />
+                    >
+                      <Chip
+                        {...(isChecked && {
+                          icon: <Check fontSize="small" />,
+                        })}
+                        label={t(
+                          `thesesTableToolbar:filterViews:${filterView}:name`
+                        )}
+                        color={isChecked ? 'primary' : 'default'}
+                        variant={isChecked ? 'filled' : 'outlined'}
+                        onClick={() => {
+                          let newToggles = [...activeToggles]
+                          if (isChecked) {
+                            newToggles = newToggles.filter(
+                              (t) => t !== filterView
+                            )
+                          } else {
+                            newToggles.push(filterView)
+                          }
+                          setActiveToggles(newToggles)
+                          onFilterChange({
+                            items: getCombinedFilterItems(
+                              activeBaseView,
+                              newToggles,
+                              activeMilestoneFilter
+                            ),
+                          })
+                          changePage(0)
+                        }}
+                      />
+                    </Tooltip>
                   )
                 })}
                 {activeToggles.length > 0 && (
