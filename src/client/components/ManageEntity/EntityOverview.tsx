@@ -54,20 +54,13 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
       .filter((st) => st && (user?.isAdmin || st.isManaged)) || []
   const departmentsUserManages: DepartmentData[] = managedDepartments || []
 
-  const entities = (
-    entityType === 'department'
-      ? departmentsUserManages
-      : entityType === 'studyTrack'
-        ? studyTracksUserManages
-        : programsUserManages
-  ) as Array<ProgramData | StudyTrackData | DepartmentData>
+  const entityConfig = {
+    program: { entities: programsUserManages, id: programId },
+    studyTrack: { entities: studyTracksUserManages, id: studyTrackId },
+    department: { entities: departmentsUserManages, id: departmentId },
+  }
 
-  const currentId =
-    entityType === 'department'
-      ? departmentId
-      : entityType === 'studyTrack'
-        ? studyTrackId
-        : programId
+  const { entities, id: currentId } = entityConfig[entityType]
 
   const matchingEntity = entities?.find((entity) => entity.id === currentId)
   const selectedEntity =

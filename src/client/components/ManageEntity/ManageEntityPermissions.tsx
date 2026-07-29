@@ -71,87 +71,58 @@ type EntityPermissionData =
   ProgramManagementData | DepartmentAdminData | StudyTrackManagementData
 type EntityData = ProgramData | StudyTrackData | DepartmentData
 
-const ManageEntityPermissions = ({
+interface PermissionsViewProps {
+  filteringEntityId?: string
+  hideTitle?: boolean
+  entityType: 'program' | 'studyTrack' | 'department'
+  entities: EntityData[] | undefined
+  permissions: EntityPermissionData[] | undefined
+  createMutation: (
+    userId: string,
+    id: string,
+    isThesisApprover: boolean
+  ) => Promise<any>
+  deleteMutation: (id: string) => Promise<any>
+  updateMutation?: (id: string, isThesisApprover: boolean) => Promise<any>
+  field: string
+  headerName: string
+  title: string
+  addManagementTitle: string
+  adminOrManagerHeader: string
+  entitySelectLabel: string
+  removeTitle: string
+  getRemoveContent: (deletedPerm: any) => string
+}
+
+const PermissionsView = ({
   filteringEntityId,
   hideTitle,
-  entityType = 'program',
-}: Props) => {
+  entityType,
+  entities,
+  permissions,
+  createMutation,
+  deleteMutation,
+  updateMutation,
+  field,
+  headerName,
+  title,
+  addManagementTitle,
+  adminOrManagerHeader,
+  entitySelectLabel,
+  removeTitle,
+  getRemoveContent,
+}: PermissionsViewProps) => {
   const { t, i18n } = useTranslation()
   const { user, isLoading: userLoading } = useLoggedInUser()
   const { language } = i18n as { language: TranslationLanguage }
 
-  const [entityId, setEntityId] = useState(null)
-  const [managerCandidate, setManagerCandidate] = useState(null)
+  const [entityId, setEntityId] = useState<string | null>(null)
+  const [managerCandidate, setManagerCandidate] = useState<any>(null)
   const [isThesisApprover, setIsThesisApprover] = useState(true)
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deletedPermission, setDeletedPermission] =
     useState<EntityPermissionData | null>(null)
-
-  const { programs: programEntities, studyTracks } = usePrograms({
-    includeNotManaged: user?.isAdmin,
-    includeManagedStudyTracks: true,
-  })
-  const { departments } = useDepartments({ includeNotManaged: false })
-
-  const entities =
-    entityType === 'department'
-      ? departments
-      : entityType === 'program'
-        ? programEntities
-        : studyTracks
-
-  const { programManagements } = useProgramManagements(
-    entityType === 'program'
-      ? filteringEntityId
-        ? {
-            programId: filteringEntityId,
-            onlyThesisApprovers: false,
-            limitToEditorsPrograms: undefined,
-          }
-        : undefined
-      : undefined
-  )
-
-  const { studyTrackManagements } = useStudyTrackManagements(
-    entityType === 'studyTrack' && filteringEntityId
-      ? { studyTrackId: filteringEntityId }
-      : undefined
-  )
-
-  const { departmentAdmins } = useDepartmentAdmins()
-
-  let filteredDepartmentAdmins = departmentAdmins ?? []
-  if (entityType === 'department' && filteringEntityId) {
-    filteredDepartmentAdmins = filteredDepartmentAdmins.filter(
-      (departmentAdmin) =>
-        String(departmentAdmin.departmentId) === filteringEntityId
-    )
-  }
-
-  const permissions =
-    entityType === 'department'
-      ? filteredDepartmentAdmins
-      : entityType === 'program'
-        ? programManagements
-        : studyTrackManagements
-
-  const { mutateAsync: createProgramManagement } =
-    useCreateProgramManagementMutation()
-  const { mutateAsync: deleteProgramManagement } =
-    useDeleteProgramManagementMutation()
-  const { mutateAsync: updateProgramManagement } =
-    useUpdateProgramManagementMutation()
-
-  const { mutateAsync: createStudyTrackManagement } =
-    useCreateStudyTrackManagementMutation()
-  const { mutateAsync: deleteStudyTrackManagement } =
-    useDeleteStudyTrackManagementMutation()
-
-  const { mutateAsync: createDepartmentAdmin } =
-    useCreateDepartmentAdminMutation()
-  const { mutateAsync: deleteDepartmentAdmin } =
-    useDeleteDepartmentAdminMutation()
 
   const [userSearch, setUserSearch] = useState('')
   const debouncedSearch = useDebounce(userSearch, 700)
@@ -173,23 +144,7 @@ const ManageEntityPermissions = ({
 
   const handleAddPermission = async () => {
     if (managerCandidate && entityId) {
-      if (entityType === 'program') {
-        await createProgramManagement({
-          userId: managerCandidate.id,
-          programId: entityId,
-          isThesisApprover,
-        })
-      } else if (entityType === 'studyTrack') {
-        await createStudyTrackManagement({
-          userId: managerCandidate.id,
-          studyTrackId: entityId,
-        })
-      } else {
-        await createDepartmentAdmin({
-          userId: managerCandidate.id,
-          departmentId: entityId,
-        })
-      }
+      await createMutation(managerCandidate.id, entityId, isThesisApprover)
       setManagerCandidate(null)
       setUserSearch('')
       if (isSingleEntityView) {
@@ -214,7 +169,7 @@ const ManageEntityPermissions = ({
   const dataGridLocale = language === 'fi' ? fiFI : enUS
 
   const columns: GridColDef<any>[] = [
-    ...(entityType === 'program'
+    ...(entityType === 'program' && updateMutation
       ? [
           {
             field: 'more-actions',
@@ -244,10 +199,7 @@ const ManageEntityPermissions = ({
                   aria-label="toggle-thesis-approver"
                   type="button"
                   onClick={() =>
-                    updateProgramManagement({
-                      programManagementId: params.row.id,
-                      isThesisApprover: !params.row.isThesisApprover,
-                    })
+                    updateMutation(params.row.id, !params.row.isThesisApprover)
                   }
                   color={params.row.isThesisApprover ? 'success' : 'error'}
                   data-testid={`toggle-thesis-approver-button-${params.row.userId}`}
@@ -275,18 +227,8 @@ const ManageEntityPermissions = ({
       },
     },
     {
-      field:
-        entityType === 'program'
-          ? 'program'
-          : entityType === 'studyTrack'
-            ? 'studyTrack'
-            : 'department',
-      headerName:
-        entityType === 'program'
-          ? t('programHeader')
-          : entityType === 'studyTrack'
-            ? t('studyTrackHeader', 'Study Track')
-            : t('departmentHeader'),
+      field,
+      headerName,
       flex: 1,
       valueGetter: (value: EntityData | null | undefined) =>
         value?.name?.[language] || '',
@@ -328,11 +270,7 @@ const ManageEntityPermissions = ({
     >
       {!hideTitle && (
         <Typography component="h1" variant="h4">
-          {entityType === 'department'
-            ? t('manageEntityPermissions:departmentTitle')
-            : entityType === 'program'
-              ? t('manageEntityPermissions:programTitle')
-              : t('manageEntityPermissions:studyTrackTitle')}
+          {title}
         </Typography>
       )}
       <DataGrid
@@ -355,11 +293,7 @@ const ManageEntityPermissions = ({
         }}
       >
         <Typography component="h2" variant="h6">
-          {entityType === 'department'
-            ? t('manageEntityPermissions:addDepartmentManagement')
-            : entityType === 'program'
-              ? t('manageEntityPermissions:addProgramManagement')
-              : t('manageEntityPermissions:addStudyTrackManagement')}
+          {addManagementTitle}
         </Typography>
         <FormControl fullWidth>
           <Autocomplete
@@ -372,15 +306,7 @@ const ManageEntityPermissions = ({
               `${programManager.firstName} ${programManager.lastName} ${programManager.email ? `(${programManager.email})` : ''} ${programManager.username ? `(${programManager.username})` : ''}`
             }
             renderInput={(params) => (
-              <TextField
-                {...params}
-                label={
-                  entityType === 'department'
-                    ? t('manageEntityPermissions:adminHeader')
-                    : t('manageEntityPermissions:managerHeader')
-                }
-                required
-              />
+              <TextField {...params} label={adminOrManagerHeader} required />
             )}
             inputValue={userSearch}
             filterOptions={(x) => x}
@@ -397,32 +323,22 @@ const ManageEntityPermissions = ({
         {!isSingleEntityView && (
           <FormControl fullWidth>
             <InputLabel id="program-select-label">
-              {entityType === 'program'
-                ? t('manageEntityPermissions:programHeader')
-                : entityType === 'studyTrack'
-                  ? t('manageEntityPermissions:studyTrackHeader')
-                  : t('manageEntityPermissions:departmentHeader')}
+              {entitySelectLabel}
             </InputLabel>
             <Select
               data-testid="program-select-input"
               labelId="program-select-label"
-              label={
-                entityType === 'program'
-                  ? t('manageEntityPermissions:programHeader')
-                  : entityType === 'studyTrack'
-                    ? t('manageEntityPermissions:studyTrackHeader')
-                    : t('manageEntityPermissions:departmentHeader')
-              }
+              label={entitySelectLabel}
               value={entityId ?? ''}
               onChange={(e) => setEntityId(e.target.value as string)}
             >
-              {selectableEntities.map((program) => (
+              {(selectableEntities || []).map((entity) => (
                 <MenuItem
-                  key={program.id}
-                  value={program.id}
-                  data-testid={`program-select-item-${program.id}`}
+                  key={entity.id}
+                  value={entity.id}
+                  data-testid={`program-select-item-${entity.id}`}
                 >
-                  {program.name[language]}
+                  {entity.name[language]}
                 </MenuItem>
               ))}
             </Select>
@@ -460,54 +376,201 @@ const ManageEntityPermissions = ({
             setDeletedPermission(null)
           }}
           onSubmit={async () => {
-            if (entityType === 'program') {
-              await deleteProgramManagement(deletedPermission.id)
-            } else if (entityType === 'studyTrack') {
-              await deleteStudyTrackManagement(deletedPermission.id)
-            } else {
-              await deleteDepartmentAdmin(deletedPermission.id)
-            }
+            await deleteMutation(deletedPermission.id)
             setDeleteDialogOpen(false)
             setDeletedPermission(null)
           }}
-          title={
-            entityType === 'department'
-              ? t('manageEntityPermissions:removeDepartmentManagementTitle')
-              : entityType === 'program'
-                ? t('manageEntityPermissions:removeProgramManagementTitle')
-                : t('manageEntityPermissions:removeStudyTrackManagementTitle')
-          }
+          title={removeTitle}
           submitText={t('deleteButton')}
           submitButtonProps={{ 'data-testid': 'delete-confirm-button' } as any}
           submitColor="error"
           cancelText={t('cancelButton')}
         >
-          <Box>
-            {entityType === 'department'
-              ? t('manageEntityPermissions:removeDepartmentManagementContent', {
-                  name: `${deletedPermission.user.firstName} ${deletedPermission.user.lastName}`,
-                  department: (deletedPermission as DepartmentAdminData)
-                    .department?.name[language],
-                })
-              : entityType === 'program'
-                ? t('manageEntityPermissions:removeProgramManagementContent', {
-                    name: `${deletedPermission.user.firstName} ${deletedPermission.user.lastName}`,
-                    program: (deletedPermission as ProgramManagementData)
-                      .program?.name[language],
-                  })
-                : t(
-                    'manageEntityPermissions:removeStudyTrackManagementContent',
-                    {
-                      name: `${deletedPermission.user.firstName} ${deletedPermission.user.lastName}`,
-                      studyTrack: (
-                        deletedPermission as StudyTrackManagementData
-                      ).studyTrack?.name[language],
-                    }
-                  )}
-          </Box>
+          <Box>{getRemoveContent(deletedPermission)}</Box>
         </Popup>
       )}
     </Box>
+  )
+}
+
+const ManageProgramPermissions = (props: Omit<Props, 'entityType'>) => {
+  const { t, i18n } = useTranslation()
+  const { language } = i18n as { language: TranslationLanguage }
+  const { user } = useLoggedInUser()
+
+  const { programs } = usePrograms({
+    includeNotManaged: user?.isAdmin,
+    includeManagedStudyTracks: true,
+  })
+
+  const { programManagements } = useProgramManagements(
+    props.filteringEntityId
+      ? {
+          programId: props.filteringEntityId,
+          onlyThesisApprovers: false,
+          limitToEditorsPrograms: undefined,
+        }
+      : undefined
+  )
+
+  const { mutateAsync: createProgramManagement } =
+    useCreateProgramManagementMutation()
+  const { mutateAsync: deleteProgramManagement } =
+    useDeleteProgramManagementMutation()
+  const { mutateAsync: updateProgramManagement } =
+    useUpdateProgramManagementMutation()
+
+  return (
+    <PermissionsView
+      {...props}
+      entityType="program"
+      entities={programs}
+      permissions={programManagements}
+      createMutation={(userId, id, isThesisApprover) =>
+        createProgramManagement({ userId, programId: id, isThesisApprover })
+      }
+      deleteMutation={deleteProgramManagement}
+      updateMutation={(id, isThesisApprover) =>
+        updateProgramManagement({ programManagementId: id, isThesisApprover })
+      }
+      field="program"
+      headerName={t('programHeader')}
+      title={t('manageEntityPermissions:programTitle')}
+      addManagementTitle={t('manageEntityPermissions:addProgramManagement')}
+      adminOrManagerHeader={t('manageEntityPermissions:managerHeader')}
+      entitySelectLabel={t('manageEntityPermissions:programHeader')}
+      removeTitle={t('manageEntityPermissions:removeProgramManagementTitle')}
+      getRemoveContent={(deletedPerm: any) =>
+        t('manageEntityPermissions:removeProgramManagementContent', {
+          name: `${deletedPerm.user.firstName} ${deletedPerm.user.lastName}`,
+          program: deletedPerm.program?.name[language],
+        })
+      }
+    />
+  )
+}
+
+const ManageStudyTrackPermissions = (props: Omit<Props, 'entityType'>) => {
+  const { t, i18n } = useTranslation()
+  const { language } = i18n as { language: TranslationLanguage }
+  const { user } = useLoggedInUser()
+
+  const { studyTracks } = usePrograms({
+    includeNotManaged: user?.isAdmin,
+    includeManagedStudyTracks: true,
+  })
+
+  const { studyTrackManagements } = useStudyTrackManagements(
+    props.filteringEntityId
+      ? { studyTrackId: props.filteringEntityId }
+      : undefined
+  )
+
+  const { mutateAsync: createStudyTrackManagement } =
+    useCreateStudyTrackManagementMutation()
+  const { mutateAsync: deleteStudyTrackManagement } =
+    useDeleteStudyTrackManagementMutation()
+
+  return (
+    <PermissionsView
+      {...props}
+      entityType="studyTrack"
+      entities={studyTracks}
+      permissions={studyTrackManagements}
+      createMutation={(userId, id, _isThesisApprover) =>
+        createStudyTrackManagement({ userId, studyTrackId: id })
+      }
+      deleteMutation={deleteStudyTrackManagement}
+      field="studyTrack"
+      headerName={t('studyTrackHeader', 'Study Track')}
+      title={t('manageEntityPermissions:studyTrackTitle')}
+      addManagementTitle={t('manageEntityPermissions:addStudyTrackManagement')}
+      adminOrManagerHeader={t('manageEntityPermissions:managerHeader')}
+      entitySelectLabel={t('manageEntityPermissions:studyTrackHeader')}
+      removeTitle={t('manageEntityPermissions:removeStudyTrackManagementTitle')}
+      getRemoveContent={(deletedPerm: any) =>
+        t('manageEntityPermissions:removeStudyTrackManagementContent', {
+          name: `${deletedPerm.user.firstName} ${deletedPerm.user.lastName}`,
+          studyTrack: deletedPerm.studyTrack?.name[language],
+        })
+      }
+    />
+  )
+}
+
+const ManageDepartmentPermissions = (props: Omit<Props, 'entityType'>) => {
+  const { t, i18n } = useTranslation()
+  const { language } = i18n as { language: TranslationLanguage }
+
+  const { departments } = useDepartments({ includeNotManaged: false })
+  const { departmentAdmins } = useDepartmentAdmins()
+
+  let filteredDepartmentAdmins = departmentAdmins ?? []
+  if (props.filteringEntityId) {
+    filteredDepartmentAdmins = filteredDepartmentAdmins.filter(
+      (departmentAdmin) =>
+        String(departmentAdmin.departmentId) === props.filteringEntityId
+    )
+  }
+
+  const { mutateAsync: createDepartmentAdmin } =
+    useCreateDepartmentAdminMutation()
+  const { mutateAsync: deleteDepartmentAdmin } =
+    useDeleteDepartmentAdminMutation()
+
+  return (
+    <PermissionsView
+      {...props}
+      entityType="department"
+      entities={departments}
+      permissions={filteredDepartmentAdmins}
+      createMutation={(userId, id, _isThesisApprover) =>
+        createDepartmentAdmin({ userId, departmentId: id })
+      }
+      deleteMutation={deleteDepartmentAdmin}
+      field="department"
+      headerName={t('departmentHeader')}
+      title={t('manageEntityPermissions:departmentTitle')}
+      addManagementTitle={t('manageEntityPermissions:addDepartmentManagement')}
+      adminOrManagerHeader={t('manageEntityPermissions:adminHeader')}
+      entitySelectLabel={t('manageEntityPermissions:departmentHeader')}
+      removeTitle={t('manageEntityPermissions:removeDepartmentManagementTitle')}
+      getRemoveContent={(deletedPerm: any) =>
+        t('manageEntityPermissions:removeDepartmentManagementContent', {
+          name: `${deletedPerm.user.firstName} ${deletedPerm.user.lastName}`,
+          department: deletedPerm.department?.name[language],
+        })
+      }
+    />
+  )
+}
+
+const ManageEntityPermissions = ({
+  filteringEntityId,
+  hideTitle,
+  entityType = 'program',
+}: Props) => {
+  if (entityType === 'studyTrack') {
+    return (
+      <ManageStudyTrackPermissions
+        filteringEntityId={filteringEntityId}
+        hideTitle={hideTitle}
+      />
+    )
+  }
+  if (entityType === 'department') {
+    return (
+      <ManageDepartmentPermissions
+        filteringEntityId={filteringEntityId}
+        hideTitle={hideTitle}
+      />
+    )
+  }
+  return (
+    <ManageProgramPermissions
+      filteringEntityId={filteringEntityId}
+      hideTitle={hideTitle}
+    />
   )
 }
 
