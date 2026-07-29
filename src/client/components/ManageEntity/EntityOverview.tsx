@@ -86,7 +86,6 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
             <Typography component="h1" variant="h4">
               {selectedEntity.name[language]}
             </Typography>
-
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs
                 value={tab}
@@ -123,7 +122,6 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                 )}
               </Tabs>
             </Box>
-
             {tab === 'theses' && (
               <Box>
                 <ThesesPage
@@ -145,15 +143,22 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
             )}
 
             {tab === 'managePermissions' && (
-              <Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <ManageEntityPermissions
                   filteringEntityId={selectedEntity.id}
-                  hideTitle
+                  hideTitle={false}
                   entityType={entityType}
                 />
+
+                {entityType === 'program' && (
+                  <ManageEntityPermissions
+                    filteringProgramId={selectedEntity.id}
+                    hideTitle={false}
+                    entityType="studyTrack"
+                  />
+                )}
               </Box>
             )}
-
             {tab === 'statistics' && (
               <Box>
                 <Statistics
@@ -170,7 +175,6 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                 />
               </Box>
             )}
-
             {tab === 'configurations' && entityType === 'program' && (
               <Box>
                 <ProgramConfigurations
@@ -178,7 +182,6 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                 />
               </Box>
             )}
-
             {tab === 'logs' && entityType === 'program' && (
               <Box>
                 <SingleProgramLogs program={selectedEntity as ProgramData} />

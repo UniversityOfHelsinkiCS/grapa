@@ -63,6 +63,7 @@ import {
 
 interface Props {
   filteringEntityId?: string
+  filteringProgramId?: string
   hideTitle?: boolean
   entityType?: 'program' | 'studyTrack' | 'department'
 }
@@ -137,9 +138,6 @@ const PermissionsView = ({
     setEntityId(null)
   }, [filteringEntityId])
 
-  const selectableEntities = filteringEntityId
-    ? entities?.filter((entity) => entity.id === filteringEntityId)
-    : entities
   const isSingleEntityView = Boolean(filteringEntityId)
 
   const handleAddPermission = async () => {
@@ -269,7 +267,7 @@ const PermissionsView = ({
       }}
     >
       {!hideTitle && (
-        <Typography component="h1" variant="h4">
+        <Typography component="h2" variant="h5">
           {title}
         </Typography>
       )}
@@ -332,7 +330,7 @@ const PermissionsView = ({
               value={entityId ?? ''}
               onChange={(e) => setEntityId(e.target.value as string)}
             >
-              {(selectableEntities || []).map((entity) => (
+              {(entities || []).map((entity) => (
                 <MenuItem
                   key={entity.id}
                   value={entity.id}
@@ -455,16 +453,32 @@ const ManageStudyTrackPermissions = (props: Omit<Props, 'entityType'>) => {
   const { language } = i18n as { language: TranslationLanguage }
   const { user } = useLoggedInUser()
 
-  const { studyTracks } = usePrograms({
+  const { programs, studyTracks } = usePrograms({
     includeNotManaged: user?.isAdmin,
     includeManagedStudyTracks: true,
   })
+
+  let selectableStudyTracks = studyTracks
+  if (props.filteringProgramId) {
+    const program = programs?.find((p) => p.id === props.filteringProgramId)
+    selectableStudyTracks = program?.studyTracks || []
+  } else if (props.filteringEntityId) {
+    selectableStudyTracks = studyTracks?.filter(
+      (st) => st.id === props.filteringEntityId
+    )
+  }
 
   const { studyTrackManagements } = useStudyTrackManagements(
     props.filteringEntityId
       ? { studyTrackId: props.filteringEntityId }
       : undefined
   )
+
+  const filteredManagements = props.filteringProgramId
+    ? studyTrackManagements?.filter((m) =>
+        selectableStudyTracks?.some((st) => st.id === m.studyTrackId)
+      )
+    : studyTrackManagements
 
   const { mutateAsync: createStudyTrackManagement } =
     useCreateStudyTrackManagementMutation()
@@ -475,8 +489,8 @@ const ManageStudyTrackPermissions = (props: Omit<Props, 'entityType'>) => {
     <PermissionsView
       {...props}
       entityType="studyTrack"
-      entities={studyTracks}
-      permissions={studyTrackManagements}
+      entities={selectableStudyTracks}
+      permissions={filteredManagements}
       createMutation={(userId, id, _isThesisApprover) =>
         createStudyTrackManagement({ userId, studyTrackId: id })
       }
@@ -547,6 +561,7 @@ const ManageDepartmentPermissions = (props: Omit<Props, 'entityType'>) => {
 
 const ManageEntityPermissions = ({
   filteringEntityId,
+  filteringProgramId,
   hideTitle,
   entityType = 'program',
 }: Props) => {
@@ -554,6 +569,7 @@ const ManageEntityPermissions = ({
     return (
       <ManageStudyTrackPermissions
         filteringEntityId={filteringEntityId}
+        filteringProgramId={filteringProgramId}
         hideTitle={hideTitle}
       />
     )
