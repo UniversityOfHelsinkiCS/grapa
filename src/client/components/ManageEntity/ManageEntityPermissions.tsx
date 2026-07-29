@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -19,9 +19,14 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete'
 import HowToRegIcon from '@mui/icons-material/HowToReg'
 import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import {
+  createColumnHelper,
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+} from '@tanstack/react-table'
 
-import { fiFI, enUS } from '@mui/x-data-grid/locales'
+import PrethesisTable from '../Common/PrethesisTable'
 
 import useUsers from '../../hooks/useUsers'
 import usePrograms from '../../hooks/usePrograms'
@@ -153,6 +158,110 @@ const PermissionsView = ({
     }
   }
 
+  const columnHelper = createColumnHelper<any>()
+
+  const columns = React.useMemo(() => {
+    return [
+      ...(entityType === 'program' && updateMutation
+        ? [
+            columnHelper.display({
+              id: 'more-actions',
+              header: t('manageEntityPermissions:toggleApproval'),
+              cell: (info) => {
+                const row = info.row.original
+                return (
+                  <Tooltip
+                    arrow
+                    slotProps={{
+                      popper: {
+                        sx: {
+                          '& .MuiTooltip-tooltip': {
+                            fontSize: '0.9rem',
+                          },
+                        },
+                      },
+                    }}
+                    title={
+                      row.isThesisApprover
+                        ? t(
+                            'manageEntityPermissions:disallowThesisApprovalButton'
+                          )
+                        : t('manageEntityPermissions:allowThesisApprovalButton')
+                    }
+                  >
+                    <IconButton
+                      aria-label="toggle-thesis-approver"
+                      type="button"
+                      onClick={() =>
+                        updateMutation(row.id, !row.isThesisApprover)
+                      }
+                      color={row.isThesisApprover ? 'success' : 'error'}
+                      data-testid={`toggle-thesis-approver-button-${row.userId}`}
+                    >
+                      {row.isThesisApprover ? (
+                        <HowToRegIcon fontSize="large" />
+                      ) : (
+                        <HowToRegOutlinedIcon fontSize="large" />
+                      )}
+                    </IconButton>
+                  </Tooltip>
+                )
+              },
+            }),
+          ]
+        : []),
+      columnHelper.accessor(
+        (row: any) => {
+          const user = row.user
+          return user
+            ? `${user.lastName} ${user.firstName} ${user.email ? ` (${user.email})` : ''}`
+            : ''
+        },
+        {
+          id: 'user',
+          header: t('userHeader'),
+          cell: (info) => info.getValue(),
+        }
+      ),
+      columnHelper.accessor(
+        (row: any) => {
+          const value = row[field] as EntityData | null | undefined
+          return value?.name?.[language] || ''
+        },
+        {
+          id: field,
+          header: headerName,
+          cell: (info) => info.getValue(),
+        }
+      ),
+      columnHelper.display({
+        id: 'actions',
+        header: '',
+        cell: (info) => (
+          <IconButton
+            aria-label="delete"
+            type="button"
+            onClick={() => {
+              setDeleteDialogOpen(true)
+              setDeletedPermission(info.row.original)
+            }}
+            color="error"
+            data-testid={`delete-${entityType}-management-button-${info.row.original.userId}`}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        ),
+      }),
+    ]
+  }, [entityType, updateMutation, t, field, headerName, language])
+
+  const table = useReactTable({
+    data: permissions ?? [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  })
+
   if (!user || userLoading || !entities || !permissions) return null
   if (
     !user.isAdmin &&
@@ -163,97 +272,6 @@ const PermissionsView = ({
         !user.managedStudyTrackIds?.length))
   )
     return <Navigate to="/" />
-
-  const dataGridLocale = language === 'fi' ? fiFI : enUS
-
-  const columns: GridColDef<any>[] = [
-    ...(entityType === 'program' && updateMutation
-      ? [
-          {
-            field: 'more-actions',
-            type: 'actions' as const,
-            headerName: t('manageEntityPermissions:toggleApproval'),
-            sortable: false,
-            width: 157,
-            renderCell: (params: any) => (
-              <Tooltip
-                arrow
-                slotProps={{
-                  popper: {
-                    sx: {
-                      '& .MuiTooltip-tooltip': {
-                        fontSize: '0.9rem',
-                      },
-                    },
-                  },
-                }}
-                title={
-                  params.row.isThesisApprover
-                    ? t('manageEntityPermissions:disallowThesisApprovalButton')
-                    : t('manageEntityPermissions:allowThesisApprovalButton')
-                }
-              >
-                <IconButton
-                  aria-label="toggle-thesis-approver"
-                  type="button"
-                  onClick={() =>
-                    updateMutation(params.row.id, !params.row.isThesisApprover)
-                  }
-                  color={params.row.isThesisApprover ? 'success' : 'error'}
-                  data-testid={`toggle-thesis-approver-button-${params.row.userId}`}
-                >
-                  {params.row.isThesisApprover ? (
-                    <HowToRegIcon fontSize="large" />
-                  ) : (
-                    <HowToRegOutlinedIcon fontSize="large" />
-                  )}
-                </IconButton>
-              </Tooltip>
-            ),
-          },
-        ]
-      : []),
-    {
-      field: 'user',
-      headerName: t('userHeader'),
-      flex: 1,
-      valueGetter: (value: any, row: any) => {
-        const user = value || row?.user
-        return user
-          ? `${user.lastName} ${user.firstName} ${user.email ? ` (${user.email})` : ''}`
-          : ''
-      },
-    },
-    {
-      field,
-      headerName,
-      flex: 1,
-      valueGetter: (value: EntityData | null | undefined) =>
-        value?.name?.[language] || '',
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: '',
-      sortable: false,
-      renderCell: (params) => (
-        <IconButton
-          aria-label="delete"
-          type="button"
-          onClick={() => {
-            setDeleteDialogOpen(true)
-            setDeletedPermission(
-              params.row as ProgramManagementData | DepartmentAdminData
-            )
-          }}
-          color="error"
-          data-testid={`delete-${entityType}-management-button-${params.row.userId}`}
-        >
-          <DeleteIcon fontSize="small" />
-        </IconButton>
-      ),
-    },
-  ]
 
   return (
     <Box
@@ -271,15 +289,9 @@ const PermissionsView = ({
           {title}
         </Typography>
       )}
-      <DataGrid
-        sx={{ mt: hideTitle ? 0 : '2rem' }}
-        rows={permissions}
-        columns={columns}
-        pageSizeOptions={[100]}
-        localeText={
-          dataGridLocale.components.MuiDataGrid.defaultProps.localeText
-        }
-      />
+      <Box sx={{ mt: hideTitle ? 0 : '2rem' }}>
+        <PrethesisTable table={table} />
+      </Box>
       <Box
         sx={{
           width: '50%',
@@ -401,15 +413,14 @@ const ManageProgramPermissions = (props: Omit<Props, 'entityType'>) => {
     includeManagedStudyTracks: true,
   })
 
-  const { programManagements } = useProgramManagements(
-    props.filteringEntityId
-      ? {
-          programId: props.filteringEntityId,
-          onlyThesisApprovers: false,
-          limitToEditorsPrograms: undefined,
-        }
-      : undefined
-  )
+  const { programManagements } = useProgramManagements()
+
+  let filteredManagements = programManagements ?? []
+  if (props.filteringEntityId) {
+    filteredManagements = filteredManagements.filter(
+      (m) => m.programId === props.filteringEntityId
+    )
+  }
 
   const { mutateAsync: createProgramManagement } =
     useCreateProgramManagementMutation()
@@ -423,7 +434,7 @@ const ManageProgramPermissions = (props: Omit<Props, 'entityType'>) => {
       {...props}
       entityType="program"
       entities={programs}
-      permissions={programManagements}
+      permissions={filteredManagements}
       createMutation={(userId, id, isThesisApprover) =>
         createProgramManagement({ userId, programId: id, isThesisApprover })
       }
@@ -468,17 +479,18 @@ const ManageStudyTrackPermissions = (props: Omit<Props, 'entityType'>) => {
     )
   }
 
-  const { studyTrackManagements } = useStudyTrackManagements(
-    props.filteringEntityId
-      ? { studyTrackId: props.filteringEntityId }
-      : undefined
-  )
+  const { studyTrackManagements } = useStudyTrackManagements()
 
-  const filteredManagements = props.filteringProgramId
-    ? studyTrackManagements?.filter((m) =>
-        selectableStudyTracks?.some((st) => st.id === m.studyTrackId)
-      )
-    : studyTrackManagements
+  let filteredManagements = studyTrackManagements ?? []
+  if (props.filteringProgramId) {
+    filteredManagements = filteredManagements.filter((m) =>
+      selectableStudyTracks?.some((st) => st.id === m.studyTrackId)
+    )
+  } else if (props.filteringEntityId) {
+    filteredManagements = filteredManagements.filter(
+      (m) => m.studyTrackId === props.filteringEntityId
+    )
+  }
 
   const { mutateAsync: createStudyTrackManagement } =
     useCreateStudyTrackManagementMutation()
