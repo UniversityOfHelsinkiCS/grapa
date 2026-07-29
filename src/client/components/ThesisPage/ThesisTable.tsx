@@ -34,6 +34,10 @@ import {
   Tab,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
+import {
+  getMilestoneCount,
+  hasMilestones,
+} from '../../../shared/utils/thesisUtils'
 import { StatusLocale } from '../../types'
 import dayjs from 'dayjs'
 import {
@@ -512,18 +516,17 @@ const ThesisTable = ({
       meta: {
         getCellContext(context) {
           const status = context.row.original.status
-          const useMilestones =
-            context.row.original?.program?.options?.useMilestones
-
           const milestone = context.row.original?.milestone
           const milestone_version = context.row.original?.milestoneVersion
+          const useMilestones = hasMilestones(
+            context.row.original?.program?.options,
+            milestone_version
+          )
 
-          const milestone_count =
-            useMilestones && milestone_version != undefined
-              ? context.row.original?.program?.options?.milestones?.versions?.[
-                  milestone_version
-                ]?.length
-              : undefined
+          const milestone_count = getMilestoneCount(
+            context.row.original?.program?.options,
+            milestone_version
+          )
 
           return useMilestones &&
             milestone_count != undefined &&
@@ -552,19 +555,16 @@ const ThesisTable = ({
               const thesis = info.row.original
               const milestone = thesis?.milestone
               const milestone_version = thesis?.milestoneVersion
-              const useMilestones = thesis?.program?.options?.useMilestones
-              const milestone_count =
-                useMilestones && milestone_version != undefined
-                  ? thesis?.program?.options?.milestones?.versions?.[
-                      milestone_version
-                    ]?.length
-                  : undefined
+              const useMilestones = hasMilestones(
+                thesis?.program?.options,
+                milestone_version
+              )
+              const milestone_count = getMilestoneCount(
+                thesis?.program?.options,
+                milestone_version
+              )
 
-              if (
-                milestone_count != undefined &&
-                milestone != undefined &&
-                milestone_count > 0
-              ) {
+              if (useMilestones && milestone != undefined && milestone_count) {
                 return (
                   <Typography variant="small">
                     {Math.round((milestone / milestone_count) * 100)}%

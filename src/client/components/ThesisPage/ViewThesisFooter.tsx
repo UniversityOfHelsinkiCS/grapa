@@ -77,6 +77,7 @@ import {
   isThesisLate,
   getThesisLateDays,
   isThesisVeryLate,
+  hasMilestones,
 } from '../../../shared/utils/thesisUtils'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => (
@@ -536,7 +537,10 @@ const ViewThesisFooter = (
                 )}
                 {!thesis.program?.options?.hideSendToEthesis &&
                   !isStudentView &&
-                  (thesis.program?.options?.useMilestones
+                  (hasMilestones(
+                    thesis.program?.options,
+                    thesis.milestoneVersion
+                  )
                     ? canSetEthesisMilestones(thesis, currentUser!)
                     : thesis.status === THESIS_STATUSES.IN_PROGRESS) && (
                     <Tooltip

@@ -29,6 +29,10 @@ import {
 import { DatePicker } from '@mui/x-date-pickers'
 import SupervisorSelect from './SupervisorSelect/SupervisorSelect'
 import useUsers from '../../hooks/useUsers'
+import {
+  parseMilestoneDescription,
+  hasMilestones,
+} from '../../../shared/utils/thesisUtils'
 import { useDebounce } from '../../hooks/useDebounce'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useProgramManagements from '../../hooks/useProgramManagements'
@@ -114,8 +118,7 @@ const ThesisEditForm = ({
 
     if (
       currentProgram.length > 0 &&
-      currentProgram[0].options?.useMilestones &&
-      currentProgram[0].options?.milestones?.versions?.length > 0 &&
+      hasMilestones(currentProgram[0].options, editedThesis.milestoneVersion) &&
       editedThesis.milestone == null
     ) {
       editedThesis.milestone = 0
@@ -186,12 +189,12 @@ const ThesisEditForm = ({
 
   const showMilestoneForm = Boolean(
     canChangeStatus &&
-    selectedProgram?.options?.useMilestones &&
-    selectedProgram?.options?.milestones?.versions?.length
+    hasMilestones(selectedProgram?.options, editedThesis.milestoneVersion)
   )
 
   const hasMultipleMilestoneVersions = Boolean(
-    selectedProgram?.options?.milestones?.versions &&
+    hasMilestones(selectedProgram?.options, editedThesis.milestoneVersion) &&
+    selectedProgram?.options?.milestones?.versions?.length &&
     selectedProgram.options.milestones.versions.length > 1
   )
 
@@ -764,10 +767,10 @@ const ThesisEditForm = ({
                     <MenuItem value={0}>0</MenuItem>
                     {programMilestones.map((milestone: any, index: number) => {
                       const val = milestone.value
-                      const description =
-                        typeof val === 'string'
-                          ? val
-                          : val[language as keyof typeof val] || val.fi || ''
+                      const description = parseMilestoneDescription(
+                        val,
+                        language
+                      )
                       return (
                         <MenuItem key={index} value={index + 1}>
                           {`${index + 1}: ${description}`}

@@ -11,6 +11,11 @@ import Popup from '../../Common/Popup'
 import { useTranslation } from 'react-i18next'
 import { useEditThesisMutation } from '../../../hooks/useThesesMutation'
 import { useState } from 'react'
+import {
+  getMilestonesArray,
+  parseMilestoneDescription,
+  hasMilestones,
+} from '../../../../shared/utils/thesisUtils'
 import { TranslationLanguage } from '@backend/validators/departmentResponse'
 
 interface ProgressViewProps {
@@ -30,21 +35,21 @@ export const ProgressView = ({
   const useStudentStartedProcess =
     thesis.program.options?.allowStudentStartedProcess
 
-  const programMilestones = thesis.program.options?.milestones?.versions?.at(
-    thesis.milestoneVersion != null ? thesis.milestoneVersion : -1
+  const programMilestones = getMilestonesArray(
+    thesis.program.options,
+    thesis.milestoneVersion
   )
 
-  const useMilestones =
-    thesis.program.options?.useMilestones &&
-    thesis.milestoneVersion != null &&
-    programMilestones !== undefined
+  const useMilestones = hasMilestones(
+    thesis.program.options,
+    thesis.milestoneVersion
+  )
 
   const milestones =
     useMilestones && programMilestones
       ? programMilestones.map((milestone: { value: any }, index: number) => {
           const val = milestone.value
-          const description =
-            typeof val === 'string' ? val : val[language] || val.fi || ''
+          const description = parseMilestoneDescription(val, language)
 
           return {
             description,

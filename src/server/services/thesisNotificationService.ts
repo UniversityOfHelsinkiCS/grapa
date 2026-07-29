@@ -5,6 +5,7 @@ import sendEmail from '../mailer/pate'
 import { User, Thesis, Program, StudyTrack, EthesisAdmin } from '../db/models'
 import { ThesisData, User as UserType } from '../types'
 import { getEmployeeTitles, titlesGraderGroup } from './thesisHelpers'
+import { getMilestoneCount } from '../../shared/utils/thesisUtils'
 import {
   inProgressEmailTemplate,
   ethesisSentEmailTemplate,
@@ -141,13 +142,13 @@ export const handleStatusChangeEmail = async (
   }
 
   const options = (updatedThesis as any).program?.options
-  const versions = options?.milestones?.versions
 
   if (
     options?.useMilestones &&
     originalThesis.milestone !== updatedThesis.milestone &&
+    updatedThesis.milestone != null &&
     updatedThesis.milestone ===
-      versions?.at(updatedThesis.milestoneVersion ?? -1)?.length
+      getMilestoneCount(options, updatedThesis.milestoneVersion)
   ) {
     const targets = supervisorEmails
 

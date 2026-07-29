@@ -26,3 +26,51 @@ export const isThesisVeryLate = (
 ): boolean => {
   return getThesisLateDays(targetDate) >= VERY_LATE_THESIS_THRESHOLD_DAYS
 }
+
+export const getMilestonesArray = (
+  programOptions: any,
+  milestoneVersion: number | null | undefined
+) => {
+  if (!programOptions?.useMilestones) return null
+  const versions = programOptions?.milestones?.versions
+  if (!versions) return null
+
+  return versions.at(milestoneVersion != null ? milestoneVersion : -1) ?? null
+}
+
+export const getMilestoneCount = (
+  programOptions: any,
+  milestoneVersion: number | null | undefined
+): number | null => {
+  const array = getMilestonesArray(programOptions, milestoneVersion)
+  return array ? array.length : null
+}
+
+export const hasMilestones = (
+  programOptions: any,
+  milestoneVersion: number | null | undefined
+): boolean => {
+  const count = getMilestoneCount(programOptions, milestoneVersion)
+  return count != null && count > 0
+}
+
+export const getMilestoneValue = (
+  programOptions: any,
+  milestoneVersion: number | null | undefined,
+  milestone: number | null | undefined
+) => {
+  if (milestone == null || milestone <= 0) return null
+  const array = getMilestonesArray(programOptions, milestoneVersion)
+  if (!array) return null
+  return array[milestone - 1] ?? null
+}
+
+export const parseMilestoneDescription = (
+  val: any,
+  language: string
+): string => {
+  if (!val) return ''
+  return typeof val === 'string'
+    ? val
+    : val[language as keyof typeof val] || val.fi || ''
+}

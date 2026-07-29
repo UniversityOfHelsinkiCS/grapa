@@ -1,4 +1,5 @@
 import { ThesisData as Thesis } from '@backend/validators/thesisResponse'
+import { getMilestoneCount } from '../../shared/utils/thesisUtils'
 import { LoggedInUser as User } from '@backend/validators/userResponse'
 import { THESIS_STATUSES } from '../../config'
 
@@ -38,10 +39,8 @@ export const canApprove = (thesis: Thesis, user: User) => {
 export const canSetEthesisMilestones = (thesis: Thesis, user: User) => {
   if (!thesis.program?.options?.useMilestones) return false
 
-  const programMilestones = thesis.program?.options?.milestones?.versions?.at(
-    thesis.milestoneVersion != null ? thesis.milestoneVersion : -1
-  )
-  const milestonesLength = programMilestones?.length || 0
+  const milestonesLength =
+    getMilestoneCount(thesis.program?.options, thesis.milestoneVersion) || 0
 
   const isLastMilestone =
     milestonesLength === 0 ||
