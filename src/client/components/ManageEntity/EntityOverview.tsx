@@ -150,13 +150,15 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                   entityType={entityType}
                 />
 
-                {entityType === 'program' && (
-                  <ManageEntityPermissions
-                    filteringProgramId={selectedEntity.id}
-                    hideTitle={false}
-                    entityType="studyTrack"
-                  />
-                )}
+                {entityType === 'program' &&
+                  ((selectedEntity as ProgramData).studyTracks?.length ?? 0) >
+                    0 && (
+                    <ManageEntityPermissions
+                      filteringProgramId={selectedEntity.id}
+                      hideTitle={false}
+                      entityType="studyTrack"
+                    />
+                  )}
               </Box>
             )}
             {tab === 'statistics' && (
