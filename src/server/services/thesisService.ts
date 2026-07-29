@@ -423,6 +423,14 @@ export const findThesesByExpirationDates = async (targetDates: Date[]) => {
   })
 }
 
+/**
+ * Checks for theses that have been inactive for a certain period and marks them as idle.
+ *
+ * Note: The unsetting of the isIdle flag and updating of the milestone_or_status_updated_at timestamp
+ * is handled by database triggers. See the following migrations:
+ * - src/server/db/migrations/20260629_00_add_milestone_or_status_updated_at.cjs
+ * - src/server/db/migrations/20260703_00_update_thesis_is_idle_trigger.cjs
+ */
 export const checkIdleTheses = async () => {
   try {
     logger.info('Running idle theses check')
