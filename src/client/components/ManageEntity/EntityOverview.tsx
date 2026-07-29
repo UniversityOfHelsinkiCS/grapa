@@ -34,6 +34,9 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
   const { programId, studyTrackId, departmentId } = useParams()
+  const [permissionsTab, setPermissionsTab] = useState<'main' | 'studyTracks'>(
+    'main'
+  )
 
   const { user } = useLoggedInUser()
   const { programs: allPrograms, isLoading: programsAreLoading } = usePrograms({
@@ -143,22 +146,76 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
             )}
 
             {tab === 'managePermissions' && (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <ManageEntityPermissions
-                  filteringEntityId={selectedEntity.id}
-                  hideTitle={false}
-                  entityType={entityType}
-                />
-
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 {entityType === 'program' &&
-                  ((selectedEntity as ProgramData).studyTracks?.length ?? 0) >
-                    0 && (
-                    <ManageEntityPermissions
-                      filteringProgramId={selectedEntity.id}
-                      hideTitle={false}
-                      entityType="studyTrack"
-                    />
-                  )}
+                !(selectedEntity as ProgramData).options?.disableStudyTracks &&
+                ((selectedEntity as ProgramData).studyTracks?.length ?? 0) >
+                  0 ? (
+                  <>
+                    <Box
+                      sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}
+                    >
+                      <Tabs
+                        value={permissionsTab}
+                        onChange={(_e, newValue) => setPermissionsTab(newValue)}
+                        sx={{
+                          minHeight: 'auto',
+                          '& .MuiTabs-indicator': {
+                            height: 3,
+                            borderTopLeftRadius: 3,
+                            borderTopRightRadius: 3,
+                          },
+                        }}
+                      >
+                        <Tab
+                          sx={{
+                            textTransform: 'none',
+                            minHeight: 'auto',
+                            py: 1.5,
+                            px: 3,
+                            fontSize: '0.95rem',
+                            fontWeight: permissionsTab === 'main' ? 700 : 500,
+                          }}
+                          label={t('manageEntityPermissions:programTitle')}
+                          value="main"
+                        />
+                        <Tab
+                          sx={{
+                            textTransform: 'none',
+                            minHeight: 'auto',
+                            py: 1.5,
+                            px: 3,
+                            fontSize: '0.95rem',
+                            fontWeight:
+                              permissionsTab === 'studyTracks' ? 700 : 500,
+                          }}
+                          label={t('manageEntityPermissions:studyTrackTitle')}
+                          value="studyTracks"
+                        />
+                      </Tabs>
+                    </Box>
+                    {permissionsTab === 'main' && (
+                      <ManageEntityPermissions
+                        filteringEntityId={selectedEntity.id}
+                        hideTitle={true}
+                        entityType={entityType}
+                      />
+                    )}
+                    {permissionsTab === 'studyTracks' && (
+                      <ManageEntityPermissions
+                        filteringProgramId={selectedEntity.id}
+                        hideTitle={true}
+                        entityType="studyTrack"
+                      />
+                    )}
+                  </>
+                ) : (
+                  <ManageEntityPermissions
+                    filteringEntityId={selectedEntity.id}
+                    hideTitle={false}
+                    entityType={entityType}
+                  />
+                )}
               </Box>
             )}
             {tab === 'statistics' && (
