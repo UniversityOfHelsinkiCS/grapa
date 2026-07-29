@@ -212,7 +212,7 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                 ) : (
                   <ManageEntityPermissions
                     filteringEntityId={selectedEntity.id}
-                    hideTitle={false}
+                    hideTitle={true}
                     entityType={entityType}
                   />
                 )}

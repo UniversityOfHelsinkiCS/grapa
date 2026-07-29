@@ -413,14 +413,15 @@ const ManageProgramPermissions = (props: Omit<Props, 'entityType'>) => {
     includeManagedStudyTracks: true,
   })
 
-  const { programManagements } = useProgramManagements()
-
-  let filteredManagements = programManagements ?? []
-  if (props.filteringEntityId) {
-    filteredManagements = filteredManagements.filter(
-      (m) => m.programId === props.filteringEntityId
-    )
-  }
+  const { programManagements } = useProgramManagements(
+    props.filteringEntityId
+      ? {
+          programId: props.filteringEntityId,
+          onlyThesisApprovers: false,
+          limitToEditorsPrograms: undefined,
+        }
+      : undefined
+  )
 
   const { mutateAsync: createProgramManagement } =
     useCreateProgramManagementMutation()
@@ -434,7 +435,7 @@ const ManageProgramPermissions = (props: Omit<Props, 'entityType'>) => {
       {...props}
       entityType="program"
       entities={programs}
-      permissions={filteredManagements}
+      permissions={programManagements}
       createMutation={(userId, id, isThesisApprover) =>
         createProgramManagement({ userId, programId: id, isThesisApprover })
       }
@@ -479,18 +480,17 @@ const ManageStudyTrackPermissions = (props: Omit<Props, 'entityType'>) => {
     )
   }
 
-  const { studyTrackManagements } = useStudyTrackManagements()
+  const { studyTrackManagements } = useStudyTrackManagements(
+    props.filteringEntityId
+      ? { studyTrackId: props.filteringEntityId }
+      : undefined
+  )
 
-  let filteredManagements = studyTrackManagements ?? []
-  if (props.filteringProgramId) {
-    filteredManagements = filteredManagements.filter((m) =>
-      selectableStudyTracks?.some((st) => st.id === m.studyTrackId)
-    )
-  } else if (props.filteringEntityId) {
-    filteredManagements = filteredManagements.filter(
-      (m) => m.studyTrackId === props.filteringEntityId
-    )
-  }
+  const filteredManagements = props.filteringProgramId
+    ? studyTrackManagements?.filter((m) =>
+        selectableStudyTracks?.some((st) => st.id === m.studyTrackId)
+      )
+    : studyTrackManagements
 
   const { mutateAsync: createStudyTrackManagement } =
     useCreateStudyTrackManagementMutation()
