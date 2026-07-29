@@ -296,3 +296,15 @@ export interface TopicChangedEvent extends EventLogEntry {
     to: string
   }
 }
+
+export interface MilestoneChangedEvent extends EventLogEntry {
+  type: 'THESIS_MILESTONE_CHANGED'
+  data: {
+    from: number | null | undefined
+    to: number | null | undefined
+    fromVersion: number | null | undefined
+    toVersion: number | null | undefined
+    fromDescription: any
+    toDescription: any
+  }
+}

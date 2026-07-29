@@ -6,6 +6,7 @@ import {
   LATE_THESIS_THRESHOLD_DAYS,
   isThesisVeryLate,
   VERY_LATE_THESIS_THRESHOLD_DAYS,
+  getMilestoneValue,
 } from '../../shared/utils/thesisUtils'
 import { uniqBy } from 'lodash-es'
 import { EmployeeUserSchema } from '../validators/userResponse'
@@ -718,6 +719,58 @@ export const handleTopicChangeEventLog = async (
   }
 }
 
+export const handleMilestoneChangeEventLog = async (
+  originalThesis: Thesis,
+  updatedThesis: Thesis,
+  actionUser: UserType | null,
+  transaction: Transaction
+) => {
+  if (
+    originalThesis.milestone !== updatedThesis.milestone ||
+    originalThesis.milestoneVersion !== updatedThesis.milestoneVersion
+  ) {
+    let fromDescription = null
+    let toDescription = null
+
+    const programOptions = originalThesis.program?.options
+    const fromVersionObj = getMilestoneValue(
+      programOptions,
+      originalThesis.milestoneVersion,
+      originalThesis.milestone
+    )
+    if (fromVersionObj) {
+      fromDescription = fromVersionObj.value
+    }
+
+    const updatedProgramOptions = updatedThesis.program?.options
+    const toVersionObj = getMilestoneValue(
+      updatedProgramOptions,
+      updatedThesis.milestoneVersion,
+      updatedThesis.milestone
+    )
+    if (toVersionObj) {
+      toDescription = toVersionObj.value
+    }
+
+    await EventLog.create(
+      {
+        userId: actionUser?.id,
+        thesisId: originalThesis.id,
+        type: 'THESIS_MILESTONE_CHANGED',
+        data: {
+          from: originalThesis.milestone,
+          to: updatedThesis.milestone,
+          fromVersion: originalThesis.milestoneVersion,
+          toVersion: updatedThesis.milestoneVersion,
+          fromDescription,
+          toDescription,
+        },
+      },
+      { transaction }
+    )
+  }
+}
+
 export const handleChangeEventLogs = async (
   originalThesis: Thesis,
   updatedThesis: Thesis,
@@ -725,6 +778,12 @@ export const handleChangeEventLogs = async (
   transaction: Transaction
 ) => {
   await handleStatusChangeEventLog(
+    originalThesis,
+    updatedThesis,
+    actionUser,
+    transaction
+  )
+  await handleMilestoneChangeEventLog(
     originalThesis,
     updatedThesis,
     actionUser,

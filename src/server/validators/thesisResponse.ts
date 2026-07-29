@@ -203,6 +203,17 @@ export const TopicChangedEventSchema = z
   })
   .catchall(z.any())
 
+export const MilestoneChangedEventSchema = z
+  .object({
+    from: z.number().optional().nullable(),
+    to: z.number().optional().nullable(),
+    fromVersion: z.number().optional().nullable(),
+    toVersion: z.number().optional().nullable(),
+    fromDescription: z.any().optional().nullable(),
+    toDescription: z.any().optional().nullable(),
+  })
+  .catchall(z.any())
+
 // Schemas for event log data
 const payloadSchemas: Record<string, z.ZodTypeAny> = {
   THESIS_GRADERS_CHANGED: GradersChangedEventSchema,
@@ -210,6 +221,7 @@ const payloadSchemas: Record<string, z.ZodTypeAny> = {
   THESIS_DELETED: EmployeeThesisSchema.partial(),
   THESIS_STATUS_CHANGED: StatusChangedEventSchema,
   THESIS_TOPIC_CHANGED: TopicChangedEventSchema,
+  THESIS_MILESTONE_CHANGED: MilestoneChangedEventSchema,
 }
 
 export const EventLogSchema = BaseEventLogSchema.transform((log) => {
@@ -258,6 +270,10 @@ export interface StatusChangedEvent extends Omit<EventLogEntry, 'data'> {
 export interface TopicChangedEvent extends Omit<EventLogEntry, 'data'> {
   type: 'THESIS_TOPIC_CHANGED'
   data: z.infer<typeof TopicChangedEventSchema>
+}
+export interface MilestoneChangedEvent extends Omit<EventLogEntry, 'data'> {
+  type: 'THESIS_MILESTONE_CHANGED'
+  data: z.infer<typeof MilestoneChangedEventSchema>
 }
 export interface ThesisCreatedEvent extends Omit<EventLogEntry, 'data'> {
   type: 'THESIS_CREATED'

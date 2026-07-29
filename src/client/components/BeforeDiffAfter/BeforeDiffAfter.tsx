@@ -48,10 +48,11 @@ const a11yProps = (index: number) => {
 interface Props {
   beforeText: string
   afterText: string
+  hideDiff?: boolean
 }
-const BeforeDiffAfter = ({ beforeText, afterText }: Props) => {
+const BeforeDiffAfter = ({ beforeText, afterText, hideDiff }: Props) => {
   const { t } = useTranslation()
-  const [value, setValue] = useState(1)
+  const [value, setValue] = useState(hideDiff ? 2 : 1)
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -65,17 +66,33 @@ const BeforeDiffAfter = ({ beforeText, afterText }: Props) => {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label={t('eventLog:diffView:before')} {...a11yProps(0)} />
-          <Tab label={t('eventLog:diffView:diff')} {...a11yProps(1)} />
-          <Tab label={t('eventLog:diffView:after')} {...a11yProps(2)} />
+          <Tab
+            label={t('eventLog:diffView:before')}
+            value={0}
+            {...a11yProps(0)}
+          />
+          {!hideDiff && (
+            <Tab
+              label={t('eventLog:diffView:diff')}
+              value={1}
+              {...a11yProps(1)}
+            />
+          )}
+          <Tab
+            label={t('eventLog:diffView:after')}
+            value={2}
+            {...a11yProps(2)}
+          />
         </Tabs>
       </Box>
       <CustomTabPanel css={tabPanelStyle} value={value} index={0}>
         {beforeText}
       </CustomTabPanel>
-      <CustomTabPanel css={tabPanelStyle} value={value} index={1}>
-        <TextDiff leftText={beforeText} rightText={afterText} />
-      </CustomTabPanel>
+      {!hideDiff && (
+        <CustomTabPanel css={tabPanelStyle} value={value} index={1}>
+          <TextDiff leftText={beforeText} rightText={afterText} />
+        </CustomTabPanel>
+      )}
       <CustomTabPanel css={tabPanelStyle} value={value} index={2}>
         {afterText}
       </CustomTabPanel>

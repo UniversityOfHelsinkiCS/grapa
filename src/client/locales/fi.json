@@ -74,6 +74,7 @@
     "gradersUpdated": "Arvioijat päivitetty",
     "thesisStatusUpdated": "Tutkielman vaihe päivitetty",
     "thesisTopicUpdated": "Tutkielman aihe päivitetty",
+    "thesisMilestoneUpdated": "Tutkielman etappi päivitetty",
     "noLogs": "Ei tapahtumalokeja",
     "diffView": {
       "before": "Ennen muutosta",

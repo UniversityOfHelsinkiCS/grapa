@@ -8,7 +8,9 @@ import {
   SupervisionsChangedEvent,
   ThesisCreatedEvent,
   TopicChangedEvent,
+  MilestoneChangedEvent,
 } from '@backend/validators/thesisResponse'
+import { parseMilestoneDescription } from '../../../shared/utils/thesisUtils'
 import BeforeDiffAfter from '../BeforeDiffAfter/BeforeDiffAfter'
 
 const EventDate = ({ date }: { date: string }) => (
@@ -124,11 +126,61 @@ const TopicChangedEntry = (entry: TopicChangedEvent) => {
 
   return (
     <LogEntry
-      title={t('eventLog:thesisTopicUpdated', 'Thesis topic updated')}
+      title={t('eventLog:thesisTopicUpdated')}
       entry={entry}
       doneByString={getDoneByString(entry, t('eventLog:changedBy'))}
     >
       <BeforeDiffAfter beforeText={entry.data.from} afterText={entry.data.to} />
+    </LogEntry>
+  )
+}
+
+const getMilestoneDescription = (
+  val: any,
+  language: string,
+  fallback: number | null | undefined,
+  version: number | null | undefined,
+  t: any
+) => {
+  if (fallback === 0) return t('progressView:noMilestone')
+  const versionSuffix = version != null ? ` (v${version + 1})` : ''
+  if (val) {
+    const desc = parseMilestoneDescription(val, language)
+    return `${fallback != null ? fallback : '?'}: ${desc}${versionSuffix}`
+  }
+  return fallback != null ? `${fallback}${versionSuffix}` : ''
+}
+
+const MilestoneChangedEntry = (entry: MilestoneChangedEvent) => {
+  const { t, i18n } = useTranslation()
+  const language = i18n.language
+
+  const beforeText = getMilestoneDescription(
+    entry.data.fromDescription,
+    language,
+    entry.data.from,
+    entry.data.fromVersion,
+    t
+  )
+  const afterText = getMilestoneDescription(
+    entry.data.toDescription,
+    language,
+    entry.data.to,
+    entry.data.toVersion,
+    t
+  )
+
+  return (
+    <LogEntry
+      title={t('eventLog:thesisMilestoneUpdated')}
+      entry={entry}
+      doneByString={getDoneByString(entry, t('eventLog:changedBy'))}
+    >
+      <BeforeDiffAfter
+        beforeText={beforeText}
+        afterText={afterText}
+        hideDiff={true}
+      />
     </LogEntry>
   )
 }
@@ -192,6 +244,13 @@ const EventsView = ({ events }: EventsViewProps) => {
               <TopicChangedEntry
                 key={index}
                 {...(event as TopicChangedEvent)}
+              />
+            )
+          case 'THESIS_MILESTONE_CHANGED':
+            return (
+              <MilestoneChangedEntry
+                key={index}
+                {...(event as MilestoneChangedEvent)}
               />
             )
           default:
