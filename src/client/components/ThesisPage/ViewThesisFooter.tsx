@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 import { useTranslation, Trans } from 'react-i18next'
-import { GridSlotProps } from '@mui/x-data-grid'
 import {
   Box,
   Button,
@@ -397,9 +396,7 @@ const PreviewSkeleton = () => (
   </Box>
 )
 
-const ViewThesisFooter = (
-  props: GridSlotProps['footer'] & ThesisFooterProps
-) => {
+const ViewThesisFooter = (props: ThesisFooterProps) => {
   const {
     rowSelectionModel,
     handleEditThesis,

@@ -6,7 +6,7 @@ import {
   UUIDV4,
 } from 'sequelize'
 
-import { GridFilterModel } from '@mui/x-data-grid'
+import { GridFilterModel } from '../../types'
 import { sequelize } from '../connection'
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {

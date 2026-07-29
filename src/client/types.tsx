@@ -1,6 +1,13 @@
 import { MutableRefObject } from 'react'
 import { ThesisData as Thesis } from '@backend/validators/thesisResponse'
-import { GridRowSelectionModel } from '@mui/x-data-grid'
+export type GridRowId = string | number
+export type GridRowSelectionModel = {
+  type?: 'include' | 'exclude'
+  ids: Set<GridRowId>
+}
+export type GridFilterModel = { items: any[] }
+export type GridPaginationModel = { page: number; pageSize: number }
+export type GridSortModel = { field: string; sort: 'asc' | 'desc' }[]
 
 export enum StatusLocale {
   DRAFT = 'thesisStages:draft',

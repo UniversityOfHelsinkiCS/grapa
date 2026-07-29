@@ -1,4 +1,4 @@
-import { GridFilterModel } from '@mui/x-data-grid'
+export type GridFilterModel = { items: any[] }
 import { Request } from 'express'
 import { VALID_EVENT_LOG_TYPES, VALID_THESIS_STATUSES } from '../config'
 

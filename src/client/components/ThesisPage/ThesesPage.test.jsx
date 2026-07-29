@@ -113,47 +113,6 @@ jest.unstable_mockModule(
 
 
 
-jest.unstable_mockModule('@mui/x-data-grid', () => ({
-  DataGrid: jest.fn(({ slots, slotProps }) => {
-    const Toolbar = slots?.toolbar
-
-    return (
-      <div data-testid="data-grid">
-        {Toolbar ? <Toolbar {...slotProps.toolbar} /> : null}
-      </div>
-    )
-  }),
-  getGridStringOperators: jest.fn().mockReturnValue([{ value: 'contains' }]),
-  useGridApiRef: jest.fn().mockReturnValue({
-    current: {
-      restoreState: jest.fn(),
-      exportState: jest.fn().mockReturnValue({
-        filter: { filterModel: { items: [] } },
-      }),
-    },
-  }),
-}))
-
-jest.unstable_mockModule('@mui/x-data-grid/locales', () => ({
-  enUS: {
-    components: {
-      MuiDataGrid: {
-        defaultProps: {
-          localeText: {},
-        },
-      },
-    },
-  },
-  fiFI: {
-    components: {
-      MuiDataGrid: {
-        defaultProps: {
-          localeText: {},
-        },
-      },
-    },
-  },
-}))
 
 jest.unstable_mockModule('@mui/icons-material/PriorityHigh', () => ({
   default: jest.fn().mockReturnValue('PriorityHighIcon'),

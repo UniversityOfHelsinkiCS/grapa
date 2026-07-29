@@ -10,7 +10,7 @@ import {
   GridRowId,
   GridRowSelectionModel,
   GridSortModel,
-} from '@mui/x-data-grid'
+} from '../../types'
 
 import { ThesisData as Thesis } from '@backend/validators/thesisResponse'
 

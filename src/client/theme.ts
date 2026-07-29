@@ -3,8 +3,6 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
-import type {} from '@mui/x-data-grid/themeAugmentation'
-
 import { useMemo } from 'react'
 import {
   createTheme,
@@ -109,21 +107,6 @@ const themeOptions: ThemeOptions = {
       },
     },
 
-    MuiDataGrid: {
-      styleOverrides: {
-        root: {
-          '& .cell.negative': {
-            backgroundColor: '#ffc8c8',
-          },
-          '& .cell.positive': {
-            backgroundColor: '#c8ffcd',
-          },
-        },
-        toolbar: {
-          padding: '0px',
-        },
-      },
-    },
     MuiList: {
       styleOverrides: {
         root: {

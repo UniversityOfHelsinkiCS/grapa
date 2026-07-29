@@ -1,4 +1,4 @@
-import { GridRowSelectionModel } from '@mui/x-data-grid'
+import { GridRowSelectionModel } from '../types'
 import { useQuery } from '@tanstack/react-query'
 import {
   ThesisData,
