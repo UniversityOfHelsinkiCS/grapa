@@ -829,6 +829,7 @@ export const getSortByColumn = (
   | Literal
   | 'startDate'
   | 'targetDate'
+  | 'ethesisDate'
   | 'waysOfWorkingValidUntil' => {
   switch (sortBy) {
     case 'status':
@@ -855,6 +856,8 @@ export const getSortByColumn = (
       return 'startDate'
     case 'targetDate':
       return 'targetDate'
+    case 'ethesisDate':
+      return 'ethesisDate'
     case 'waysOfWorkingValidUntil':
       return 'waysOfWorkingValidUntil'
     default:
