@@ -16,7 +16,7 @@ services:
       - grapa_internal
 
   db:
-    image: postgres:15.10
+    image: docker.io/library/postgres:15.10
     environment:
       - PGDATA=/data
       - POSTGRES_PASSWORD=postgres
@@ -30,7 +30,7 @@ services:
 
 
   redis:
-    image: redis:7-alpine
+    image: docker.io/library/redis:7-alpine
     container_name: grapa_redis
     networks:
       - grapa_internal
