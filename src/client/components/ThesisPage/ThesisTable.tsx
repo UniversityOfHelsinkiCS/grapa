@@ -134,7 +134,7 @@ const ThesisTable = ({
   const changePage = React.useCallback(
     (page: number) => {
       setPageNumber(page)
-      onPaginationChange({ page, pageSize })
+      onPaginationChange({ pageIndex: page, pageSize })
     },
     [pageSize, onPaginationChange]
   )
@@ -199,17 +199,16 @@ const ThesisTable = ({
     const items: any[] = []
 
     const baseData = getFilterViewData(baseView)
-    if (baseData) items.push(...baseData.filterModel.items)
+    if (baseData) items.push(...baseData.filterModel)
 
     for (const t of toggles) {
       const toggleData = getFilterViewData(t)
-      if (toggleData) items.push(...toggleData.filterModel.items)
+      if (toggleData) items.push(...toggleData.filterModel)
     }
 
     if (milestone && milestone !== 'all') {
       items.push({
-        field: 'milestone',
-        operator: 'equals',
+        id: 'milestone',
         value: milestone,
       })
     }
@@ -221,13 +220,13 @@ const ThesisTable = ({
     React.useEffect(() => {
       const data = getFilterViewData(activeBaseView)
       if (data) {
-        onFilterChange({
-          items: getCombinedFilterItems(
+        onFilterChange(
+          getCombinedFilterItems(
             activeBaseView,
             activeToggles,
             activeMilestoneFilter
-          ),
-        })
+          )
+        )
         onSortingChange(data.sortingModel)
       }
     }, [])
@@ -238,10 +237,10 @@ const ThesisTable = ({
     !isStudentView && activeBaseView ? getFilterViewData(activeBaseView) : null
 
   const [sortedField, setSortedField] = React.useState<string | null>(
-    activeData?.sortingModel[0]?.field || null
+    activeData?.sortingModel[0]?.id || null
   )
   const [sortedDir, setSortedDir] = React.useState<'asc' | 'desc'>(
-    activeData?.sortingModel[0]?.sort || 'asc'
+    activeData?.sortingModel[0]?.desc ? 'desc' : 'asc'
   )
 
   const handleSortChange = (field: string, dir: 'asc' | 'desc') => {
@@ -249,8 +248,8 @@ const ThesisTable = ({
     setSortedDir(dir)
     onSortingChange([
       {
-        field,
-        sort: dir,
+        id: field,
+        desc: dir === 'desc',
       },
     ])
   }
@@ -272,8 +271,7 @@ const ThesisTable = ({
     (programsLoading || allFavProgramsAllowStudentStarted) && !isStudentView
 
   /* Selection */
-  const isSelected = (value: string) =>
-    selection.ids && selection.ids.size > 0 ? selection.ids.has(value) : false
+  const isSelected = (value: string) => !!selection[value]
 
   const eligibleRows = React.useMemo(() => {
     return rows.filter((row) => canApprove(row, user))
@@ -745,6 +743,7 @@ const ThesisTable = ({
     columns,
     getCoreRowModel: getCoreRowModel(),
     columnResizeMode: 'onChange',
+    getRowId: (row) => row.id,
   })
 
   const selectedTheses = Array.from(bulkSelection.values())
@@ -780,9 +779,7 @@ const ThesisTable = ({
               const newField = viewData.sortingModel[0]['field']
               handleSortChange(newField, newDir)
 
-              onFilterChange({
-                items: getCombinedFilterItems(newValue, [], 'all'),
-              })
+              onFilterChange(getCombinedFilterItems(newValue, [], 'all'))
               changePage(0)
             }}
             sx={{
@@ -937,13 +934,13 @@ const ThesisTable = ({
                             newToggles.push(filterView)
                           }
                           setActiveToggles(newToggles)
-                          onFilterChange({
-                            items: getCombinedFilterItems(
+                          onFilterChange(
+                            getCombinedFilterItems(
                               activeBaseView,
                               newToggles,
                               activeMilestoneFilter
-                            ),
-                          })
+                            )
+                          )
                           changePage(0)
                         }}
                       />
@@ -955,13 +952,13 @@ const ThesisTable = ({
                     size="small"
                     onClick={() => {
                       setActiveToggles([])
-                      onFilterChange({
-                        items: getCombinedFilterItems(
+                      onFilterChange(
+                        getCombinedFilterItems(
                           activeBaseView,
                           [],
                           activeMilestoneFilter
-                        ),
-                      })
+                        )
+                      )
                       changePage(0)
                     }}
                     sx={{ padding: '2px' }}
@@ -985,13 +982,9 @@ const ThesisTable = ({
                 onChange={(e) => {
                   const val = e.target.value as string
                   setActiveMilestoneFilter(val)
-                  onFilterChange({
-                    items: getCombinedFilterItems(
-                      activeBaseView,
-                      activeToggles,
-                      val
-                    ),
-                  })
+                  onFilterChange(
+                    getCombinedFilterItems(activeBaseView, activeToggles, val)
+                  )
                   changePage(0)
                 }}
               >
@@ -1068,8 +1061,7 @@ const ThesisTable = ({
         skeletonCount={skeletonCount}
         onRowClick={(row) => {
           onSelection({
-            type: 'include',
-            ids: new Set([row.original.id]),
+            [row.original.id]: true,
           })
         }}
         isSelected={(row: any) =>
@@ -1083,7 +1075,7 @@ const ThesisTable = ({
           onPageChange: changePage,
           onPageSizeChange: (newPageSize) => {
             setPageSize(newPageSize)
-            onPaginationChange({ page: pageNumber, pageSize: newPageSize })
+            onPaginationChange({ pageIndex: pageNumber, pageSize: newPageSize })
           },
         }}
         sorting={{

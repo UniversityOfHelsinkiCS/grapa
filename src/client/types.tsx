@@ -1,13 +1,6 @@
 import { MutableRefObject } from 'react'
 import { ThesisData as Thesis } from '@backend/validators/thesisResponse'
-export type GridRowId = string | number
-export type GridRowSelectionModel = {
-  type?: 'include' | 'exclude'
-  ids: Set<GridRowId>
-}
-export type GridFilterModel = { items: any[] }
-export type GridPaginationModel = { page: number; pageSize: number }
-export type GridSortModel = { field: string; sort: 'asc' | 'desc' }[]
+import { RowSelectionState } from '@tanstack/react-table'
 
 export enum StatusLocale {
   DRAFT = 'thesisStages:draft',
@@ -22,7 +15,7 @@ export enum StatusLocale {
 
 export interface ThesisFooterProps {
   footerRef: MutableRefObject<HTMLDivElement>
-  rowSelectionModel: GridRowSelectionModel
+  rowSelectionModel: RowSelectionState
   handleEditThesis: (thesis: Thesis) => void
   handleDeleteThesis: (thesis: Thesis) => void
   isStudentView?: boolean

@@ -407,10 +407,10 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
     hideDelete,
   }: ThesisFooterProps = props
 
-  const thesisId = (rowSelectionModel.ids != undefined &&
-  rowSelectionModel.ids.size > 0
-    ? rowSelectionModel.ids.entries().next().value[0]
-    : undefined) as unknown as string | undefined
+  const selectedIds = Object.keys(rowSelectionModel).filter(
+    (id) => rowSelectionModel[id]
+  )
+  const thesisId = selectedIds.length > 0 ? selectedIds[0] : undefined
 
   const { t, i18n } = useTranslation()
   const { language } = i18n as unknown as { language: TranslationLanguage }

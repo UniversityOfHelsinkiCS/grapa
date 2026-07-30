@@ -23,7 +23,6 @@ export const LoggedInUserSchema = EmployeeUserSchema.extend({
   iamGroups: z.array(z.string()).optional(),
   language: z.string().nullable().optional(),
   departmentId: z.string().optional().nullable(),
-  thesesTableFilters: z.any().optional(),
   ethesisAdmin: z.boolean().optional(),
   managedProgramIds: z.array(z.string()).optional(),
   managedStudyTrackIds: z.array(z.string()).optional(),

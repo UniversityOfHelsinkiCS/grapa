@@ -1,4 +1,3 @@
-import { GridRowSelectionModel } from '../types'
 import { useQuery } from '@tanstack/react-query'
 import {
   ThesisData,
@@ -154,7 +153,7 @@ export const useExportThesesCsv = (params: UsePaginatedThesesParams) => {
 }
 
 export const useSingleThesis = (
-  id: string | GridRowSelectionModel,
+  id: string | undefined,
   useStudentApi?: boolean,
   onlySeminarSupervised?: boolean
 ) => {

@@ -5,12 +5,11 @@ import { cloneDeep } from 'lodash-es'
 
 import { Box, Stack, TextField, Typography } from '@mui/material'
 import {
-  GridFilterModel,
-  GridPaginationModel,
-  GridRowId,
-  GridRowSelectionModel,
-  GridSortModel,
-} from '../../types'
+  PaginationState,
+  RowSelectionState,
+  SortingState,
+  ColumnFiltersState,
+} from '@tanstack/react-table'
 
 import { ThesisData as Thesis } from '@backend/validators/thesisResponse'
 
@@ -69,16 +68,14 @@ const ThesesPage = ({
   const { t } = useTranslation()
   const { user: currentUser, hasStaffAccess } = useLoggedInUser()
 
-  const [paginationModel, setPaginationModel] = useState({
-    page: 0,
+  const [paginationModel, setPaginationModel] = useState<PaginationState>({
+    pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
   })
 
-  const [rowSelectionModel, setRowSelectionModel] =
-    useState<GridRowSelectionModel>({
-      type: 'include', // or 'exclude'
-      ids: new Set<GridRowId>([]),
-    })
+  const [rowSelectionModel, setRowSelectionModel] = useState<RowSelectionState>(
+    {}
+  )
   const [deleteConfirmation, setDeleteConfirmation] = useState<string>('')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [editedThesis, setEditedThesis] = useState<Thesis | null>(null)
@@ -123,7 +120,7 @@ const ThesesPage = ({
     onlyAuthored: isStudentView,
     onlySupervised: isStudentView ? false : showOnlyOwnTheses,
     onlySeminarSupervised,
-    offset: paginationModel.page * paginationModel.pageSize,
+    offset: paginationModel.pageIndex * paginationModel.pageSize,
     limit: paginationModel.pageSize,
     useStudentApi: isStudentView && currentUser?.hasStudyRight,
     search: searchQuery.length > 0 ? searchQuery : undefined,
@@ -175,7 +172,7 @@ const ThesesPage = ({
   const { mutateAsync: createThesis } = useCreateThesisMutation(isStudentView)
 
   useEffect(() => {
-    if (rowSelectionModel.ids && rowSelectionModel.ids.size > 0) {
+    if (Object.keys(rowSelectionModel).some((id) => rowSelectionModel[id])) {
       footerRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
   }, [rowSelectionModel])
@@ -247,13 +244,10 @@ const ThesesPage = ({
   }
 
   const clearRowSelection = () => {
-    setRowSelectionModel({
-      type: 'include',
-      ids: new Set<GridRowId>([]),
-    })
+    setRowSelectionModel({})
   }
 
-  const onFilterChange = useCallback((filterModel: GridFilterModel) => {
+  const onFilterChange = useCallback((filterModel: ColumnFiltersState) => {
     // reset all filters first
     setFilterStatus(null)
     setFilterMilestone(null)
@@ -265,17 +259,17 @@ const ThesesPage = ({
 
     setCurrentFilters(filterModel)
 
-    if (filterModel.items.length === 0) {
+    if (filterModel.length === 0) {
       return
     }
 
-    filterModel.items.forEach((item) => {
-      switch (item.field) {
+    filterModel.forEach((item) => {
+      switch (item.id) {
         case 'status':
-          setFilterStatus(item.value)
+          setFilterStatus(item.value as string)
           break
         case 'milestone':
-          setFilterMilestone(item.value)
+          setFilterMilestone(item.value as string)
           break
         case 'missingSecondGrader':
           setFilterMissingSecondGrader(true)
@@ -299,16 +293,15 @@ const ThesesPage = ({
     })
   }, [])
 
-  const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
+  const handleSortModelChange = useCallback((sortModel: SortingState) => {
     if (sortModel.length === 0) {
       setOrder({})
       return
-    } else {
-      setOrder({
-        sortBy: sortModel[0].field,
-        sortOrder: sortModel[0].sort,
-      })
     }
+    setOrder({
+      sortBy: sortModel[0].id,
+      sortOrder: sortModel[0].desc ? 'desc' : 'asc',
+    })
   }, [])
 
   return (
@@ -326,10 +319,10 @@ const ThesesPage = ({
           totalCount={totalCount}
           selection={rowSelectionModel}
           onFilterChange={onFilterChange}
-          onPaginationChange={(newModel: GridPaginationModel) =>
+          onPaginationChange={(newModel: PaginationState) =>
             setPaginationModel(newModel)
           }
-          onSelection={(newSelection: GridRowSelectionModel) => {
+          onSelection={(newSelection: RowSelectionState) => {
             setRowSelectionModel(newSelection)
           }}
           onSearch={(value: string) => {
@@ -365,17 +358,14 @@ const ThesesPage = ({
                                 if (key === 'ethesis_sent') key = 'ethesisSent'
 
                                 acc[key] = {
-                                  filterModel: {
-                                    items: [
-                                      {
-                                        field: 'status',
-                                        operator: 'isAnyOf',
-                                        value: [status],
-                                      },
-                                    ],
-                                  },
+                                  filterModel: [
+                                    {
+                                      id: 'status',
+                                      value: status,
+                                    },
+                                  ],
                                   sortingModel: [
-                                    { field: 'startDate', sort: 'desc' },
+                                    { id: 'startDate', desc: true },
                                   ],
                                 }
                                 return acc
@@ -393,56 +383,33 @@ const ThesesPage = ({
                           }
                         : {
                             active: {
-                              filterModel: {
-                                items: [
-                                  {
-                                    field: 'status',
-                                    operator: 'isAnyOf',
-                                    value: [
-                                      'DRAFT',
-                                      'SUGGESTED',
-                                      'PLANNING',
-                                      'IN_PROGRESS',
-                                      'ETHESIS',
-                                      'ETHESIS_SENT',
-                                    ],
-                                  },
-                                ],
-                              },
-                              sortingModel: [
+                              filterModel: [
                                 {
-                                  field: 'startDate',
-                                  sort: 'desc',
+                                  id: 'status',
+                                  value: [
+                                    'DRAFT',
+                                    'SUGGESTED',
+                                    'PLANNING',
+                                    'IN_PROGRESS',
+                                    'ETHESIS',
+                                    'ETHESIS_SENT',
+                                  ],
                                 },
                               ],
+                              sortingModel: [{ id: 'startDate', desc: true }],
                             },
                             inactive: {
-                              filterModel: {
-                                items: [
-                                  {
-                                    field: 'status',
-                                    operator: 'isAnyOf',
-                                    value: ['COMPLETED', 'CANCELLED'],
-                                  },
-                                ],
-                              },
-                              sortingModel: [
+                              filterModel: [
                                 {
-                                  field: 'targetDate',
-                                  sort: 'desc',
+                                  id: 'status',
+                                  value: ['COMPLETED', 'CANCELLED'],
                                 },
                               ],
+                              sortingModel: [{ id: 'targetDate', desc: true }],
                             },
                             all: {
-                              filterModel: {
-                                items: [],
-                              },
-                              sortingModel: [
-                                {
-                                  field: 'startDate',
-                                  sort: 'desc',
-                                },
-                              ],
+                              filterModel: [],
+                              sortingModel: [{ id: 'startDate', desc: true }],
                             },
                           },
                   },
@@ -452,126 +419,78 @@ const ThesesPage = ({
                       ...(availableActionNeeded?.suggested
                         ? {
                             suggested: {
-                              filterModel: {
-                                items: [
-                                  {
-                                    field: 'status',
-                                    operator: 'isAnyOf',
-                                    value: ['SUGGESTED'],
-                                  },
-                                ],
-                              },
-                              sortingModel: [
+                              filterModel: [
                                 {
-                                  field: 'startDate',
-                                  sort: 'desc',
+                                  id: 'status',
+                                  value: ['SUGGESTED'],
                                 },
                               ],
+                              sortingModel: [{ id: 'startDate', desc: true }],
                             },
                           }
                         : {}),
                       ...(availableActionNeeded?.missingSecondGrader
                         ? {
                             missingSecondGrader: {
-                              filterModel: {
-                                items: [
-                                  {
-                                    field: 'missingSecondGrader',
-                                    operator: 'is',
-                                    value: true,
-                                  },
-                                ],
-                              },
-                              sortingModel: [
+                              filterModel: [
                                 {
-                                  field: 'startDate',
-                                  sort: 'desc',
+                                  id: 'missingSecondGrader',
+                                  value: true,
                                 },
                               ],
+                              sortingModel: [{ id: 'startDate', desc: true }],
                             },
                           }
                         : {}),
                       ...(availableActionNeeded?.lastMilestone
                         ? {
                             lastMilestone: {
-                              filterModel: {
-                                items: [
-                                  {
-                                    field: 'lastMilestone',
-                                    operator: 'is',
-                                    value: true,
-                                  },
-                                ],
-                              },
-                              sortingModel: [
+                              filterModel: [
                                 {
-                                  field: 'startDate',
-                                  sort: 'desc',
+                                  id: 'lastMilestone',
+                                  value: true,
                                 },
                               ],
+                              sortingModel: [{ id: 'startDate', desc: true }],
                             },
                           }
                         : {}),
                       ...(availableActionNeeded?.ethesisReadyStudentStarted
                         ? {
                             ethesisReadyStudentStarted: {
-                              filterModel: {
-                                items: [
-                                  {
-                                    field: 'ethesisReadyStudentStarted',
-                                    operator: 'is',
-                                    value: true,
-                                  },
-                                ],
-                              },
-                              sortingModel: [
+                              filterModel: [
                                 {
-                                  field: 'startDate',
-                                  sort: 'desc',
+                                  id: 'ethesisReadyStudentStarted',
+                                  value: true,
                                 },
                               ],
+                              sortingModel: [{ id: 'startDate', desc: true }],
                             },
                           }
                         : {}),
                       ...(availableActionNeeded?.isThesisLate
                         ? {
                             isThesisLate: {
-                              filterModel: {
-                                items: [
-                                  {
-                                    field: 'isThesisLate',
-                                    operator: 'is',
-                                    value: true,
-                                  },
-                                ],
-                              },
-                              sortingModel: [
+                              filterModel: [
                                 {
-                                  field: 'targetDate',
-                                  sort: 'asc',
+                                  id: 'isThesisLate',
+                                  value: true,
                                 },
                               ],
+                              sortingModel: [{ id: 'targetDate', desc: false }],
                             },
                           }
                         : {}),
                       ...(availableActionNeeded?.isThesisVeryLate
                         ? {
                             isThesisVeryLate: {
-                              filterModel: {
-                                items: [
-                                  {
-                                    field: 'isThesisVeryLate',
-                                    operator: 'is',
-                                    value: true,
-                                  },
-                                ],
-                              },
-                              sortingModel: [
+                              filterModel: [
                                 {
-                                  field: 'targetDate',
-                                  sort: 'asc',
+                                  id: 'isThesisVeryLate',
+                                  value: true,
                                 },
                               ],
+                              sortingModel: [{ id: 'targetDate', desc: false }],
                             },
                           }
                         : {}),
