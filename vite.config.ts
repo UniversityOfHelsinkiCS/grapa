@@ -18,6 +18,7 @@ export default defineConfig({
         test: {
           name: 'server',
           include: ['src/server/**/*.test.{ts,tsx,js,jsx}'],
+          exclude: ['src/**/*.integration.test.{ts,tsx,js,jsx}'],
           setupFiles: ['./setupTests.ts'],
           environment: 'node',
         },
@@ -26,6 +27,7 @@ export default defineConfig({
         test: {
           name: 'client',
           include: ['src/client/**/*.test.{ts,tsx,js,jsx}'],
+          exclude: ['src/**/*.integration.test.{ts,tsx,js,jsx}'],
           setupFiles: ['./setupTests.ts'],
           environment: 'jsdom',
         },
@@ -33,7 +35,7 @@ export default defineConfig({
       {
         test: {
           name: 'integration',
-          include: ['src/**/*.integration-test.{ts,tsx,js,jsx}'],
+          include: ['src/**/*.integration.test.{ts,tsx,js,jsx}'],
           setupFiles: ['./setupIntegrationTests.ts'],
           globalSetup: ['./setupDbForTests.cjs'],
           environment: 'node',
