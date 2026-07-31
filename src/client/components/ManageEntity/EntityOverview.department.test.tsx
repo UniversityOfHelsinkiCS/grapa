@@ -82,7 +82,7 @@ const renderDepartmentOverview = (initialEntry: any) =>
 
 describe('EntityOverview (Department)', () => {
   beforeEach(() => {
-    initializeI18n()
+    void initializeI18n()
     vi.mocked(useLoggedInUserMock).mockReturnValue({
       user: { isAdmin: true },
       isLoading: false,

@@ -59,7 +59,7 @@ const FavoritePrograms = (await import('./FavoritePrograms')).default
 
 describe('FavoritePrograms', () => {
   beforeEach(() => {
-    initializeI18n()
+    void initializeI18n()
     mockUsePrograms.mockClear()
     vi.mocked(mockUsePrograms).mockReturnValue({
       isLoading: false,

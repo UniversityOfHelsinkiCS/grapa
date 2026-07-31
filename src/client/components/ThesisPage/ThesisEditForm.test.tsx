@@ -1,4 +1,4 @@
-import { describe, it, test, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import dayjs from 'dayjs'
 import userEvent from '@testing-library/user-event'
 import {
@@ -158,7 +158,7 @@ describe('ThesisEditForm', () => {
         targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
       }
 
-      initializeI18n()
+      void initializeI18n()
 
       render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -341,7 +341,7 @@ describe('ThesisEditForm', () => {
         waysOfWorking: {},
       }
 
-      initializeI18n()
+      void initializeI18n()
 
       render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>

@@ -1,4 +1,4 @@
-import { describe, it, test, expect, beforeEach, afterEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import supertest from 'supertest'
 import fs from 'fs'
 
@@ -203,7 +203,7 @@ describe('Theisis router with mocks', () => {
     })
   })
 
-  afterEach(async () => {
+  afterEach(() => {
     vi.resetAllMocks()
   })
 

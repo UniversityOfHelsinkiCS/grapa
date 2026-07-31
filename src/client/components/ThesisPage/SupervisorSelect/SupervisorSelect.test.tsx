@@ -81,7 +81,7 @@ describe('SupervisorSelect', () => {
     setErrors = vi.fn()
     setSupervisorSelections = vi.fn()
 
-    initializeI18n()
+    void initializeI18n()
   })
 
   it('renders the SupervisorSelect component', () => {
@@ -714,7 +714,7 @@ describe('SupervisorSelect', () => {
       })
     })
 
-    it('should not be able to remove the primary supervisor', async () => {
+    it('should not be able to remove the primary supervisor', () => {
       render(
         <SupervisorSelect
           disabledMode={false}

@@ -65,7 +65,7 @@ describe('GraderSelect', () => {
     setErrors = vi.fn()
     setGraderSelections = vi.fn()
 
-    initializeI18n()
+    void initializeI18n()
   })
 
   it('renders the GraderSelect component', () => {

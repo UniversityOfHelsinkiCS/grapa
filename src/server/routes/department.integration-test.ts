@@ -1,8 +1,7 @@
-import { describe, it, test, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import supertest from 'supertest'
 import app from '../index'
 import { Department, DepartmentAdmin, User } from '../db/models'
-import { Response } from 'express'
 
 const request = supertest.agent(app)
 

@@ -14,8 +14,6 @@
   },
   "ignorePatterns": [
     "scripts/**",
-    "**/*.test.*",
-    "**/*.integration-test.*",
     "src/server/db/migrations/**",
     "**/*.cjs",
     "eslint.config.js"

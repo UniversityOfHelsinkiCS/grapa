@@ -146,7 +146,7 @@ describe('ManageEntityPermissions (Department)', () => {
   let deleteDepartmentAdminMock: any
 
   beforeEach(() => {
-    initializeI18n()
+    void initializeI18n()
 
     createDepartmentAdminMock = vi.fn()
     deleteDepartmentAdminMock = vi.fn()

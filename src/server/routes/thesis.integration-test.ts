@@ -1,4 +1,4 @@
-import { describe, it, test, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import supertest from 'supertest'
 import fs from 'fs'
 import path from 'path'
@@ -303,13 +303,11 @@ describe('thesis router', () => {
       await Grader.create({
         userId: user4.id,
         thesisId: thesis1.id,
-        /* @ts-ignore */
         isPrimaryGrader: true,
       })
       await Grader.create({
         userId: user5.id,
         thesisId: thesis1.id,
-        /* @ts-ignore */
         isPrimaryGrader: false,
       })
       await Attachment.create({
@@ -362,14 +360,12 @@ describe('thesis router', () => {
                       {
                         user: user1,
                         percentage: 50,
-                        /* @ts-ignore */
                         isExternal: false,
                         isPrimarySupervisor: true,
                       },
                       {
                         user: user3,
                         percentage: 50,
-                        /* @ts-ignore */
                         isExternal: false,
                         isPrimarySupervisor: false,
                       },
@@ -546,14 +542,12 @@ describe('thesis router', () => {
                       {
                         user: user1,
                         percentage: 50,
-                        /* @ts-ignore */
                         isExternal: false,
                         isPrimarySupervisor: true,
                       },
                       {
                         user: user3,
                         percentage: 50,
-                        /* @ts-ignore */
                         isExternal: false,
                         isPrimarySupervisor: false,
                       },
@@ -636,14 +630,12 @@ describe('thesis router', () => {
                         {
                           user: user1,
                           percentage: 50,
-                          /* @ts-ignore */
                           isExternal: false,
                           isPrimarySupervisor: true,
                         },
                         {
                           user: user3,
                           percentage: 50,
-                          /* @ts-ignore */
                           isExternal: false,
                           isPrimarySupervisor: false,
                         },
@@ -845,14 +837,12 @@ describe('thesis router', () => {
                         {
                           user: user1,
                           percentage: 50,
-                          /* @ts-ignore */
                           isExternal: false,
                           isPrimarySupervisor: true,
                         },
                         {
                           user: user3,
                           percentage: 50,
-                          /* @ts-ignore */
                           isExternal: false,
                           isPrimarySupervisor: false,
                         },
@@ -1080,7 +1070,6 @@ describe('thesis router', () => {
                   seminarSupervisions: [
                     {
                       user: teacherUser,
-                      /* @ts-ignore */
                       isExternal: false,
                     },
                   ],
@@ -1524,7 +1513,6 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 100,
-              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: true,
             },
@@ -1532,9 +1520,7 @@ describe('thesis router', () => {
           graders: [
             {
               user: user4,
-              /* @ts-ignore */
               isPrimaryGrader: true,
-              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: false,
             },
@@ -1590,7 +1576,6 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 50,
-              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: true,
             },
@@ -1604,9 +1589,7 @@ describe('thesis router', () => {
           graders: [
             {
               user: user4,
-              /* @ts-ignore */
               isPrimaryGrader: true,
-              /* @ts-ignore */
               isExternal: false,
             },
           ],
@@ -1661,7 +1644,6 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 100,
-              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: true,
             },
@@ -1669,14 +1651,11 @@ describe('thesis router', () => {
           graders: [
             {
               user: user4,
-              /* @ts-ignore */
               isPrimaryGrader: true,
-              /* @ts-ignore */
               isExternal: false,
             },
             {
               user: extUserData,
-              /* @ts-ignore */
               isPrimaryGrader: false,
               isExternal: true,
             },
@@ -1725,7 +1704,6 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 100,
-              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: true,
             },
@@ -1733,9 +1711,7 @@ describe('thesis router', () => {
           graders: [
             {
               user: user4,
-              /* @ts-ignore */
               isPrimaryGrader: true,
-              /* @ts-ignore */
               isExternal: false,
             },
           ],
@@ -1781,7 +1757,6 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 100,
-              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: true,
             },
@@ -1789,9 +1764,7 @@ describe('thesis router', () => {
           graders: [
             {
               user: user4,
-              /* @ts-ignore */
               isPrimaryGrader: true,
-              /* @ts-ignore */
               isExternal: false,
             },
           ],
@@ -1828,7 +1801,6 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 100,
-              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: false,
             },
@@ -1836,9 +1808,7 @@ describe('thesis router', () => {
           graders: [
             {
               user: user4,
-              /* @ts-ignore */
               isPrimaryGrader: true,
-              /* @ts-ignore */
               isExternal: false,
             },
           ],
@@ -1881,7 +1851,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -1889,9 +1858,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -1940,7 +1907,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -1948,9 +1914,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2052,7 +2016,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2060,9 +2023,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2119,7 +2080,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2127,9 +2087,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2187,7 +2145,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2195,9 +2152,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2246,7 +2201,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2254,9 +2208,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2371,7 +2323,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2379,9 +2330,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2438,14 +2387,12 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 50,
-                /* @ts-ignore */
                 isExternal: false,
                 isPrimarySupervisor: true,
               },
               {
                 user: user1,
                 percentage: 50,
-                /* @ts-ignore */
                 isExternal: false,
                 isPrimarySupervisor: false,
               },
@@ -2453,9 +2400,7 @@ describe('thesis router', () => {
             graders: [
               {
                 user: user4,
-                /* @ts-ignore */
                 isPrimaryGrader: true,
-                /* @ts-ignore */
                 isExternal: false,
               },
             ],
@@ -2499,7 +2444,6 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 100,
-                /* @ts-ignore */
                 isExternal: false,
                 isPrimarySupervisor: true,
               },
@@ -2507,16 +2451,12 @@ describe('thesis router', () => {
             graders: [
               {
                 user: user4,
-                /* @ts-ignore */
                 isPrimaryGrader: true,
-                /* @ts-ignore */
                 isExternal: false,
               },
               {
                 user: user4,
-                /* @ts-ignore */
                 isPrimaryGrader: false,
-                /* @ts-ignore */
                 isExternal: false,
               },
             ],
@@ -2570,12 +2510,10 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
                 },
                 {
                   user: user5,
-                  /* @ts-ignore */
                   isPrimaryGrader: false,
                 },
               ],
@@ -2646,7 +2584,6 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
                 },
               ],
@@ -2706,7 +2643,6 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
                 },
               ],
@@ -2755,14 +2691,12 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 50,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
                 {
                   user: user1,
                   percentage: 50,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: false,
                 },
@@ -2770,9 +2704,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2831,7 +2763,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2839,16 +2770,12 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: false,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2881,12 +2808,10 @@ describe('thesis router', () => {
               expect.arrayContaining([
                 expect.objectContaining({
                   userId: user4.id,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
                 }),
                 expect.objectContaining({
                   userId: user5.id,
-                  /* @ts-ignore */
                   isPrimaryGrader: false,
                 }),
               ])
@@ -2915,7 +2840,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 50,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2928,9 +2852,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -3007,7 +2929,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 34,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -3025,9 +2946,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -3109,7 +3028,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -3118,9 +3036,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -3169,7 +3085,6 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 100,
-                /* @ts-ignore */
                 isExternal: false,
                 isPrimarySupervisor: true,
               },
@@ -3177,14 +3092,11 @@ describe('thesis router', () => {
             graders: [
               {
                 user: user4,
-                /* @ts-ignore */
                 isPrimaryGrader: true,
-                /* @ts-ignore */
                 isExternal: false,
               },
               {
                 user: extUserData,
-                /* @ts-ignore */
                 isPrimaryGrader: false,
                 isExternal: true,
               },
@@ -3224,12 +3136,10 @@ describe('thesis router', () => {
             expect.arrayContaining([
               expect.objectContaining({
                 userId: user4.id,
-                /* @ts-ignore */
                 isPrimaryGrader: true,
               }),
               expect.objectContaining({
                 userId: extUser.id,
-                /* @ts-ignore */
                 isPrimaryGrader: false,
               }),
             ])
@@ -3253,7 +3163,6 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 100,
-                /* @ts-ignore */
                 isExternal: false,
                 isPrimarySupervisor: true,
               },
@@ -3261,16 +3170,12 @@ describe('thesis router', () => {
             graders: [
               {
                 user: user4,
-                /* @ts-ignore */
                 isPrimaryGrader: true,
-                /* @ts-ignore */
                 isExternal: false,
               },
               {
                 user: user5,
-                /* @ts-ignore */
                 isPrimaryGrader: false,
-                /* @ts-ignore */
                 isExternal: false,
               },
             ],
@@ -3363,7 +3268,6 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 100,
-                /* @ts-ignore */
                 isExternal: false,
                 isPrimarySupervisor: true,
               },
@@ -3371,16 +3275,12 @@ describe('thesis router', () => {
             graders: [
               {
                 user: user4,
-                /* @ts-ignore */
                 isPrimaryGrader: true,
-                /* @ts-ignore */
                 isExternal: false,
               },
               {
                 user: user5,
-                /* @ts-ignore */
                 isPrimaryGrader: false,
-                /* @ts-ignore */
                 isExternal: false,
               },
             ],
@@ -3486,7 +3386,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -3494,16 +3393,12 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user5,
-                  /* @ts-ignore */
                   isPrimaryGrader: false,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -3548,7 +3443,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -3556,16 +3450,12 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user5,
-                  /* @ts-ignore */
                   isPrimaryGrader: false,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -3660,7 +3550,6 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
-                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -3668,16 +3557,12 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
-                    /* @ts-ignore */
                     isPrimaryGrader: true,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
-                    /* @ts-ignore */
                     isPrimaryGrader: false,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -3734,7 +3619,6 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
-                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -3742,16 +3626,12 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
-                    /* @ts-ignore */
                     isPrimaryGrader: true,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
-                    /* @ts-ignore */
                     isPrimaryGrader: false,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -3848,7 +3728,6 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
-                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -3856,16 +3735,12 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
-                    /* @ts-ignore */
                     isPrimaryGrader: true,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
-                    /* @ts-ignore */
                     isPrimaryGrader: false,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -3915,7 +3790,6 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
-                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -3923,16 +3797,12 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
-                    /* @ts-ignore */
                     isPrimaryGrader: true,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
-                    /* @ts-ignore */
                     isPrimaryGrader: false,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -3993,7 +3863,6 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
-                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -4001,16 +3870,12 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
-                    /* @ts-ignore */
                     isPrimaryGrader: true,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
-                    /* @ts-ignore */
                     isPrimaryGrader: false,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -4062,7 +3927,6 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
-                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -4070,16 +3934,12 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
-                    /* @ts-ignore */
                     isPrimaryGrader: true,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
-                    /* @ts-ignore */
                     isPrimaryGrader: false,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -4129,7 +3989,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4137,16 +3996,12 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user5,
-                  /* @ts-ignore */
                   isPrimaryGrader: false,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4191,7 +4046,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4199,16 +4053,12 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user5,
-                  /* @ts-ignore */
                   isPrimaryGrader: false,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4298,7 +4148,6 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
-                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -4306,16 +4155,12 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
-                    /* @ts-ignore */
                     isPrimaryGrader: true,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
-                    /* @ts-ignore */
                     isPrimaryGrader: false,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -4376,7 +4221,6 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
-                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -4384,16 +4228,12 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
-                    /* @ts-ignore */
                     isPrimaryGrader: true,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
-                    /* @ts-ignore */
                     isPrimaryGrader: false,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -4445,7 +4285,6 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
-                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -4453,16 +4292,12 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
-                    /* @ts-ignore */
                     isPrimaryGrader: true,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
-                    /* @ts-ignore */
                     isPrimaryGrader: false,
-                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -4504,10 +4339,7 @@ describe('thesis router', () => {
             await Grader.create({
               userId: user4.id,
               thesisId: thesis1.id,
-              /* @ts-ignore */
               isPrimaryGrader: true,
-              /* @ts-ignore */
-              isExternal: false,
             })
           })
 
@@ -4524,7 +4356,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4532,16 +4363,12 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user5,
-                  /* @ts-ignore */
                   isPrimaryGrader: false,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4581,18 +4408,12 @@ describe('thesis router', () => {
               {
                 userId: user4.id,
                 thesisId: thesis1.id,
-                /* @ts-ignore */
                 isPrimaryGrader: true,
-                /* @ts-ignore */
-                isExternal: false,
               },
               {
                 userId: user5.id,
                 thesisId: thesis1.id,
-                /* @ts-ignore */
                 isPrimaryGrader: false,
-                /* @ts-ignore */
-                isExternal: false,
               },
             ])
           })
@@ -4610,7 +4431,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4618,9 +4438,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4660,18 +4478,12 @@ describe('thesis router', () => {
               {
                 userId: user4.id,
                 thesisId: thesis1.id,
-                /* @ts-ignore */
                 isPrimaryGrader: true,
-                /* @ts-ignore */
-                isExternal: false,
               },
               {
                 userId: user5.id,
                 thesisId: thesis1.id,
-                /* @ts-ignore */
                 isPrimaryGrader: false,
-                /* @ts-ignore */
-                isExternal: false,
               },
             ])
           })
@@ -4689,7 +4501,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4697,16 +4508,12 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: false,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user5,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4746,10 +4553,7 @@ describe('thesis router', () => {
               {
                 userId: user4.id,
                 thesisId: thesis1.id,
-                /* @ts-ignore */
                 isPrimaryGrader: true,
-                /* @ts-ignore */
-                isExternal: false,
               },
             ])
           })
@@ -4767,7 +4571,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4775,9 +4578,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4818,8 +4619,7 @@ describe('thesis router', () => {
             await Supervision.create({
               userId: user1.id,
               thesisId: thesis1.id,
-              /* @ts-ignore */
-              isPrimaryGrader: true,
+              isPrimarySupervisor: true,
               percentage: 100,
             })
           })
@@ -4848,9 +4648,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user1,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4918,7 +4716,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4926,9 +4723,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user1,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -5007,9 +4802,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user1,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -5088,9 +4881,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user1,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -5152,7 +4943,6 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
-                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -5160,9 +4950,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user1,
-                  /* @ts-ignore */
                   isPrimaryGrader: true,
-                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],

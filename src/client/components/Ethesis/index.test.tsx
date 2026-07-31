@@ -27,7 +27,7 @@ const Ethesis = (await import('./index')).default
 
 describe('Ethesis', () => {
   beforeEach(() => {
-    initializeI18n()
+    void initializeI18n()
     useLoggedInUserMock.mockReset()
   })
 

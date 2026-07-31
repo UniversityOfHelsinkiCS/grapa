@@ -1,4 +1,4 @@
-import { describe, it, test, expect, afterEach, vi } from 'vitest'
+import { describe, it, expect, afterEach, vi } from 'vitest'
 import {
   getEmployeeTitles,
   normalizeEmployeeTitlesPayload,
@@ -12,7 +12,7 @@ describe('getEmployeeTitles', () => {
   it('returns empty titles when the employee gateway returns a non-array object', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
-      json: async () => ({ message: 'unexpected payload' }),
+      json: () => Promise.resolve({ message: 'unexpected payload' }),
     } as unknown as Response)
 
     const result: any = await getEmployeeTitles('test-user')

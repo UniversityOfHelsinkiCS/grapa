@@ -1,7 +1,7 @@
-import { describe, it, test, expect, beforeEach, afterEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { Program } from '../db/models'
 import { validateThesisDataMiddleware } from './thesis'
-import { Request, Response, NextFunction } from 'express'
+import { Request, NextFunction } from 'express'
 
 vi.mock('../db/models', () => ({
   Program: {

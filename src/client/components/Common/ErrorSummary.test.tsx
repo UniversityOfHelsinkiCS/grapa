@@ -11,7 +11,7 @@ const ErrorSummary = (await import('./ErrorSummary')).default
 
 describe('ErrorSummary', () => {
   beforeEach(() => {
-    initializeI18n()
+    void initializeI18n()
 
     render(
       <ErrorSummary label="Form contains the following errors">

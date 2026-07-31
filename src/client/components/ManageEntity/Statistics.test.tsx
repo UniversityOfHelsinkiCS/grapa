@@ -1,4 +1,4 @@
-import { describe, it, test, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import * as React from 'react'
 import { render, screen } from '@testing-library/react'
 
@@ -77,7 +77,7 @@ const Statistics = (await import('./Statistics')).default
 
 describe('Statistics', () => {
   beforeEach(() => {
-    initializeI18n()
+    void initializeI18n()
     vi.mocked(mockUseThesisStatistics).mockReturnValue({
       thesisStatistics: {
         totals: {

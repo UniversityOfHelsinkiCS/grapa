@@ -105,7 +105,7 @@ const ThesesPage = (await import('./ThesesPage')).default
 
 describe('ThesesPage', () => {
   beforeEach(() => {
-    initializeI18n()
+    void initializeI18n()
     mockThesisEditForm.mockClear()
   })
 

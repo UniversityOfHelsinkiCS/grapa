@@ -1,4 +1,4 @@
-import { describe, it, test, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import supertest from 'supertest'
 
 import { EthesisAdmin, User, Program, Thesis } from '../db/models'

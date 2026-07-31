@@ -1,4 +1,4 @@
-import { describe, it, test, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import * as React from 'react'
 import userEvent from '@testing-library/user-event'
 import {
@@ -193,7 +193,7 @@ describe('ManageEntityPermissions component', () => {
   let updateProgramManagementMock: any
 
   beforeEach(() => {
-    initializeI18n()
+    void initializeI18n()
 
     createProgramManagementMock = vi.fn()
     deleteProgramManagementMock = vi.fn()
