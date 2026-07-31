@@ -21,7 +21,8 @@ import { findThesesByExpirationDates } from './thesisService'
 export const handleStatusChangeEmail = async (
   originalThesis: Thesis,
   updatedThesis: Thesis,
-  actionUser: UserType
+  actionUser: UserType,
+  customMessage?: string
 ) => {
   const supervisorEmails = uniq(
     (updatedThesis.supervisions || [])
@@ -55,7 +56,8 @@ export const handleStatusChangeEmail = async (
 
     const { subject, message } = suggestionRejectedEmailTemplate(
       updatedThesis,
-      actionUser
+      actionUser,
+      customMessage
     )
     await sendEmail(targets, message, subject)
   } else if (

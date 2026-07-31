@@ -244,7 +244,12 @@ thesisRouter.put(
       updatedThesis = await fetchThesisById(id as string, req.user, t)
 
       await handleChangeEventLogs(originalThesis, updatedThesis, req.user, t)
-      await handleStatusChangeEmail(originalThesis, updatedThesis, req.user)
+      await handleStatusChangeEmail(
+        originalThesis,
+        updatedThesis,
+        req.user,
+        thesisData.message
+      )
     })
 
     const safeData = EmployeeThesisSchema.parse(updatedThesis)

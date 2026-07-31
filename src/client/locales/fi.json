@@ -59,7 +59,8 @@
     "copyEmails": "Kopioi sähköpostiosoitteet",
     "rejectButton": "Hylkää",
     "rejectButtonConfirmTitle": "Vahvista hylkäys",
-    "rejectButtonConfirmContent": "Oletko varma, että haluat hylätä tämän tutkielmasuunnitelman?"
+    "rejectButtonConfirmContent": "Oletko varma, että haluat hylätä tämän tutkielmasuunnitelman?",
+    "rejectMessageToStudent": "Viesti opiskelijalle"
   },
   "eventLog": {
     "thesis": "Tutkielma",

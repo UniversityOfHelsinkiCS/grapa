@@ -452,7 +452,12 @@ studentRouter.put(
       updatedThesis = await fetchThesisById(id as string, { isAdmin: true }, t)
 
       await handleChangeEventLogs(originalThesis, updatedThesis, req.user, t)
-      await handleStatusChangeEmail(originalThesis, updatedThesis, req.user)
+      await handleStatusChangeEmail(
+        originalThesis,
+        updatedThesis,
+        req.user,
+        thesisData.message
+      )
     })
 
     const safeData = StudentThesisSchema.parse(updatedThesis)

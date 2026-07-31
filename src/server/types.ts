@@ -107,6 +107,7 @@ export interface ThesisData {
   ethesisDate?: string
   isIdle?: boolean
   milestoneOrStatusUpdatedAt?: string | Date | null
+  message?: string
 }
 
 export interface ThesisStatistics {

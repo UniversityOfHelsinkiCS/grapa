@@ -80,9 +80,11 @@ export const useChangeThesisStatusMutation = (isStudentView?: boolean) => {
   const mutationFn = async ({
     theses,
     status,
+    message,
   }: {
     theses: ThesisData[]
     status: ThesisData['status']
+    message?: string
   }) => {
     await Promise.all(
       theses.map(async (thesis) => {
@@ -92,7 +94,7 @@ export const useChangeThesisStatusMutation = (isStudentView?: boolean) => {
           thesis.studyTrackId = null
         }
 
-        const updatedThesis = { ...thesis, status }
+        const updatedThesis = { ...thesis, status, ...(message && { message }) }
         formData.append('json', JSON.stringify(updatedThesis))
 
         const apiPath = isStudentView ? '/student/theses/' : '/theses/'

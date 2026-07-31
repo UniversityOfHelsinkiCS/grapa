@@ -18,6 +18,7 @@ import {
   Alert,
   Divider,
   ButtonBase,
+  TextField,
 } from '@mui/material'
 import Popup from '../Common/Popup'
 import { LoggedInUser as User } from '@backend/validators/userResponse'
@@ -440,6 +441,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
   const [ethesisAdminModalOpen, setEthesisAdminModalOpen] = useState(false)
   const [ethesisTargetStatus, setEthesisTargetStatus] =
     useState<ThesisStatus | null>(null)
+  const [rejectMessage, setRejectMessage] = useState('')
 
   const ethesisReady = thesis && currentUser && isEthesisReady(thesis)
 
@@ -858,7 +860,10 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
       {thesis && (
         <Popup
           open={pendingAction !== null}
-          onClose={() => setPendingAction(null)}
+          onClose={() => {
+            setPendingAction(null)
+            setRejectMessage('')
+          }}
           title={
             pendingAction === 'approve'
               ? t('approveButtonConfirmTitle', 'Confirm Approval')
@@ -891,9 +896,11 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
               void changeThesisStatus({
                 theses: [thesis],
                 status: THESIS_STATUSES.DRAFT,
+                message: rejectMessage,
               })
             }
             setPendingAction(null)
+            setRejectMessage('')
           }}
           submitText={t('submitButton')}
           cancelText={t('cancelButton')}
@@ -907,6 +914,17 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                   ? t('sendDraftButtonConfirmContent')
                   : t('rejectButtonConfirmContent')}
           </Typography>
+          {pendingAction === 'reject' && (
+            <TextField
+              sx={{ mt: 2 }}
+              fullWidth
+              multiline
+              rows={4}
+              label={t('rejectMessageToStudent')}
+              value={rejectMessage}
+              onChange={(e) => setRejectMessage(e.target.value)}
+            />
+          )}
         </Popup>
       )}
 

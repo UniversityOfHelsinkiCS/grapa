@@ -59,7 +59,8 @@
     "copyEmails": "Kopiera e-postadresser",
     "rejectButton": "Avslå",
     "rejectButtonConfirmTitle": "Bekräfta avslag",
-    "rejectButtonConfirmContent": "Är du säker på att du vill avslå denna uppsatsplan?"
+    "rejectButtonConfirmContent": "Är du säker på att du vill avslå denna uppsatsplan?",
+    "rejectMessageToStudent": "Meddelande till studenten"
   },
   "eventLog": {
     "thesis": "Avhandling",
