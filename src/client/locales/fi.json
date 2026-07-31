@@ -35,12 +35,6 @@
     "approveButtonConfirmContent": "Oletko varma, että haluat hyväksyä tämän tutkielmasuunnitelman?",
     "approveBulkButtonConfirmContent": "Oletko varma, että haluat hyväksyä nämä tutkielmasuunnitelmat?",
     "editButton": "Muokkaa",
-    "wakeUpFromSleepButton": "Herätä lepotilasta",
-    "wakeUpFromSleepButtonConfirmTitle": "Vahvista herättäminen",
-    "wakeUpFromSleepButtonConfirmContent": "Oletko varma, että haluat herättää tämän tutkielman lepotilasta?",
-    "sendDraftButton": "Lähetä ehdotuksena",
-    "sendDraftButtonConfirmTitle": "Vahvista ehdotuksen lähetys",
-    "sendDraftButtonConfirmContent": "Oletko varma, että haluat lähettää tämän luonnoksen ehdotuksena?",
     "deleteButton": "Poista",
     "cancelButton": "Peruuta",
     "submitButton": "Tallenna",
@@ -56,11 +50,7 @@
     "theses": "Tutkielmat",
     "none": "Ei opintosuuntaa",
     "admin": "admin",
-    "copyEmails": "Kopioi sähköpostiosoitteet",
-    "rejectButton": "Hylkää",
-    "rejectButtonConfirmTitle": "Vahvista hylkäys",
-    "rejectButtonConfirmContent": "Oletko varma, että haluat hylätä tämän tutkielmasuunnitelman?",
-    "rejectMessageToStudent": "Viesti opiskelijalle"
+    "copyEmails": "Kopioi sähköpostiosoitteet"
   },
   "eventLog": {
     "thesis": "Tutkielma",
@@ -575,6 +565,16 @@
     "requiresEthesisAdminAction": "Odottaa vientiä E-thesikseen",
     "studentActionRequired": "Sinun tulee lähettää tutkielmaluonnos arvioitavaksi, kun olet täyttänyt kaikki tarvittavat tiedot.",
     "studentEthesisActionRequired": "Siirry <1>E-thesikseen</1> palauttamaan tutkielmasi.",
-    "ethesisInstructionsLink": "https://studies.helsinki.fi/ohjeet/artikkeli/e-thesis"
+    "ethesisInstructionsLink": "https://studies.helsinki.fi/ohjeet/artikkeli/e-thesis",
+    "wakeUpFromSleepButton": "Herätä lepotilasta",
+    "wakeUpFromSleepButtonConfirmTitle": "Vahvista herättäminen",
+    "wakeUpFromSleepButtonConfirmContent": "Oletko varma, että haluat herättää tämän tutkielman lepotilasta?",
+    "sendDraftButton": "Lähetä ehdotuksena",
+    "sendDraftButtonConfirmTitle": "Vahvista ehdotuksen lähetys",
+    "sendDraftButtonConfirmContent": "Oletko varma, että haluat lähettää tämän luonnoksen ehdotuksena?",
+    "rejectButton": "Hylkää",
+    "rejectButtonConfirmTitle": "Vahvista hylkäys",
+    "rejectButtonConfirmContent": "Oletko varma, että haluat hylätä tämän tutkielmasuunnitelman?",
+    "rejectMessageToStudent": "Viesti opiskelijalle"
   }
 }

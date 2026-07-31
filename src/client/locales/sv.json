@@ -31,12 +31,6 @@
     "exportCsv": "Exportera CSV",
     "exportCsvTooltip": "Filen använder kommatecken (,) för att separera kolumner. Om ditt kalkylprogram frågar, välj kommatecken som avgränsare.",
     "editButton": "Redigera",
-    "wakeUpFromSleepButton": "Väck från viloläge",
-    "wakeUpFromSleepButtonConfirmTitle": "Bekräfta väckning",
-    "wakeUpFromSleepButtonConfirmContent": "Är du säker på att du vill väcka denna avhandling från viloläge?",
-    "sendDraftButton": "Skicka förslag",
-    "sendDraftButtonConfirmTitle": "Bekräfta sändning av förslag",
-    "sendDraftButtonConfirmContent": "Är du säker på att du vill skicka detta utkast som ett förslag?",
     "approveButton": "Godkänn",
     "approveButtonConfirmTitle": "Bekräfta godkännande",
     "approveButtonConfirmContent": "Är du säker på att du vill godkänna denna avhandlingsplan?",
@@ -56,11 +50,7 @@
     "theses": "Avhandlingar",
     "none": "Ingen studieinriktning",
     "admin": "admin",
-    "copyEmails": "Kopiera e-postadresser",
-    "rejectButton": "Avslå",
-    "rejectButtonConfirmTitle": "Bekräfta avslag",
-    "rejectButtonConfirmContent": "Är du säker på att du vill avslå denna uppsatsplan?",
-    "rejectMessageToStudent": "Meddelande till studenten"
+    "copyEmails": "Kopiera e-postadresser"
   },
   "eventLog": {
     "thesis": "Avhandling",
@@ -576,6 +566,16 @@
     "requiresEthesisAdminAction": "Väntar på att sparas i E-thesis",
     "studentActionRequired": "Du måste skicka in avhandlingsutkastet för bedömning när du har fyllt i all nödvändig information.",
     "studentEthesisActionRequired": "Gå till <1>E-thesis</1> för att lämna in din avhandling.",
-    "ethesisInstructionsLink": "https://studies.helsinki.fi/instruktioner/artikel/e-thesis"
+    "ethesisInstructionsLink": "https://studies.helsinki.fi/instruktioner/artikel/e-thesis",
+    "wakeUpFromSleepButton": "Väck från viloläge",
+    "wakeUpFromSleepButtonConfirmTitle": "Bekräfta väckning",
+    "wakeUpFromSleepButtonConfirmContent": "Är du säker på att du vill väcka denna avhandling från viloläge?",
+    "sendDraftButton": "Skicka förslag",
+    "sendDraftButtonConfirmTitle": "Bekräfta sändning av förslag",
+    "sendDraftButtonConfirmContent": "Är du säker på att du vill skicka detta utkast som ett förslag?",
+    "rejectButton": "Avslå",
+    "rejectButtonConfirmTitle": "Bekräfta avslag",
+    "rejectButtonConfirmContent": "Är du säker på att du vill avslå denna uppsatsplan?",
+    "rejectMessageToStudent": "Meddelande till studenten"
   }
 }

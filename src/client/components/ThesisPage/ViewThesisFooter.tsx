@@ -475,7 +475,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                     }}
                     onClick={() => setPendingAction('wakeUp')}
                   >
-                    {t('wakeUpFromSleepButton')}
+                    {t('viewThesisFooter:wakeUpFromSleepButton')}
                   </Button>
                 )}
                 {canApprove(thesis, currentUser!) && (
@@ -510,7 +510,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                       }}
                       onClick={() => setPendingAction('reject')}
                     >
-                      {t('rejectButton')}
+                      {t('viewThesisFooter:rejectButton')}
                     </Button>
                   )}
                 {isStudentView && thesis.status === THESIS_STATUSES.DRAFT && (
@@ -531,7 +531,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                     }}
                     onClick={() => setPendingAction('sendDraft')}
                   >
-                    {t('sendDraftButton')}
+                    {t('viewThesisFooter:sendDraftButton')}
                   </Button>
                 )}
                 {!thesis.program?.options?.hideSendToEthesis &&
@@ -866,15 +866,12 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
           }}
           title={
             pendingAction === 'approve'
-              ? t('approveButtonConfirmTitle', 'Confirm Approval')
+              ? t('approveButtonConfirmTitle')
               : pendingAction === 'wakeUp'
-                ? t('wakeUpFromSleepButtonConfirmTitle', 'Confirm Wake Up')
+                ? t('viewThesisFooter:wakeUpFromSleepButtonConfirmTitle')
                 : pendingAction === 'sendDraft'
-                  ? t('sendDraftButtonConfirmTitle', 'Confirm Send Draft')
-                  : t(
-                      'rejectButtonConfirmTitle',
-                      'Confirm Rejection of Suggestion'
-                    )
+                  ? t('viewThesisFooter:sendDraftButtonConfirmTitle')
+                  : t('viewThesisFooter:rejectButtonConfirmTitle')
           }
           onSubmit={() => {
             if (pendingAction === 'approve') {
@@ -909,10 +906,10 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
             {pendingAction === 'approve'
               ? t('approveButtonConfirmContent')
               : pendingAction === 'wakeUp'
-                ? t('wakeUpFromSleepButtonConfirmContent')
+                ? t('viewThesisFooter:wakeUpFromSleepButtonConfirmContent')
                 : pendingAction === 'sendDraft'
-                  ? t('sendDraftButtonConfirmContent')
-                  : t('rejectButtonConfirmContent')}
+                  ? t('viewThesisFooter:sendDraftButtonConfirmContent')
+                  : t('viewThesisFooter:rejectButtonConfirmContent')}
           </Typography>
           {pendingAction === 'reject' && (
             <TextField
@@ -920,7 +917,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
               fullWidth
               multiline
               rows={4}
-              label={t('rejectMessageToStudent')}
+              label={t('viewThesisFooter:rejectMessageToStudent')}
               value={rejectMessage}
               onChange={(e) => setRejectMessage(e.target.value)}
             />
