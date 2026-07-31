@@ -1,15 +1,13 @@
-/**
- * @jest-environment jsdom
- */
+import { describe, it, test, expect, beforeEach, vi } from 'vitest'
 import * as React from 'react'
 import { render, screen } from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
 
-const mockUseThesisStatistics = jest.fn()
+const mockUseThesisStatistics: any = vi.fn()
 
-jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useLoggedInUser', () => ({
+  default: vi.fn().mockReturnValue({
     user: {
       id: 1,
       firstName: 'John',
@@ -21,8 +19,8 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useDepartments', () => ({
+  default: vi.fn().mockReturnValue({
     departments: [
       {
         id: 1,
@@ -39,8 +37,8 @@ jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useDepartmentAdmins', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useDepartmentAdmins', () => ({
+  default: vi.fn().mockReturnValue({
     departmentAdmins: [
       {
         id: 1,
@@ -65,13 +63,13 @@ jest.unstable_mockModule('./src/client/hooks/useDepartmentAdmins', () => ({
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useTheses', () => ({
+vi.mock('../../hooks/useTheses', () => ({
   useThesisStatistics: mockUseThesisStatistics,
 }))
 
-jest.unstable_mockModule('react-router-dom', () => ({ Navigate: jest.fn() }))
+vi.mock('react-router-dom', () => ({ Navigate: vi.fn() }))
 
-jest.unstable_mockModule('echarts-for-react', () => ({
+vi.mock('echarts-for-react', () => ({
   default: () => <div data-testid="echarts-mock" />,
 }))
 
@@ -80,7 +78,7 @@ const Statistics = (await import('./Statistics')).default
 describe('Statistics', () => {
   beforeEach(() => {
     initializeI18n()
-    mockUseThesisStatistics.mockReturnValue({
+    vi.mocked(mockUseThesisStatistics).mockReturnValue({
       thesisStatistics: {
         totals: {
           statusCounts: {
@@ -130,5 +128,4 @@ describe('Statistics', () => {
       screen.getByText('Tietojenkäsittelytieteen laitos')
     ).toBeInTheDocument()
   })
-
 })

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest'
 import { Thesis, Program } from './models'
 
 describe('Thesis Trigger tests', () => {
@@ -12,14 +13,13 @@ describe('Thesis Trigger tests', () => {
     })
 
     // 1. Create a thesis
-    const thesis = await Thesis.create({
+    const thesis: Thesis = await Thesis.create({
       programId: 'Testing program trigger',
       topic: 'Trigger Test Thesis',
       status: 'DRAFT',
       startDate: '2024-01-01',
       milestone: 1,
     })
-
 
     const initialDate = thesis.milestoneOrStatusUpdatedAt
 
@@ -29,23 +29,27 @@ describe('Thesis Trigger tests', () => {
     expect(thesis.milestoneOrStatusUpdatedAt).toEqual(initialDate)
 
     // Wait slightly to ensure timestamp difference if it were to update
-    await new Promise(r => setTimeout(r, 100))
+    await new Promise((r) => setTimeout(r, 100))
 
     // 3. Update status
     await thesis.update({ status: 'IN_PROGRESS' })
     await thesis.reload()
     const afterStatusUpdate = thesis.milestoneOrStatusUpdatedAt
     expect(afterStatusUpdate).not.toEqual(initialDate)
-    expect(afterStatusUpdate?.getTime()).toBeGreaterThan(initialDate?.getTime() || 0)
+    expect((afterStatusUpdate as Date)?.getTime()).toBeGreaterThan(
+      (initialDate as Date)?.getTime() || 0
+    )
 
     // Wait slightly again
-    await new Promise(r => setTimeout(r, 100))
+    await new Promise((r) => setTimeout(r, 100))
 
     // 4. Update milestone
     await thesis.update({ milestone: 2 })
     await thesis.reload()
     const afterMilestoneUpdate = thesis.milestoneOrStatusUpdatedAt
     expect(afterMilestoneUpdate).not.toEqual(afterStatusUpdate)
-    expect(afterMilestoneUpdate?.getTime()).toBeGreaterThan(afterStatusUpdate?.getTime() || 0)
+    expect((afterMilestoneUpdate as Date)?.getTime()).toBeGreaterThan(
+      (afterStatusUpdate as Date)?.getTime() || 0
+    )
   })
 })

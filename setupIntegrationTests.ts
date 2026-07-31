@@ -1,5 +1,6 @@
 import { toIncludeSameMembers } from 'jest-extended'
-import { jest } from '@jest/globals'
+import { expect, afterEach } from 'vitest'
+
 import {
   Attachment,
   Author,
@@ -16,9 +17,7 @@ import {
 
 expect.extend({ toIncludeSameMembers })
 
-global.jest = jest
-
-global.afterEach(async () => {
+afterEach(async () => {
   await Attachment.destroy({ where: {} })
   await Supervision.destroy({ where: {} })
   await Author.destroy({ where: {} })

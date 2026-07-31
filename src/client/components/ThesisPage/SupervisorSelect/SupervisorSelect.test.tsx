@@ -1,6 +1,4 @@
-/**
- * @jest-environment jsdom
- */
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 
 import {
   fireEvent,
@@ -12,26 +10,28 @@ import {
 
 // import SupervisorSelect from './SupervisorSelect'
 import initializeI18n from '../../../util/il18n'
+import React from 'react'
+import { SupervisionData } from '@backend/validators/thesisResponse'
 
-jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../../hooks/useUsers', () => ({
+  default: vi.fn().mockReturnValue({
     users: [
       {
-        id: 1,
+        id: '1',
         firstName: 'John',
         lastName: 'Doe',
         username: 'johndoe',
         studentNumber: '12345',
       },
-      { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
+      { id: '2', firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
       {
-        id: 3,
+        id: '3',
         firstName: 'Bob',
         lastName: 'Luukkainen',
         username: 'bobluukkainen',
       },
       {
-        id: 4,
+        id: '4',
         firstName: 'Henri',
         lastName: 'Tunkkaaja',
         username: 'tunkkaus',
@@ -40,10 +40,10 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../../hooks/useLoggedInUser', () => ({
+  default: vi.fn().mockReturnValue({
     user: {
-      id: 4,
+      id: '4',
       firstName: 'Henri',
       lastName: 'Tunkkaaja',
       username: 'tunkkaus',
@@ -52,32 +52,34 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
   }),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/Delete', () => ({
-  default: jest.fn().mockReturnValue('DeleteIcon'),
+vi.mock('@mui/icons-material/Delete', () => ({
+  default: vi.fn().mockReturnValue('DeleteIcon'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/ArrowDropDown', () => ({
-  default: jest.fn().mockReturnValue('ArrowDropDownIcon'),
+vi.mock('@mui/icons-material/ArrowDropDown', () => ({
+  default: vi.fn().mockReturnValue('ArrowDropDownIcon'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/Star', () => ({
-  default: jest.fn().mockReturnValue('Star'),
+vi.mock('@mui/icons-material/Star', () => ({
+  default: vi.fn().mockReturnValue('Star'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/StarBorder', () => ({
-  default: jest.fn().mockReturnValue('StarOutline'),
+vi.mock('@mui/icons-material/StarBorder', () => ({
+  default: vi.fn().mockReturnValue('StarOutline'),
 }))
 
 const SupervisorSelect = (await import('./SupervisorSelect')).default
 
 describe('SupervisorSelect', () => {
-  let setErrors
-  const supervisorSelections = []
-  let setSupervisorSelections
+  let setErrors: React.Dispatch<React.SetStateAction<unknown>>
+  const supervisorSelections: SupervisionData[] = []
+  let setSupervisorSelections: React.Dispatch<
+    React.SetStateAction<SupervisionData[]>
+  >
 
   beforeEach(() => {
-    setErrors = jest.fn()
-    setSupervisorSelections = jest.fn()
+    setErrors = vi.fn()
+    setSupervisorSelections = vi.fn()
 
     initializeI18n()
   })
@@ -85,6 +87,7 @@ describe('SupervisorSelect', () => {
   it('renders the SupervisorSelect component', () => {
     render(
       <SupervisorSelect
+        disabledMode={false}
         errors={[]}
         setErrors={setErrors}
         supervisorSelections={supervisorSelections}
@@ -98,19 +101,20 @@ describe('SupervisorSelect', () => {
   it('renders the SupervisorSelect component with a supervisor', () => {
     render(
       <SupervisorSelect
+        disabledMode={false}
         errors={[]}
         setErrors={setErrors}
         supervisorSelections={[
           {
             user: {
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               username: 'johndoe',
               studentNumber: '12345',
             },
             percentage: 100,
-            isExternal: false,
+
             isPrimarySupervisor: true,
           },
         ]}
@@ -120,45 +124,52 @@ describe('SupervisorSelect', () => {
 
     expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
     expect(screen.getByTestId('percentage-input')).toBeInTheDocument()
-    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe ')
+    expect((screen.getAllByRole('combobox')[0] as HTMLInputElement).value).toBe(
+      'John Doe '
+    )
     expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
   })
 
   it('renders the SupervisorSelect component with multiple supervisors', () => {
     render(
       <SupervisorSelect
+        disabledMode={false}
         errors={[]}
         setErrors={setErrors}
         supervisorSelections={[
           {
             user: {
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               username: 'johndoe',
               studentNumber: '12345',
             },
             percentage: 50,
-            isExternal: false,
+
             isPrimarySupervisor: true,
           },
           {
             user: {
-              id: 2,
+              id: '2',
               firstName: 'Jane',
               lastName: 'Smith',
               username: 'janesmith',
             },
             percentage: 50,
-            isExternal: false,
+
             isPrimarySupervisor: false,
           },
         ]}
         setSupervisorSelections={setSupervisorSelections}
       />
     )
-    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe ')
-    expect(screen.getAllByRole('combobox')[1].value).toBe('Jane Smith ')
+    expect((screen.getAllByRole('combobox')[0] as HTMLInputElement).value).toBe(
+      'John Doe '
+    )
+    expect((screen.getAllByRole('combobox')[1] as HTMLInputElement).value).toBe(
+      'Jane Smith '
+    )
 
     expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
   })
@@ -166,6 +177,7 @@ describe('SupervisorSelect', () => {
   it('renders the SupervisorSelect component with an error', () => {
     const select = render(
       <SupervisorSelect
+        disabledMode={false}
         errors={[
           {
             code: 'custom',
@@ -178,7 +190,7 @@ describe('SupervisorSelect', () => {
           {
             user: null,
             percentage: 100,
-            isExternal: false,
+
             isPrimarySupervisor: true,
           },
         ]}
@@ -198,6 +210,7 @@ describe('SupervisorSelect', () => {
   it('renders the SupervisorSelect component with an error when percentage is invalid', () => {
     render(
       <SupervisorSelect
+        disabledMode={false}
         errors={[
           {
             code: 'custom',
@@ -209,14 +222,14 @@ describe('SupervisorSelect', () => {
         supervisorSelections={[
           {
             user: {
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               username: 'johndoe',
               studentNumber: '12345',
             },
             percentage: 80,
-            isExternal: false,
+
             isPrimarySupervisor: true,
           },
         ]}
@@ -233,6 +246,7 @@ describe('SupervisorSelect', () => {
   it('renders the SupervisorSelect component with an error when primary supervisor is missing', () => {
     render(
       <SupervisorSelect
+        disabledMode={false}
         errors={[
           {
             code: 'custom',
@@ -244,14 +258,14 @@ describe('SupervisorSelect', () => {
         supervisorSelections={[
           {
             user: {
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               username: 'johndoe',
               studentNumber: '12345',
             },
             percentage: 100,
-            isExternal: false,
+
             isPrimarySupervisor: false,
           },
         ]}
@@ -273,6 +287,7 @@ describe('SupervisorSelect', () => {
     it('should call setSupervisorSelections when a supervision is added', async () => {
       render(
         <SupervisorSelect
+          disabledMode={false}
           errors={[]}
           setErrors={setErrors}
           supervisorSelections={supervisorSelections}
@@ -299,9 +314,10 @@ describe('SupervisorSelect', () => {
         {
           user: null,
           percentage: 100,
-          isExternal: false,
+
           isPrimarySupervisor: false,
           creationTimeIdentifier: expect.any(String),
+          isExternal: false,
         },
       ])
     })
@@ -309,6 +325,7 @@ describe('SupervisorSelect', () => {
     it('should call setSupervisorSelections when an external supervisor is added', async () => {
       render(
         <SupervisorSelect
+          disabledMode={false}
           errors={[]}
           setErrors={setErrors}
           supervisorSelections={supervisorSelections}
@@ -343,9 +360,10 @@ describe('SupervisorSelect', () => {
           {
             user: null,
             percentage: 100,
-            isExternal: true,
+
             isPrimarySupervisor: false,
             creationTimeIdentifier: expect.any(String),
+            isExternal: true,
           },
         ])
       })
@@ -354,30 +372,31 @@ describe('SupervisorSelect', () => {
     it('should adjust the supervisor workload percentages accordingly', async () => {
       render(
         <SupervisorSelect
+          disabledMode={false}
           errors={[]}
           setErrors={setErrors}
           supervisorSelections={[
             {
               user: {
-                id: 1,
+                id: '1',
                 firstName: 'John',
                 lastName: 'Doe',
                 username: 'johndoe',
                 studentNumber: '12345',
               },
               percentage: 50,
-              isExternal: false,
+
               isPrimarySupervisor: true,
             },
             {
               user: {
-                id: 2,
+                id: '2',
                 firstName: 'Jane',
                 lastName: 'Smith',
                 username: 'janesmith',
               },
               percentage: 50,
-              isExternal: false,
+
               isPrimarySupervisor: false,
             },
           ]}
@@ -403,33 +422,34 @@ describe('SupervisorSelect', () => {
       expect(setSupervisorSelections).toHaveBeenCalledWith([
         {
           user: {
-            id: 1,
+            id: '1',
             firstName: 'John',
             lastName: 'Doe',
             username: 'johndoe',
             studentNumber: '12345',
           },
           percentage: 34,
-          isExternal: false,
+
           isPrimarySupervisor: true,
         },
         {
           user: {
-            id: 2,
+            id: '2',
             firstName: 'Jane',
             lastName: 'Smith',
             username: 'janesmith',
           },
           percentage: 33,
-          isExternal: false,
+
           isPrimarySupervisor: false,
         },
         {
           user: null,
           percentage: 33,
-          isExternal: false,
+
           isPrimarySupervisor: false,
           creationTimeIdentifier: expect.any(String),
+          isExternal: false,
         },
       ])
     })
@@ -437,30 +457,31 @@ describe('SupervisorSelect', () => {
     it('should adjust the supervisor workload percentages accordingly when an external supervisor is added', async () => {
       render(
         <SupervisorSelect
+          disabledMode={false}
           errors={[]}
           setErrors={setErrors}
           supervisorSelections={[
             {
               user: {
-                id: 1,
+                id: '1',
                 firstName: 'John',
                 lastName: 'Doe',
                 username: 'johndoe',
                 studentNumber: '12345',
               },
               percentage: 50,
-              isExternal: false,
+
               isPrimarySupervisor: true,
             },
             {
               user: {
-                id: 2,
+                id: '2',
                 firstName: 'Jane',
                 lastName: 'Smith',
                 username: 'janesmith',
               },
               percentage: 50,
-              isExternal: false,
+
               isPrimarySupervisor: false,
             },
           ]}
@@ -494,33 +515,34 @@ describe('SupervisorSelect', () => {
         expect(setSupervisorSelections).toHaveBeenCalledWith([
           {
             user: {
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               username: 'johndoe',
               studentNumber: '12345',
             },
             percentage: 34,
-            isExternal: false,
+
             isPrimarySupervisor: true,
           },
           {
             user: {
-              id: 2,
+              id: '2',
               firstName: 'Jane',
               lastName: 'Smith',
               username: 'janesmith',
             },
             percentage: 33,
-            isExternal: false,
+
             isPrimarySupervisor: false,
           },
           {
             user: null,
             percentage: 33,
-            isExternal: true,
+
             isPrimarySupervisor: false,
             creationTimeIdentifier: expect.any(String),
+            isExternal: true,
           },
         ])
       })
@@ -529,30 +551,31 @@ describe('SupervisorSelect', () => {
     it('should call setSupervisorSelections when a supervisor is removed', async () => {
       render(
         <SupervisorSelect
+          disabledMode={false}
           errors={[]}
           setErrors={setErrors}
           supervisorSelections={[
             {
               user: {
-                id: 1,
+                id: '1',
                 firstName: 'John',
                 lastName: 'Doe',
                 username: 'johndoe',
                 studentNumber: '12345',
               },
               percentage: 50,
-              isExternal: false,
+
               isPrimarySupervisor: true,
             },
             {
               user: {
-                id: 2,
+                id: '2',
                 firstName: 'Jane',
                 lastName: 'Smith',
                 username: 'janesmith',
               },
               percentage: 50,
-              isExternal: false,
+
               isPrimarySupervisor: false,
             },
           ]}
@@ -579,14 +602,14 @@ describe('SupervisorSelect', () => {
         expect(setSupervisorSelections).toHaveBeenCalledWith([
           {
             user: {
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               username: 'johndoe',
               studentNumber: '12345',
             },
             percentage: 100,
-            isExternal: false,
+
             isPrimarySupervisor: true,
           },
         ])
@@ -596,19 +619,20 @@ describe('SupervisorSelect', () => {
     it('should not allow to delete supervisor when there is only a single supervisor', () => {
       render(
         <SupervisorSelect
+          disabledMode={false}
           errors={[]}
           setErrors={setErrors}
           supervisorSelections={[
             {
               user: {
-                id: 1,
+                id: '1',
                 firstName: 'John',
                 lastName: 'Doe',
                 username: 'johndoe',
                 studentNumber: '12345',
               },
               percentage: 50,
-              isExternal: false,
+
               isPrimarySupervisor: true,
             },
           ]}
@@ -625,30 +649,31 @@ describe('SupervisorSelect', () => {
     it('should call setSupervisorSelections when a supervisor is marked as primary', async () => {
       render(
         <SupervisorSelect
+          disabledMode={false}
           errors={[]}
           setErrors={setErrors}
           supervisorSelections={[
             {
               user: {
-                id: 1,
+                id: '1',
                 firstName: 'John',
                 lastName: 'Doe',
                 username: 'johndoe',
                 studentNumber: '12345',
               },
               percentage: 50,
-              isExternal: false,
+
               isPrimarySupervisor: true,
             },
             {
               user: {
-                id: 2,
+                id: '2',
                 firstName: 'Jane',
                 lastName: 'Smith',
                 username: 'janesmith',
               },
               percentage: 50,
-              isExternal: false,
+
               isPrimarySupervisor: false,
             },
           ]}
@@ -664,25 +689,25 @@ describe('SupervisorSelect', () => {
         expect(setSupervisorSelections).toHaveBeenCalledWith([
           {
             user: {
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               username: 'johndoe',
               studentNumber: '12345',
             },
             percentage: 50,
-            isExternal: false,
+
             isPrimarySupervisor: false,
           },
           {
             user: {
-              id: 2,
+              id: '2',
               firstName: 'Jane',
               lastName: 'Smith',
               username: 'janesmith',
             },
             percentage: 50,
-            isExternal: false,
+
             isPrimarySupervisor: true,
           },
         ])
@@ -692,30 +717,31 @@ describe('SupervisorSelect', () => {
     it('should not be able to remove the primary supervisor', async () => {
       render(
         <SupervisorSelect
+          disabledMode={false}
           errors={[]}
           setErrors={setErrors}
           supervisorSelections={[
             {
               user: {
-                id: 1,
+                id: '1',
                 firstName: 'John',
                 lastName: 'Doe',
                 username: 'johndoe',
                 studentNumber: '12345',
               },
               percentage: 50,
-              isExternal: false,
+
               isPrimarySupervisor: true,
             },
             {
               user: {
-                id: 2,
+                id: '2',
                 firstName: 'Jane',
                 lastName: 'Smith',
                 username: 'janesmith',
               },
               percentage: 50,
-              isExternal: false,
+
               isPrimarySupervisor: false,
             },
           ]}
@@ -732,6 +758,7 @@ describe('SupervisorSelect', () => {
     it('should call setErrors when an erroneuous supervisor field is changed', async () => {
       const select = render(
         <SupervisorSelect
+          disabledMode={false}
           errors={[
             {
               code: 'custom',
@@ -744,7 +771,7 @@ describe('SupervisorSelect', () => {
             {
               user: null,
               percentage: 100,
-              isExternal: false,
+
               isPrimarySupervisor: true,
             },
           ]}

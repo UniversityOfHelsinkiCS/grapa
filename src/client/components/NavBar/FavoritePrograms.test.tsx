@@ -1,12 +1,10 @@
-/**
- * @jest-environment jsdom
- */
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MenuList } from '@mui/material'
 
 import initializeI18n from '../../util/il18n'
 
-const mockUsePrograms = jest.fn().mockReturnValue({
+const mockUsePrograms: any = vi.fn().mockReturnValue({
   isLoading: false,
   programs: [
     {
@@ -30,12 +28,12 @@ const mockUsePrograms = jest.fn().mockReturnValue({
   ],
 })
 
-jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
+vi.mock('../../hooks/usePrograms', () => ({
   default: mockUsePrograms,
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useLoggedInUser', () => ({
+  default: vi.fn().mockReturnValue({
     user: {
       favoriteProgramIds: ['program-managed-favorite'],
     },
@@ -43,18 +41,18 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useUserProgramsMutation', () => ({
-  default: jest.fn().mockReturnValue({
-    mutateAsync: jest.fn(),
+vi.mock('../../hooks/useUserProgramsMutation', () => ({
+  default: vi.fn().mockReturnValue({
+    mutateAsync: vi.fn(),
   }),
 }))
 
-jest.unstable_mockModule('notistack', () => ({
-  enqueueSnackbar: jest.fn(),
+vi.mock('notistack', () => ({
+  enqueueSnackbar: vi.fn(),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/Bookmark', () => ({
-  default: jest.fn().mockReturnValue('BookmarkIcon'),
+vi.mock('@mui/icons-material/Bookmark', () => ({
+  default: vi.fn().mockReturnValue('BookmarkIcon'),
 }))
 
 const FavoritePrograms = (await import('./FavoritePrograms')).default
@@ -63,7 +61,7 @@ describe('FavoritePrograms', () => {
   beforeEach(() => {
     initializeI18n()
     mockUsePrograms.mockClear()
-    mockUsePrograms.mockReturnValue({
+    vi.mocked(mockUsePrograms).mockReturnValue({
       isLoading: false,
       programs: [
         {

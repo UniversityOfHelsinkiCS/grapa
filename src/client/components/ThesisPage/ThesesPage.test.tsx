@@ -1,15 +1,13 @@
-/**
- * @jest-environment jsdom
- */
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
 
-const mockThesisEditForm = jest.fn(({ programs, initialThesis }) => (
+const mockThesisEditForm: any = vi.fn(({ programs, initialThesis }) => (
   <div data-testid="thesis-edit-form">
     <span data-testid="thesis-edit-form-program-ids">
-      {programs.map((program) => program.id).join(',')}
+      {programs.map((program: any) => program.id).join(',')}
     </span>
     <span data-testid="thesis-edit-form-selected-program">
       {initialThesis.programId}
@@ -17,19 +15,19 @@ const mockThesisEditForm = jest.fn(({ programs, initialThesis }) => (
   </div>
 ))
 
-jest.unstable_mockModule('./src/client/hooks/useTheses', () => ({
-  usePaginatedTheses: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useTheses', () => ({
+  usePaginatedTheses: vi.fn().mockReturnValue({
     theses: [],
     totalCount: 0,
     isLoading: false,
   }),
-  useExportThesesCsv: jest.fn().mockReturnValue({
-    exportCsv: jest.fn(),
+  useExportThesesCsv: vi.fn().mockReturnValue({
+    exportCsv: vi.fn(),
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useLoggedInUser', () => ({
+  default: vi.fn().mockReturnValue({
     user: {
       id: 'user-1',
       firstName: 'Test',
@@ -42,20 +40,17 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useThesesMutation', () => ({
-  useCreateThesisMutation: jest.fn().mockReturnValue({
-    mutateAsync: jest.fn(),
-  }),
-  useDeleteThesisMutation: jest.fn().mockReturnValue({
-    mutateAsync: jest.fn(),
-  }),
-  useEditThesisMutation: jest.fn().mockReturnValue({
-    mutateAsync: jest.fn(),
-  }),
+vi.mock('../../hooks/useThesesMutation', () => ({
+  useCreateThesisMutation: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
+  useDeleteThesisMutation: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
+  useEditThesisMutation: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
+  useChangeThesisStatusMutation: vi
+    .fn()
+    .mockReturnValue({ mutateAsync: vi.fn() }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/usePrograms', () => ({
+  default: vi.fn().mockReturnValue({
     isLoading: false,
     programs: [
       {
@@ -85,37 +80,25 @@ jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
   }),
 }))
 
-jest.unstable_mockModule(
-  './src/client/components/ThesisPage/ThesisEditForm',
-  () => ({
-    default: mockThesisEditForm,
-  })
-)
+vi.mock('./ThesisEditForm', () => ({
+  default: mockThesisEditForm,
+}))
 
-jest.unstable_mockModule(
-  './src/client/components/ThesisPage/ThesisTable',
-  () => ({
-    DEFAULT_PAGE_SIZE: 25,
-    default: jest.fn(({ initializeNewThesis }) => (
-      <button data-testid="create-new-thesis" onClick={initializeNewThesis}>
-        Create new thesis
-      </button>
-    )),
-  })
-)
+vi.mock('./ThesisTable', () => ({
+  DEFAULT_PAGE_SIZE: 25,
+  default: vi.fn(({ initializeNewThesis }) => (
+    <button data-testid="create-new-thesis" onClick={initializeNewThesis}>
+      Create new thesis
+    </button>
+  )),
+}))
 
-jest.unstable_mockModule(
-  './src/client/components/ThesisPage/ViewThesisFooter',
-  () => ({
-    default: jest.fn(() => null),
-  })
-)
+vi.mock('./ViewThesisFooter', () => ({
+  default: vi.fn(() => null),
+}))
 
-
-
-
-jest.unstable_mockModule('@mui/icons-material/PriorityHigh', () => ({
-  default: jest.fn().mockReturnValue('PriorityHighIcon'),
+vi.mock('@mui/icons-material/PriorityHigh', () => ({
+  default: vi.fn().mockReturnValue('PriorityHighIcon'),
 }))
 
 const ThesesPage = (await import('./ThesesPage')).default

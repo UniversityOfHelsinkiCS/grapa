@@ -1,6 +1,4 @@
-/**
- * @jest-environment jsdom
- */
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 
 import {
   fireEvent,
@@ -11,26 +9,28 @@ import {
 } from '@testing-library/react'
 
 import initializeI18n from '../../../util/il18n'
+import { GraderData } from '@backend/validators/thesisResponse'
+import React from 'react'
 
-jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../../hooks/useUsers', () => ({
+  default: vi.fn().mockReturnValue({
     users: [
       {
-        id: 1,
+        id: '1',
         firstName: 'John',
         lastName: 'Doe',
         username: 'johndoe',
         studentNumber: '12345',
       },
-      { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
+      { id: '2', firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
       {
-        id: 3,
+        id: '3',
         firstName: 'Bob',
         lastName: 'Luukkainen',
         username: 'bobluukkainen',
       },
       {
-        id: 4,
+        id: '4',
         firstName: 'Henri',
         lastName: 'Tunkkaaja',
         username: 'tunkkaus',
@@ -39,31 +39,31 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   }),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/Delete', () => ({
-  default: jest.fn().mockReturnValue('DeleteIcon'),
+vi.mock('@mui/icons-material/Delete', () => ({
+  default: vi.fn().mockReturnValue('DeleteIcon'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/ReportOutlined', () => ({
-  default: jest.fn().mockReturnValue('ReportOutlinedIcon'),
+vi.mock('@mui/icons-material/ReportOutlined', () => ({
+  default: vi.fn().mockReturnValue('ReportOutlinedIcon'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/ArrowDropDown', () => ({
-  default: jest.fn().mockReturnValue('ArrowDropDownIcon'),
+vi.mock('@mui/icons-material/ArrowDropDown', () => ({
+  default: vi.fn().mockReturnValue('ArrowDropDownIcon'),
 }))
 
 const GraderSelect = (await import('./GraderSelect')).default
 
 describe('GraderSelect', () => {
-  let setErrors
+  let setErrors: React.Dispatch<React.SetStateAction<unknown>>
 
-  const graderSelections = [
-    { user: null, isPrimaryGrader: true, isExternal: false },
-  ]
-  let setGraderSelections
+  const graderSelections: GraderData[] = [
+    { user: null as never, isPrimaryGrader: true },
+  ] as GraderData[]
+  let setGraderSelections: React.Dispatch<React.SetStateAction<GraderData[]>>
 
   beforeEach(() => {
-    setErrors = jest.fn()
-    setGraderSelections = jest.fn()
+    setErrors = vi.fn()
+    setGraderSelections = vi.fn()
 
     initializeI18n()
   })
@@ -71,6 +71,7 @@ describe('GraderSelect', () => {
   it('renders the GraderSelect component', () => {
     render(
       <GraderSelect
+        disabledMode={false}
         errors={[]}
         setErrors={setErrors}
         graderSelections={graderSelections}
@@ -86,21 +87,21 @@ describe('GraderSelect', () => {
   it('renders the GraderSelect component with a grader', () => {
     render(
       <GraderSelect
+        disabledMode={false}
         errors={[]}
         setErrors={setErrors}
         graderSelections={[
           {
             user: {
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               username: 'johndoe',
               studentNumber: '12345',
             },
             isPrimaryGrader: true,
-            isExternal: false,
           },
-          { user: null, isPrimaryGrader: false, isExternal: false },
+          { user: null, isPrimaryGrader: false },
         ]}
         setGraderSelections={setGraderSelections}
       />
@@ -110,47 +111,53 @@ describe('GraderSelect', () => {
     expect(screen.getByTestId('grader-select-input-1')).toBeInTheDocument()
     expect(screen.getByTestId('grader-select-input-2')).toBeInTheDocument()
 
-    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe ')
+    expect((screen.getAllByRole('combobox')[0] as HTMLInputElement).value).toBe(
+      'John Doe '
+    )
   })
 
   it('renders the GraderSelect component with multiple graders', () => {
     render(
       <GraderSelect
+        disabledMode={false}
         errors={[]}
         setErrors={setErrors}
         graderSelections={[
           {
             user: {
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               username: 'johndoe',
               studentNumber: '12345',
             },
             isPrimaryGrader: true,
-            isExternal: false,
           },
           {
             user: {
-              id: 2,
+              id: '2',
               firstName: 'Jane',
               lastName: 'Smith',
               username: 'janesmith',
             },
             isPrimaryGrader: false,
-            isExternal: false,
           },
         ]}
         setGraderSelections={setGraderSelections}
       />
     )
-    expect(screen.getAllByRole('combobox')[0].value).toBe('John Doe ')
-    expect(screen.getAllByRole('combobox')[1].value).toBe('Jane Smith ')
+    expect((screen.getAllByRole('combobox')[0] as HTMLInputElement).value).toBe(
+      'John Doe '
+    )
+    expect((screen.getAllByRole('combobox')[1] as HTMLInputElement).value).toBe(
+      'Jane Smith '
+    )
   })
 
   it('renders the GraderSelect component with an error', () => {
     const select = render(
       <GraderSelect
+        disabledMode={false}
         errors={[
           {
             code: 'custom',
@@ -159,9 +166,7 @@ describe('GraderSelect', () => {
           },
         ]}
         setErrors={setErrors}
-        graderSelections={[
-          { user: null, isPrimaryGrader: true, isExternal: false },
-        ]}
+        graderSelections={[{ user: null, isPrimaryGrader: true }]}
         setGraderSelections={setGraderSelections}
       />
     )
@@ -179,6 +184,7 @@ describe('GraderSelect', () => {
     it('should call setGraderSelections when a grader is added', () => {
       render(
         <GraderSelect
+          disabledMode={false}
           errors={[]}
           setErrors={setErrors}
           graderSelections={graderSelections}
@@ -200,14 +206,13 @@ describe('GraderSelect', () => {
       expect(setGraderSelections).toHaveBeenCalledWith([
         {
           user: {
-            id: 1,
+            id: '1',
             firstName: 'John',
             lastName: 'Doe',
             username: 'johndoe',
             studentNumber: '12345',
           },
           isPrimaryGrader: true,
-          isExternal: false,
         },
       ])
     })
@@ -215,6 +220,7 @@ describe('GraderSelect', () => {
     it('should call setGraderSelections when an external grader is added', async () => {
       render(
         <GraderSelect
+          disabledMode={false}
           errors={[]}
           setErrors={setErrors}
           graderSelections={graderSelections}
@@ -248,14 +254,13 @@ describe('GraderSelect', () => {
         expect(setGraderSelections).toHaveBeenCalledWith([
           {
             user: {
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               username: 'johndoe',
               studentNumber: '12345',
             },
             isPrimaryGrader: true,
-            isExternal: false,
           },
           { user: null, isPrimaryGrader: false, isExternal: true },
         ])
@@ -265,21 +270,21 @@ describe('GraderSelect', () => {
     it('should call setGraderSelections when a grader is removed', async () => {
       render(
         <GraderSelect
+          disabledMode={false}
           errors={[]}
           setErrors={setErrors}
           graderSelections={[
             {
               user: {
-                id: 1,
+                id: '1',
                 firstName: 'John',
                 lastName: 'Doe',
                 username: 'johndoe',
                 studentNumber: '12345',
               },
               isPrimaryGrader: true,
-              isExternal: false,
             },
-            { user: null, isPrimaryGrader: false, isExternal: false },
+            { user: null, isPrimaryGrader: false },
           ]}
           setGraderSelections={setGraderSelections}
         />
@@ -300,14 +305,13 @@ describe('GraderSelect', () => {
         expect(setGraderSelections).toHaveBeenCalledWith([
           {
             user: {
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               username: 'johndoe',
               studentNumber: '12345',
             },
             isPrimaryGrader: true,
-            isExternal: false,
           },
         ])
       })
@@ -316,19 +320,19 @@ describe('GraderSelect', () => {
     it('should not display the remove button for the primary grader', () => {
       render(
         <GraderSelect
+          disabledMode={false}
           errors={[]}
           setErrors={setErrors}
           graderSelections={[
             {
               user: {
-                id: 1,
+                id: '1',
                 firstName: 'John',
                 lastName: 'Doe',
                 username: 'johndoe',
                 studentNumber: '12345',
               },
               isPrimaryGrader: true,
-              isExternal: false,
             },
           ]}
           setGraderSelections={setGraderSelections}
@@ -342,6 +346,7 @@ describe('GraderSelect', () => {
     it('should call setErrors when an erroneuous grader field is changed', async () => {
       const select = render(
         <GraderSelect
+          disabledMode={false}
           errors={[
             {
               code: 'custom',
@@ -350,9 +355,7 @@ describe('GraderSelect', () => {
             },
           ]}
           setErrors={setErrors}
-          graderSelections={[
-            { user: null, isExternal: false, isPrimaryGrader: true },
-          ]}
+          graderSelections={[{ user: null, isPrimaryGrader: true }]}
           setGraderSelections={setGraderSelections}
         />
       )

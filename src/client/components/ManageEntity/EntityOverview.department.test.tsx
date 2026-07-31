@@ -1,38 +1,36 @@
-/**
- * @jest-environment jsdom
- */
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 
 import initializeI18n from '../../util/il18n'
 
-const useLoggedInUserMock = jest.fn()
+const useLoggedInUserMock = vi.fn()
 
-jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/usePrograms', () => ({
+  default: vi.fn().mockReturnValue({
     isLoading: false,
     programs: [],
   }),
-  useUpdateProgramMutation: jest.fn().mockReturnValue({
+  useUpdateProgramMutation: vi.fn().mockReturnValue({
     isPending: false,
-    mutateAsync: jest.fn(),
+    mutateAsync: vi.fn(),
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useEvents', () => ({
-  useProgramEvents: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useEvents', () => ({
+  useProgramEvents: vi.fn().mockReturnValue({
     events: [],
     isLoading: false,
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
+vi.mock('../../hooks/useLoggedInUser', () => ({
   default: useLoggedInUserMock,
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useDepartments', () => ({
+  default: vi.fn().mockReturnValue({
     isLoading: false,
     departments: [
       {
@@ -47,42 +45,36 @@ jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
   }),
 }))
 
-jest.unstable_mockModule(
-  './src/client/components/ThesisPage/ThesesPage',
-  () => ({
-    default: jest.fn(({ filteringDepartmentId }) => (
-      <div data-testid="theses-page">{filteringDepartmentId}</div>
-    )),
-  })
-)
+vi.mock('../ThesisPage/ThesesPage', () => ({
+  default: vi.fn(({ filteringDepartmentId }) => (
+    <div data-testid="theses-page">{filteringDepartmentId}</div>
+  )),
+}))
 
-jest.unstable_mockModule(
-  './src/client/components/ManageEntity/ManageEntityPermissions',
-  () => ({
-    default: jest.fn(({ filteringEntityId, hideTitle, entityType }) => (
-      <div data-testid="entity-management">{`${filteringEntityId}-${String(hideTitle)}-${entityType}`}</div>
-    )),
-  })
-)
+vi.mock('./ManageEntityPermissions', () => ({
+  default: vi.fn(({ filteringEntityId, hideTitle, entityType }) => (
+    <div data-testid="entity-management">{`${filteringEntityId}-${String(hideTitle)}-${entityType}`}</div>
+  )),
+}))
 
-jest.unstable_mockModule(
-  './src/client/components/ManageEntity/Statistics',
-  () => ({
-    default: jest.fn(({ filteringDepartmentId, hideTitle }) => (
-      <div data-testid="department-statistics">{`${filteringDepartmentId}-${String(hideTitle)}`}</div>
-    )),
-  })
-)
+vi.mock('./Statistics', () => ({
+  default: vi.fn(({ filteringDepartmentId, hideTitle }) => (
+    <div data-testid="department-statistics">{`${filteringDepartmentId}-${String(hideTitle)}`}</div>
+  )),
+}))
 
 const EntityOverview = (await import('./EntityOverview')).default
 
-const renderDepartmentOverview = (initialEntry) =>
+const renderDepartmentOverview = (initialEntry: any) =>
   render(
     <MemoryRouter initialEntries={[initialEntry]}>
       <Routes>
         <Route path="/departments">
           <Route index element={<EntityOverview entityType="department" />} />
-          <Route path=":departmentId" element={<EntityOverview entityType="department" />} />
+          <Route
+            path=":departmentId"
+            element={<EntityOverview entityType="department" />}
+          />
         </Route>
       </Routes>
     </MemoryRouter>
@@ -91,7 +83,7 @@ const renderDepartmentOverview = (initialEntry) =>
 describe('EntityOverview (Department)', () => {
   beforeEach(() => {
     initializeI18n()
-    useLoggedInUserMock.mockReturnValue({
+    vi.mocked(useLoggedInUserMock).mockReturnValue({
       user: { isAdmin: true },
       isLoading: false,
     })
@@ -103,7 +95,9 @@ describe('EntityOverview (Department)', () => {
     expect(screen.getByTestId('theses-page')).toHaveTextContent('department-2')
     expect(screen.getByText('Yksikkö kaksi')).toBeInTheDocument()
     expect(screen.queryByTestId('entity-management')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('department-statistics')).not.toBeInTheDocument()
+    expect(
+      screen.queryByTestId('department-statistics')
+    ).not.toBeInTheDocument()
   })
 
   it('shows the embedded entity management view in its own tab', async () => {
@@ -135,7 +129,9 @@ describe('EntityOverview (Department)', () => {
     renderDepartmentOverview('/departments')
 
     await waitFor(() => {
-      expect(screen.getByTestId('theses-page')).toHaveTextContent('department-1')
+      expect(screen.getByTestId('theses-page')).toHaveTextContent(
+        'department-1'
+      )
     })
   })
 })

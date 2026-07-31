@@ -1,32 +1,49 @@
+import { describe, it, test, expect, beforeEach, afterEach, vi } from 'vitest'
 import { Program } from '../db/models'
 import { validateThesisDataMiddleware } from './thesis'
+import { Request, Response, NextFunction } from 'express'
+
+vi.mock('../db/models', () => ({
+  Program: {
+    findByPk: vi.fn(),
+  },
+}))
 
 describe('validateThesisDataMiddleware', () => {
-  let req
-  let res
-  let next
+  let req: Partial<Request> & {
+    body?: unknown
+    files?: unknown
+    user?: unknown
+    login?: unknown
+  }
+  let res: any
+  let next: NextFunction
 
-  const expectValidationError = async (message) => {
-    await validateThesisDataMiddleware(req, res, next)
+  const expectValidationError = async (message: any) => {
+    await validateThesisDataMiddleware(req as unknown as any, res, next)
     expect(next).toHaveBeenCalledTimes(1)
-    expect(next.mock.calls[0][0]).toBeInstanceOf(Error)
-    expect(next.mock.calls[0][0].message).toBe(message)
+    expect(vi.mocked(next).mock.calls[0][0]).toBeInstanceOf(Error)
+    expect((vi.mocked(next).mock.calls[0][0] as unknown as Error).message).toBe(
+      message
+    )
   }
 
   const expectNoValidationError = async () => {
-    await validateThesisDataMiddleware(req, res, next)
+    await validateThesisDataMiddleware(req as unknown as any, res, next)
     expect(next).toHaveBeenCalledTimes(1)
-    expect(next.mock.calls[0][0]).toBeUndefined()
+    expect(vi.mocked(next).mock.calls[0][0]).toBeUndefined()
   }
 
   beforeEach(() => {
-    jest.spyOn(Program, 'findByPk').mockResolvedValue({ options: {} })
+    vi.mocked(Program.findByPk).mockResolvedValue({
+      options: {},
+    } as unknown as Program)
 
     req = {
       body: {
         topic: 'Test thesis',
         programId: 'test-program',
-        status: "SUGGESTED",
+        status: 'SUGGESTED',
         supervisions: [
           {
             user: {
@@ -70,16 +87,16 @@ describe('validateThesisDataMiddleware', () => {
         targetDate: '2021-12-31',
       },
       files: {
-        researchPlan: [{}],
-        waysOfWorking: [{}],
+        researchPlan: [{} as unknown as Express.Multer.File],
+        waysOfWorking: [{} as unknown as Express.Multer.File],
       },
     }
     res = {}
-    next = jest.fn()
+    next = vi.fn()
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should call next if all required fields are present', async () => {
@@ -449,7 +466,9 @@ describe('validateThesisDataMiddleware', () => {
   })
 
   it('should require seminar supervision when the program seminar setting is enabled', async () => {
-    Program.findByPk.mockResolvedValue({ options: { seminar: true } })
+    vi.mocked(Program.findByPk).mockResolvedValue({
+      options: { seminar: true },
+    } as unknown as Program)
 
     await expectValidationError('At least one seminar supervision is required')
   })
@@ -504,7 +523,9 @@ describe('validateThesisDataMiddleware', () => {
   })
 
   it('should pass seminar supervision validation when one internal seminar supervision is present', async () => {
-    Program.findByPk.mockResolvedValue({ options: { seminar: true } })
+    vi.mocked(Program.findByPk).mockResolvedValue({
+      options: { seminar: true },
+    } as unknown as Program)
     req.body = {
       ...req.body,
       seminarSupervisions: [

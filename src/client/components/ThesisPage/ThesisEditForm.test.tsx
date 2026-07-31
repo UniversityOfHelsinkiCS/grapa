@@ -1,6 +1,4 @@
-/**
- * @jest-environment jsdom
- */
+import { describe, it, test, expect, beforeEach, vi } from 'vitest'
 import dayjs from 'dayjs'
 import userEvent from '@testing-library/user-event'
 import {
@@ -15,19 +13,19 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 import initializeI18n from '../../util/il18n'
 
-jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useUsers', () => ({
+  default: vi.fn().mockReturnValue({
     users: [
-      { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' },
-      { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
+      { id: '1', firstName: 'John', lastName: 'Doe', username: 'johndoe' },
+      { id: '2', firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
       {
-        id: 3,
+        id: '3',
         firstName: 'Bob',
         lastName: 'Luukkainen',
         username: 'bobluukkainen',
       },
       {
-        id: 4,
+        id: '4',
         firstName: 'Henri',
         lastName: 'Tunkkaaja',
         username: 'tunkkaus',
@@ -36,12 +34,12 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useProgramManagements', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useProgramManagements', () => ({
+  default: vi.fn().mockReturnValue({
     programManagements: [
       {
         user: {
-          id: 4,
+          id: '4',
           firstName: 'Henri',
           lastName: 'Tunkkaaja',
           username: 'tunkkaus',
@@ -52,9 +50,9 @@ jest.unstable_mockModule('./src/client/hooks/useProgramManagements', () => ({
   }),
 }))
 
-const programs = [
+const programs: any = [
   {
-    id: 1,
+    id: '1',
     name: {
       en: "Bachelor's Programme in Mathematical Sciences",
       fi: "Bachelor's Programme in Mathematical Sciences",
@@ -67,7 +65,7 @@ const programs = [
     ],
   },
   {
-    id: 2,
+    id: '2',
     name: { en: 'Test program 2', fi: 'testi 2' },
     studyTracks: [
       {
@@ -78,10 +76,10 @@ const programs = [
   },
 ]
 
-jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useLoggedInUser', () => ({
+  default: vi.fn().mockReturnValue({
     user: {
-      id: 4,
+      id: '4',
       firstName: 'Henri',
       lastName: 'Tunkkaaja',
       username: 'tunkkaus',
@@ -90,55 +88,55 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
   }),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/UploadFile', () => ({
-  default: jest.fn().mockReturnValue('UploadFileIcon'),
+vi.mock('@mui/icons-material/UploadFile', () => ({
+  default: vi.fn().mockReturnValue('UploadFileIcon'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/Delete', () => ({
-  default: jest.fn().mockReturnValue('DeleteIcon'),
+vi.mock('@mui/icons-material/Delete', () => ({
+  default: vi.fn().mockReturnValue('DeleteIcon'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/Check', () => ({
-  default: jest.fn().mockReturnValue('CheckIcon'),
+vi.mock('@mui/icons-material/Check', () => ({
+  default: vi.fn().mockReturnValue('CheckIcon'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/Bookmark', () => ({
-  default: jest.fn().mockReturnValue('BookmarkIcon'),
+vi.mock('@mui/icons-material/Bookmark', () => ({
+  default: vi.fn().mockReturnValue('BookmarkIcon'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/FileUpload', () => ({
-  default: jest.fn().mockReturnValue('FileUploadIcon'),
+vi.mock('@mui/icons-material/FileUpload', () => ({
+  default: vi.fn().mockReturnValue('FileUploadIcon'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/Error', () => ({
-  default: jest.fn().mockReturnValue('ErrorIcon'),
+vi.mock('@mui/icons-material/Error', () => ({
+  default: vi.fn().mockReturnValue('ErrorIcon'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/ReportOutlined', () => ({
-  default: jest.fn().mockReturnValue('ReportOutlinedIcon'),
+vi.mock('@mui/icons-material/ReportOutlined', () => ({
+  default: vi.fn().mockReturnValue('ReportOutlinedIcon'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/ArrowDropDown', () => ({
-  default: jest.fn().mockReturnValue('ArrowDropDownIcon'),
+vi.mock('@mui/icons-material/ArrowDropDown', () => ({
+  default: vi.fn().mockReturnValue('ArrowDropDownIcon'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/Star', () => ({
-  default: jest.fn().mockReturnValue('Star'),
+vi.mock('@mui/icons-material/Star', () => ({
+  default: vi.fn().mockReturnValue('Star'),
 }))
 
-jest.unstable_mockModule('@mui/icons-material/StarBorder', () => ({
-  default: jest.fn().mockReturnValue('StarOutline'),
+vi.mock('@mui/icons-material/StarBorder', () => ({
+  default: vi.fn().mockReturnValue('StarOutline'),
 }))
 
 const ThesisEditForm = (await import('./ThesisEditForm')).default
 
 describe('ThesisEditForm', () => {
-  let mockOnClose
-  let mockOnSubmit
+  let mockOnClose: any
+  let mockOnSubmit: any
 
   beforeEach(() => {
-    mockOnClose = jest.fn()
-    mockOnSubmit = jest.fn()
+    mockOnClose = vi.fn()
+    mockOnSubmit = vi.fn()
   })
 
   describe('when initialThesis is a new thesis', () => {
@@ -146,14 +144,14 @@ describe('ThesisEditForm', () => {
       const initialThesis = {
         programId: programs[0].id,
         studyTrackId: programs[0].studyTracks[0].id,
-        supervisions: [],
-        seminarSupervisions: [],
-        authors: [],
-        approvers: [],
+        supervisions: [] as never[],
+        seminarSupervisions: [] as never[],
+        authors: [] as never[],
+        approvers: [] as never[],
         graders: [
-          { user: null, isPrimaryGrader: true },
-          { user: null, isPrimaryGrader: false },
-        ],
+          { user: null as never, isPrimaryGrader: true },
+          { user: null as never, isPrimaryGrader: false },
+        ] as never[],
         topic: '',
         status: 'PLANNING',
         startDate: dayjs().format('YYYY-MM-DD'),
@@ -165,8 +163,10 @@ describe('ThesisEditForm', () => {
       render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <ThesisEditForm
+            formTitle="Test"
+            isStudentView={false}
             programs={programs}
-            initialThesis={initialThesis}
+            initialThesis={initialThesis as never}
             onClose={mockOnClose}
             onSubmit={mockOnSubmit}
           />
@@ -208,7 +208,7 @@ describe('ThesisEditForm', () => {
         const user = userEvent.setup()
 
         const topicInput = screen.getByRole('textbox', { name: 'Aihe' })
-        const programSelect = screen.getAllByRole('combobox')[0]
+        const programSelect: any = screen.getAllByRole('combobox')[0]
         const statusSelect = screen.getAllByRole('combobox')[2]
 
         const authorSelect = screen.getByTestId('author-select-input')
@@ -282,12 +282,12 @@ describe('ThesisEditForm', () => {
         fireEvent.change(researchPlanInput, {
           target: { files: { item: () => testFile, length: 1, 0: testFile } },
         })
-        expect(researchPlanInput.files[0]).toBe(testFile)
+        expect((researchPlanInput as HTMLInputElement).files[0]).toBe(testFile)
 
         fireEvent.change(waysOfWorkingInput, {
           target: { files: { item: () => testFile, length: 1, 0: testFile } },
         })
-        expect(researchPlanInput.files[0]).toBe(testFile)
+        expect((researchPlanInput as HTMLInputElement).files[0]).toBe(testFile)
       }, 10000)
 
       it('renders Submit button enabled and when clicked, calls onSubmit', async () => {
@@ -311,12 +311,12 @@ describe('ThesisEditForm', () => {
         supervisions: [
           { userId: 1, percentage: 100, isPrimarySupervisor: true },
         ],
-        seminarSupervisions: [],
+        seminarSupervisions: [] as never[],
         authors: [{ userId: 2 }],
         graders: [
           {
             user: {
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               username: 'johndoe',
@@ -325,7 +325,7 @@ describe('ThesisEditForm', () => {
           },
           {
             user: {
-              id: 2,
+              id: '2',
               firstName: 'Jane',
               lastName: 'Smith',
               username: 'janesmith',
@@ -346,8 +346,10 @@ describe('ThesisEditForm', () => {
       render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <ThesisEditForm
+            formTitle="Test"
+            isStudentView={false}
             programs={programs}
-            initialThesis={initialThesis}
+            initialThesis={initialThesis as never}
             onClose={mockOnClose}
             onSubmit={mockOnSubmit}
           />

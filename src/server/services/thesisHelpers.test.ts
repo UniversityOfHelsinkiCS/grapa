@@ -1,3 +1,4 @@
+import { describe, it, test, expect, afterEach, vi } from 'vitest'
 import {
   getEmployeeTitles,
   normalizeEmployeeTitlesPayload,
@@ -5,22 +6,22 @@ import {
 
 describe('getEmployeeTitles', () => {
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('returns empty titles when the employee gateway returns a non-array object', async () => {
-    jest.spyOn(global, 'fetch').mockResolvedValue({
+    vi.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
       json: async () => ({ message: 'unexpected payload' }),
-    })
+    } as unknown as Response)
 
-    const result = await getEmployeeTitles('test-user')
+    const result: any = await getEmployeeTitles('test-user')
 
     expect(result).toEqual({ username: 'test-user', titles: [] })
   })
 
   it('maps a wrapped data array returned by the employee gateway payload', () => {
-    const result = normalizeEmployeeTitlesPayload(
+    const result: any = normalizeEmployeeTitlesPayload(
       {
         data: [
           {

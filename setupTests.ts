@@ -1,7 +1,10 @@
-import '@testing-library/jest-dom'
-import { jest } from '@jest/globals'
-
+import '@testing-library/jest-dom/vitest'
 import { TextEncoder } from 'util'
+import { cleanup } from '@testing-library/react'
+import { afterEach } from 'vitest'
 
-global.jest = jest
+afterEach(() => {
+  cleanup()
+})
+
 global.TextEncoder = TextEncoder

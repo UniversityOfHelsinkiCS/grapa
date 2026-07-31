@@ -1,10 +1,11 @@
+import { describe, it, test, expect, beforeEach, vi } from 'vitest'
 import supertest from 'supertest'
 
-import { EthesisAdmin, User, Program } from '../db/models'
+import { EthesisAdmin, User, Program, Thesis } from '../db/models'
 
 // Mock the pate mailer to capture email calls
-const mockSendEmail = jest.fn()
-jest.unstable_mockModule('./src/server/mailer/pate', () => ({
+const mockSendEmail: any = vi.fn()
+vi.mock('../mailer/pate', () => ({
   default: mockSendEmail,
 }))
 
@@ -51,10 +52,10 @@ describe('ethesis admin router', () => {
     })
 
     describe('when there are ethesis admins saved in the DB', () => {
-      let user1
-      let user2
-      let ethesisAdmin1
-      let ethesisAdmin2
+      let user1: User
+      let user2: User
+      let ethesisAdmin1: EthesisAdmin
+      let ethesisAdmin2: EthesisAdmin
 
       beforeEach(async () => {
         // Create test users
@@ -115,10 +116,10 @@ describe('ethesis admin router', () => {
           expect(response.body).toHaveLength(2)
 
           const admin1 = response.body.find(
-            (admin) => admin.userId === user1.id
+            (admin: any) => admin.userId === user1.id
           )
           const admin2 = response.body.find(
-            (admin) => admin.userId === user2.id
+            (admin: any) => admin.userId === user2.id
           )
 
           expect(admin1).toMatchObject({
@@ -148,7 +149,7 @@ describe('ethesis admin router', () => {
       })
 
       describe('POST /api/ethesis-admins', () => {
-        let newUser
+        let newUser: User
 
         beforeEach(async () => {
           newUser = await User.create({
@@ -227,10 +228,11 @@ describe('ethesis admin router', () => {
             mockSendEmail.mockClear()
 
             // Import the handleStatusChangeEmail function
-            const { handleStatusChangeEmail } = await import('../services/thesisNotificationService')
+            const { handleStatusChangeEmail } =
+              await import('../services/thesisNotificationService')
 
             // Create test author user
-            const authorUser = await User.create({
+            const authorUser: User = await User.create({
               id: 'test-author-for-email',
               username: 'testauthor',
               firstName: 'Test',
@@ -243,7 +245,7 @@ describe('ethesis admin router', () => {
             })
 
             // Create test grader user
-            const graderUser = await User.create({
+            const graderUser: User = await User.create({
               id: 'test-grader-for-email',
               username: 'testgrader',
               firstName: 'Test',
@@ -284,9 +286,9 @@ describe('ethesis admin router', () => {
             }
 
             await handleStatusChangeEmail(
-              originalThesis,
-              updatedThesis,
-              actionUser
+              originalThesis as Thesis,
+              updatedThesis as Thesis,
+              actionUser as User
             )
 
             expect(mockSendEmail).toHaveBeenCalledTimes(1)
@@ -303,7 +305,9 @@ describe('ethesis admin router', () => {
             expect(targets).toHaveLength(3)
 
             // Verify the email subject and content
-            expect(subject).toBe('Prethesis - Tutkielma valmiina Ethesikseen / Thesis ready for E-thesis / Avhandling redo för E-thesis')
+            expect(subject).toBe(
+              'Prethesis - Tutkielma valmiina Ethesikseen / Thesis ready for E-thesis / Avhandling redo för E-thesis'
+            )
             expect(message).toContain('Test Thesis for Email Notifications')
             expect(message).toContain('Test Author')
             expect(message).toContain('Test Grader')

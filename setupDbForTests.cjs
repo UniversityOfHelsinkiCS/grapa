@@ -33,10 +33,20 @@ module.exports = async () => {
     )
     await waitForDatabase()
     await exec(
-      'npx sequelize-cli db:migrate --url "postgres://postgres:postgres@localhost:5433/postgres"'
+      'npx --node-options="--import=tsx" sequelize-cli db:migrate --url "postgres://postgres:postgres@localhost:5433/postgres"'
     )
     console.log('Test database setup complete')
   } catch (error) {
     console.error('Error setting up the database: ', error)
+    throw error
+  }
+
+  return async () => {
+    console.log('Tearing down test database')
+    try {
+      await exec('docker stop postgres-test-db && docker rm postgres-test-db')
+    } catch (e) {
+      console.error('Error during teardown:', e)
+    }
   }
 }

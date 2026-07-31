@@ -1,27 +1,22 @@
-/**
- * @jest-environment jsdom
- */
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 
 import initializeI18n from '../../util/il18n'
 
-const useLoggedInUserMock = jest.fn()
+const useLoggedInUserMock = vi.fn()
 
-jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
+vi.mock('../../hooks/useLoggedInUser', () => ({
   default: useLoggedInUserMock,
 }))
 
-jest.unstable_mockModule(
-  './src/client/components/ThesisPage/ThesesPage',
-  () => ({
-    default: jest.fn(() => <div data-testid="theses-page">Theses Page</div>),
-  })
-)
+vi.mock('../ThesisPage/ThesesPage', () => ({
+  default: vi.fn(() => <div data-testid="theses-page">Theses Page</div>),
+}))
 
-jest.unstable_mockModule('./src/client/components/Ethesis/AdminPage', () => ({
-  default: jest.fn(({ disableContainer, hideTitle }) => (
+vi.mock('./AdminPage', () => ({
+  default: vi.fn(({ disableContainer, hideTitle }) => (
     <div data-testid="ethesis-admin-page">
       {`${String(disableContainer)}-${String(hideTitle)}`}
     </div>
@@ -37,7 +32,7 @@ describe('Ethesis', () => {
   })
 
   it('shows the overview tab by default', () => {
-    useLoggedInUserMock.mockReturnValue({
+    vi.mocked(useLoggedInUserMock).mockReturnValue({
       user: { isAdmin: true, ethesisAdmin: true },
     })
 
@@ -55,7 +50,7 @@ describe('Ethesis', () => {
   })
 
   it('shows the admins tab content when opened from the admins tab URL', () => {
-    useLoggedInUserMock.mockReturnValue({
+    vi.mocked(useLoggedInUserMock).mockReturnValue({
       user: { isAdmin: true, ethesisAdmin: true },
     })
 
@@ -74,7 +69,7 @@ describe('Ethesis', () => {
   })
 
   it('allows switching from overview to admins for admins', async () => {
-    useLoggedInUserMock.mockReturnValue({
+    vi.mocked(useLoggedInUserMock).mockReturnValue({
       user: { isAdmin: true, ethesisAdmin: true },
     })
 
@@ -92,7 +87,7 @@ describe('Ethesis', () => {
   })
 
   it('hides the admins tab for non-admin users even if the URL requests it', () => {
-    useLoggedInUserMock.mockReturnValue({
+    vi.mocked(useLoggedInUserMock).mockReturnValue({
       user: { isAdmin: false, ethesisAdmin: true },
     })
 

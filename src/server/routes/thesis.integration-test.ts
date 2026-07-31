@@ -1,3 +1,4 @@
+import { describe, it, test, expect, beforeEach, vi } from 'vitest'
 import supertest from 'supertest'
 import fs from 'fs'
 import path from 'path'
@@ -25,17 +26,22 @@ const userAttributesToFetch = Object.keys(EmployeeUserSchema.shape)
 
 // We have to mock the pate mailer as there are tests that changes
 // status from PLANNING to IN_PROGRESS and that triggers a mail to be sent
-jest.unstable_mockModule('./src/server/mailer/pate', () => ({
-  default: jest.fn(),
+vi.mock('./src/server/mailer/pate', () => ({
+  default: vi.fn(),
 }))
 
 const app = (await import('../index')).default
 const request = supertest.agent(app)
 
+interface ExtendedExpect {
+  toIncludeSameMembers(members: any[]): any
+}
+const expectExtended = expect as unknown as ExtendedExpect
+
 describe('thesis router', () => {
-  let mockUnlinkSync
+  let mockUnlinkSync: any
   beforeEach(() => {
-    mockUnlinkSync = jest.fn()
+    mockUnlinkSync = vi.fn()
     fs.unlinkSync = mockUnlinkSync
   })
 
@@ -118,13 +124,13 @@ describe('thesis router', () => {
   })
 
   describe('when there are theses saved in the DB', () => {
-    let user1
-    let user2
-    let user3
-    let user4
-    let user5
-    let thesis1
-    let dep
+    let user1: User
+    let user2: User
+    let user3: User
+    let user4: User
+    let user5: User
+    let thesis1: Thesis
+    let dep: Department
 
     beforeEach(async () => {
       await Program.create({
@@ -183,6 +189,7 @@ describe('thesis router', () => {
         name: {
           en: 'TKTL',
           fi: 'TKTL',
+          sv: 'TKTL',
         },
       })
 
@@ -296,11 +303,13 @@ describe('thesis router', () => {
       await Grader.create({
         userId: user4.id,
         thesisId: thesis1.id,
+        /* @ts-ignore */
         isPrimaryGrader: true,
       })
       await Grader.create({
         userId: user5.id,
         thesisId: thesis1.id,
+        /* @ts-ignore */
         isPrimaryGrader: false,
       })
       await Attachment.create({
@@ -349,16 +358,18 @@ describe('thesis router', () => {
                       name: 'testfile.pdf2',
                       mimetype: 'application/pdf2',
                     },
-                    supervisions: expect.toIncludeSameMembers([
+                    supervisions: expectExtended.toIncludeSameMembers([
                       {
                         user: user1,
                         percentage: 50,
+                        /* @ts-ignore */
                         isExternal: false,
                         isPrimarySupervisor: true,
                       },
                       {
                         user: user3,
                         percentage: 50,
+                        /* @ts-ignore */
                         isExternal: false,
                         isPrimarySupervisor: false,
                       },
@@ -370,7 +381,7 @@ describe('thesis router', () => {
           })
 
           describe('when the user is a teacher-supervisor of one thesis and is a manager of the program that thesis belongs to', () => {
-            let thesisSupervisedByOtherUser
+            let thesisSupervisedByOtherUser: Thesis
             beforeEach(async () => {
               await ProgramManagement.create({
                 programId: 'Testing program',
@@ -416,7 +427,7 @@ describe('thesis router', () => {
           })
 
           describe('when the user is a teacher-supervisor of one thesis and is a manager of the program that thesis does not belong to', () => {
-            let thesisSupervisedByOtherUser
+            let thesisSupervisedByOtherUser: Thesis
             beforeEach(async () => {
               await ProgramManagement.create({
                 programId: 'Updated program',
@@ -462,7 +473,7 @@ describe('thesis router', () => {
           })
 
           describe('when the user does not supervise theses but is a manager of a program', () => {
-            let thesisSupervisedByOtherUser
+            let thesisSupervisedByOtherUser: Thesis
             beforeEach(async () => {
               await ProgramManagement.create({
                 programId: 'Updated program',
@@ -531,16 +542,18 @@ describe('thesis router', () => {
                       name: 'testfile.pdf2',
                       mimetype: 'application/pdf2',
                     },
-                    supervisions: expect.toIncludeSameMembers([
+                    supervisions: expectExtended.toIncludeSameMembers([
                       {
                         user: user1,
                         percentage: 50,
+                        /* @ts-ignore */
                         isExternal: false,
                         isPrimarySupervisor: true,
                       },
                       {
                         user: user3,
                         percentage: 50,
+                        /* @ts-ignore */
                         isExternal: false,
                         isPrimarySupervisor: false,
                       },
@@ -619,16 +632,18 @@ describe('thesis router', () => {
                         name: 'testfile.pdf2',
                         mimetype: 'application/pdf2',
                       },
-                      supervisions: expect.toIncludeSameMembers([
+                      supervisions: expectExtended.toIncludeSameMembers([
                         {
                           user: user1,
                           percentage: 50,
+                          /* @ts-ignore */
                           isExternal: false,
                           isPrimarySupervisor: true,
                         },
                         {
                           user: user3,
                           percentage: 50,
+                          /* @ts-ignore */
                           isExternal: false,
                           isPrimarySupervisor: false,
                         },
@@ -641,7 +656,7 @@ describe('thesis router', () => {
           })
 
           describe('when the user is a teacher-supervisor of two theses but only one belongs to the program we are filtering on', () => {
-            let thesisSupervisedByTheUser
+            let thesisSupervisedByTheUser: Thesis
             beforeEach(async () => {
               thesisSupervisedByTheUser = await Thesis.create({
                 programId: 'Updated program',
@@ -680,7 +695,7 @@ describe('thesis router', () => {
           })
 
           describe('when the user is a manager of a program', () => {
-            let thesisSupervisedByOtherUser
+            let thesisSupervisedByOtherUser: Thesis
             beforeEach(async () => {
               await ProgramManagement.create({
                 programId: 'Updated program',
@@ -826,16 +841,18 @@ describe('thesis router', () => {
                         name: 'testfile.pdf2',
                         mimetype: 'application/pdf2',
                       },
-                      supervisions: expect.toIncludeSameMembers([
+                      supervisions: expectExtended.toIncludeSameMembers([
                         {
                           user: user1,
                           percentage: 50,
+                          /* @ts-ignore */
                           isExternal: false,
                           isPrimarySupervisor: true,
                         },
                         {
                           user: user3,
                           percentage: 50,
+                          /* @ts-ignore */
                           isExternal: false,
                           isPrimarySupervisor: false,
                         },
@@ -848,7 +865,7 @@ describe('thesis router', () => {
           })
 
           describe('when the user is a teacher-supervisor of two theses', () => {
-            let thesisSupervisedByTheUser
+            let thesisSupervisedByTheUser: Thesis
             beforeEach(async () => {
               thesisSupervisedByTheUser = await Thesis.create({
                 programId: 'Updated program',
@@ -897,7 +914,7 @@ describe('thesis router', () => {
                 totalCount: 2,
               })
               expect(
-                response.body.theses.map(({ topic }) => topic)
+                response.body.theses.map(({ topic }: any) => topic)
               ).toIncludeSameMembers([
                 'Thesis in the same program but supervised by another user',
                 'test topic',
@@ -905,17 +922,15 @@ describe('thesis router', () => {
             })
           })
         })
-
-
       })
 
       describe('when fetching only theses that user supervises', () => {
-        let teacherUser
-        let programManagerUser
-        let adminUser
-        let thesis2
-        let thesis3
-        let thesis4
+        let teacherUser: any
+        let programManagerUser: User
+        let adminUser: User
+        let thesis2: Thesis
+        let thesis3: Thesis
+        let thesis4: Thesis
 
         beforeEach(async () => {
           await User.create({
@@ -1065,6 +1080,7 @@ describe('thesis router', () => {
                   seminarSupervisions: [
                     {
                       user: teacherUser,
+                      /* @ts-ignore */
                       isExternal: false,
                     },
                   ],
@@ -1075,7 +1091,7 @@ describe('thesis router', () => {
         })
 
         describe('when the teacher user fetches paginated own theses', () => {
-          let thesis5
+          let thesis5: Thesis
 
           beforeEach(async () => {
             thesis5 = await Thesis.create({
@@ -1181,7 +1197,7 @@ describe('thesis router', () => {
         })
 
         describe('when the program manager user fetches paginated own theses', () => {
-          let thesis6
+          let thesis6: Thesis
 
           beforeEach(async () => {
             thesis6 = await Thesis.create({
@@ -1287,7 +1303,7 @@ describe('thesis router', () => {
         })
 
         describe('when the admin user fetches paginated own theses', () => {
-          let thesis7
+          let thesis7: Thesis
 
           beforeEach(async () => {
             thesis7 = await Thesis.create({
@@ -1508,6 +1524,7 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 100,
+              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: true,
             },
@@ -1515,7 +1532,9 @@ describe('thesis router', () => {
           graders: [
             {
               user: user4,
+              /* @ts-ignore */
               isPrimaryGrader: true,
+              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: false,
             },
@@ -1571,6 +1590,7 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 50,
+              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: true,
             },
@@ -1584,7 +1604,9 @@ describe('thesis router', () => {
           graders: [
             {
               user: user4,
+              /* @ts-ignore */
               isPrimaryGrader: true,
+              /* @ts-ignore */
               isExternal: false,
             },
           ],
@@ -1639,6 +1661,7 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 100,
+              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: true,
             },
@@ -1646,11 +1669,14 @@ describe('thesis router', () => {
           graders: [
             {
               user: user4,
+              /* @ts-ignore */
               isPrimaryGrader: true,
+              /* @ts-ignore */
               isExternal: false,
             },
             {
               user: extUserData,
+              /* @ts-ignore */
               isPrimaryGrader: false,
               isExternal: true,
             },
@@ -1690,7 +1716,7 @@ describe('thesis router', () => {
         const newThesis = {
           waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
           programId: 'New program',
-          studyTrackId: null,
+          studyTrackId: null as string | null,
           topic: 'New topic',
           status: 'PLANNING',
           startDate: '1970-01-01T00:00:00.000Z',
@@ -1699,6 +1725,7 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 100,
+              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: true,
             },
@@ -1706,7 +1733,9 @@ describe('thesis router', () => {
           graders: [
             {
               user: user4,
+              /* @ts-ignore */
               isPrimaryGrader: true,
+              /* @ts-ignore */
               isExternal: false,
             },
           ],
@@ -1752,6 +1781,7 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 100,
+              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: true,
             },
@@ -1759,7 +1789,9 @@ describe('thesis router', () => {
           graders: [
             {
               user: user4,
+              /* @ts-ignore */
               isPrimaryGrader: true,
+              /* @ts-ignore */
               isExternal: false,
             },
           ],
@@ -1796,6 +1828,7 @@ describe('thesis router', () => {
             {
               user: user1,
               percentage: 100,
+              /* @ts-ignore */
               isExternal: false,
               isPrimarySupervisor: false,
             },
@@ -1803,7 +1836,9 @@ describe('thesis router', () => {
           graders: [
             {
               user: user4,
+              /* @ts-ignore */
               isPrimaryGrader: true,
+              /* @ts-ignore */
               isExternal: false,
             },
           ],
@@ -1835,7 +1870,7 @@ describe('thesis router', () => {
         describe('when the user is an admin', () => {
           it('should return 201, create the thesis and log the event', async () => {
             const newThesis = {
-          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -1846,6 +1881,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -1853,7 +1889,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -1887,7 +1925,7 @@ describe('thesis router', () => {
         })
 
         describe("when the user is a manager of the thesis' program", () => {
-          let newThesis
+          let newThesis: any
 
           beforeEach(() => {
             newThesis = {
@@ -1902,6 +1940,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -1909,7 +1948,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2000,7 +2041,7 @@ describe('thesis router', () => {
             })
 
             const newThesis = {
-          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -2011,6 +2052,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2018,7 +2060,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2064,7 +2108,7 @@ describe('thesis router', () => {
         describe('when the user is a teacher and is a supervisor of the thesis', () => {
           it('should return 403 and a correct error message, and not log the event', async () => {
             const newThesis = {
-          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -2075,6 +2119,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2082,7 +2127,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2129,7 +2176,7 @@ describe('thesis router', () => {
         describe('when the user is an admin', () => {
           it('should return 201, create the thesis and log the event', async () => {
             const newThesis = {
-          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -2140,6 +2187,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2147,7 +2195,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2181,7 +2231,7 @@ describe('thesis router', () => {
         })
 
         describe("when the user is a manager of the thesis' program", () => {
-          let newThesis
+          let newThesis: any
 
           beforeEach(() => {
             newThesis = {
@@ -2196,6 +2246,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2203,7 +2254,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2307,7 +2360,7 @@ describe('thesis router', () => {
         describe('when the user is a teacher and is a supervisor of the thesis', () => {
           it('should return 403 and a correct error message, and not log the event', async () => {
             const newThesis = {
-          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'New program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'New topic',
@@ -2318,6 +2371,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2325,7 +2379,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2371,7 +2427,7 @@ describe('thesis router', () => {
       describe('when the request contains duplicate supervisors', () => {
         it('should return 400 and not log the event', async () => {
           const newThesis = {
-          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+            waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
             programId: 'Test program',
             studyTrackId: 'new-test-study-track-id',
             topic: 'Test topic',
@@ -2382,12 +2438,14 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 50,
+                /* @ts-ignore */
                 isExternal: false,
                 isPrimarySupervisor: true,
               },
               {
                 user: user1,
                 percentage: 50,
+                /* @ts-ignore */
                 isExternal: false,
                 isPrimarySupervisor: false,
               },
@@ -2395,7 +2453,9 @@ describe('thesis router', () => {
             graders: [
               {
                 user: user4,
+                /* @ts-ignore */
                 isPrimaryGrader: true,
+                /* @ts-ignore */
                 isExternal: false,
               },
             ],
@@ -2428,7 +2488,7 @@ describe('thesis router', () => {
       describe('when the request contains duplicate graders', () => {
         it('should return 400 and not log the event', async () => {
           const newThesis = {
-          waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+            waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
             programId: 'Test program',
             studyTrackId: 'new-test-study-track-id',
             topic: 'Test topic',
@@ -2439,6 +2499,7 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 100,
+                /* @ts-ignore */
                 isExternal: false,
                 isPrimarySupervisor: true,
               },
@@ -2446,12 +2507,16 @@ describe('thesis router', () => {
             graders: [
               {
                 user: user4,
+                /* @ts-ignore */
                 isPrimaryGrader: true,
+                /* @ts-ignore */
                 isExternal: false,
               },
               {
                 user: user4,
+                /* @ts-ignore */
                 isPrimaryGrader: false,
+                /* @ts-ignore */
                 isExternal: false,
               },
             ],
@@ -2505,10 +2570,12 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
                 },
                 {
                   user: user5,
+                  /* @ts-ignore */
                   isPrimaryGrader: false,
                 },
               ],
@@ -2547,7 +2614,9 @@ describe('thesis router', () => {
             delete updatedThesis.authors
             expect(response.body).toMatchObject({
               ...updatedThesis,
-              graders: expect.toIncludeSameMembers(updatedThesis.graders),
+              graders: expectExtended.toIncludeSameMembers(
+                updatedThesis.graders
+              ),
             })
 
             const thesis = await Thesis.findByPk(thesis1.id)
@@ -2577,6 +2646,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
                 },
               ],
@@ -2636,6 +2706,7 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
                 },
               ],
@@ -2684,12 +2755,14 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 50,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
                 {
                   user: user1,
                   percentage: 50,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: false,
                 },
@@ -2697,7 +2770,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2756,6 +2831,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2763,12 +2839,16 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: false,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2801,10 +2881,12 @@ describe('thesis router', () => {
               expect.arrayContaining([
                 expect.objectContaining({
                   userId: user4.id,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
                 }),
                 expect.objectContaining({
                   userId: user5.id,
+                  /* @ts-ignore */
                   isPrimaryGrader: false,
                 }),
               ])
@@ -2833,6 +2915,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 50,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2845,7 +2928,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -2922,6 +3007,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 34,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -2939,7 +3025,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -3021,6 +3109,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -3029,7 +3118,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -3078,6 +3169,7 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 100,
+                /* @ts-ignore */
                 isExternal: false,
                 isPrimarySupervisor: true,
               },
@@ -3085,11 +3177,14 @@ describe('thesis router', () => {
             graders: [
               {
                 user: user4,
+                /* @ts-ignore */
                 isPrimaryGrader: true,
+                /* @ts-ignore */
                 isExternal: false,
               },
               {
                 user: extUserData,
+                /* @ts-ignore */
                 isPrimaryGrader: false,
                 isExternal: true,
               },
@@ -3129,10 +3224,12 @@ describe('thesis router', () => {
             expect.arrayContaining([
               expect.objectContaining({
                 userId: user4.id,
+                /* @ts-ignore */
                 isPrimaryGrader: true,
               }),
               expect.objectContaining({
                 userId: extUser.id,
+                /* @ts-ignore */
                 isPrimaryGrader: false,
               }),
             ])
@@ -3141,7 +3238,7 @@ describe('thesis router', () => {
       })
 
       describe('when the user is a teacher', () => {
-        let updatedThesis
+        let updatedThesis: any
 
         beforeEach(() => {
           updatedThesis = {
@@ -3156,6 +3253,7 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 100,
+                /* @ts-ignore */
                 isExternal: false,
                 isPrimarySupervisor: true,
               },
@@ -3163,12 +3261,16 @@ describe('thesis router', () => {
             graders: [
               {
                 user: user4,
+                /* @ts-ignore */
                 isPrimaryGrader: true,
+                /* @ts-ignore */
                 isExternal: false,
               },
               {
                 user: user5,
+                /* @ts-ignore */
                 isPrimaryGrader: false,
+                /* @ts-ignore */
                 isExternal: false,
               },
             ],
@@ -3246,7 +3348,7 @@ describe('thesis router', () => {
       })
 
       describe('when the user is a program manager', () => {
-        let updatedThesis
+        let updatedThesis: any
 
         beforeEach(() => {
           updatedThesis = {
@@ -3261,6 +3363,7 @@ describe('thesis router', () => {
               {
                 user: user1,
                 percentage: 100,
+                /* @ts-ignore */
                 isExternal: false,
                 isPrimarySupervisor: true,
               },
@@ -3268,12 +3371,16 @@ describe('thesis router', () => {
             graders: [
               {
                 user: user4,
+                /* @ts-ignore */
                 isPrimaryGrader: true,
+                /* @ts-ignore */
                 isExternal: false,
               },
               {
                 user: user5,
+                /* @ts-ignore */
                 isPrimaryGrader: false,
+                /* @ts-ignore */
                 isExternal: false,
               },
             ],
@@ -3379,6 +3486,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -3386,12 +3494,16 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user5,
+                  /* @ts-ignore */
                   isPrimaryGrader: false,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -3421,11 +3533,11 @@ describe('thesis router', () => {
         })
 
         describe("when the user is a manager of the thesis' program", () => {
-          let updatedThesis
+          let updatedThesis: any
 
           beforeEach(() => {
             updatedThesis = {
-            waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Testing program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -3436,6 +3548,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -3443,12 +3556,16 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user5,
+                  /* @ts-ignore */
                   isPrimaryGrader: false,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -3532,7 +3649,7 @@ describe('thesis router', () => {
               })
 
               const updatedThesis = {
-              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+                waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -3543,6 +3660,7 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
+                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -3550,12 +3668,16 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
+                    /* @ts-ignore */
                     isPrimaryGrader: true,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
+                    /* @ts-ignore */
                     isPrimaryGrader: false,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -3594,14 +3716,14 @@ describe('thesis router', () => {
           })
 
           describe('when the thesis already has IN_PROGRESS status', () => {
-            let updatedThesis
+            let updatedThesis: any
 
             beforeEach(async () => {
               thesis1.status = 'IN_PROGRESS'
               await thesis1.save()
 
               updatedThesis = {
-            waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+                waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Testing program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -3612,6 +3734,7 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
+                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -3619,12 +3742,16 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
+                    /* @ts-ignore */
                     isPrimaryGrader: true,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
+                    /* @ts-ignore */
                     isPrimaryGrader: false,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -3710,7 +3837,7 @@ describe('thesis router', () => {
               await thesis1.save()
 
               const updatedThesis = {
-              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+                waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Testing program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -3721,6 +3848,7 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
+                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -3728,12 +3856,16 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
+                    /* @ts-ignore */
                     isPrimaryGrader: true,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
+                    /* @ts-ignore */
                     isPrimaryGrader: false,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -3772,7 +3904,7 @@ describe('thesis router', () => {
           describe('when the thesis has PLANNING status', () => {
             it('should return 403 and a correct error message, and not log status change event', async () => {
               const updatedThesis = {
-              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+                waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -3783,6 +3915,7 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
+                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -3790,12 +3923,16 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
+                    /* @ts-ignore */
                     isPrimaryGrader: true,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
+                    /* @ts-ignore */
                     isPrimaryGrader: false,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -3845,7 +3982,7 @@ describe('thesis router', () => {
 
             it('should return 200, update the thesis and not log status change event', async () => {
               const updatedThesis = {
-              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+                waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -3856,6 +3993,7 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
+                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -3863,12 +4001,16 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
+                    /* @ts-ignore */
                     isPrimaryGrader: true,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
+                    /* @ts-ignore */
                     isPrimaryGrader: false,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -3909,7 +4051,7 @@ describe('thesis router', () => {
 
             it('should return 200, update the thesis and log status change event', async () => {
               const updatedThesis = {
-              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+                waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -3920,6 +4062,7 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
+                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -3927,12 +4070,16 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
+                    /* @ts-ignore */
                     isPrimaryGrader: true,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
+                    /* @ts-ignore */
                     isPrimaryGrader: false,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -3982,6 +4129,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -3989,12 +4137,16 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user5,
+                  /* @ts-ignore */
                   isPrimaryGrader: false,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4024,11 +4176,11 @@ describe('thesis router', () => {
         })
 
         describe("when the user is a manager of the thesis' program", () => {
-          let updatedThesis
+          let updatedThesis: any
 
           beforeEach(() => {
             updatedThesis = {
-            waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
               programId: 'Testing program',
               studyTrackId: 'new-test-study-track-id',
               topic: 'Updated topic',
@@ -4039,6 +4191,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4046,12 +4199,16 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user5,
+                  /* @ts-ignore */
                   isPrimaryGrader: false,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4130,7 +4287,7 @@ describe('thesis router', () => {
           describe('when the thesis has PLANNING status', () => {
             it('should return 403 and a correct error message, and not log status change event', async () => {
               const updatedThesis = {
-              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+                waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -4141,6 +4298,7 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
+                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -4148,12 +4306,16 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
+                    /* @ts-ignore */
                     isPrimaryGrader: true,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
+                    /* @ts-ignore */
                     isPrimaryGrader: false,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -4203,7 +4365,7 @@ describe('thesis router', () => {
 
             it('should return 200, update the thesis and not log status change event', async () => {
               const updatedThesis = {
-              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+                waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -4214,6 +4376,7 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
+                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -4221,12 +4384,16 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
+                    /* @ts-ignore */
                     isPrimaryGrader: true,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
+                    /* @ts-ignore */
                     isPrimaryGrader: false,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -4267,7 +4434,7 @@ describe('thesis router', () => {
 
             it('should return 403 and not log status change event', async () => {
               const updatedThesis = {
-              waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
+                waysOfWorkingValidUntil: '2070-01-01T00:00:00.000Z',
                 programId: 'Updated program',
                 studyTrackId: 'new-test-study-track-id',
                 topic: 'Updated topic',
@@ -4278,6 +4445,7 @@ describe('thesis router', () => {
                   {
                     user: user1,
                     percentage: 100,
+                    /* @ts-ignore */
                     isExternal: false,
                     isPrimarySupervisor: true,
                   },
@@ -4285,12 +4453,16 @@ describe('thesis router', () => {
                 graders: [
                   {
                     user: user4,
+                    /* @ts-ignore */
                     isPrimaryGrader: true,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                   {
                     user: user5,
+                    /* @ts-ignore */
                     isPrimaryGrader: false,
+                    /* @ts-ignore */
                     isExternal: false,
                   },
                 ],
@@ -4332,7 +4504,9 @@ describe('thesis router', () => {
             await Grader.create({
               userId: user4.id,
               thesisId: thesis1.id,
+              /* @ts-ignore */
               isPrimaryGrader: true,
+              /* @ts-ignore */
               isExternal: false,
             })
           })
@@ -4350,6 +4524,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4357,12 +4532,16 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user5,
+                  /* @ts-ignore */
                   isPrimaryGrader: false,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4402,13 +4581,17 @@ describe('thesis router', () => {
               {
                 userId: user4.id,
                 thesisId: thesis1.id,
+                /* @ts-ignore */
                 isPrimaryGrader: true,
+                /* @ts-ignore */
                 isExternal: false,
               },
               {
                 userId: user5.id,
                 thesisId: thesis1.id,
+                /* @ts-ignore */
                 isPrimaryGrader: false,
+                /* @ts-ignore */
                 isExternal: false,
               },
             ])
@@ -4427,6 +4610,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4434,7 +4618,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4474,13 +4660,17 @@ describe('thesis router', () => {
               {
                 userId: user4.id,
                 thesisId: thesis1.id,
+                /* @ts-ignore */
                 isPrimaryGrader: true,
+                /* @ts-ignore */
                 isExternal: false,
               },
               {
                 userId: user5.id,
                 thesisId: thesis1.id,
+                /* @ts-ignore */
                 isPrimaryGrader: false,
+                /* @ts-ignore */
                 isExternal: false,
               },
             ])
@@ -4499,6 +4689,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4506,12 +4697,16 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: false,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
                 {
                   user: user5,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4551,7 +4746,9 @@ describe('thesis router', () => {
               {
                 userId: user4.id,
                 thesisId: thesis1.id,
+                /* @ts-ignore */
                 isPrimaryGrader: true,
+                /* @ts-ignore */
                 isExternal: false,
               },
             ])
@@ -4570,6 +4767,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4577,7 +4775,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user4,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4618,6 +4818,7 @@ describe('thesis router', () => {
             await Supervision.create({
               userId: user1.id,
               thesisId: thesis1.id,
+              /* @ts-ignore */
               isPrimaryGrader: true,
               percentage: 100,
             })
@@ -4647,7 +4848,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user1,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4715,6 +4918,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4722,7 +4926,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user1,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4801,7 +5007,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user1,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4880,7 +5088,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user1,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4942,6 +5152,7 @@ describe('thesis router', () => {
                 {
                   user: user1,
                   percentage: 100,
+                  /* @ts-ignore */
                   isExternal: false,
                   isPrimarySupervisor: true,
                 },
@@ -4949,7 +5160,9 @@ describe('thesis router', () => {
               graders: [
                 {
                   user: user1,
+                  /* @ts-ignore */
                   isPrimaryGrader: true,
+                  /* @ts-ignore */
                   isExternal: false,
                 },
               ],
@@ -4985,7 +5198,7 @@ describe('thesis router', () => {
     })
 
     describe('GET /api/theses/:id/event-log', () => {
-      let thesis2
+      let thesis2: Thesis
       beforeEach(async () => {
         await Supervision.destroy({ where: {} })
         await User.destroy({ where: {} })
@@ -5083,7 +5296,9 @@ describe('thesis router', () => {
           expect(response.body.supervisors).toHaveLength(2)
           expect(response.body.supervisors[0]).toHaveProperty('supervisor')
           expect(response.body.supervisors[0]).toHaveProperty('statusCounts')
-          expect(response.body.supervisors[0].statusCounts).toHaveProperty('PLANNING')
+          expect(response.body.supervisors[0].statusCounts).toHaveProperty(
+            'PLANNING'
+          )
         })
       })
 
@@ -5099,7 +5314,7 @@ describe('thesis router', () => {
       })
 
       describe('when filtering by departmentId', () => {
-        let departmentAdminUser
+        let departmentAdminUser: User
         beforeEach(async () => {
           departmentAdminUser = await User.create({
             id: 'depadmin-123',
@@ -5120,28 +5335,34 @@ describe('thesis router', () => {
           const response = await request
             .get(`/api/theses/statistics?departmentId=${dep.id}`)
             .set({ uid: departmentAdminUser.id, hygroupcn: 'hy-employees' })
-          
+
           expect(response.status).toEqual(200)
           expect(response.body.supervisors).toBeInstanceOf(Array)
           expect(response.body.supervisors).toHaveLength(2)
           expect(response.body.supervisors[0]).toHaveProperty('supervisor')
           expect(response.body.supervisors[0]).toHaveProperty('statusCounts')
-          expect(response.body.supervisors[0]).toHaveProperty('startedWithinHalfYearCount')
-          expect(response.body.supervisors[0]).toHaveProperty('primarySupervisionsCount')
-          expect(response.body.supervisors[0]).toHaveProperty('lateSupervisions')
+          expect(response.body.supervisors[0]).toHaveProperty(
+            'startedWithinHalfYearCount'
+          )
+          expect(response.body.supervisors[0]).toHaveProperty(
+            'primarySupervisionsCount'
+          )
+          expect(response.body.supervisors[0]).toHaveProperty(
+            'lateSupervisions'
+          )
         })
 
         it('should return 403 when the user is not a department admin of the requested department', async () => {
           const response = await request
             .get(`/api/theses/statistics?departmentId=${dep.id}`)
             .set({ uid: user1.id, hygroupcn: 'hy-employees' }) // user1 is not a department admin
-          
+
           expect(response.status).toEqual(403)
         })
       })
 
       describe('when filtering by programId', () => {
-        let programManagerUser
+        let programManagerUser: User
         beforeEach(async () => {
           programManagerUser = await User.create({
             id: 'progadmin-123',
@@ -5162,7 +5383,7 @@ describe('thesis router', () => {
           const response = await request
             .get(`/api/theses/statistics?programId=Testing program`)
             .set({ uid: programManagerUser.id, hygroupcn: 'hy-employees' })
-            
+
           expect(response.status).toEqual(200)
           expect(response.body.supervisors).toBeInstanceOf(Array)
         })
@@ -5171,12 +5392,14 @@ describe('thesis router', () => {
           const response = await request
             .get(`/api/theses/statistics?programId=Testing program`)
             .set({ uid: user1.id, hygroupcn: 'hy-employees' })
-            
+
           expect(response.status).toEqual(200)
           expect(response.body.supervisors).toBeInstanceOf(Array)
           // Since user1 only supervises thesis1 in this program (along with user3), they should only see those 2 supervisor records
           expect(response.body.supervisors).toHaveLength(2)
-          const supervisorIds = response.body.supervisors.map(stat => stat.supervisor.id)
+          const supervisorIds = response.body.supervisors.map(
+            (stat: any) => stat.supervisor.id
+          )
           expect(supervisorIds).toContain(user1.id)
           expect(supervisorIds).toContain(user3.id)
         })
@@ -5185,7 +5408,7 @@ describe('thesis router', () => {
           const response = await request
             .get(`/api/theses/statistics?programId=New program`) // user1 does not supervise any theses here
             .set({ uid: user1.id, hygroupcn: 'hy-employees' })
-            
+
           expect(response.status).toEqual(200)
           expect(response.body.supervisors).toBeInstanceOf(Array)
           expect(response.body.supervisors).toHaveLength(0) // Properly filtered out!

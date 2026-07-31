@@ -1,3 +1,4 @@
+import { describe, it, test, expect, beforeEach } from 'vitest'
 import supertest from 'supertest'
 import app from '../index'
 import { Program, ProgramManagement, User } from '../db/models'
@@ -5,13 +6,13 @@ import { Program, ProgramManagement, User } from '../db/models'
 const request = supertest.agent(app)
 
 describe('program-managements router', () => {
-  let user1
-  let user2
-  let user3
-  let program1
-  let program2
-  let programManagement1
-  let programManagement2
+  let user1: User
+  let user2: User
+  let user3: User
+  let program1: Program
+  let program2: Program
+  let programManagement1: ProgramManagement
+  let programManagement2: ProgramManagement
 
   beforeEach(async () => {
     program1 = await Program.create({
@@ -285,7 +286,7 @@ describe('program-managements router', () => {
   })
 
   describe('when the user is a teacher and is managing program 1', () => {
-    let programThatTheUserCanManage
+    let programThatTheUserCanManage: ProgramManagement
     beforeEach(async () => {
       programThatTheUserCanManage = await ProgramManagement.create({
         programId: program1.id,

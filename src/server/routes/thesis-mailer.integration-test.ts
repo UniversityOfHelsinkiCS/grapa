@@ -1,3 +1,4 @@
+import { describe, it, test, expect, beforeEach, afterEach, vi } from 'vitest'
 import supertest from 'supertest'
 import fs from 'fs'
 
@@ -14,10 +15,10 @@ import {
 } from '../db/models'
 import { EmployeeUserSchema } from '../validators/userResponse'
 
-const userAttributesToFetch = Object.keys(EmployeeUserSchema.shape)
+const userAttributesToFetch: string[] = Object.keys(EmployeeUserSchema.shape)
 
-jest.unstable_mockModule('./src/server/mailer/pate', () => ({
-  default: jest.fn(),
+vi.mock('../mailer/pate', () => ({
+  default: vi.fn(),
 }))
 const sendEmail = (await import('../mailer/pate')).default
 
@@ -25,17 +26,17 @@ const app = (await import('../index')).default
 const request = supertest.agent(app)
 
 describe('Theisis router with mocks', () => {
-  let mockUnlinkSync
-  let user1
-  let user2
-  let user3
-  let programManagerUser
-  let adminUser
-  let thesis1
-  let thesis2
+  let mockUnlinkSync: any
+  let user1: User
+  let user2: User
+  let user3: User
+  let programManagerUser: User
+  let adminUser: User
+  let thesis1: Thesis
+  let thesis2: Thesis
 
   beforeEach(async () => {
-    mockUnlinkSync = jest.fn()
+    mockUnlinkSync = vi.fn()
     fs.unlinkSync = mockUnlinkSync
 
     await Program.create({
@@ -203,7 +204,7 @@ describe('Theisis router with mocks', () => {
   })
 
   afterEach(async () => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
   })
 
   describe('when the status is changed from PLANNING to IN_PROGRESS', () => {

@@ -1,6 +1,4 @@
-/**
- * @jest-environment jsdom
- */
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import {
   fireEvent,
@@ -12,10 +10,10 @@ import {
 
 import initializeI18n from '../../util/il18n'
 
-jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useLoggedInUser', () => ({
+  default: vi.fn().mockReturnValue({
     user: {
-      id: 1,
+      id: '1',
       firstName: 'John',
       lastName: 'Doe',
       username: 'johndoe',
@@ -25,19 +23,19 @@ jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useUsers', () => ({
+  default: vi.fn().mockReturnValue({
     users: [
-      { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe' },
-      { id: 2, firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
+      { id: '1', firstName: 'John', lastName: 'Doe', username: 'johndoe' },
+      { id: '2', firstName: 'Jane', lastName: 'Smith', username: 'janesmith' },
       {
-        id: 3,
+        id: '3',
         firstName: 'Bob',
         lastName: 'Luukkainen',
         username: 'bobluukkainen',
       },
       {
-        id: 4,
+        id: '4',
         firstName: 'Henri',
         lastName: 'Tunkkaaja',
         username: 'tunkkaus',
@@ -46,44 +44,44 @@ jest.unstable_mockModule('./src/client/hooks/useUsers', () => ({
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
-  default: jest.fn().mockReturnValue({ programs: [] }),
+vi.mock('../../hooks/usePrograms', () => ({
+  default: vi.fn().mockReturnValue({ programs: [] }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useDepartments', () => ({
+  default: vi.fn().mockReturnValue({
     departments: [
       {
-        id: 1,
+        id: '1',
         name: {
           en: 'Department of Computer Science',
           fi: 'Tietojenkäsittelytieteen laitos',
         },
       },
       {
-        id: 2,
+        id: '2',
         name: { en: 'Test department', fi: 'Testiosasto' },
       },
     ],
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useDepartmentAdmins', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useDepartmentAdmins', () => ({
+  default: vi.fn().mockReturnValue({
     departmentAdmins: [
       {
-        id: 1,
+        id: '1',
         departmentId: 1,
         userId: 1,
         department: {
-          id: 1,
+          id: '1',
           name: {
             en: 'Department of Computer Science',
             fi: 'Tietojenkäsittelytieteen laitos',
           },
         },
         user: {
-          id: 1,
+          id: '1',
           firstName: 'John',
           lastName: 'Doe',
           username: 'johndoe',
@@ -94,87 +92,77 @@ jest.unstable_mockModule('./src/client/hooks/useDepartmentAdmins', () => ({
   }),
 }))
 
-jest.unstable_mockModule(
-  './src/client/hooks/useDepartmentAdminMutation',
-  () => ({
-    useCreateDepartmentAdminMutation: jest.fn().mockReturnValue({
-      mutateAsync: jest.fn(),
-    }),
-    useDeleteDepartmentAdminMutation: jest.fn().mockReturnValue({
-      mutateAsync: jest.fn(),
-    }),
-  })
-)
-
-jest.unstable_mockModule('./src/client/hooks/useProgramManagements', () => ({
-  default: jest.fn().mockReturnValue({ programManagements: [] }),
+vi.mock('../../hooks/useDepartmentAdminMutation', () => ({
+  useCreateDepartmentAdminMutation: vi
+    .fn()
+    .mockReturnValue({ mutateAsync: vi.fn() } as never),
+  useDeleteDepartmentAdminMutation: vi
+    .fn()
+    .mockReturnValue({ mutateAsync: vi.fn() } as never),
 }))
 
-jest.unstable_mockModule(
-  './src/client/hooks/useProgramManagementMutation',
-  () => ({
-    useCreateProgramManagementMutation: jest.fn().mockReturnValue({
-      mutateAsync: jest.fn(),
-    }),
-    useDeleteProgramManagementMutation: jest.fn().mockReturnValue({
-      mutateAsync: jest.fn(),
-    }),
-    useUpdateProgramManagementMutation: jest.fn().mockReturnValue({
-      mutateAsync: jest.fn(),
-    }),
-  })
-)
-
-jest.unstable_mockModule('./src/client/hooks/useStudyTrackManagements', () => ({
-  default: jest.fn().mockReturnValue({ studyTrackManagements: [] }),
+vi.mock('../../hooks/useProgramManagements', () => ({
+  default: vi.fn().mockReturnValue({ programManagements: [] }),
 }))
 
-jest.unstable_mockModule(
-  './src/client/hooks/useStudyTrackManagementMutation',
-  () => ({
-    useCreateStudyTrackManagementMutation: jest.fn().mockReturnValue({
-      mutateAsync: jest.fn(),
-    }),
-    useDeleteStudyTrackManagementMutation: jest.fn().mockReturnValue({
-      mutateAsync: jest.fn(),
-    }),
-  })
-)
-
-jest.unstable_mockModule('@mui/icons-material/Delete', () => ({
-  default: jest.fn().mockReturnValue('DeleteIcon'),
+vi.mock('../../hooks/useProgramManagementMutation', () => ({
+  useCreateProgramManagementMutation: vi
+    .fn()
+    .mockReturnValue({ mutateAsync: vi.fn() }),
+  useDeleteProgramManagementMutation: vi
+    .fn()
+    .mockReturnValue({ mutateAsync: vi.fn() }),
+  useUpdateProgramManagementMutation: vi
+    .fn()
+    .mockReturnValue({ mutateAsync: vi.fn() }),
 }))
 
-jest.unstable_mockModule('react-router-dom', () => ({ Navigate: jest.fn() }))
+vi.mock('../../hooks/useStudyTrackManagements', () => ({
+  default: vi.fn().mockReturnValue({ studyTrackManagements: [] }),
+}))
+
+vi.mock('../../hooks/useStudyTrackManagementMutation', () => ({
+  useCreateStudyTrackManagementMutation: vi
+    .fn()
+    .mockReturnValue({ mutateAsync: vi.fn() }),
+  useDeleteStudyTrackManagementMutation: vi
+    .fn()
+    .mockReturnValue({ mutateAsync: vi.fn() }),
+}))
+
+vi.mock('@mui/icons-material/Delete', () => ({
+  default: vi.fn().mockReturnValue('DeleteIcon'),
+}))
+
+vi.mock('react-router-dom', () => ({ Navigate: vi.fn() }))
 
 const { useCreateDepartmentAdminMutation, useDeleteDepartmentAdminMutation } =
   await import('../../hooks/useDepartmentAdminMutation')
-const ManageEntityPermissions = (await import('./ManageEntityPermissions')).default
+const ManageEntityPermissions = (await import('./ManageEntityPermissions'))
+  .default
 
 describe('ManageEntityPermissions (Department)', () => {
-  let createDepartmentAdminMock
-  let deleteDepartmentAdminMock
+  let createDepartmentAdminMock: any
+  let deleteDepartmentAdminMock: any
 
   beforeEach(() => {
     initializeI18n()
 
-    createDepartmentAdminMock = jest.fn()
-    deleteDepartmentAdminMock = jest.fn()
+    createDepartmentAdminMock = vi.fn()
+    deleteDepartmentAdminMock = vi.fn()
 
-    useCreateDepartmentAdminMutation.mockReturnValue({
+    vi.mocked(useCreateDepartmentAdminMutation).mockReturnValue({
       mutateAsync: createDepartmentAdminMock,
-    })
-    useDeleteDepartmentAdminMutation.mockReturnValue({
+    } as never)
+    vi.mocked(useDeleteDepartmentAdminMutation).mockReturnValue({
       mutateAsync: deleteDepartmentAdminMock,
-    })
+    } as never)
   })
 
   it('renders all existing department admins', () => {
     render(<ManageEntityPermissions entityType="department" />)
 
-    expect(
-      screen.getByText('Yksikön ylläpitäjät')
-    ).toBeInTheDocument()
+    expect(screen.getByText('Yksikön ylläpitäjät')).toBeInTheDocument()
     expect(screen.getByText('Doe John')).toBeInTheDocument()
     expect(
       screen.getByText('Tietojenkäsittelytieteen laitos')

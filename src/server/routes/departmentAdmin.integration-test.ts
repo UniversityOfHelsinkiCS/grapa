@@ -1,3 +1,4 @@
+import { describe, it, test, expect, beforeEach } from 'vitest'
 import supertest from 'supertest'
 import app from '../index'
 import {
@@ -9,17 +10,18 @@ import {
   DepartmentAdmin,
   User,
 } from '../db/models'
+import { Response } from 'express'
 
 const request = supertest.agent(app)
 
 describe('department-admins router', () => {
-  let user1
-  let user2
-  let user3
-  let department1
-  let department2
-  let departmentAdmin1
-  let departmentAdmin2
+  let user1: User
+  let user2: User
+  let user3: User
+  let department1: Department
+  let department2: Department
+  let departmentAdmin1: DepartmentAdmin
+  let departmentAdmin2: DepartmentAdmin
 
   beforeEach(async () => {
     department1 = await Department.create({
@@ -73,8 +75,6 @@ describe('department-admins router', () => {
       })
     })
 
-
-
     describe('POST /api/department-admins', () => {
       it('should return 403', async () => {
         const res = await request.post('/api/department-admins').send({
@@ -108,8 +108,6 @@ describe('department-admins router', () => {
         expect(res.body).toMatchObject([])
       })
     })
-
-
 
     describe('POST /api/department-admins', () => {
       it('should return 403', async () => {
@@ -159,7 +157,6 @@ describe('department-admins router', () => {
         ])
       })
     })
-
 
     describe('POST /api/department-admins', () => {
       it('should return 200', async () => {
@@ -231,7 +228,7 @@ describe('department-admins router', () => {
   })
 
   describe('when the user is a department admin', () => {
-    let departmentAdmin3
+    let departmentAdmin3: DepartmentAdmin
     beforeEach(async () => {
       departmentAdmin3 = await DepartmentAdmin.create({
         departmentId: department1.id,
@@ -263,7 +260,6 @@ describe('department-admins router', () => {
         ])
       })
     })
-
 
     describe('POST /api/department-admins', () => {
       it('should return 200 when adding a department admin to the same department', async () => {

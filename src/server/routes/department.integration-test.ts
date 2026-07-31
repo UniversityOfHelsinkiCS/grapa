@@ -1,13 +1,15 @@
+import { describe, it, test, expect, beforeEach } from 'vitest'
 import supertest from 'supertest'
 import app from '../index'
 import { Department, DepartmentAdmin, User } from '../db/models'
+import { Response } from 'express'
 
 const request = supertest.agent(app)
 
 describe('department router', () => {
-  let user1
+  let user1: User
 
-  const departments = [
+  const departments: Partial<Department>[] = [
     {
       id: '202ab77b-9c57-4cd0-a560-25dcd5108d6f',
       name: {
@@ -86,7 +88,7 @@ describe('department router', () => {
   describe('when the user is a teacher', () => {
     it('should return 200 and return every department when includeNotManaged is true', async () => {
       // We are seeding the database with the six departments on one of the migrations
-      const res = await request
+      const res: any = await request
         .get('/api/departments?includeNotManaged=true')
         .set({ uid: user1.id, hygroupcn: 'hy-employees' })
       expect(res.status).toBe(200)
@@ -95,7 +97,7 @@ describe('department router', () => {
 
     it('should return 200 and return only the managed departments when includeNotManaged is false', async () => {
       // Because teacher is not a department admin, the teacher should not see any departments
-      const res = await request
+      const res: any = await request
         .get('/api/departments?includeNotManaged=false')
         .set({ uid: user1.id, hygroupcn: 'hy-employees' })
       expect(res.status).toBe(200)
@@ -106,7 +108,7 @@ describe('department router', () => {
   describe('when the user is an admin', () => {
     it('should return 200 and return every department when includeNotManaged is true', async () => {
       // We are seeding the database with the six departments on one of the migrations
-      const res = await request
+      const res: any = await request
         .get('/api/departments?includeNotManaged=true')
         .set({ uid: user1.id, hygroupcn: 'grp-toska' })
       expect(res.status).toBe(200)
@@ -115,7 +117,7 @@ describe('department router', () => {
 
     it('should return 200 and return only the managed departments when includeNotManaged is false', async () => {
       // Because admin is a department admin, the admin should see all departments
-      const res = await request
+      const res: any = await request
         .get('/api/departments?includeNotManaged=false')
         .set({ uid: user1.id, hygroupcn: 'grp-toska' })
       expect(res.status).toBe(200)
@@ -124,8 +126,8 @@ describe('department router', () => {
   })
 
   describe('when the user is a department admin', () => {
-    let user2
-    let department1
+    let user2: User
+    let department1: Department
 
     beforeEach(async () => {
       department1 = await Department.findOne()
@@ -147,7 +149,7 @@ describe('department router', () => {
 
     it('should return 200 and return every department when includeNotManaged is true', async () => {
       // We are seeding the database with the six departments on one of the migrations
-      const res = await request
+      const res: any = await request
         .get('/api/departments?includeNotManaged=true')
         .set({ uid: user2.id, hygroupcn: 'hy-employees' })
       expect(res.status).toBe(200)
@@ -155,7 +157,7 @@ describe('department router', () => {
     })
 
     it('should return 200 and return only the managed departments when includeNotManaged is false', async () => {
-      const res = await request
+      const res: any = await request
         .get('/api/departments?includeNotManaged=false')
         .set({ uid: user2.id, hygroupcn: 'hy-employees' })
       expect(res.status).toBe(200)

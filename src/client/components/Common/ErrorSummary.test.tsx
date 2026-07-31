@@ -1,14 +1,11 @@
-/**
- * @jest-environment jsdom
- */
-;
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
 
-jest.unstable_mockModule('@mui/icons-material/ReportOutlined', () => ({
-  default: jest.fn().mockReturnValue('ReportOutlinedIcon'),
-  }))
+vi.mock('@mui/icons-material/ReportOutlined', () => ({
+  default: vi.fn().mockReturnValue('ReportOutlinedIcon'),
+}))
 
 const ErrorSummary = (await import('./ErrorSummary')).default
 
@@ -17,9 +14,7 @@ describe('ErrorSummary', () => {
     initializeI18n()
 
     render(
-      <ErrorSummary
-        label="Form contains the following errors"
-      >
+      <ErrorSummary label="Form contains the following errors">
         <ul>
           <li>
             Error 1: <a href="#field1">Please enter your first name</a>
@@ -31,7 +26,7 @@ describe('ErrorSummary', () => {
             Error 3: <a href="#field3">Please enter a valid email address</a>
           </li>
         </ul>
-      </ErrorSummary>,
+      </ErrorSummary>
     )
   })
 

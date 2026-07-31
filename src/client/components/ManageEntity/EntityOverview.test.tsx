@@ -1,16 +1,14 @@
-/**
- * @jest-environment jsdom
- */
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 
 import initializeI18n from '../../util/il18n'
 
-const useLoggedInUserMock = jest.fn()
+const useLoggedInUserMock = vi.fn()
 
-jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/usePrograms', () => ({
+  default: vi.fn().mockReturnValue({
     isLoading: false,
     programs: [
       {
@@ -25,59 +23,56 @@ jest.unstable_mockModule('./src/client/hooks/usePrograms', () => ({
       },
     ],
   }),
-  useUpdateProgramMutation: jest.fn().mockReturnValue({
+  useUpdateProgramMutation: vi.fn().mockReturnValue({
     isPending: false,
-    mutateAsync: jest.fn(),
+    mutateAsync: vi.fn(),
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useEvents', () => ({
-  useProgramEvents: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useEvents', () => ({
+  useProgramEvents: vi.fn().mockReturnValue({
     events: [],
     isLoading: false,
   }),
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useLoggedInUser', () => ({
+vi.mock('../../hooks/useLoggedInUser', () => ({
   default: useLoggedInUserMock,
 }))
 
-jest.unstable_mockModule('./src/client/hooks/useDepartments', () => ({
-  default: jest.fn().mockReturnValue({
+vi.mock('../../hooks/useDepartments', () => ({
+  default: vi.fn().mockReturnValue({
     departments: [],
     isLoading: false,
   }),
 }))
 
-jest.unstable_mockModule(
-  './src/client/components/ThesisPage/ThesesPage',
-  () => ({
-    default: jest.fn(({ filteringProgramId }) => (
-      <div data-testid="theses-page">{filteringProgramId}</div>
-    )),
-  })
-)
+vi.mock('../ThesisPage/ThesesPage', () => ({
+  default: vi.fn(({ filteringProgramId }) => (
+    <div data-testid="theses-page">{filteringProgramId}</div>
+  )),
+}))
 
-jest.unstable_mockModule(
-  './src/client/components/ManageEntity/ManageEntityPermissions',
-  () => ({
-    default: jest.fn(({ filteringEntityId, hideTitle }) => (
-      <div data-testid="entity-management">{`${filteringEntityId}-${String(hideTitle)}`}</div>
-    )),
-  })
-)
+vi.mock('./ManageEntityPermissions', () => ({
+  default: vi.fn(({ filteringEntityId, hideTitle }) => (
+    <div data-testid="entity-management">{`${filteringEntityId}-${String(hideTitle)}`}</div>
+  )),
+}))
 
 const EntityOverview = (await import('./EntityOverview')).default
 const { useUpdateProgramMutation: useUpdateProgramMutation } =
   await import('../../hooks/usePrograms')
 
-const renderProgramOverview = (initialEntry) =>
+const renderProgramOverview = (initialEntry: any) =>
   render(
     <MemoryRouter initialEntries={[initialEntry]}>
       <Routes>
         <Route path="/programs">
           <Route index element={<EntityOverview entityType="program" />} />
-          <Route path=":programId" element={<EntityOverview entityType="program" />} />
+          <Route
+            path=":programId"
+            element={<EntityOverview entityType="program" />}
+          />
         </Route>
       </Routes>
     </MemoryRouter>
@@ -86,7 +81,7 @@ const renderProgramOverview = (initialEntry) =>
 describe('EntityOverview', () => {
   beforeEach(() => {
     initializeI18n()
-    useLoggedInUserMock.mockReturnValue({
+    vi.mocked(useLoggedInUserMock).mockReturnValue({
       user: { isAdmin: true },
       isLoading: false,
     })
