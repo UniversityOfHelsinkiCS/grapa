@@ -41,17 +41,17 @@ export const suggestionRejectedEmailTemplate = (
 Tämä on automaattinen viesti Prethesiksestä.
 
 Käyttäjä ${actionUser.firstName} ${actionUser.lastName} on muuttanut tutkielman "${updatedThesis.topic}" tilaksi LUONNOS.
-${customMessage ? `\nViesti ohjaajalta:\n${customMessage}\n` : ''}
+${customMessage ? `\nViesti käyttäjältä:\n${customMessage}\n` : ''}
 ---
 This is an automated message from Prethesis.
 
 The status of the thesis "${updatedThesis.topic}" has been changed to DRAFT by ${actionUser.firstName} ${actionUser.lastName}.
-${customMessage ? `\nMessage from the supervisor:\n${customMessage}\n` : ''}
+${customMessage ? `\nMessage from the user:\n${customMessage}\n` : ''}
 ---
 Detta är ett automatiskt meddelande från Prethesis.
 
 Statusen för avhandlingen "${updatedThesis.topic}" har ändrats till UTKAST av ${actionUser.firstName} ${actionUser.lastName}.
-${customMessage ? `\nMeddelande från handledaren:\n${customMessage}\n` : ''}
+${customMessage ? `\nMeddelande från användaren:\n${customMessage}\n` : ''}
   `,
   }
 }
