@@ -34,8 +34,9 @@ export const getMilestonesArray = (
   if (!programOptions?.useMilestones) return null
   const versions = programOptions?.milestones?.versions
   if (!versions) return null
+  if (milestoneVersion == null) return null
 
-  return versions.at(milestoneVersion != null ? milestoneVersion : -1) ?? null
+  return versions.at(milestoneVersion) ?? null
 }
 
 export const getMilestoneCount = (
