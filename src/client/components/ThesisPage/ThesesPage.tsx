@@ -334,7 +334,9 @@ const ThesesPage = ({
           isStudentView={isStudentView}
           initializeNewThesis={initializeNewThesis}
           availableMilestones={availableMilestones}
-          noAddThesisButton={noAddThesisButton}
+          noAddThesisButton={
+            noAddThesisButton || (isStudentView && (totalCount ?? 0) > 0)
+          }
           showSupervisors={showSupervisors}
           showGraders={showGraders}
           showMilestonePercentage={
