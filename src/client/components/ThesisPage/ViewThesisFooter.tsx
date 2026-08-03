@@ -900,7 +900,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
             setPendingAction(null)
             setRejectMessage('')
           }}
-          submitText={t('submitButton')}
+          submitText={t('approveButton')}
           cancelText={t('cancelButton')}
         >
           <Typography>
