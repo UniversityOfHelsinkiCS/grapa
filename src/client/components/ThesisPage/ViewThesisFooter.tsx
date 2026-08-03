@@ -534,7 +534,8 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                     {t('viewThesisFooter:sendDraftButton')}
                   </Button>
                 )}
-                {!thesis.program?.options?.hideSendToEthesis &&
+                {(!thesis.program?.options?.hideSendToEthesis ||
+                  thesis.program?.options?.allowStudentStartedProcess) &&
                   !isStudentView &&
                   (hasMilestones(
                     thesis.program?.options,
