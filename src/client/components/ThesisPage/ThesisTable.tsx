@@ -5,6 +5,10 @@ import {
   getCoreRowModel,
   useReactTable,
   CellContext,
+  ColumnFiltersState,
+  SortingState,
+  PaginationState,
+  RowSelectionState,
 } from '@tanstack/react-table'
 
 import { LoggedInUser as User } from '@backend/validators/userResponse'
@@ -81,15 +85,21 @@ interface Props {
   rows: Thesis[]
   isLoading?: boolean
   totalCount: number
-  onFilterChange: any
-  onSortingChange: any
-  onPaginationChange: any
-  onSelection: any
-  onSearch: any
-  selection: any
+  onFilterChange: (filters: ColumnFiltersState) => void
+  onSortingChange: (sorting: SortingState) => void
+  onPaginationChange: (pagination: PaginationState) => void
+  onSelection: (selection: RowSelectionState) => void
+  onSearch: (query: string) => void
+  selection: RowSelectionState
   user: User
-  filterViews: any
-  initializeNewThesis: any
+  filterViews?: {
+    label?: string
+    items: Record<
+      string,
+      { filterModel: ColumnFiltersState; sortingModel: SortingState }
+    >
+  }[]
+  initializeNewThesis: () => void
   isStudentView: boolean
   noAddThesisButton: boolean
   showSupervisors?: boolean
@@ -775,8 +785,8 @@ const ThesisTable = ({
               setActiveToggles([])
               setActiveMilestoneFilter('all')
 
-              const newDir = viewData.sortingModel[0]['sort']
-              const newField = viewData.sortingModel[0]['field']
+              const newDir = viewData.sortingModel[0]?.desc ? 'desc' : 'asc'
+              const newField = viewData.sortingModel[0]?.id
               handleSortChange(newField, newDir)
 
               onFilterChange(getCombinedFilterItems(newValue, [], 'all'))

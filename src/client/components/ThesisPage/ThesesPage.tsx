@@ -375,12 +375,8 @@ const ThesesPage = ({
                               {} as Record<string, any>
                             ),
                             all: {
-                              filterModel: {
-                                items: [],
-                              },
-                              sortingModel: [
-                                { field: 'startDate', sort: 'desc' },
-                              ],
+                              filterModel: [],
+                              sortingModel: [{ id: 'startDate', desc: true }],
                             },
                           }
                         : {
