@@ -60,14 +60,23 @@ export const ProgressView = ({
         })
       : []
 
-  const startStatuses = thesis.program.options?.allowStudentStartedProcess
+  type ProgressStep = {
+    name: string
+    statusId?: string
+    milestone?: boolean
+    milestone_index?: number
+    description?: string
+  }
+
+  const startStatuses: ProgressStep[] = thesis.program.options
+    ?.allowStudentStartedProcess
     ? [
         { statusId: 'DRAFT', name: t('thesisStages:draft') },
         { statusId: 'SUGGESTED', name: t('thesisStages:suggested') },
       ]
     : [{ statusId: 'PLANNING', name: t('thesisStages:planned') }]
 
-  const steps = [
+  const steps: ProgressStep[] = [
     ...startStatuses,
     { statusId: 'IN_PROGRESS', name: t('thesisStages:inProgress') },
     ...milestones,

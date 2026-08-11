@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import type { ProgramOptions } from '@backend/types'
 
 export const LATE_THESIS_THRESHOLD_DAYS = 30
 export const VERY_LATE_THESIS_THRESHOLD_DAYS = 180
@@ -27,20 +28,28 @@ export const isThesisVeryLate = (
   return getThesisLateDays(targetDate) >= VERY_LATE_THESIS_THRESHOLD_DAYS
 }
 
+export const programHasMilestones = (
+  programOptions: ProgramOptions | null | undefined
+): boolean => {
+  return Boolean(
+    programOptions?.useMilestones &&
+    programOptions?.milestones?.versions &&
+    programOptions.milestones.versions.length > 0
+  )
+}
+
 export const getMilestonesArray = (
-  programOptions: any,
+  programOptions: ProgramOptions | null | undefined,
   milestoneVersion: number | null | undefined
 ) => {
-  if (!programOptions?.useMilestones) return null
-  const versions = programOptions?.milestones?.versions
-  if (!versions) return null
-  if (milestoneVersion == null) return null
+  if (!programHasMilestones(programOptions)) return null
+  if (milestoneVersion == null || milestoneVersion < 0) return null
 
-  return versions.at(milestoneVersion) ?? null
+  return programOptions!.milestones!.versions.at(milestoneVersion) ?? null
 }
 
 export const getMilestoneCount = (
-  programOptions: any,
+  programOptions: ProgramOptions | null | undefined,
   milestoneVersion: number | null | undefined
 ): number | null => {
   const array = getMilestonesArray(programOptions, milestoneVersion)
@@ -48,7 +57,7 @@ export const getMilestoneCount = (
 }
 
 export const hasMilestones = (
-  programOptions: any,
+  programOptions: ProgramOptions | null | undefined,
   milestoneVersion: number | null | undefined
 ): boolean => {
   const count = getMilestoneCount(programOptions, milestoneVersion)
@@ -56,7 +65,7 @@ export const hasMilestones = (
 }
 
 export const getMilestoneValue = (
-  programOptions: any,
+  programOptions: ProgramOptions | null | undefined,
   milestoneVersion: number | null | undefined,
   milestone: number | null | undefined
 ) => {
@@ -74,4 +83,20 @@ export const parseMilestoneDescription = (
   return typeof val === 'string'
     ? val
     : val[language as keyof typeof val] || val.fi || ''
+}
+
+export const getDefaultMilestoneVersionIndex = (
+  programOptions: ProgramOptions | null | undefined
+): number => {
+  if (!programHasMilestones(programOptions)) return -1
+  return programOptions!.milestones!.versions.length - 1
+}
+
+export const resolveMilestoneVersionIndex = (
+  currentMilestoneVersion: number | null | undefined,
+  programOptions: ProgramOptions | null | undefined
+): number => {
+  if (currentMilestoneVersion === null) return -1
+  if (currentMilestoneVersion !== undefined) return currentMilestoneVersion
+  return getDefaultMilestoneVersionIndex(programOptions)
 }

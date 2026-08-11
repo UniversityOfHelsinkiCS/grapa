@@ -32,6 +32,8 @@ import useUsers from '../../hooks/useUsers'
 import {
   parseMilestoneDescription,
   hasMilestones,
+  programHasMilestones,
+  resolveMilestoneVersionIndex,
 } from '../../../shared/utils/thesisUtils'
 import { useDebounce } from '../../hooks/useDebounce'
 import useLoggedInUser from '../../hooks/useLoggedInUser'
@@ -116,14 +118,22 @@ const ThesisEditForm = ({
       (p) => p.id == editedThesis.programId
     )
 
+    const submitMilestoneVersionIndex = resolveMilestoneVersionIndex(
+      editedThesis.milestoneVersion,
+      currentProgram[0]?.options
+    )
+
     if (
       currentProgram.length > 0 &&
-      hasMilestones(currentProgram[0].options, editedThesis.milestoneVersion) &&
-      editedThesis.milestone == null
+      submitMilestoneVersionIndex >= 0 &&
+      hasMilestones(currentProgram[0].options, submitMilestoneVersionIndex) &&
+      (editedThesis.milestone == null || editedThesis.milestone === undefined)
     ) {
       editedThesis.milestone = 0
-      editedThesis.milestoneVersion =
-        currentProgram[0].options.milestones.versions.length - 1
+      editedThesis.milestoneVersion = submitMilestoneVersionIndex
+    } else if (submitMilestoneVersionIndex === -1) {
+      editedThesis.milestone = null
+      editedThesis.milestoneVersion = null
     }
 
     try {
@@ -187,25 +197,28 @@ const ThesisEditForm = ({
     (canChangeStatus ||
       ['IN_PROGRESS', 'CANCELLED'].includes(initialThesis.status))
 
-  const showMilestoneForm = Boolean(
-    canChangeStatus &&
-    hasMilestones(selectedProgram?.options, editedThesis.milestoneVersion)
+  const isProgramUsingMilestones = programHasMilestones(
+    selectedProgram?.options
   )
 
-  const hasMultipleMilestoneVersions = Boolean(
-    hasMilestones(selectedProgram?.options, editedThesis.milestoneVersion) &&
-    selectedProgram?.options?.milestones?.versions?.length &&
-    selectedProgram.options.milestones.versions.length > 1
+  const milestoneVersionIndex = resolveMilestoneVersionIndex(
+    editedThesis.milestoneVersion,
+    selectedProgram?.options
   )
-
-  const milestoneVersionIndex =
-    editedThesis.milestoneVersion != null
-      ? editedThesis.milestoneVersion
-      : (selectedProgram?.options?.milestones?.versions?.length || 1) - 1
 
   const programMilestones =
-    selectedProgram?.options?.milestones?.versions?.[milestoneVersionIndex] ||
-    []
+    milestoneVersionIndex >= 0
+      ? selectedProgram?.options?.milestones?.versions?.[
+          milestoneVersionIndex
+        ] || []
+      : []
+
+  const showMilestoneForm = Boolean(canChangeStatus && isProgramUsingMilestones)
+
+  const hasMultipleMilestoneVersions = Boolean(
+    isProgramUsingMilestones &&
+    selectedProgram?.options?.milestones?.versions?.length > 1
+  )
 
   const currentStatus = editedThesis.status
 
@@ -711,74 +724,88 @@ const ThesisEditForm = ({
                 </Alert>
               )}
               <Stack spacing={2} direction={{ xs: 'column', md: 'row' }}>
-                {hasMultipleMilestoneVersions && (
-                  <Tooltip
-                    title={t('thesisForm:milestoneVersionTooltip')}
-                    placement="top"
-                  >
-                    <FormControl fullWidth>
-                      <InputLabel id="milestone-version-select-label">
-                        {t('thesisForm:milestoneVersion')}
-                      </InputLabel>
-                      <Select
-                        data-testid="milestone-version-select-input"
-                        value={milestoneVersionIndex}
-                        label={t('thesisForm:milestoneVersion')}
-                        id="milestoneVersion"
-                        name="milestoneVersion"
-                        onChange={(event) => {
+                <Tooltip
+                  title={t('thesisForm:milestoneVersionTooltip')}
+                  placement="top"
+                >
+                  <FormControl fullWidth>
+                    <InputLabel id="milestone-version-select-label">
+                      {t('thesisForm:milestoneVersion')}
+                    </InputLabel>
+                    <Select
+                      data-testid="milestone-version-select-input"
+                      value={milestoneVersionIndex}
+                      label={t('thesisForm:milestoneVersion')}
+                      id="milestoneVersion"
+                      name="milestoneVersion"
+                      onChange={(event) => {
+                        const val = Number(event.target.value)
+                        if (val === -1) {
                           setEditedThesis((oldThesis) => ({
                             ...oldThesis,
-                            milestoneVersion: Number(event.target.value),
+                            milestoneVersion: null,
+                            milestone: null,
+                          }))
+                        } else {
+                          setEditedThesis((oldThesis) => ({
+                            ...oldThesis,
+                            milestoneVersion: val,
                             milestone: 0,
                           }))
-                        }}
-                      >
-                        {selectedProgram.options.milestones.versions.map(
-                          (_: any, index: number) => (
-                            <MenuItem key={index} value={index}>
-                              {t('thesisForm:version')} {index + 1}
+                        }
+                      }}
+                    >
+                      <MenuItem value={-1}>
+                        {t('thesisForm:noMilestoneVersion')}
+                      </MenuItem>
+                      {selectedProgram.options.milestones.versions.map(
+                        (_: any, index: number) => (
+                          <MenuItem key={index} value={index}>
+                            {t('thesisForm:version')} {index + 1}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                  </FormControl>
+                </Tooltip>
+
+                {milestoneVersionIndex !== -1 && (
+                  <FormControl fullWidth>
+                    <InputLabel id="milestone-select-label">
+                      {t('progressView:milestone')}
+                    </InputLabel>
+                    <Select
+                      data-testid="milestone-select-input"
+                      value={editedThesis.milestone ?? 0}
+                      label={t('progressView:milestone')}
+                      id="milestone"
+                      name="milestone"
+                      onChange={(event) => {
+                        setEditedThesis((oldThesis) => ({
+                          ...oldThesis,
+                          milestone: Number(event.target.value),
+                          milestoneVersion: milestoneVersionIndex,
+                        }))
+                      }}
+                    >
+                      <MenuItem value={0}>0</MenuItem>
+                      {programMilestones.map(
+                        (milestone: any, index: number) => {
+                          const val = milestone.value
+                          const description = parseMilestoneDescription(
+                            val,
+                            language
+                          )
+                          return (
+                            <MenuItem key={index} value={index + 1}>
+                              {`${index + 1}: ${description}`}
                             </MenuItem>
                           )
-                        )}
-                      </Select>
-                    </FormControl>
-                  </Tooltip>
+                        }
+                      )}
+                    </Select>
+                  </FormControl>
                 )}
-
-                <FormControl fullWidth>
-                  <InputLabel id="milestone-select-label">
-                    {t('progressView:milestone')}
-                  </InputLabel>
-                  <Select
-                    data-testid="milestone-select-input"
-                    value={editedThesis.milestone ?? 0}
-                    label={t('progressView:milestone')}
-                    id="milestone"
-                    name="milestone"
-                    onChange={(event) => {
-                      setEditedThesis((oldThesis) => ({
-                        ...oldThesis,
-                        milestone: Number(event.target.value),
-                        milestoneVersion: milestoneVersionIndex,
-                      }))
-                    }}
-                  >
-                    <MenuItem value={0}>0</MenuItem>
-                    {programMilestones.map((milestone: any, index: number) => {
-                      const val = milestone.value
-                      const description = parseMilestoneDescription(
-                        val,
-                        language
-                      )
-                      return (
-                        <MenuItem key={index} value={index + 1}>
-                          {`${index + 1}: ${description}`}
-                        </MenuItem>
-                      )
-                    })}
-                  </Select>
-                </FormControl>
               </Stack>
             </>
           )}

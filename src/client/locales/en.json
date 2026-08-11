@@ -290,6 +290,7 @@
   },
   "thesisForm": {
     "milestoneVersion": "Milestone version",
+    "noMilestoneVersion": "No milestone version",
     "milestoneVersionWarning": "Please note: The 'Milestone version' dropdown changes the milestone version, not the current milestone. You should use the latest version by default.",
     "milestoneVersionTooltip": "Use the latest version by default",
     "version": "Version",

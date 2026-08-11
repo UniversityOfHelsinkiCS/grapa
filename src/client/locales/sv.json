@@ -290,6 +290,7 @@
   },
   "thesisForm": {
     "milestoneVersion": "Milstolpsversion",
+    "noMilestoneVersion": "Ingen milstolpsversion",
     "milestoneVersionWarning": "Observera: 'Milstolpsversion'-menyn ändrar milstolpsversionen, inte avhandlingens milstolpe. Använd den senaste versionen som standard.",
     "milestoneVersionTooltip": "Använd den senaste versionen som standard",
     "version": "Version",

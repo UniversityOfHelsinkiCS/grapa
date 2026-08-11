@@ -288,6 +288,7 @@
   },
   "thesisForm": {
     "milestoneVersion": "Etappien versio",
+    "noMilestoneVersion": "Ei etappi versiota",
     "milestoneVersionWarning": "Huomio: 'Etappien versio' -valikko muuttaa etappien versiota, ei tutkielman etappia. Käytä oletuksena uusinta versiota.",
     "milestoneVersionTooltip": "Käytä oletuksena uusinta versiota",
     "version": "Versio",
