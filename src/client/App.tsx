@@ -2,9 +2,10 @@ import { Outlet } from 'react-router-dom'
 import { Box } from '@mui/material'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { fiFI } from '@mui/x-date-pickers/locales'
+import { SnackbarProvider } from 'notistack'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { SnackbarProvider } from 'notistack'
+import 'dayjs/locale/fi'
 
 import { FULL_URL } from '../config'
 import { useTheme } from './theme'
@@ -28,7 +29,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={themeWithLocale}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fi">
         <SnackbarProvider preventDuplicate>
           <LoggedInAsBanner />
           <Box
