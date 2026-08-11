@@ -531,7 +531,8 @@
   },
   "progressView": {
     "lastMilestoneConfirmationTitle": "Confirmation",
-    "lastMilestoneConfirmationText": "Are you sure you want to complete the last milestone? This action cannot be undone",
+    "lastMilestoneConfirmationDescription": "Are you sure you want to complete the last milestone? This action cannot be undone",
+    "lastMilestoneConfirmationText": "I have delivered the final version of the thesis to the supervisor",
     "markAsSentToEthesis": "Mark as submitted to E-thesis",
     "noMilestone": "No milestone",
     "milestone": "Milestone",

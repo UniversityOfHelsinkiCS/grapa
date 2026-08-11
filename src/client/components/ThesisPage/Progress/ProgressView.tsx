@@ -4,6 +4,8 @@ import {
   Button,
   Card,
   Stack,
+  FormControlLabel,
+  Checkbox,
   DialogContentText,
 } from '@mui/material'
 import Popup from '../../Common/Popup'
@@ -31,6 +33,7 @@ export const ProgressView = ({
   const { language } = i18n as { language: TranslationLanguage }
   const editThesisMutation = useEditThesisMutation(isStudentView)
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
+  const [lastMilestoneChecked, setLastMilestoneChecked] = useState(false)
 
   const useStudentStartedProcess =
     thesis.program.options?.allowStudentStartedProcess
@@ -138,6 +141,7 @@ export const ProgressView = ({
 
   const handleCancelConfirmation = () => {
     setConfirmDialogOpen(false)
+    setLastMilestoneChecked(false)
   }
 
   const handleConfirmLastMilestone = () => {
@@ -152,6 +156,7 @@ export const ProgressView = ({
       {
         onSuccess: () => {
           setConfirmDialogOpen(false)
+          setLastMilestoneChecked(false)
         },
       }
     )
@@ -287,12 +292,21 @@ export const ProgressView = ({
         onSubmit={handleConfirmLastMilestone}
         submitText={t('common:approveButton')}
         submitColor="primary"
-        submitDisabled={editThesisMutation.isPending}
+        submitDisabled={editThesisMutation.isPending || !lastMilestoneChecked}
         cancelText={t('common:cancelButton')}
       >
         <DialogContentText id="confirm-dialog-description">
-          {t('progressView:lastMilestoneConfirmationText')}
+          {t('progressView:lastMilestoneConfirmationDescription')}
         </DialogContentText>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={lastMilestoneChecked}
+              onChange={(e) => setLastMilestoneChecked(e.target.checked)}
+            />
+          }
+          label={t('progressView:lastMilestoneConfirmationText')}
+        />
       </Popup>
     </Box>
   )

@@ -532,7 +532,8 @@
   "progressView": {
     "noMilestone": "Ingen etapp",
     "lastMilestoneConfirmationTitle": "Bekräftelse",
-    "lastMilestoneConfirmationText": "Är du säker på att du vill slutföra det sista steget? Detta kan inte ångras.",
+    "lastMilestoneConfirmationDescription": "Är du säker på att du vill slutföra det sista steget? Detta kan inte ångras.",
+    "lastMilestoneConfirmationText": "Jag har lämnat in den slutliga versionen av avhandlingen till handledaren",
     "markAsSentToEthesis": "Markera som skickad till E-thesis",
     "milestone": "Milstolpe",
     "title": "Framsteg",

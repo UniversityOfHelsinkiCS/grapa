@@ -530,7 +530,8 @@
   },
   "progressView": {
     "lastMilestoneConfirmationTitle": "Vahvistus",
-    "lastMilestoneConfirmationText": "Oletko varma että haluat merkitä viimeisen vaiheen valmiiksi? Tätä toimintoa ei voi peruuttaa",
+    "lastMilestoneConfirmationDescription": "Oletko varma että haluat merkitä viimeisen vaiheen valmiiksi? Tätä toimintoa ei voi peruuttaa",
+    "lastMilestoneConfirmationText": "Olen toimittanut viimeisen version tutkielmasta ohjaajalle",
     "markAsSentToEthesis": "Merkitse E-thesikseen lähetetyksi",
     "noMilestone": "Ei etappia",
     "milestone": "Etappi",
