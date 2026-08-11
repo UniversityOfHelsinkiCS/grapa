@@ -33,10 +33,7 @@ import { handleAttachmentByLabel } from './thesisAttachmentHelpers'
 
 import { handleChangeEventLogs } from '../services/thesisHelpers'
 
-import {
-  handleStatusChangeEmail,
-  handleThesisCreationEmail,
-} from '../services/thesisNotificationService'
+import { handleStatusChangeEmail } from '../services/thesisNotificationService'
 
 import { cleanThesisUserData } from '../services/thesisService'
 import { getProgram, getPrograms } from '../services/programService'
@@ -268,8 +265,6 @@ studentRouter.post(
         },
         { transaction: t }
       )
-
-      await handleThesisCreationEmail(thesisData, req.user)
 
       return newThesis.toJSON()
     })

@@ -162,7 +162,7 @@ export const handleStatusChangeEmail = async (
   }
 }
 
-export const handleThesisCreationEmail = async (
+export const handleThesisToApproveEmail = async (
   newThesis: ThesisData,
   actionUser: UserType
 ) => {

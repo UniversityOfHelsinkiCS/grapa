@@ -36,7 +36,7 @@ import {
 
 import {
   handleStatusChangeEmail,
-  handleThesisCreationEmail,
+  handleThesisToApproveEmail,
 } from '../services/thesisNotificationService'
 import {
   deleteThesisAttachments,
@@ -198,7 +198,7 @@ thesisRouter.post(
         { transaction: t }
       )
 
-      await handleThesisCreationEmail(thesisData, req.user)
+      await handleThesisToApproveEmail(thesisData, req.user)
 
       return newThesis.toJSON()
     })
