@@ -37,11 +37,22 @@ export const handleStatusChangeEmail = async (
       .map((user) => user.email)
   )
 
+  const seminarSupervisorEmails = uniq(
+    (updatedThesis.seminarSupervisions || [])
+      .map((person) => person?.user)
+      .filter((user) => user && !user.isExternal && user.email)
+      .map((user) => user.email)
+  )
+
   if (
     originalThesis.status === 'PLANNING' &&
     updatedThesis.status === 'IN_PROGRESS'
   ) {
-    const targets = uniq([...supervisorEmails, ...authorEmails])
+    const targets = uniq([
+      ...supervisorEmails,
+      ...authorEmails,
+      ...seminarSupervisorEmails,
+    ])
 
     const { subject, message } = inProgressEmailTemplate(
       updatedThesis,
