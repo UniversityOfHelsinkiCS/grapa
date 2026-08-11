@@ -240,7 +240,7 @@ const ThesisEditForm = ({
       !selectedProgram?.options?.hideSendToEthesis &&
       !selectedProgram?.options?.allowStudentStartedProcess
     ),
-    ETHESIS: Boolean(user.isAdmin),
+    ETHESIS: Boolean(canChangeStatus),
     COMPLETED: Boolean(user.isAdmin),
     CANCELLED: true,
   }
