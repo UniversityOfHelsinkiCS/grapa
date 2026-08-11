@@ -175,7 +175,7 @@ export const handleStatusChangeEmail = async (
     updatedThesis.milestone ===
       getMilestoneCount(options, updatedThesis.milestoneVersion)
   ) {
-    const targets = supervisorEmails
+    const targets = uniq([...supervisorEmails, ...seminarSupervisorEmails])
 
     const { subject, message } = lastMilestoneReachedEmailTemplate(
       updatedThesis,
