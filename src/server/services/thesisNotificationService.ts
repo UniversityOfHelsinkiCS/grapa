@@ -15,6 +15,7 @@ import {
   waysOfWorkingExpiringEmailTemplate,
   waysOfWorkingExpiredEmailTemplate,
   suggestionRejectedEmailTemplate,
+  suggestionSentEmailTemplate,
 } from '../templates/thesisEmail'
 import { findThesesByExpirationDates } from './thesisService'
 
@@ -69,6 +70,17 @@ export const handleStatusChangeEmail = async (
       updatedThesis,
       actionUser,
       customMessage
+    )
+    await sendEmail(targets, message, subject)
+  } else if (
+    originalThesis.status === 'DRAFT' &&
+    updatedThesis.status === 'SUGGESTED'
+  ) {
+    const targets = uniq([...supervisorEmails])
+
+    const { subject, message } = suggestionSentEmailTemplate(
+      updatedThesis,
+      actionUser
     )
     await sendEmail(targets, message, subject)
   } else if (

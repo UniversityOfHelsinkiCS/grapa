@@ -29,6 +29,32 @@ Statusen för avhandlingen "${updatedThesis.topic}" har ändrats till PÅGÅR av
   }
 }
 
+export const suggestionSentEmailTemplate = (
+  updatedThesis: Thesis,
+  actionUser: UserType
+): TemplateOutput => {
+  return {
+    subject:
+      'Prethesis - Uusi tutkielmaehdotus odottaa hyväksyntää / New thesis suggestion pending approval / Nytt uppsatsförslag väntar på godkännande',
+    message: `
+Tämä on automaattinen viesti Prethesiksestä.
+
+Opiskelija ${actionUser.firstName} ${actionUser.lastName} on lähettänyt uuden tutkielmaehdotuksen "${updatedThesis.topic}".
+Ole hyvä ja käy Prethesiksessä hyväksymässä tai hylkäämässä ehdotus.
+---
+This is an automated message from Prethesis.
+
+The student ${actionUser.firstName} ${actionUser.lastName} has submitted a new thesis suggestion "${updatedThesis.topic}".
+Please go to Prethesis to accept or decline the suggestion.
+---
+Detta är ett automatiskt meddelande från Prethesis.
+
+Studenten ${actionUser.firstName} ${actionUser.lastName} har skickat in ett nytt uppsatsförslag "${updatedThesis.topic}".
+Vänligen gå till Prethesis för att godkänna eller avvisa förslaget.
+  `,
+  }
+}
+
 export const suggestionRejectedEmailTemplate = (
   updatedThesis: Thesis,
   actionUser: UserType,
