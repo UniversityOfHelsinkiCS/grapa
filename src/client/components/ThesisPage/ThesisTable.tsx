@@ -1026,10 +1026,9 @@ const ThesisTable = ({
                 <Button
                   variant="outlined"
                   color="secondary"
-                  size="small"
                   startIcon={<Download />}
                   sx={{
-                    height: 36,
+                    height: 40,
                     fontWeight: 600,
                     textTransform: 'none',
                     whiteSpace: 'nowrap',
