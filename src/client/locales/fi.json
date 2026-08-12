@@ -501,7 +501,7 @@
     "students": "Opiskelijoita",
     "onTimeRatio": "Ajallaan-osuus",
     "thesisPipeline": "Aktiiviset tutkielmat",
-    "avgCompletionDist": "Valmistumisaikojen jakauma",
+    "avgCompletionDist": "Tutkielmien valmistumisaikojen jakauma",
     "medianDays": "Mediaani: {{days}} päivää"
   },
   "loginAsPage": {

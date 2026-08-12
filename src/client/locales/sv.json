@@ -502,7 +502,7 @@
     "students": "Studerande",
     "onTimeRatio": "I tid-andel",
     "thesisPipeline": "Aktiva avhandlingar",
-    "avgCompletionDist": "Fördelning av slutförandetid",
+    "avgCompletionDist": "Fördelning av avhandlingens slutförandetid",
     "medianDays": "Median: {{days}} dagar"
   },
   "loginAsPage": {

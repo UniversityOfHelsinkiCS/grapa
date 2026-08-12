@@ -502,7 +502,7 @@
     "students": "Students",
     "onTimeRatio": "On-Time Ratio",
     "thesisPipeline": "Active Theses",
-    "avgCompletionDist": "Completion Time Distribution",
+    "avgCompletionDist": "Thesis Completion Time Distribution",
     "medianDays": "Median: {{days}} days"
   },
   "loginAsPage": {
