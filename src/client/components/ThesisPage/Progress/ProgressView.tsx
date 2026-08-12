@@ -221,14 +221,16 @@ export const ProgressView = ({
                 >
                   {getVisibleStep(index)}
                 </Box>
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {!label.milestone ? label.name + ' ' : null}
-                </Typography>
+                {!label.milestone && (
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {label.name}
+                  </Typography>
+                )}
                 <Typography
                   sx={{
                     fontSize: 'small',
