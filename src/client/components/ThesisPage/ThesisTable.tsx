@@ -36,6 +36,7 @@ import {
   InputLabel,
   Tabs,
   Tab,
+  Link,
 } from '@mui/material'
 import { visuallyHidden } from '@mui/utils'
 import { useTranslation } from 'react-i18next'
@@ -416,7 +417,14 @@ const ThesisTable = ({
       size: 800,
       enableSorting: !isStudentView,
       cell: (info) => (
-        <Typography variant="small">{info.getValue()}</Typography>
+        <Link
+          component="button"
+          type="button"
+          underline="none"
+          sx={{ color: 'inherit', textAlign: 'left' }}
+        >
+          <Typography variant="small">{info.getValue()}</Typography>
+        </Link>
       ),
       header: t('topicHeader'),
       enableResizing: true,
