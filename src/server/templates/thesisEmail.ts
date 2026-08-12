@@ -151,6 +151,23 @@ export const lastMilestoneReachedEmailTemplate = (
   updatedThesis: Thesis,
   actionUser: UserType
 ): TemplateOutput => {
+  const isBachelor = updatedThesis.program?.options?.isBachelorProgram === true
+  const requiredGraders = isBachelor ? 1 : 2
+  const currentGraders = updatedThesis.graders?.length ?? 0
+  const needsGraders = currentGraders < requiredGraders
+
+  const fiInstruction = needsGraders
+    ? `, merkitse ${isBachelor ? 'arvioija' : 'toinen arvioija'} ja anna`
+    : ` ja anna`
+
+  const enInstruction = needsGraders
+    ? `, mark ${isBachelor ? 'the grader' : 'the second grader'}, and give`
+    : ` and give`
+
+  const svInstruction = needsGraders
+    ? `, markera ${isBachelor ? 'bedömaren' : 'den andra bedömaren'} och ge`
+    : ` och ge`
+
   return {
     subject:
       'Prethesis - Viimeinen etappi saavutettu / Last milestone reached / Sista milstolpen nådd',
@@ -158,17 +175,17 @@ export const lastMilestoneReachedEmailTemplate = (
 Tämä on automaattinen viesti Prethesiksestä.
 
 Käyttäjä ${actionUser.firstName} ${actionUser.lastName} on merkinnyt viimeisen etapin suoritetuksi tutkielmalle "${updatedThesis.topic}".
-Ole hyvä ja mene Prethesikseen, merkitse toinen arvioija ja anna opiskelijalle lupa lähettää tutkielma E-thesikseen.
+Ole hyvä ja mene Prethesikseen${fiInstruction} opiskelijalle lupa lähettää tutkielma E-thesikseen.
 ---
 This is an automated message from Prethesis.
 
 The user ${actionUser.firstName} ${actionUser.lastName} has marked the last milestone as done for the thesis "${updatedThesis.topic}".
-Please go to Prethesis, mark the second grader, and give the student permission to send the thesis to E-thesis.
+Please go to Prethesis${enInstruction} the student permission to send the thesis to E-thesis.
 ---
 Detta är ett automatiskt meddelande från Prethesis.
 
 Användaren ${actionUser.firstName} ${actionUser.lastName} har markerat den sista milstolpen som klar för avhandlingen "${updatedThesis.topic}".
-Vänligen gå till Prethesis, markera den andra bedömaren och ge studenten tillåtelse att skicka in avhandlingen till E-thesis.
+Vänligen gå till Prethesis${svInstruction} studenten tillåtelse att skicka in avhandlingen till E-thesis.
   `,
   }
 }
