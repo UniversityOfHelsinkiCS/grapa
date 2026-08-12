@@ -34,21 +34,33 @@ import { cleanUserProperties } from './studentService'
 import logger from '../util/logger'
 
 export const cleanThesisUserData = (thesis: any) => {
-  thesis.authors = thesis.authors.map((user: any) => cleanUserProperties(user))
-  thesis.approvers = thesis.approvers.map((user: any) =>
-    cleanUserProperties(user)
-  )
-  thesis.supervisions.forEach((supervision: any) => {
-    if (supervision.user)
-      supervision.user = cleanUserProperties(supervision.user)
-  })
-  thesis.graders.forEach((grader: any) => {
-    if (grader.user) grader.user = cleanUserProperties(grader.user)
-  })
-  thesis.seminarSupervisions.forEach((supervision: any) => {
-    if (supervision.user)
-      supervision.user = cleanUserProperties(supervision.user)
-  })
+  if (thesis.authors) {
+    thesis.authors = thesis.authors.map((user: any) =>
+      cleanUserProperties(user)
+    )
+  }
+  if (thesis.approvers) {
+    thesis.approvers = thesis.approvers.map((user: any) =>
+      cleanUserProperties(user)
+    )
+  }
+  if (thesis.supervisions) {
+    thesis.supervisions.forEach((supervision: any) => {
+      if (supervision.user)
+        supervision.user = cleanUserProperties(supervision.user)
+    })
+  }
+  if (thesis.graders) {
+    thesis.graders.forEach((grader: any) => {
+      if (grader.user) grader.user = cleanUserProperties(grader.user)
+    })
+  }
+  if (thesis.seminarSupervisions) {
+    thesis.seminarSupervisions.forEach((supervision: any) => {
+      if (supervision.user)
+        supervision.user = cleanUserProperties(supervision.user)
+    })
+  }
 }
 
 export const cleanThesisBulk = (thesisArray: any) => {
