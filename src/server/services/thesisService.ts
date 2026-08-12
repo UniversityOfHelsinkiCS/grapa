@@ -27,6 +27,8 @@ import { User as UserType, ThesisData } from '../types'
 import CustomValidationError from '../errors/ValidationError'
 import CustomAuthorizationError from '../errors/AuthorizationError'
 import CustomNotFoundError from '../errors/NotFoundError'
+import { getMilestoneCount } from '../../shared/utils/thesisUtils'
+import dayjs from 'dayjs'
 
 import { cleanUserProperties } from './studentService'
 import logger from '../util/logger'
@@ -420,6 +422,36 @@ export const findThesesByExpirationDates = async (targetDates: Date[]) => {
       status: 'IN_PROGRESS',
     },
     include: includes,
+  })
+}
+
+export const findThesesForMilestoneReminders = async (targetDates: Date[]) => {
+  const includes = buildThesisIncludes()
+
+  const dateConditions = targetDates.map((d) => ({
+    milestoneOrStatusUpdatedAt: {
+      [Op.between]: [
+        dayjs(d).startOf('day').toDate(),
+        dayjs(d).endOf('day').toDate(),
+      ],
+    },
+  }))
+
+  const theses = await Thesis.findAll({
+    where: {
+      status: 'IN_PROGRESS',
+      [Op.or]: dateConditions,
+    },
+    include: includes,
+  })
+
+  return theses.filter((thesis) => {
+    const options = thesis.program?.options
+    return (
+      options?.useMilestones &&
+      thesis.milestone != null &&
+      thesis.milestone === getMilestoneCount(options, thesis.milestoneVersion)
+    )
   })
 }
 

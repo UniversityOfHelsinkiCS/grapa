@@ -173,6 +173,18 @@ Vänligen gå till Prethesis, markera den andra bedömaren och ge studenten till
   }
 }
 
+export const lastMilestoneReachedReminderEmailTemplate = (
+  updatedThesis: Thesis,
+  actionUser: UserType
+): TemplateOutput => {
+  return {
+    subject:
+      'Prethesis MUISTUTUS - Viimeinen etappi saavutettu / REMINDER - Last milestone reached / PÅMINNELSE - Sista milstolpen nådd',
+    message: lastMilestoneReachedEmailTemplate(updatedThesis, actionUser)
+      .message,
+  }
+}
+
 export const newThesisToApproveEmailTemplate = (
   newThesis: ThesisData,
   actionUser: UserType
