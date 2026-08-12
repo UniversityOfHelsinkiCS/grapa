@@ -1118,13 +1118,11 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
 
   theses.forEach((thesis) => {
     const { status, startDate, targetDate } = thesis
-    const targetDateObject = targetDate
-      ? new Date(targetDate as string)
-      : new Date()
+    const targetDateObject = targetDate ? new Date(targetDate) : null
     const startDateObject = new Date(startDate)
 
     function timeDiff(first: Date, second: Date) {
-      return (first.getTime() - second.getTime()) / (1000 * 60 * 60 * 24)
+      return dayjs(first).diff(dayjs(second), 'day', true)
     }
 
     totals.statusCounts[status] = (totals.statusCounts[status] || 0) + 1
@@ -1138,7 +1136,7 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
         totals.veryLateActiveSupervisionsCount++
       }
     }
-    if (status === 'COMPLETED') {
+    if (status === 'COMPLETED' && targetDateObject) {
       totals.completedThesesTimes.push(
         timeDiff(targetDateObject, startDateObject)
       )
@@ -1163,9 +1161,9 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
         supervisor.primarySupervisionsCount +=
           isPrimarySupervisor && status == 'IN_PROGRESS' ? 1 : 0
         supervisor.lateSupervisions.push(
-          status != 'COMPLETED' ? getThesisLateDays(targetDateObject) : 0
+          status != 'COMPLETED' ? getThesisLateDays(targetDate) : 0
         )
-        if (status === 'COMPLETED')
+        if (status === 'COMPLETED' && targetDateObject)
           supervisor.completedSupervisions.push(
             timeDiff(targetDateObject, startDateObject)
           )
@@ -1196,13 +1194,13 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
           primarySupervisionsCount:
             isPrimarySupervisor && status == 'IN_PROGRESS' ? 1 : 0,
           lateSupervisions: [
-            status != 'COMPLETED' ? getThesisLateDays(targetDateObject) : 0,
+            status != 'COMPLETED' ? getThesisLateDays(targetDate) : 0,
           ],
           lateSupervisionsCount: 0,
           avgLateSupervision: 0,
           avgCompletedSupervision: 0,
           completedSupervisions:
-            status === 'COMPLETED'
+            status === 'COMPLETED' && targetDateObject
               ? [timeDiff(targetDateObject, startDateObject)]
               : [],
         })

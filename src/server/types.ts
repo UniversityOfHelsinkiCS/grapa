@@ -95,7 +95,7 @@ export interface ThesisData {
   topic: string
   status: ThesisStatus
   startDate: string
-  targetDate?: string
+  targetDate?: string | null
   supervisions: SupervisionData[]
   seminarSupervisions: SeminarSupervisionData[]
   authors: User[]
