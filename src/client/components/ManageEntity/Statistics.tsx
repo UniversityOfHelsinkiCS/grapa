@@ -12,6 +12,22 @@ interface Props {
   hideTitle?: boolean
 }
 
+const getMedian = (arr?: number[]) => {
+  if (!arr || arr.length === 0) return 0
+
+  const sorted = [...arr].sort(function (a, b) {
+    return a - b
+  })
+
+  const length = sorted.length
+
+  if (length % 2 === 1) {
+    return sorted[Math.floor(length / 2)]
+  } else {
+    return (sorted[length / 2] + sorted[length / 2 - 1]) / 2
+  }
+}
+
 const Statistics = ({
   filteringDepartmentId,
   programId,
@@ -277,6 +293,10 @@ const Statistics = ({
 
   const hasPipelineData = pieInnerData.length > 0
 
+  const medianCompletedDays = Math.round(
+    getMedian(thesisStatistics.totals.completedThesesTimes)
+  )
+
   return (
     <Box
       component="section"
@@ -395,6 +415,13 @@ const Statistics = ({
               <Typography variant="h6" gutterBottom>
                 {t('departmentStatisticsPage:avgCompletionDist')}
               </Typography>
+              {medianCompletedDays > 0 && (
+                <Typography variant="subtitle2" color="text.secondary">
+                  {t('departmentStatisticsPage:medianDays', {
+                    days: medianCompletedDays,
+                  })}
+                </Typography>
+              )}
               <ReactECharts
                 option={completionHistogramOption}
                 style={{ height: '350px', width: '100%' }}

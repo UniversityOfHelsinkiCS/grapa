@@ -501,8 +501,9 @@
     "supervisors": "Supervisors",
     "students": "Students",
     "onTimeRatio": "On-Time Ratio",
-    "thesisPipeline": "Active Pipeline",
-    "avgCompletionDist": "Completion Time Distribution"
+    "thesisPipeline": "Active Theses",
+    "avgCompletionDist": "Completion Time Distribution",
+    "medianDays": "Median: {{days}} days"
   },
   "loginAsPage": {
     "title": "Choose a user to log in as",
