@@ -483,7 +483,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                     variant="outlined"
                     sx={{
                       color: '#000',
-                      backgroundColor: '#fcd34d',
+                      backgroundColor: '#4ade80',
                       borderColor: '#000',
                       fontSize: '12px',
                       height: 24,
