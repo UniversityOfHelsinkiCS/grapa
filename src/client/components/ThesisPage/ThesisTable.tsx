@@ -37,6 +37,7 @@ import {
   Tabs,
   Tab,
 } from '@mui/material'
+import { visuallyHidden } from '@mui/utils'
 import { useTranslation } from 'react-i18next'
 import {
   getMilestoneCount,
@@ -740,7 +741,11 @@ const ThesisTable = ({
           ) : null}
         </Stack>
       ),
-      header: '',
+      header: () => (
+        <Box component="span" sx={visuallyHidden}>
+          {t('thesesTableToolbar:actionNeeded')}
+        </Box>
+      ),
       enableResizing: true,
     }),
   ]
