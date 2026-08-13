@@ -459,34 +459,25 @@ const Statistics = ({
             justifyContent: 'center',
           }}
         >
-          {hasCompletionData && (
-            <Paper
-              variant="outlined"
-              sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                borderRadius: 2,
-                flex: '1 1 400px',
-              }}
-            >
-              <Typography variant="h6" gutterBottom>
-                {t('departmentStatisticsPage:avgCompletionDist')}
-              </Typography>
-              {medianCompletedDays > 0 && (
-                <Typography variant="subtitle2" color="text.secondary">
-                  {t('departmentStatisticsPage:medianDays', {
-                    days: medianCompletedDays,
-                  })}
-                </Typography>
-              )}
-              <ReactECharts
-                option={completionHistogramOption}
-                style={{ height: '350px', width: '100%' }}
-              />
-            </Paper>
-          )}
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              borderRadius: 2,
+              flex: '1 1 400px',
+            }}
+          >
+            <Typography variant="h6" gutterBottom>
+              {t('departmentStatisticsPage:thesisPipeline')}
+            </Typography>
+            <ReactECharts
+              option={pieOption}
+              style={{ height: '350px', width: '100%' }}
+            />
+          </Paper>
 
           {hasInProgressData && (
             <Paper
@@ -517,25 +508,34 @@ const Statistics = ({
             </Paper>
           )}
 
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              borderRadius: 2,
-              flex: '1 1 400px',
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              {t('departmentStatisticsPage:thesisPipeline')}
-            </Typography>
-            <ReactECharts
-              option={pieOption}
-              style={{ height: '350px', width: '100%' }}
-            />
-          </Paper>
+          {hasCompletionData && (
+            <Paper
+              variant="outlined"
+              sx={{
+                p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                borderRadius: 2,
+                flex: '1 1 400px',
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                {t('departmentStatisticsPage:avgCompletionDist')}
+              </Typography>
+              {medianCompletedDays > 0 && (
+                <Typography variant="subtitle2" color="text.secondary">
+                  {t('departmentStatisticsPage:medianDays', {
+                    days: medianCompletedDays,
+                  })}
+                </Typography>
+              )}
+              <ReactECharts
+                option={completionHistogramOption}
+                style={{ height: '350px', width: '100%' }}
+              />
+            </Paper>
+          )}
         </Box>
       )}
 
