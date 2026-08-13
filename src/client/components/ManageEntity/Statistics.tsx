@@ -3,7 +3,6 @@ import { Box, Typography, useTheme, Paper } from '@mui/material'
 import ReactECharts from 'echarts-for-react'
 
 import { useThesisStatistics } from '../../hooks/useTheses'
-import StatisticsTable from './StatisticsTable'
 
 interface Props {
   filteringDepartmentId?: string
@@ -538,20 +537,6 @@ const Statistics = ({
           )}
         </Box>
       )}
-
-      <Box
-        sx={{
-          mt: '2rem',
-          border: 1,
-          borderColor: 'divider',
-          borderRadius: 1,
-        }}
-      >
-        <StatisticsTable
-          statistics={thesisStatistics.supervisors}
-          isLoading={thesisStatisticsLoading}
-        />
-      </Box>
     </Box>
   )
 }

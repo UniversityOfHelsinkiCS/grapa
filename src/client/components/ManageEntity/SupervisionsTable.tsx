@@ -23,7 +23,7 @@ interface Props {
 
 const columnHelper = createColumnHelper<ThesisStatistics>()
 
-const StatisticsTable = ({ statistics, isLoading }: Props) => {
+const SupervisionsTable = ({ statistics, isLoading }: Props) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
 
@@ -273,4 +273,4 @@ const StatisticsTable = ({ statistics, isLoading }: Props) => {
   return <PrethesisTable table={table} isLoading={isLoading} />
 }
 
-export default StatisticsTable
+export default SupervisionsTable

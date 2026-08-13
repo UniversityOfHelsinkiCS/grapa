@@ -26,6 +26,7 @@ import useLoggedInUser from '../../hooks/useLoggedInUser'
 import SingleProgramLogs from './SingleProgramLogs'
 import ProgramConfigurations from './ProgramConfigurations'
 import Statistics from './Statistics'
+import Supervisions from './Supervisions'
 import useDepartments from '../../hooks/useDepartments'
 
 type EntityType = 'program' | 'studyTrack' | 'department'
@@ -70,7 +71,12 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
     matchingEntity || (entities?.length ? entities[0] : null)
 
   const [tab, setTab] = useState<
-    'theses' | 'managePermissions' | 'configurations' | 'logs' | 'statistics'
+    | 'theses'
+    | 'managePermissions'
+    | 'configurations'
+    | 'logs'
+    | 'statistics'
+    | 'supervisions'
   >('theses')
 
   useEffect(() => {
@@ -100,6 +106,7 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                     | 'configurations'
                     | 'logs'
                     | 'statistics'
+                    | 'supervisions'
                 ) => setTab(nextTab)}
                 variant="scrollable"
                 scrollButtons
@@ -108,6 +115,10 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                 <Tab
                   label={t('departmentOverviewPage:statisticsTab')}
                   value="statistics"
+                />
+                <Tab
+                  label={t('departmentOverviewPage:supervisionsTab')}
+                  value="supervisions"
                 />
                 <Tab label={t('theses')} value="theses" />
                 <Tab
@@ -231,6 +242,21 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                     entityType === 'studyTrack' ? selectedEntity.id : undefined
                   }
                   hideTitle
+                />
+              </Box>
+            )}
+            {tab === 'supervisions' && (
+              <Box>
+                <Supervisions
+                  filteringDepartmentId={
+                    entityType === 'department' ? selectedEntity.id : undefined
+                  }
+                  programId={
+                    entityType === 'program' ? selectedEntity.id : undefined
+                  }
+                  studyTrackId={
+                    entityType === 'studyTrack' ? selectedEntity.id : undefined
+                  }
                 />
               </Box>
             )}

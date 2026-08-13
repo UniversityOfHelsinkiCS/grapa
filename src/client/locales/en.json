@@ -117,7 +117,8 @@
   },
   "departmentOverviewPage": {
     "departmentAdminsTab": "Department admins",
-    "statisticsTab": "Statistics"
+    "statisticsTab": "Statistics",
+    "supervisionsTab": "Supervisions"
   },
   "programOverviewPage": {
     "configurationsWarning": "Please be careful when modifying these configurations. They affect all users and thesis forms within the program.",
