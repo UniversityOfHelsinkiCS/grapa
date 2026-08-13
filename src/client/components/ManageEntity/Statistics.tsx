@@ -265,6 +265,35 @@ const Statistics = ({
     })
   }
 
+  // 3. In Progress Time Distribution (Histogram)
+  const inProgressBuckets: Record<string, number> = {}
+
+  inProgressBuckets[`< ${bucketSize}`] = 0
+  for (let i = bucketSize; i < maxBucketLimit; i += bucketSize) {
+    inProgressBuckets[`${i}-${i + bucketSize}`] = 0
+  }
+  inProgressBuckets[`> ${maxBucketLimit}`] = 0
+
+  let hasInProgressData = false
+  if (
+    thesisStatistics.totals.inProgressThesesTimes &&
+    thesisStatistics.totals.inProgressThesesTimes.length > 0
+  ) {
+    thesisStatistics.totals.inProgressThesesTimes.forEach((days: number) => {
+      if (days >= 0) {
+        hasInProgressData = true
+        if (days < bucketSize) {
+          inProgressBuckets[`< ${bucketSize}`]++
+        } else if (days >= maxBucketLimit) {
+          inProgressBuckets[`> ${maxBucketLimit}`]++
+        } else {
+          const bucketStart = Math.floor(days / bucketSize) * bucketSize
+          inProgressBuckets[`${bucketStart}-${bucketStart + bucketSize}`]++
+        }
+      }
+    })
+  }
+
   const completionHistogramOption = {
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
     grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
@@ -291,10 +320,40 @@ const Statistics = ({
     ],
   }
 
+  const inProgressHistogramOption = {
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+    xAxis: {
+      type: 'category',
+      data: Object.keys(inProgressBuckets),
+      name: t('departmentStatisticsPage:days'),
+      nameLocation: 'middle',
+      nameGap: 40,
+      axisLabel: { interval: 0, rotate: 30 },
+    },
+    yAxis: {
+      type: 'value',
+      name: t('departmentStatisticsPage:students'),
+      minInterval: 1,
+    },
+    series: [
+      {
+        data: Object.values(inProgressBuckets),
+        type: 'bar',
+        barCategoryGap: '2%',
+        color: theme.palette.info.main,
+      },
+    ],
+  }
+
   const hasPipelineData = pieInnerData.length > 0
 
   const medianCompletedDays = Math.round(
     getMedian(thesisStatistics.totals.completedThesesTimes)
+  )
+
+  const medianInProgressDays = Math.round(
+    getMedian(thesisStatistics.totals.inProgressThesesTimes)
   )
 
   return (
@@ -424,6 +483,35 @@ const Statistics = ({
               )}
               <ReactECharts
                 option={completionHistogramOption}
+                style={{ height: '350px', width: '100%' }}
+              />
+            </Paper>
+          )}
+
+          {hasInProgressData && (
+            <Paper
+              variant="outlined"
+              sx={{
+                p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                borderRadius: 2,
+                flex: '1 1 400px',
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                {t('departmentStatisticsPage:inProgressDist')}
+              </Typography>
+              {medianInProgressDays > 0 && (
+                <Typography variant="subtitle2" color="text.secondary">
+                  {t('departmentStatisticsPage:medianDays', {
+                    days: medianInProgressDays,
+                  })}
+                </Typography>
+              )}
+              <ReactECharts
+                option={inProgressHistogramOption}
                 style={{ height: '350px', width: '100%' }}
               />
             </Paper>

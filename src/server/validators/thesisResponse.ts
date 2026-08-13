@@ -143,6 +143,7 @@ export const ThesisStatisticsResponseSchema = z.object({
     lateActiveSupervisionsCount: z.number(),
     veryLateActiveSupervisionsCount: z.number(),
     completedThesesTimes: z.array(z.number()),
+    inProgressThesesTimes: z.array(z.number()).optional(),
   }),
 })
 

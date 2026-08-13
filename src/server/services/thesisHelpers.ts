@@ -1114,6 +1114,7 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
     lateActiveSupervisionsCount: 0,
     veryLateActiveSupervisionsCount: 0,
     completedThesesTimes: [] as number[],
+    inProgressThesesTimes: [] as number[],
   }
 
   theses.forEach((thesis) => {
@@ -1135,6 +1136,7 @@ export const calculateThesisStatistics = async (theses: ThesisData[]) => {
       if (isThesisVeryLate(targetDate)) {
         totals.veryLateActiveSupervisionsCount++
       }
+      totals.inProgressThesesTimes.push(timeDiff(new Date(), startDateObject))
     }
     if (status === 'COMPLETED' && targetDateObject) {
       totals.completedThesesTimes.push(

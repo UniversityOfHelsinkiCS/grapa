@@ -503,6 +503,7 @@
     "onTimeRatio": "I tid-andel",
     "thesisPipeline": "Aktiva avhandlingar",
     "avgCompletionDist": "Fördelning av avhandlingens slutförandetid",
+    "inProgressDist": "Tidsfördelning för pågående avhandlingar",
     "medianDays": "Median: {{days}} dagar"
   },
   "loginAsPage": {

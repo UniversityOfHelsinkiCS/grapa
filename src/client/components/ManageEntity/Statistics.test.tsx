@@ -87,6 +87,8 @@ describe('Statistics', () => {
             COMPLETED: 1,
             CANCELLED: 0,
           },
+          completedThesesTimes: [],
+          inProgressThesesTimes: [],
         },
         supervisors: [
           {

@@ -502,6 +502,7 @@
     "onTimeRatio": "Ajallaan-osuus",
     "thesisPipeline": "Aktiiviset tutkielmat",
     "avgCompletionDist": "Tutkielmien valmistumisaikojen jakauma",
+    "inProgressDist": "Käynnissä olevien tutkielmien keston jakauma",
     "medianDays": "Mediaani: {{days}} päivää"
   },
   "loginAsPage": {
