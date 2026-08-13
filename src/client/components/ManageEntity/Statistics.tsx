@@ -380,6 +380,7 @@ const Statistics = ({
       <Box
         sx={{
           display: 'flex',
+          flexWrap: 'wrap',
           gap: '2rem',
           mt: '2rem',
           justifyContent: 'center',
@@ -453,6 +454,7 @@ const Statistics = ({
         <Box
           sx={{
             display: 'flex',
+            flexWrap: 'wrap',
             gap: '2rem',
             mt: '2rem',
             justifyContent: 'center',
@@ -474,7 +476,7 @@ const Statistics = ({
             </Typography>
             <ReactECharts
               option={pieOption}
-              style={{ height: '350px', width: '100%' }}
+              style={{ height: '350px', width: '100%', maxWidth: '600px' }}
             />
           </Paper>
 
@@ -502,7 +504,7 @@ const Statistics = ({
               )}
               <ReactECharts
                 option={inProgressHistogramOption}
-                style={{ height: '350px', width: '100%' }}
+                style={{ height: '350px', width: '100%', maxWidth: '600px' }}
               />
             </Paper>
           )}
@@ -531,7 +533,7 @@ const Statistics = ({
               )}
               <ReactECharts
                 option={completionHistogramOption}
-                style={{ height: '350px', width: '100%' }}
+                style={{ height: '350px', width: '100%', maxWidth: '600px' }}
               />
             </Paper>
           )}
