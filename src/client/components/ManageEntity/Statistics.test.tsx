@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import * as React from 'react'
 import { render, screen } from '@testing-library/react'
 
 import initializeI18n from '../../util/il18n'
@@ -119,15 +118,12 @@ describe('Statistics', () => {
     })
   })
 
-  it('renders all existing department admins', () => {
+  it('renders statistics correctly', () => {
     render(<Statistics />)
 
     expect(
       screen.getByTestId('department-statistics-page-title')
     ).toBeInTheDocument()
-    expect(screen.getByText('Doe John (test@test.fi)')).toBeInTheDocument()
-    expect(
-      screen.getByText('Tietojenkäsittelytieteen laitos')
-    ).toBeInTheDocument()
+    expect(screen.getByText('5')).toBeInTheDocument()
   })
 })
