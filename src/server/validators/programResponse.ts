@@ -6,6 +6,9 @@ export const StudyTrackDataSchema = z.object({
   name: TranslatedNameSchema,
   programId: z.string(),
   isManaged: z.boolean().optional(),
+  code: z.string().nullable().optional(),
+  moduleGroupId: z.string().nullable().optional(),
+  sisuId: z.string().nullable().optional(),
 })
 
 export const ProgramOptionsSchema = z.record(z.string(), z.any())
