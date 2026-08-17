@@ -78,7 +78,7 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/jest-dom": "7.0.1",
     "@types/connect-redis": "0.0.23",
     "@types/cors": "2.8.19",
     "@types/express": "5.0.6",
