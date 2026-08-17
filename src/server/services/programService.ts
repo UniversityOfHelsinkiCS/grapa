@@ -63,7 +63,14 @@ export const getPrograms = async (
   const includes: Includeable[] = [
     {
       model: StudyTrack,
-      attributes: ['id', 'name', 'programId'],
+      attributes: [
+        'id',
+        'name',
+        'programId',
+        'code',
+        'moduleGroupId',
+        'sisuId',
+      ],
       as: 'studyTracks',
     },
   ]

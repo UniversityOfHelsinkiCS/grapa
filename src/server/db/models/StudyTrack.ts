@@ -20,6 +20,10 @@ class StudyTracks extends Model<
   declare programId: string
 
   declare sisuId: string
+  
+  declare code: string
+
+  declare moduleGroupId: string
 }
 
 StudyTracks.init(
@@ -38,6 +42,14 @@ StudyTracks.init(
       type: DataTypes.STRING,
       allowNull: true,
       unique: true,
+    },
+    code: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    moduleGroupId: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     programId: {
       type: DataTypes.STRING,
