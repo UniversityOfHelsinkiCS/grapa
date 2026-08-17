@@ -20,7 +20,7 @@ class StudyTracks extends Model<
   declare programId: string
 
   declare sisuId: string
-  
+
   declare code: string
 
   declare moduleGroupId: string
