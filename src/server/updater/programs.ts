@@ -30,15 +30,15 @@ const studyTracksInsert = async (studyTracks: any[]) => {
   module_data.forEach((module) => {
     const track = existingTracks.find((t) => t.sisuId === module.id)
     if (track && !track.moduleGroupId) {
-        console.log('Needs migrating', module.id, module.name.fi, module.code)
-        track.update({
-          code: module.code,
-          moduleGroupId: module.id,
-          name: module.name,
-        })
-        counters.migrated++
-        counters.migrated_set.add(module.code)
-        console.log('Migrated\n\n')
+      console.log('Needs migrating', module.id, module.name.fi, module.code)
+      void track.update({
+        code: module.code,
+        moduleGroupId: module.id,
+        name: module.name,
+      })
+      counters.migrated++
+      counters.migrated_set.add(module.code)
+      console.log('Migrated\n\n')
     }
   })
 
@@ -133,7 +133,7 @@ const studyTracksInsert = async (studyTracks: any[]) => {
   console.log('\n\nLegacy\n\n', Array.from(counters.legacy_set).join('\n'))
   console.log('\n\nUpdate\n\n', Array.from(counters.update_set).join('\n'))
   console.log('\n\nNew\n\n', Array.from(counters.new_set).join('\n'))
-  console.log('\n\Migrated\n\n', Array.from(counters.migrated_set).join('\n'))
+  console.log('\nMigrated\n\n', Array.from(counters.migrated_set).join('\n'))
 }
 
 export const programHandler = async (programs: any) => {
@@ -151,8 +151,7 @@ export const programHandler = async (programs: any) => {
       // these do not seem to be acually used anywhere,
       // they are probably leftovers from jami
       international: true,
-      // @ts-ignore
-      companionFaculties: [],
+      companionFaculties: [] as string[],
     }
   })
 
