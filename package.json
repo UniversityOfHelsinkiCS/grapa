@@ -73,7 +73,6 @@
     "umzug": "3.8.3",
     "uuid": "14.0.1",
     "winston": "3.19.0",
-    "winston-gelf-transporter": "1.0.2",
     "winston-loki": "6.1.5",
     "zod": "4.4.3"
   },
