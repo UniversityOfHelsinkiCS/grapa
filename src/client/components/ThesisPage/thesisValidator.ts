@@ -166,6 +166,8 @@ export const ThesisSchema = z.object({
       0
     )
 
+    if (supervisions.length == 0) return
+
     if (totalPercentage !== 100) {
       ctx.addIssue({
         code: 'custom',
