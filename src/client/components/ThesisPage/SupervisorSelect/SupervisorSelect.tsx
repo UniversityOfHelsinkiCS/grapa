@@ -90,7 +90,7 @@ const SupervisorSelect = ({
         user: null,
         percentage: Math.floor((1 / numberOfSupervisors) * 100),
         isExternal,
-        isPrimarySupervisor: false,
+        isPrimarySupervisor: numberOfSupervisors === 1,
         creationTimeIdentifier: uuidv4(), // This is a shit hack for dealing w/ React keys and an anti-pattern, but couldn't figure out anything else -- See #43 comments
       },
     ])
