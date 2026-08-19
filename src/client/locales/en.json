@@ -274,6 +274,7 @@
     "affiliation": "Please provide missing affiliation information",
     "authors": "Please provide missing author information",
     "supervisors": "Please provide missing supervisor information",
+    "supervisorsContent": "The thesis must have at least one supervisor.",
     "seminarSupervisors": "Please provide missing seminar supervisor information",
     "supervisorGeneralErrorsTitle": "Errors related to adding supervisors",
     "seminarSupervisorRequired": "Please select a seminar supervisor",

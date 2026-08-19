@@ -272,6 +272,7 @@
     "affiliation": "Anna puuttuva affiliaatio",
     "authors": "Anna puuttuvat tekijätiedot",
     "supervisors": "Anna puuttuvat ohjaajatiedot",
+    "supervisorsContent": "Tutkielmalla tulee olla vähintään yksi ohjaaja.",
     "seminarSupervisors": "Anna puuttuvat seminaariryhmän vetäjän tiedot",
     "supervisorGeneralErrorsTitle": "Ohjaajien lisäykseen liittyvät virheet",
     "seminarSupervisorRequired": "Valitse seminaariryhmän vetäjä",

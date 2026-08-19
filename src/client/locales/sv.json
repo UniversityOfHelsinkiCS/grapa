@@ -274,6 +274,7 @@
     "affiliation": "Vänligen ange anknytning",
     "authors": "Vänligen ange information om skribenten",
     "supervisors": "Vänligen ange information om handledaren",
+    "supervisorsContent": "Avhandlingen måste ha minst en handledare.",
     "seminarSupervisors": "Vänligen ange information om seminariehandledaren",
     "supervisorGeneralErrorsTitle": "Fel vid tillägg av handledare",
     "seminarSupervisorRequired": "Vänligen välj en seminariehandledare",
