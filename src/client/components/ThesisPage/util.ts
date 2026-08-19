@@ -41,7 +41,8 @@ export const getFormErrors = (
   seminarSupervisionRequired = false,
   allowMultipleSeminarResponsibles = false,
   waysOfWorkingRequired = false,
-  isStudentView = false
+  isStudentView = false,
+  supervisionRequired = false
 ) => {
   const validatedThesis = ThesisSchema.safeParse(thesis)
   const validatedDates = ThesisDateSchema.safeParse({
@@ -63,6 +64,18 @@ export const getFormErrors = (
       code: 'custom' as const,
       message: 'formErrors:seminarSupervisorRequired',
       path: ['general', 'seminar', 'supervisor', 'error'],
+      params: {},
+    })
+  }
+
+  if (
+    supervisionRequired &&
+    (!thesis.supervisions || thesis.supervisions.length === 0)
+  ) {
+    formErrors.push({
+      code: 'custom' as const,
+      message: 'formErrors:supervisors',
+      path: ['general', 'supervisor', 'error'],
       params: {},
     })
   }
