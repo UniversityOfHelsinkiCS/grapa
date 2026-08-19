@@ -103,13 +103,17 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                   sx={{ fontFamily: 'monospace', fontWeight: 400 }}
                 ></Chip>
               )}
-              {entityType == 'studyTrack' && selectedEntity?.code && (
-                <Chip
-                  label={selectedEntity?.code}
-                  variant="outlined"
-                  sx={{ fontFamily: 'monospace', fontWeight: 400 }}
-                ></Chip>
-              )}
+              //@ts-ignore
+              {entityType == 'studyTrack' &&
+                //@ts-expect-error code and sisuId exist on it when type is studyTrack
+                selectedEntity?.code && (
+                  <Chip
+                    //@ts-expect-error code and sisuId exist on it when type is studyTrack
+                    label={selectedEntity?.code}
+                    variant="outlined"
+                    sx={{ fontFamily: 'monospace', fontWeight: 400 }}
+                  ></Chip>
+                )}
               <Typography component="h1" variant="h4">
                 {selectedEntity.name[language]}
               </Typography>
@@ -117,6 +121,7 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
 
             {user?.isAdmin && entityType == 'studyTrack' && (
               <Link
+                //@ts-expect-error code and sisuId exist on it when type is studyTrack
                 to={`https://sisu.helsinki.fi/staff/studies/staff/hy-lv-77/studymodule/${selectedEntity.sisuId}/basicinfo`}
               >
                 <Button variant="outlined" size="small">
