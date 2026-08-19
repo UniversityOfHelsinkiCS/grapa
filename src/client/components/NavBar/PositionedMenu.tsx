@@ -82,10 +82,15 @@ export const PositionedMenuLinkItem = ({
     onClick={onClick}
   >
     <Typography
-      sx={{ display: 'flex', gap: 2, textTransform: 'uppercase' }}
-      variant="body2"
+      sx={{
+        display: 'flex',
+        gap: 2,
+        textTransform: 'uppercase',
+        fontWeight: indented ? 400 : 500,
+      }}
+      variant={'button'}
     >
-      <NavigateNextIcon /> {children}
+      {children}
     </Typography>
   </MenuItem>
 )

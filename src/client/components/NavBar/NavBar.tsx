@@ -7,6 +7,7 @@ import {
   AppBar,
   Box,
   Button,
+  Chip,
   Container,
   Divider,
   IconButton,
@@ -178,6 +179,12 @@ const ProgramMenu = () => {
                 to={`/programs/${program.id}`}
                 onClick={handleClose}
               >
+                <Chip
+                  variant="filled"
+                  size="small"
+                  label={program.id}
+                  sx={{ fontFamily: 'monospace', fontWeight: 400 }}
+                ></Chip>
                 {program.name[language]}
               </PositionedMenuLinkItem>
             ) : (
@@ -200,6 +207,14 @@ const ProgramMenu = () => {
                     onClick={handleClose}
                     indented
                   >
+                    {st.code && (
+                      <Chip
+                        variant="outlined"
+                        size="small"
+                        label={st.code}
+                        sx={{ fontFamily: 'monospace' }}
+                      ></Chip>
+                    )}
                     {st.name[language]}
                   </PositionedMenuLinkItem>
                 ))}

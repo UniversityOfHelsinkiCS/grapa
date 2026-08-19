@@ -96,9 +96,16 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
         <>
           <Stack sx={{ px: '1rem', py: '2rem' }} spacing={3}>
             <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
-              {selectedEntity?.id && entityType == 'program' && (
+              {entityType == 'program' && selectedEntity?.id && (
                 <Chip
                   label={selectedEntity?.id}
+                  variant="outlined"
+                  sx={{ fontFamily: 'monospace', fontWeight: 400 }}
+                ></Chip>
+              )}
+              {entityType == 'studyTrack' && selectedEntity?.code && (
+                <Chip
+                  label={selectedEntity?.code}
                   variant="outlined"
                   sx={{ fontFamily: 'monospace', fontWeight: 400 }}
                 ></Chip>
