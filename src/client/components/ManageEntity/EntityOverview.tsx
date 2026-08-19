@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import 'dayjs/locale/fi'
 import {
   CircularProgress,
@@ -8,6 +8,8 @@ import {
   Tabs,
   Typography,
   Stack,
+  Chip,
+  Button,
 } from '@mui/material'
 import usePrograms from '../../hooks/usePrograms'
 import { useTranslation } from 'react-i18next'
@@ -28,6 +30,7 @@ import ProgramConfigurations from './ProgramConfigurations'
 import Statistics from './Statistics'
 import Supervisions from './Supervisions'
 import useDepartments from '../../hooks/useDepartments'
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 
 type EntityType = 'program' | 'studyTrack' | 'department'
 
@@ -92,9 +95,40 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
       {Boolean(selectedEntity) && (
         <>
           <Stack sx={{ px: '1rem', py: '2rem' }} spacing={3}>
-            <Typography component="h1" variant="h4">
-              {selectedEntity.name[language]}
-            </Typography>
+            <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
+              {selectedEntity?.id && entityType == 'program' && (
+                <Chip
+                  label={selectedEntity?.id}
+                  variant="outlined"
+                  sx={{ fontFamily: 'monospace', fontWeight: 400 }}
+                ></Chip>
+              )}
+              <Typography component="h1" variant="h4">
+                {selectedEntity.name[language]}
+              </Typography>
+            </Stack>
+
+            {user?.isAdmin && entityType == 'studyTrack' && (
+              <Link
+                to={`https://sisu.helsinki.fi/staff/studies/staff/hy-lv-77/studymodule/${selectedEntity.sisuId}/basicinfo`}
+              >
+                <Button variant="outlined" size="small">
+                  <ArrowOutwardIcon></ArrowOutwardIcon>
+                  Sisu
+                </Button>
+              </Link>
+            )}
+
+            {user?.isAdmin && entityType == 'program' && (
+              <Link
+                to={`https://oodikone.helsinki.fi/study-programme/${selectedEntity.id}?tab=1`}
+              >
+                <Button variant="outlined" size="small">
+                  <ArrowOutwardIcon></ArrowOutwardIcon>
+                  Oodikone
+                </Button>
+              </Link>
+            )}
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs
                 value={tab}
