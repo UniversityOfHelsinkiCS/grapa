@@ -3,6 +3,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Box,
   Button,
   ButtonProps,
   DialogProps,
@@ -19,6 +20,7 @@ interface PopupProps extends Omit<
   titleProps?: any
   children: ReactNode
   actions?: ReactNode
+  extraActionsLeft?: ReactNode
   onSubmit?: () => void
   onCancel?: () => void
   submitText?: ReactNode
@@ -42,6 +44,7 @@ const Popup = ({ open, onClose, testId = 'popup', ...props }: PopupProps) => {
     titleProps,
     children,
     actions,
+    extraActionsLeft,
     onSubmit,
     onCancel,
     submitText,
@@ -72,6 +75,9 @@ const Popup = ({ open, onClose, testId = 'popup', ...props }: PopupProps) => {
           actions
         ) : (
           <>
+            {extraActionsLeft && (
+              <Box sx={{ flex: 1, display: 'flex' }}>{extraActionsLeft}</Box>
+            )}
             <Button
               data-testid={`${testId}-cancel-button`}
               onClick={onCancel || onClose}

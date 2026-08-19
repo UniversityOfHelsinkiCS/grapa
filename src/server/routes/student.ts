@@ -221,11 +221,13 @@ studentRouter.post(
       return
     }
 
-    // Restrict students from creating theses with other statuses than DRAFT
-    if (thesisData.status != 'DRAFT') {
+    // Restrict students from creating theses with other statuses than DRAFT or SUGGESTED
+    if (!['DRAFT', 'SUGGESTED'].includes(thesisData.status)) {
       res
         .status(400)
-        .send("Student's cannot create theses with other statuses than DRAFT")
+        .send(
+          "Student's cannot create theses with other statuses than DRAFT or SUGGESTED"
+        )
       return
     }
 

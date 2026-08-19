@@ -153,9 +153,9 @@ const ThesisTable = ({
 
   const { mutateAsync: changeThesisStatus } =
     useChangeThesisStatusMutation(isStudentView)
-  const [pendingAction, setPendingAction] = React.useState<
-    'approve' | 'newThesis' | null
-  >(null)
+  const [pendingAction, setPendingAction] = React.useState<'approve' | null>(
+    null
+  )
   const [bulkSelection, setBulkSelection] = React.useState<Map<string, Thesis>>(
     new Map()
   )
@@ -170,11 +170,7 @@ const ThesisTable = ({
   }
 
   const handleNewThesisClick = () => {
-    if (isStudentView) {
-      setPendingAction('newThesis')
-    } else {
-      initializeNewThesis()
-    }
+    initializeNewThesis()
   }
 
   /* FilterView */
@@ -1110,17 +1106,8 @@ const ThesisTable = ({
       <Popup
         open={pendingAction !== null}
         onClose={() => setPendingAction(null)}
-        title={
-          pendingAction === 'newThesis'
-            ? t('thesesTableToolbar:newThesisPopupTitle')
-            : t('approveButtonConfirmTitle')
-        }
+        title={t('approveButtonConfirmTitle')}
         onSubmit={async () => {
-          if (pendingAction === 'newThesis') {
-            setPendingAction(null)
-            initializeNewThesis()
-            return
-          }
           if (pendingAction === 'approve') {
             await changeThesisStatus({
               theses: selectedApprovable,
@@ -1136,54 +1123,44 @@ const ThesisTable = ({
           }
           setPendingAction(null)
         }}
-        submitText={
-          pendingAction === 'newThesis'
-            ? t('thesesTableToolbar:newThesisPopupSubmit')
-            : t('submitButton')
-        }
+        submitText={t('submitButton')}
         cancelText={t('cancelButton')}
       >
-        {pendingAction === 'newThesis' ? (
-          <Typography>
-            {t('thesesTableToolbar:newThesisPopupContent')}
-          </Typography>
-        ) : (
-          <>
-            <Typography>{t('approveBulkButtonConfirmContent')}</Typography>
-            <Box sx={{ mt: 2, maxHeight: 300, overflowY: 'auto' }}>
-              <List dense disablePadding>
-                {selectedApprovable.map((thesis) => (
-                  <ListItem
-                    key={thesis.id}
-                    disableGutters
-                    sx={{ alignItems: 'flex-start' }}
-                  >
-                    <ListItemText
-                      primary={
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {thesis.topic}
-                        </Typography>
-                      }
-                      secondary={
-                        <Typography variant="caption" color="text.secondary">
-                          {thesis.authors
-                            .toSorted((a, b) =>
-                              a.lastName.localeCompare(b.lastName)
-                            )
-                            .map(
-                              (author) =>
-                                `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
-                            )
-                            .join(', ')}
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          </>
-        )}
+        <>
+          <Typography>{t('approveBulkButtonConfirmContent')}</Typography>
+          <Box sx={{ mt: 2, maxHeight: 300, overflowY: 'auto' }}>
+            <List dense disablePadding>
+              {selectedApprovable.map((thesis) => (
+                <ListItem
+                  key={thesis.id}
+                  disableGutters
+                  sx={{ alignItems: 'flex-start' }}
+                >
+                  <ListItemText
+                    primary={
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {thesis.topic}
+                      </Typography>
+                    }
+                    secondary={
+                      <Typography variant="caption" color="text.secondary">
+                        {thesis.authors
+                          .toSorted((a, b) =>
+                            a.lastName.localeCompare(b.lastName)
+                          )
+                          .map(
+                            (author) =>
+                              `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
+                          )
+                          .join(', ')}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </>
       </Popup>
     </>
   )
