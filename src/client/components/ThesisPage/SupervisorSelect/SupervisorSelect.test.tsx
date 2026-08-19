@@ -315,7 +315,7 @@ describe('SupervisorSelect', () => {
           user: null,
           percentage: 100,
 
-          isPrimarySupervisor: false,
+          isPrimarySupervisor: true,
           creationTimeIdentifier: expect.any(String),
           isExternal: false,
         },
@@ -361,7 +361,7 @@ describe('SupervisorSelect', () => {
             user: null,
             percentage: 100,
 
-            isPrimarySupervisor: false,
+            isPrimarySupervisor: true,
             creationTimeIdentifier: expect.any(String),
             isExternal: true,
           },

@@ -118,6 +118,15 @@ describe('validateThesisDataMiddleware', () => {
       supervisions: undefined,
     }
 
+    await expectValidationError('Supervisors field cannot be omitted')
+  })
+
+  it('should return an error if supervisions is empty', async () => {
+    req.body = {
+      ...req.body,
+      supervisions: [],
+    }
+
     await expectValidationError('At least one supervision is required')
   })
 
