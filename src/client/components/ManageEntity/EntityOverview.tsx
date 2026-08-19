@@ -30,7 +30,7 @@ import ProgramConfigurations from './ProgramConfigurations'
 import Statistics from './Statistics'
 import Supervisions from './Supervisions'
 import useDepartments from '../../hooks/useDepartments'
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 
 type EntityType = 'program' | 'studyTrack' | 'department'
 
