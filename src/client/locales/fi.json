@@ -229,6 +229,13 @@
       "enableConfirm": "Oletko varma, että haluat näyttää tapahtumalokit?",
       "disableConfirm": "Oletko varma, että haluat piilottaa tapahtumalokit?"
     },
+    "allowThesisWithoutSupervisor": {
+      "toggle": "Piilota ohjaajan valinta opiskelijalta",
+      "tooltip": "Kun ohjaajan valinta on piilotettu opiskelijalta, tulee koulutusohjelman tai opintosuunnan vastaavan asettaa ohjaaja tutkielmaan",
+      "confirmTitle": "Vahvista ohjaajan valinnan piilottamisen asetus",
+      "enableConfirm": "Oletko varma, että haluat piilottaa ohjaajan valinnan opiskelijalta?",
+      "disableConfirm": "Oletko varma, että haluat näyttää ohjaajan valinnan opiskelijalle?"
+    },
     "targetDates": {
       "fieldTitle": "Tavoitepäivä",
       "title": "Tavoitepäivät",

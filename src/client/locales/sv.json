@@ -231,6 +231,13 @@
       "enableConfirm": "Är du säker på att du vill visa händelseloggar?",
       "disableConfirm": "Är du säker på att du vill dölja händelseloggar?"
     },
+    "allowThesisWithoutSupervisor": {
+      "toggle": "Dölj val av handledare för studenten",
+      "tooltip": "När valet av handledare är dolt för studenten måste den ansvariga för utbildningsprogrammet eller studieinriktningen utse en handledare till avhandlingen",
+      "confirmTitle": "Bekräfta inställningen för att dölja val av handledare",
+      "enableConfirm": "Är du säker på att du vill dölja valet av handledare för studenten?",
+      "disableConfirm": "Är du säker på att du vill visa valet av handledare för studenten?"
+    },
     "targetDates": {
       "fieldTitle": "Måldatum",
       "title": "Måldatum",

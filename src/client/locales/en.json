@@ -231,6 +231,13 @@
       "enableConfirm": "Are you sure you want to enable event logs visibility?",
       "disableConfirm": "Are you sure you want to disable event logs visibility?"
     },
+    "allowThesisWithoutSupervisor": {
+      "toggle": "Hide supervisor selection from the student",
+      "tooltip": "When supervisor selection is hidden from the student, the person responsible for the degree programme or study track must assign a supervisor to the thesis",
+      "confirmTitle": "Confirm the setting for hiding supervisor selection",
+      "enableConfirm": "Are you sure you want to hide supervisor selection from the student?",
+      "disableConfirm": "Are you sure you want to show supervisor selection to the student?"
+    },
     "targetDates": {
       "fieldTitle": "Target date",
       "title": "Target dates",
