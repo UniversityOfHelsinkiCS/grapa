@@ -103,7 +103,6 @@ const EntityOverview = ({ entityType }: { entityType: EntityType }) => {
                   sx={{ fontFamily: 'monospace', fontWeight: 400 }}
                 ></Chip>
               )}
-              //@ts-ignore
               {entityType == 'studyTrack' &&
                 //@ts-expect-error code and sisuId exist on it when type is studyTrack
                 selectedEntity?.code && (
