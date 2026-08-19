@@ -77,11 +77,11 @@ export const thesisDataValidator = async (
     })
   }
 
-  // if (!thesisData.supervisions) {
-  //   throw new CustomValidationError('Supervisors field cannot be omitted', {
-  //     supervisions: ['Supervisors field cannot be omitted'],
-  //   })
-  // }
+  if (!thesisData.supervisions) {
+    throw new CustomValidationError('Supervisors field cannot be omitted', {
+      supervisions: ['Supervisors field cannot be omitted'],
+    })
+  }
 
   if (!options?.programOptions?.allowThesisWithoutSupervisor) {
     if (!thesisData.supervisions || thesisData.supervisions.length === 0) {
