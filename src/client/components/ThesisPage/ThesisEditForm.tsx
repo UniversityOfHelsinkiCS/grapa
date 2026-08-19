@@ -106,7 +106,8 @@ const ThesisEditForm = ({
       Boolean(selectedProgram?.options?.seminar),
       Boolean(selectedProgram?.options?.allowMultipleSeminarResponsibles),
       Boolean(selectedProgram?.options?.waysOfWorkingRequired),
-      isStudentView
+      isStudentView,
+      !(selectedProgram?.options?.allowThesisWithoutSupervisor && isStudentView)
     )
 
     if (thesisErrors.length > 0) {
@@ -870,30 +871,35 @@ const ThesisEditForm = ({
           </Grid>
         </Stack>
 
-        <Stack
-          sx={
-            isStudentView
-              ? {
-                  '.percentage-input-field': {
-                    display: 'none',
-                  },
-                }
-              : {}
-          }
-        >
-          <SupervisorSelect
-            errors={formErrors}
-            setErrors={(errors) => setFormErrors(errors)}
-            supervisorSelections={editedThesis.supervisions}
-            setSupervisorSelections={(newSupervisions) =>
-              setEditedThesis((oldThesis) => ({
-                ...oldThesis,
-                supervisions: newSupervisions,
-              }))
+        {!(
+          selectedProgram?.options?.allowThesisWithoutSupervisor &&
+          isStudentView
+        ) && (
+          <Stack
+            sx={
+              isStudentView
+                ? {
+                    '.percentage-input-field': {
+                      display: 'none',
+                    },
+                  }
+                : {}
             }
-            disabledMode={false}
-          />
-        </Stack>
+          >
+            <SupervisorSelect
+              errors={formErrors}
+              setErrors={(errors) => setFormErrors(errors)}
+              supervisorSelections={editedThesis.supervisions}
+              setSupervisorSelections={(newSupervisions) =>
+                setEditedThesis((oldThesis) => ({
+                  ...oldThesis,
+                  supervisions: newSupervisions,
+                }))
+              }
+              disabledMode={false}
+            />
+          </Stack>
+        )}
 
         {Boolean(selectedProgram?.options?.seminar) && (
           <SeminarSupervisorSelect
