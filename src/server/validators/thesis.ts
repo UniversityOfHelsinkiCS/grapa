@@ -77,10 +77,18 @@ export const thesisDataValidator = async (
     })
   }
 
-  if (!thesisData.supervisions || thesisData.supervisions.length === 0) {
-    throw new CustomValidationError('At least one supervision is required', {
-      supervisions: ['At least one supervision is required'],
+  if (!thesisData.supervisions) {
+    throw new CustomValidationError('Supervisors field cannot be omitted', {
+      supervisions: ['Supervisors field cannot be omitted'],
     })
+  }
+
+  if (!options?.programOptions?.allowThesisWithoutSupervisor) {
+    if (!thesisData.supervisions || thesisData.supervisions.length === 0) {
+      throw new CustomValidationError('At least one supervision is required', {
+        supervisions: ['At least one supervision is required'],
+      })
+    }
   }
 
   const uniqueSupervisions = uniqBy(
@@ -104,12 +112,13 @@ export const thesisDataValidator = async (
   const thesisPrimarySupervisors = thesisData.supervisions.filter(
     (supervision) => supervision.isPrimarySupervisor
   )
-  if (thesisPrimarySupervisors.length === 0) {
-    throw new CustomValidationError('Primary supervisor is required', {
-      supervisions: ['Primary supervisor is required'],
-    })
+  if (!options?.programOptions?.allowThesisWithoutSupervisor) {
+    if (thesisPrimarySupervisors.length === 0) {
+      throw new CustomValidationError('Primary supervisor is required', {
+        supervisions: ['Primary supervisor is required'],
+      })
+    }
   }
-
   if (thesisPrimarySupervisors.length > 1) {
     throw new CustomValidationError('Only one primary supervisor is allowed', {
       supervisions: ['Only one primary supervisor is allowed'],
@@ -194,12 +203,14 @@ export const thesisDataValidator = async (
   }
 
   // sum of supervision percentages must add up to 100
-  const totalPercentage = getTotalPercentage(thesisData.supervisions)
-  if (totalPercentage !== 100) {
-    throw new CustomValidationError(
-      'Supervision percentages must add up to 100',
-      { supervisions: ['Supervision percentages must add up to 100'] }
-    )
+  if (!options?.programOptions?.allowThesisWithoutSupervisor) {
+    const totalPercentage = getTotalPercentage(thesisData.supervisions)
+    if (totalPercentage !== 100) {
+      throw new CustomValidationError(
+        'Supervision percentages must add up to 100',
+        { supervisions: ['Supervision percentages must add up to 100'] }
+      )
+    }
   }
 
   const researchPlanFile = files.researchPlan
@@ -314,8 +325,21 @@ export const validateThesisDataStudentMiddleware = async (
   next: NextFunction
 ) => {
   try {
+    let programOptions = {}
+    if (req.body.programId) {
+      const program = await Program.findOne({
+        where: {
+          id: req.body.programId,
+        },
+      })
+
+      if (program) {
+        programOptions = program.options
+      }
+    }
     await thesisDataValidator(req.body, req.files, {
       isStudent: true,
+      programOptions,
     })
     next()
   } catch (error) {
