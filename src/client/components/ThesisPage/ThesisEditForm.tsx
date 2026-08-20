@@ -321,11 +321,7 @@ const ThesisEditForm = ({
         onSubmit={handleSubmit}
         extraActionsLeft={
           isStudentView ? (
-            <Button
-              onClick={() => void saveThesis('DRAFT')}
-              color="inherit"
-              disabled={formErrors.length > 0}
-            >
+            <Button onClick={() => void saveThesis('DRAFT')} color="inherit">
               {t('viewThesisFooter:saveAsDraftButton')}
             </Button>
           ) : null
