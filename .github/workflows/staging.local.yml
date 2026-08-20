@@ -20,22 +20,34 @@ jobs:
       
       - run: npm ci --no-audit --no-fund
 
-      - name: Build image
+      - name: Build image podman
         id: build-image
-        uses: redhat-actions/buildah-build@v3
-        with:
-          image: grapa
-          tags: staging-local ${{ github.sha }}
-          containerfiles: |
-            ./Dockerfile
-          build-args: |
-            BASE_PATH=
-            GIT_SHA=${{ github.sha }}
-            STAGING=true
-            E2E=false
-          # ulimit 4096 is required for the buildah to work
-          # otherwise throws error "Too many open files"
-          extra-args: --ulimit nofile=4096:4096
+        env:
+          BASE_PATH: 
+          GIT_SHA: ${{ github.sha }}
+          STAGING: true
+          E2E: false
+        run: podman build \
+                --tag "grapa:staging-local" \
+                --label "org.opencontainers.image.revision=${ github.sha }" \
+                --label "org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+
+      # - name: Build image
+      #   id: build-image
+      #   uses: redhat-actions/buildah-build@v3
+      #   with:
+      #     image: grapa
+      #     tags: staging-local ${{ github.sha }}
+      #     containerfiles: |
+      #       ./Dockerfile
+      #     build-args: |
+      #       BASE_PATH=
+      #       GIT_SHA=${{ github.sha }}
+      #       STAGING=true
+      #       E2E=false
+      #     # ulimit 4096 is required for the buildah to work
+      #     # otherwise throws error "Too many open files"
+      #     extra-args: --ulimit nofile=4096:4096
 
 
       - run: npm run lint
