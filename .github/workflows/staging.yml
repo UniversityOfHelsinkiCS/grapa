@@ -9,6 +9,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     # runs-on: runner-scaleset #tämän pitää olla tarkalleen tämä että oikea runner löytyy organisaation alta.
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v6
