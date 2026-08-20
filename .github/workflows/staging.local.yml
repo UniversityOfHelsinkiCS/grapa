@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: runner-scaleset-large
+    runs-on: runner-scaleset-docker
     # runs-on: runner-scaleset #tämän pitää olla tarkalleen tämä että oikea runner löytyy organisaation alta.
     timeout-minutes: 20
 
