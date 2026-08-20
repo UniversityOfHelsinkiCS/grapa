@@ -20,6 +20,14 @@ jobs:
       
       - run: npm ci --no-audit --no-fund
 
+      - run: echo $PATH
+
+      - run: ls /bin
+
+      - run: which docker
+
+      - run: which podman
+
       - name: Build image podman
         id: build-image
         env:
