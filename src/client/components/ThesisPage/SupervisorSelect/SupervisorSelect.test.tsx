@@ -313,9 +313,14 @@ describe('SupervisorSelect', () => {
       expect(setSupervisorSelections).toHaveBeenCalledWith([
         {
           user: null,
-          percentage: 100,
-
+          percentage: 50,
           isPrimarySupervisor: true,
+          isExternal: false,
+        },
+        {
+          user: null,
+          percentage: 50,
+          isPrimarySupervisor: false,
           creationTimeIdentifier: expect.any(String),
           isExternal: false,
         },
@@ -359,9 +364,14 @@ describe('SupervisorSelect', () => {
         expect(setSupervisorSelections).toHaveBeenCalledWith([
           {
             user: null,
-            percentage: 100,
-
+            percentage: 50,
             isPrimarySupervisor: true,
+            isExternal: false,
+          },
+          {
+            user: null,
+            percentage: 50,
+            isPrimarySupervisor: false,
             creationTimeIdentifier: expect.any(String),
             isExternal: true,
           },
