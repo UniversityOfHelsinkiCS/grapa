@@ -34,10 +34,45 @@ interface ProgramConfigurationsProps {
   program: ProgramData
 }
 
+// This helper strictly types the options map so that conditions can only reference valid sibling features
+const createOptions = <T extends Record<string, any>>(opts: {
+  [K in keyof T]: {
+    type: 'boolean'
+    conditions?: Partial<Record<keyof T, boolean>>
+  }
+}) => opts
+
+export const PROGRAM_OPTIONS = createOptions({
+  seminar: { type: 'boolean' },
+  allowMultipleSeminarResponsibles: { type: 'boolean' },
+  allowStudentStartedProcess: { type: 'boolean' },
+  waysOfWorkingRequired: { type: 'boolean' },
+  allowMultipleAuthors: { type: 'boolean' },
+  hideSendToEthesis: { type: 'boolean' },
+  useMilestones: { type: 'boolean' },
+  disableStudyTracks: { type: 'boolean' },
+  useIdleState: { type: 'boolean' },
+  supervisorApproval: { type: 'boolean' },
+  thesisProgramManagerNotRequired: { type: 'boolean' },
+  allowStatusChanges: { type: 'boolean' },
+  showEventLogs: { type: 'boolean' },
+  isBachelorProgram: { type: 'boolean' },
+  allowThesisWithoutSupervisor: {
+    type: 'boolean',
+    conditions: { supervisorOptional: true },
+  },
+  supervisorOptional: { type: 'boolean' },
+})
+
+export type BooleanOptionName = keyof typeof PROGRAM_OPTIONS
+export type OptionCondition = Partial<Record<BooleanOptionName, boolean>>
+
 interface FeatureFlagControlProps {
   isDateInput?: boolean
   program: ProgramData
-  feature: string
+  feature: BooleanOptionName | string
+  conditions?: OptionCondition
+  disabled?: boolean
   versioned?: boolean
   isMultilingualInput?: boolean
 }
@@ -50,7 +85,12 @@ interface VersionedOption {
   versions?: OptionValue[][]
 }
 
-const FeatureFlagControl = ({ program, feature }: FeatureFlagControlProps) => {
+const FeatureFlagControl = ({
+  program,
+  feature,
+  conditions,
+  disabled,
+}: FeatureFlagControlProps) => {
   const { t: translation } = useTranslation()
   const updateMutation = useUpdateProgramMutation()
   const featureStatus = Boolean(
@@ -72,12 +112,15 @@ const FeatureFlagControl = ({ program, feature }: FeatureFlagControlProps) => {
       return
     }
 
-    const options = program.options
-    options[feature] = pendingValue
+    const options = {
+      ...(program.options || {}),
+      [feature]: pendingValue,
+      ...(pendingValue && conditions),
+    }
 
     await updateMutation.mutateAsync({
       programId: program.id,
-      options: options,
+      options,
     })
 
     setPendingValue(null)
@@ -90,7 +133,7 @@ const FeatureFlagControl = ({ program, feature }: FeatureFlagControlProps) => {
           <Switch
             checked={featureStatus}
             onChange={handleToggle}
-            disabled={updateMutation.isPending}
+            disabled={updateMutation.isPending || disabled}
           />
         }
         label={
@@ -612,36 +655,33 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   const { t } = useTranslation()
   const updateProgramOptionsMutation = useUpdateProgramMutation()
 
-  const options = {
-    seminar: 'boolean',
-    allowMultipleSeminarResponsibles: 'boolean',
-    allowStudentStartedProcess: 'boolean',
-    waysOfWorkingRequired: 'boolean',
-    allowMultipleAuthors: 'boolean',
-    hideSendToEthesis: 'boolean',
-    useMilestones: 'boolean',
-    disableStudyTracks: 'boolean',
-    useIdleState: 'boolean',
-    supervisorApproval: 'boolean',
-    thesisProgramManagerNotRequired: 'boolean',
-    allowStatusChanges: 'boolean',
-    showEventLogs: 'boolean',
-    isBachelorProgram: 'boolean',
-    allowThesisWithoutSupervisor: 'boolean',
-    supervisorOptional: 'boolean',
-  }
+  const forcedFeatures = Object.keys(PROGRAM_OPTIONS).reduce((acc, feature) => {
+    const config = PROGRAM_OPTIONS[feature as BooleanOptionName]
+    if (config.type === 'boolean') {
+      const isActive = program.options?.[feature] === true
+      if (isActive && config.conditions) {
+        Object.keys(config.conditions).forEach((target) => acc.add(target))
+      }
+    }
+    return acc
+  }, new Set<string>())
 
-  const featureFlagUI = Object.keys(options).map((feature) => {
-    //@ts-expect-error hardcoded above
-    if (options[feature] == 'boolean') {
+  const featureFlagUI = Object.keys(PROGRAM_OPTIONS).map((feature) => {
+    const config = PROGRAM_OPTIONS[feature as BooleanOptionName]
+    if (config.type === 'boolean') {
+      const isForced = forcedFeatures.has(feature)
+
       return (
         <FeatureFlagControl
           program={program}
           feature={feature}
           key={feature}
+          conditions={config.conditions}
+          disabled={isForced}
         ></FeatureFlagControl>
       )
     }
+    return null
   })
   const defaultNumberOfGraders =
     (program.options?.numberOfGraders as number | undefined) ?? 2
