@@ -100,8 +100,53 @@ const ThesisEditForm = ({
     }
   }
 
-  const validateForm = () => {
-    const thesisErrors = getFormErrors(editedThesis, {
+  const getSubmitPayload = () => {
+    const currentProgram = programs.filter(
+      (p) => p.id == editedThesis.programId
+    )
+
+    const programOptions = currentProgram[0]?.options || {}
+
+    const submitMilestoneVersionIndex = resolveMilestoneVersionIndex(
+      editedThesis.milestoneVersion,
+      programOptions
+    )
+
+    const payload = { ...editedThesis }
+
+    if (programOptions.thesisProgramManagerNotRequired) {
+      payload.approvers = []
+    }
+
+    if (
+      programOptions.disableStudyTracks ||
+      !currentProgram[0]?.studyTracks?.length
+    ) {
+      payload.studyTrackId = null
+    }
+
+    if (!programOptions.seminar) {
+      payload.seminarSupervisions = []
+    }
+
+    if (
+      currentProgram.length > 0 &&
+      submitMilestoneVersionIndex >= 0 &&
+      hasMilestones(programOptions, submitMilestoneVersionIndex) &&
+      (payload.milestone == null || payload.milestone === undefined)
+    ) {
+      payload.milestone = 0
+      payload.milestoneVersion = submitMilestoneVersionIndex
+    } else if (submitMilestoneVersionIndex === -1) {
+      payload.milestone = null
+      payload.milestoneVersion = null
+    }
+
+    return payload
+  }
+
+  const validateForm = (thesisToValidate: ThesisData = editedThesis) => {
+    const thesisErrors = getFormErrors(thesisToValidate, {
       hasApprovers:
         approvers?.length > 0 &&
         !selectedProgram?.options?.thesisProgramManagerNotRequired,
@@ -130,31 +175,9 @@ const ThesisEditForm = ({
   const saveThesis = async (
     statusOverride: ThesisData['status'] | null = null
   ) => {
-    if (!validateForm()) return
+    const payload = getSubmitPayload()
+    if (!validateForm(payload)) return
 
-    const currentProgram = programs.filter(
-      (p) => p.id == editedThesis.programId
-    )
-
-    const submitMilestoneVersionIndex = resolveMilestoneVersionIndex(
-      editedThesis.milestoneVersion,
-      currentProgram[0]?.options
-    )
-
-    if (
-      currentProgram.length > 0 &&
-      submitMilestoneVersionIndex >= 0 &&
-      hasMilestones(currentProgram[0].options, submitMilestoneVersionIndex) &&
-      (editedThesis.milestone == null || editedThesis.milestone === undefined)
-    ) {
-      editedThesis.milestone = 0
-      editedThesis.milestoneVersion = submitMilestoneVersionIndex
-    } else if (submitMilestoneVersionIndex === -1) {
-      editedThesis.milestone = null
-      editedThesis.milestoneVersion = null
-    }
-
-    const payload = { ...editedThesis }
     if (statusOverride) {
       payload.status = statusOverride
     }
@@ -182,7 +205,8 @@ const ThesisEditForm = ({
 
   const handleSubmit = async () => {
     if (isStudentView) {
-      if (validateForm()) {
+      const payload = getSubmitPayload()
+      if (validateForm(payload)) {
         setConfirmSendOpen(true)
       }
     } else {
