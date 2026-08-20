@@ -28,14 +28,29 @@ jobs:
 
       # - run: which podman
 
-      - name: Build image docker
-        id: build-image
-        env:
-          BASE_PATH: 
-          GIT_SHA: ${{ github.sha }}
-          STAGING: true
-          E2E: false
-        run: docker build --tag "grapa:staging-local" --label "org.opencontainers.image.revision=$GIT_SHA" --label "org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build
+        uses: docker/build-push-action@v7
+        with:
+          file: Dockerfile
+          push: false
+          tags: grapa:staging-local
+          build-args: |
+            BASE_PATH= 
+            GIT_SHA=${{ github.sha }}
+            STAGING=true
+            E2E=false
+
+      # - name: Build image docker
+      #   id: build-image
+      #   env:
+      #     BASE_PATH: 
+      #     GIT_SHA: ${{ github.sha }}
+      #     STAGING: true
+      #     E2E: false
+      #   run: docker build --tag "grapa:staging-local" --label "org.opencontainers.image.revision=$GIT_SHA" --label "org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" .
 
       # - name: Build image
       #   id: build-image
