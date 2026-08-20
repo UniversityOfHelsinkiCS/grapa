@@ -423,6 +423,10 @@
         "name": "Toinen arvioija puuttuu",
         "tooltip": "Näyttää tutkielmat, joihin on valittu alle tarvittava määrä arvioijia"
       },
+      "missingSupervisor": {
+        "name": "Ei ohjaajaa",
+        "tooltip": "Näyttää tutkielmat, joille ei ole määritetty ohjaajaa"
+      },
       "isThesisLate": {
         "name": "Myöhässä",
         "tooltip": "Näyttää tutkielmat, jotka ovat ylittäneet tavoitepäivänsä kuukaudella"

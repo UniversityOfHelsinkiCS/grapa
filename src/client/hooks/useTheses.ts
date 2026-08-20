@@ -23,6 +23,7 @@ interface UsePaginatedThesesParams {
   search?: string
   milestone?: string | number
   missingSecondGrader?: boolean
+  missingSupervisor?: boolean
   lastMilestone?: boolean
   ethesisReadyStudentStarted?: boolean
   hideStudentStartedEthesis?: boolean
@@ -51,6 +52,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     params.search,
     params.milestone,
     params.missingSecondGrader,
+    params.missingSupervisor,
     params.lastMilestone,
     params.ethesisReadyStudentStarted,
     params.hideStudentStartedEthesis,
@@ -84,6 +86,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
         search: params.search,
         milestone: params.milestone,
         missingSecondGrader: params.missingSecondGrader,
+        missingSupervisor: params.missingSupervisor,
         lastMilestone: params.lastMilestone,
         ethesisReadyStudentStarted: params.ethesisReadyStudentStarted,
         hideStudentStartedEthesis: params.hideStudentStartedEthesis,
@@ -128,6 +131,7 @@ export const useExportThesesCsv = (params: UsePaginatedThesesParams) => {
         search: params.search,
         milestone: params.milestone,
         missingSecondGrader: params.missingSecondGrader,
+        missingSupervisor: params.missingSupervisor,
         lastMilestone: params.lastMilestone,
         ethesisReadyStudentStarted: params.ethesisReadyStudentStarted,
         hideStudentStartedEthesis: params.hideStudentStartedEthesis,

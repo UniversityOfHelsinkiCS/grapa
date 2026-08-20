@@ -97,6 +97,7 @@ export interface ThesisFiltersOptions {
   onlyAuthored?: boolean
   search?: string
   missingSecondGrader?: boolean
+  missingSupervisor?: boolean
   lastMilestone?: boolean
   ethesisReadyStudentStarted?: boolean
   hideStudentStartedEthesis?: boolean
@@ -313,6 +314,7 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
     onlySeminarSupervised,
     onlyAuthored,
     missingSecondGrader,
+    missingSupervisor,
     lastMilestone,
     ethesisReadyStudentStarted,
     hideStudentStartedEthesis,
@@ -361,6 +363,14 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
     andConditions.push(
       literal(
         `(SELECT COUNT(*) FROM graders WHERE graders.thesis_id = "Thesis".id) < 2`
+      )
+    )
+  }
+
+  if (missingSupervisor) {
+    andConditions.push(
+      literal(
+        `(SELECT COUNT(*) FROM supervisions WHERE supervisions.thesis_id = "Thesis".id) = 0`
       )
     )
   }
@@ -982,6 +992,7 @@ export const getAvailableActionNeeded = async (
   const [
     hasSuggested,
     hasMissingSecondGrader,
+    hasMissingSupervisor,
     hasLastMilestone,
     hasEthesisReadyStudentStarted,
     hasIsThesisLate,
@@ -1003,6 +1014,20 @@ export const getAvailableActionNeeded = async (
           ...baseAnd,
           literal(
             `(SELECT COUNT(*) FROM graders WHERE graders.thesis_id = "Thesis".id) < 2`
+          ),
+        ],
+      },
+      attributes: ['id'],
+      raw: true,
+      bind: bindParams,
+    }),
+    Thesis.findOne({
+      where: {
+        ...baseWhere,
+        [Op.and]: [
+          ...baseAnd,
+          literal(
+            `(SELECT COUNT(*) FROM supervisions WHERE supervisions.thesis_id = "Thesis".id) = 0`
           ),
         ],
       },
@@ -1087,6 +1112,7 @@ export const getAvailableActionNeeded = async (
   return {
     suggested: !!hasSuggested,
     missingSecondGrader: !!hasMissingSecondGrader,
+    missingSupervisor: !!hasMissingSupervisor,
     lastMilestone: !!hasLastMilestone,
     ethesisReadyStudentStarted: !!hasEthesisReadyStudentStarted,
     isThesisLate: !!hasIsThesisLate,

@@ -424,6 +424,10 @@
         "name": "Saknar andra bedömare",
         "tooltip": "Visar avhandlingar som har färre än det nödvändiga antalet bedömare tilldelade"
       },
+      "missingSupervisor": {
+        "name": "Saknar handledare",
+        "tooltip": "Visar avhandlingar som saknar tilldelad handledare"
+      },
       "isThesisLate": {
         "name": "Sena",
         "tooltip": "Visar avhandlingar som är mer än en månad försenade enligt måldatumet"

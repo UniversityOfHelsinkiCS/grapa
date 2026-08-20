@@ -73,6 +73,7 @@ const getPaginatedQuery = (req: ServerGetRequest) => ({
   search: req.query.search as string,
   milestone: req.query.milestone as string,
   missingSecondGrader: req.query.missingSecondGrader === 'true',
+  missingSupervisor: req.query.missingSupervisor === 'true',
   lastMilestone: req.query.lastMilestone === 'true',
   ethesisReadyStudentStarted: req.query.ethesisReadyStudentStarted === 'true',
   hideStudentStartedEthesis: req.query.hideStudentStartedEthesis === 'true',

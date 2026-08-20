@@ -89,6 +89,7 @@ export interface GetPaginatedThesesParams {
   search?: string
   milestone?: string | number
   missingSecondGrader?: boolean
+  missingSupervisor?: boolean
   lastMilestone?: boolean
   ethesisReadyStudentStarted?: boolean
   hideStudentStartedEthesis?: boolean
@@ -116,6 +117,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     search,
     milestone,
     missingSecondGrader,
+    missingSupervisor,
     lastMilestone,
     ethesisReadyStudentStarted,
     hideStudentStartedEthesis,
@@ -163,6 +165,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     onlySeminarSupervised: String(onlySeminarSupervised) === 'true',
     search: formattedSearch || undefined,
     missingSecondGrader,
+    missingSupervisor,
     lastMilestone,
     ethesisReadyStudentStarted,
     hideStudentStartedEthesis,

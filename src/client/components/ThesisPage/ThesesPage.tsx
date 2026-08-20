@@ -88,6 +88,8 @@ const ThesesPage = ({
   const [filterMilestone, setFilterMilestone] = useState<string | null>(null)
   const [filterMissingSecondGrader, setFilterMissingSecondGrader] =
     useState<boolean>(false)
+  const [filterMissingSupervisor, setFilterMissingSupervisor] =
+    useState<boolean>(false)
   const [filterLastMilestone, setFilterLastMilestone] = useState<boolean>(false)
   const [
     filterEthesisReadyStudentStarted,
@@ -110,6 +112,7 @@ const ThesesPage = ({
     departmentId: filteringDepartmentId,
     status: filterStatus || filteringStatuses,
     missingSecondGrader: filterMissingSecondGrader,
+    missingSupervisor: filterMissingSupervisor,
     lastMilestone: filterLastMilestone,
     ethesisReadyStudentStarted: filterEthesisReadyStudentStarted,
     hideStudentStartedEthesis,
@@ -252,6 +255,7 @@ const ThesesPage = ({
     setFilterStatus(null)
     setFilterMilestone(null)
     setFilterMissingSecondGrader(false)
+    setFilterMissingSupervisor(false)
     setFilterLastMilestone(false)
     setFilterEthesisReadyStudentStarted(false)
     setFilterIsThesisLate(false)
@@ -273,6 +277,9 @@ const ThesesPage = ({
           break
         case 'missingSecondGrader':
           setFilterMissingSecondGrader(true)
+          break
+        case 'missingSupervisor':
+          setFilterMissingSupervisor(true)
           break
         case 'lastMilestone':
           setFilterLastMilestone(true)
@@ -433,6 +440,19 @@ const ThesesPage = ({
                               filterModel: [
                                 {
                                   id: 'missingSecondGrader',
+                                  value: true,
+                                },
+                              ],
+                              sortingModel: [{ id: 'startDate', desc: true }],
+                            },
+                          }
+                        : {}),
+                      ...(availableActionNeeded?.missingSupervisor
+                        ? {
+                            missingSupervisor: {
+                              filterModel: [
+                                {
+                                  id: 'missingSupervisor',
                                   value: true,
                                 },
                               ],

@@ -424,6 +424,10 @@
         "name": "Missing second grader",
         "tooltip": "Shows theses that have fewer than the required number of graders assigned"
       },
+      "missingSupervisor": {
+        "name": "Missing supervisor",
+        "tooltip": "Shows theses that have no supervisor assigned"
+      },
       "isThesisLate": {
         "name": "Late",
         "tooltip": "Shows theses that are more than a month late according to the target date"
