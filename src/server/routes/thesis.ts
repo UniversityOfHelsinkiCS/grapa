@@ -32,6 +32,7 @@ import {
   calculateThesisStatistics,
   handleChangeEventLogs,
   thesesToCsv,
+  buildThesisIncludes,
 } from '../services/thesisHelpers'
 
 import {
@@ -229,10 +230,16 @@ thesisRouter.put(
     }
 
     const currentUser = req.user
-    if (!id) res.status(404).send(' id  not found')
+    if (!id) {
+      res.status(404).send(' id  not found')
+      return
+    }
     const originalThesis = await fetchThesisById(id as string, currentUser)
 
-    if (!originalThesis) res.status(404).send('Thesis not found')
+    if (!originalThesis) {
+      res.status(404).send('Thesis not found')
+      return
+    }
 
     let updatedThesis
     await sequelize.transaction(async (t) => {
@@ -241,7 +248,13 @@ thesisRouter.put(
       await handleAttachmentByLabel(req, id as string, 'researchPlan', t)
       await handleAttachmentByLabel(req, id as string, 'waysOfWorking', t)
 
-      updatedThesis = await fetchThesisById(id as string, req.user, t)
+      // We fetch the updated thesis directly (bypassing permissions) because we already validated
+      // authorization via originalThesis, and the user's edit might have caused them to lose read access.
+      updatedThesis = await Thesis.findOne({
+        where: { id: id as string },
+        include: buildThesisIncludes(),
+        transaction: t,
+      })
 
       await handleChangeEventLogs(originalThesis, updatedThesis, req.user, t)
       await handleStatusChangeEmail(

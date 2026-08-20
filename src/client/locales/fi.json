@@ -229,6 +229,13 @@
       "enableConfirm": "Oletko varma, että haluat näyttää tapahtumalokit?",
       "disableConfirm": "Oletko varma, että haluat piilottaa tapahtumalokit?"
     },
+    "supervisorOptional": {
+      "toggle": "Aseta ohjaaja valinnaiseksi",
+      "tooltip": "Kun otettu käyttöön, opiskelijat voivat palauttaa tutkielman valitsematta ohjaajaa",
+      "confirmTitle": "Vahvista ohjaajan asettaminen valinnaiseksi",
+      "enableConfirm": "Oletko varma, että haluat asettaa ohjaajan valinnaiseksi?",
+      "disableConfirm": "Oletko varma, että haluat asettaa ohjaajan pakolliseksi?"
+    },
     "allowThesisWithoutSupervisor": {
       "toggle": "Piilota ohjaajan valinta opiskelijalta",
       "tooltip": "Kun ohjaajan valinta on piilotettu opiskelijalta, tulee koulutusohjelman tai opintosuunnan vastaavan asettaa ohjaaja tutkielmaan",

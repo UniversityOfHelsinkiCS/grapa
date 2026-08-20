@@ -231,6 +231,13 @@
       "enableConfirm": "Are you sure you want to enable event logs visibility?",
       "disableConfirm": "Are you sure you want to disable event logs visibility?"
     },
+    "supervisorOptional": {
+      "toggle": "Make supervisor optional",
+      "tooltip": "When enabled, students can submit their thesis without selecting a supervisor",
+      "confirmTitle": "Confirm setting supervisor as optional",
+      "enableConfirm": "Are you sure you want to make supervisor optional?",
+      "disableConfirm": "Are you sure you want to make supervisor mandatory?"
+    },
     "allowThesisWithoutSupervisor": {
       "toggle": "Hide supervisor selection from the student",
       "tooltip": "When supervisor selection is hidden from the student, the person responsible for the degree programme or study track must assign a supervisor to the thesis",

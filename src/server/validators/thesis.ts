@@ -63,13 +63,22 @@ export const thesisDataValidator = async (
     researchPlan?: Express.Multer.File[]
     waysOfWorking?: Express.Multer.File[]
   },
-  options: any = {}
+  options: { isStudent?: boolean } = {}
 ) => {
   if (!VALID_THESIS_STATUSES.includes(thesisData.status)) {
     throw new CustomValidationError('Thesis status is not a valid value', {
       status: ['Thesis status is not a valid value'],
     })
   }
+
+  if (!thesisData.programId) {
+    throw new CustomValidationError('Program is required', {
+      programId: ['Program is required'],
+    })
+  }
+
+  const program = await Program.findByPk(thesisData.programId)
+  const programOptions = program?.options || {}
 
   if (!thesisData.topic) {
     throw new CustomValidationError('Thesis title is required', {
@@ -83,7 +92,10 @@ export const thesisDataValidator = async (
     })
   }
 
-  if (!options?.programOptions?.allowThesisWithoutSupervisor) {
+  if (
+    !programOptions?.allowThesisWithoutSupervisor &&
+    !programOptions?.supervisorOptional
+  ) {
     if (!thesisData.supervisions || thesisData.supervisions.length === 0) {
       throw new CustomValidationError('At least one supervision is required', {
         supervisions: ['At least one supervision is required'],
@@ -112,11 +124,16 @@ export const thesisDataValidator = async (
   const thesisPrimarySupervisors = thesisData.supervisions.filter(
     (supervision) => supervision.isPrimarySupervisor
   )
-  if (!options?.programOptions?.allowThesisWithoutSupervisor) {
-    if (thesisPrimarySupervisors.length === 0) {
-      throw new CustomValidationError('Primary supervisor is required', {
-        supervisions: ['Primary supervisor is required'],
-      })
+  if (!programOptions?.allowThesisWithoutSupervisor) {
+    if (
+      thesisData.supervisions.length > 0 ||
+      !programOptions?.supervisorOptional
+    ) {
+      if (thesisPrimarySupervisors.length === 0) {
+        throw new CustomValidationError('Primary supervisor is required', {
+          supervisions: ['Primary supervisor is required'],
+        })
+      }
     }
   }
   if (thesisPrimarySupervisors.length > 1) {
@@ -203,13 +220,18 @@ export const thesisDataValidator = async (
   }
 
   // sum of supervision percentages must add up to 100
-  if (!options?.programOptions?.allowThesisWithoutSupervisor) {
-    const totalPercentage = getTotalPercentage(thesisData.supervisions)
-    if (totalPercentage !== 100) {
-      throw new CustomValidationError(
-        'Supervision percentages must add up to 100',
-        { supervisions: ['Supervision percentages must add up to 100'] }
-      )
+  if (!programOptions?.allowThesisWithoutSupervisor) {
+    if (
+      thesisData.supervisions.length > 0 ||
+      !programOptions?.supervisorOptional
+    ) {
+      const totalPercentage = getTotalPercentage(thesisData.supervisions)
+      if (totalPercentage !== 100) {
+        throw new CustomValidationError(
+          'Supervision percentages must add up to 100',
+          { supervisions: ['Supervision percentages must add up to 100'] }
+        )
+      }
     }
   }
 
@@ -241,18 +263,11 @@ export const thesisDataValidator = async (
     })
   }
 
-  if (!thesisData.programId) {
-    throw new CustomValidationError('Program is required', {
-      programId: ['Program is required'],
-    })
-  }
-
-  const program = await Program.findByPk(thesisData.programId)
-  const seminarSupervisionRequired = Boolean(program?.options?.seminar)
+  const seminarSupervisionRequired = Boolean(programOptions?.seminar)
   const allowMultipleSeminarResponsibles = Boolean(
-    program?.options?.allowMultipleSeminarResponsibles
+    programOptions?.allowMultipleSeminarResponsibles
   )
-  const waysOfWorkingRequired = Boolean(program?.options?.waysOfWorkingRequired)
+  const waysOfWorkingRequired = Boolean(programOptions?.waysOfWorkingRequired)
   const hasWaysOfWorkingFile =
     files?.waysOfWorking?.length > 0 || Boolean(thesisData.waysOfWorking)
 
@@ -325,21 +340,8 @@ export const validateThesisDataStudentMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    let programOptions = {}
-    if (req.body.programId) {
-      const program = await Program.findOne({
-        where: {
-          id: req.body.programId,
-        },
-      })
-
-      if (program) {
-        programOptions = program.options
-      }
-    }
     await thesisDataValidator(req.body, req.files, {
       isStudent: true,
-      programOptions,
     })
     next()
   } catch (error) {

@@ -231,6 +231,13 @@
       "enableConfirm": "Är du säker på att du vill visa händelseloggar?",
       "disableConfirm": "Är du säker på att du vill dölja händelseloggar?"
     },
+    "supervisorOptional": {
+      "toggle": "Gör handledare valfri",
+      "tooltip": "När den är aktiverad kan studenter skicka in sin avhandling utan att välja handledare",
+      "confirmTitle": "Bekräfta att göra handledare valfri",
+      "enableConfirm": "Är du säker på att du vill göra handledare valfri?",
+      "disableConfirm": "Är du säker på att du vill göra handledare obligatorisk?"
+    },
     "allowThesisWithoutSupervisor": {
       "toggle": "Dölj val av handledare för studenten",
       "tooltip": "När valet av handledare är dolt för studenten måste den ansvariga för utbildningsprogrammet eller studieinriktningen utse en handledare till avhandlingen",

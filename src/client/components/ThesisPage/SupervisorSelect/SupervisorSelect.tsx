@@ -27,6 +27,7 @@ interface SupervisorSelectProps {
   supervisorSelections: SupervisionData[]
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
   disabledMode: boolean
+  allowEmpty?: boolean
 }
 
 const SupervisorSelect = ({
@@ -35,16 +36,29 @@ const SupervisorSelect = ({
   supervisorSelections,
   setSupervisorSelections,
   disabledMode,
+  allowEmpty = false,
 }: SupervisorSelectProps) => {
   const { t } = useTranslation()
 
-  const totalPercentage = getTotalPercentage(supervisorSelections)
+  const displayedSelections =
+    !allowEmpty && supervisorSelections.length === 0
+      ? [
+          {
+            user: null,
+            percentage: 100,
+            isExternal: false,
+            isPrimarySupervisor: true,
+          } as SupervisionData,
+        ]
+      : supervisorSelections
+
+  const totalPercentage = getTotalPercentage(displayedSelections)
   const generalSupervisorErrors = errors.filter((error) =>
     error.path.join('-').endsWith('general-supervisor-error')
   )
 
   const handleSupervisorChange = (index: number, supervisor: Partial<User>) => {
-    const updatedSelections = [...supervisorSelections]
+    const updatedSelections = [...displayedSelections]
     updatedSelections[index].user = supervisor
     setSupervisorSelections(updatedSelections)
 
@@ -58,7 +72,7 @@ const SupervisorSelect = ({
     const newPercentage = Number.isNaN(percentage) ? 0 : percentage
     if (newPercentage < 0 || newPercentage > 100) return
 
-    const updatedSelections = [...supervisorSelections]
+    const updatedSelections = [...displayedSelections]
     updatedSelections[index].percentage = newPercentage
     setSupervisorSelections(updatedSelections)
 
@@ -69,7 +83,7 @@ const SupervisorSelect = ({
   }
 
   const handlePrimarySupervisorChange = (index: number) => {
-    const updatedSelections = supervisorSelections.map((selection, i) => ({
+    const updatedSelections = displayedSelections.map((selection, i) => ({
       ...selection,
       isPrimarySupervisor: i === index,
     }))
@@ -78,11 +92,11 @@ const SupervisorSelect = ({
   }
 
   const handleAddSupervisor = (isExternal: boolean) => {
-    const numberOfSupervisors = supervisorSelections.length + 1
+    const numberOfSupervisors = displayedSelections.length + 1
 
     const updatedSelections = getEqualSupervisorSelectionWorkloads(
       numberOfSupervisors,
-      supervisorSelections
+      displayedSelections
     )
     setSupervisorSelections([
       ...updatedSelections,
@@ -97,9 +111,14 @@ const SupervisorSelect = ({
   }
 
   const handleRemoveSupervisor = (index: number) => {
-    const initialSelections = [...supervisorSelections]
+    const initialSelections = [...displayedSelections]
     initialSelections.splice(index, 1)
-    if (initialSelections.length === 0) return // Do not allow removing all supervisors
+    if (initialSelections.length === 0) {
+      if (allowEmpty) {
+        setSupervisorSelections([])
+      }
+      return
+    }
 
     const numberOfSupervisors = initialSelections.length
     const updatedSelections = getEqualSupervisorSelectionWorkloads(
@@ -143,7 +162,7 @@ const SupervisorSelect = ({
         </Alert>
       )}
 
-      {supervisorSelections.map((selection, index) => {
+      {displayedSelections.map((selection, index) => {
         const { isExternal } = selection
 
         if (isExternal) {
@@ -197,7 +216,7 @@ const SupervisorSelect = ({
                 required: true,
               }}
               iconButtonProps={{
-                disabled: supervisorSelections.length === 1,
+                disabled: !allowEmpty && displayedSelections.length === 1,
               }}
               percentageInputProps={{
                 required: true,
@@ -217,7 +236,7 @@ const SupervisorSelect = ({
           <SingleSupervisorSelect
             key={
               selection.user?.id ??
-              `supervisions-${selection.creationTimeIdentifier}`
+              `supervisions-${selection.creationTimeIdentifier ?? index}`
             }
             index={index}
             selection={selection}
@@ -248,8 +267,9 @@ const SupervisorSelect = ({
             }}
             iconButtonProps={{
               disabled:
-                supervisorSelections.length === 1 ||
-                selection.isPrimarySupervisor,
+                (!allowEmpty && displayedSelections.length === 1) ||
+                (displayedSelections.length > 1 &&
+                  selection.isPrimarySupervisor),
             }}
             percentageInputProps={{
               required: true,
@@ -283,9 +303,19 @@ const SupervisorSelect = ({
           >
             <Typography
               variant="overline"
-              color={totalPercentage !== 100 ? 'error' : ''}
+              color={
+                displayedSelections.length > 0 && totalPercentage !== 100
+                  ? 'error'
+                  : ''
+              }
             >
-              {t('thesisForm:totalSupervisionPercentage', { totalPercentage })}
+              {displayedSelections.length > 0
+                ? t('thesisForm:totalSupervisionPercentage', {
+                    totalPercentage,
+                  })
+                : t('thesisForm:totalSupervisionPercentage', {
+                    totalPercentage: 0,
+                  })}
             </Typography>
           </Box>
         </Tooltip>

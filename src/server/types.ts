@@ -144,6 +144,7 @@ export interface ProgramOptions {
   thesisProgramManagerNotRequired?: boolean
   isBachelorProgram?: boolean
   numberOfGraders?: number
+  supervisorOptional?: boolean
   milestones?: {
     versions?: any[][]
   }

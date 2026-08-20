@@ -136,7 +136,7 @@ const SingleSupervisorSelect = ({
 
       <Tooltip
         title={
-          selection.isPrimarySupervisor
+          iconButtonProps?.disabled
             ? t('thesisForm:primarySupervisorDeleteError')
             : `${t('removeButton')} ${t('supervisor', { index: index + 1 })}`
         }

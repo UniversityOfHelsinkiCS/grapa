@@ -101,16 +101,24 @@ const ThesisEditForm = ({
   }
 
   const validateForm = () => {
-    const thesisErrors = getFormErrors(
-      editedThesis,
-      approvers?.length > 0 &&
+    const thesisErrors = getFormErrors(editedThesis, {
+      hasApprovers:
+        approvers?.length > 0 &&
         !selectedProgram?.options?.thesisProgramManagerNotRequired,
-      Boolean(selectedProgram?.options?.seminar),
-      Boolean(selectedProgram?.options?.allowMultipleSeminarResponsibles),
-      Boolean(selectedProgram?.options?.waysOfWorkingRequired),
+      seminarSupervisionRequired: Boolean(selectedProgram?.options?.seminar),
+      allowMultipleSeminarResponsibles: Boolean(
+        selectedProgram?.options?.allowMultipleSeminarResponsibles
+      ),
+      waysOfWorkingRequired: Boolean(
+        selectedProgram?.options?.waysOfWorkingRequired
+      ),
       isStudentView,
-      !(selectedProgram?.options?.allowThesisWithoutSupervisor && isStudentView)
-    )
+      supervisionRequired: !(
+        (selectedProgram?.options?.allowThesisWithoutSupervisor &&
+          isStudentView) ||
+        selectedProgram?.options?.supervisorOptional
+      ),
+    })
 
     if (thesisErrors.length > 0) {
       setFormErrors(thesisErrors)
@@ -397,25 +405,27 @@ const ThesisEditForm = ({
                     : 'PLANNING'
 
                   console.log(firstAvailableStatus)
-                  setEditedThesis((oldThesis) => ({
-                    ...oldThesis,
-                    programId: newProgramId,
-                    status: firstAvailableStatus,
-                    studyTrackId:
-                      disableStudyTracks || newStudyTracks.length === 0
-                        ? ''
-                        : newStudyTracks.some(
-                              (st) => st.id === oldThesis.studyTrackId
-                            )
-                          ? oldThesis.studyTrackId
-                          : newStudyTracks[0]?.id || '',
-                    authors: newAllowMultipleAuthors
-                      ? oldThesis.authors
-                      : oldThesis.authors.slice(0, 1),
-                    graders: oldThesis.graders.slice(0, newMaxGraders),
-                    milestone: undefined,
-                    milestoneVersion: undefined,
-                  }))
+                  setEditedThesis((oldThesis) => {
+                    return {
+                      ...oldThesis,
+                      programId: newProgramId,
+                      status: firstAvailableStatus,
+                      studyTrackId:
+                        disableStudyTracks || newStudyTracks.length === 0
+                          ? ''
+                          : newStudyTracks.some(
+                                (st) => st.id === oldThesis.studyTrackId
+                              )
+                            ? oldThesis.studyTrackId
+                            : newStudyTracks[0]?.id || '',
+                      authors: newAllowMultipleAuthors
+                        ? oldThesis.authors
+                        : oldThesis.authors.slice(0, 1),
+                      graders: oldThesis.graders.slice(0, newMaxGraders),
+                      milestone: undefined,
+                      milestoneVersion: undefined,
+                    }
+                  })
 
                   setFormErrors(
                     formErrors.filter((error) => error.path[0] !== 'programId')
@@ -957,6 +967,9 @@ const ThesisEditForm = ({
                   }))
                 }
                 disabledMode={false}
+                allowEmpty={Boolean(
+                  selectedProgram?.options?.supervisorOptional
+                )}
               />
             </Stack>
           )}

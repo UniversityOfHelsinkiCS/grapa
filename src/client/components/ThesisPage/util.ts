@@ -35,15 +35,28 @@ export const getEqualSupervisorSelectionWorkloads = (
   return updatedSelections
 }
 
+export interface GetFormErrorsOptions {
+  hasApprovers?: boolean
+  seminarSupervisionRequired?: boolean
+  allowMultipleSeminarResponsibles?: boolean
+  waysOfWorkingRequired?: boolean
+  isStudentView?: boolean
+  supervisionRequired?: boolean
+}
+
 export const getFormErrors = (
   thesis: ThesisData,
-  hasApprovers = false,
-  seminarSupervisionRequired = false,
-  allowMultipleSeminarResponsibles = false,
-  waysOfWorkingRequired = false,
-  isStudentView = false,
-  supervisionRequired = false
+  options: GetFormErrorsOptions = {}
 ) => {
+  const {
+    hasApprovers = false,
+    seminarSupervisionRequired = false,
+    allowMultipleSeminarResponsibles = false,
+    waysOfWorkingRequired = false,
+    isStudentView = false,
+    supervisionRequired = false,
+  } = options
+
   const validatedThesis = ThesisSchema.safeParse(thesis)
   const validatedDates = ThesisDateSchema.safeParse({
     startDate: thesis.startDate,

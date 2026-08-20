@@ -628,6 +628,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     showEventLogs: 'boolean',
     isBachelorProgram: 'boolean',
     allowThesisWithoutSupervisor: 'boolean',
+    supervisorOptional: 'boolean',
   }
 
   const featureFlagUI = Object.keys(options).map((feature) => {
