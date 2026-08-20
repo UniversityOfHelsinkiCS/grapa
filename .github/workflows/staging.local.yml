@@ -20,22 +20,22 @@ jobs:
       
       - run: npm ci --no-audit --no-fund
 
-      - run: echo $PATH
+      # - run: echo $PATH
 
-      - run: ls /bin
+      # - run: ls /bin
 
-      - run: which docker
+      # - run: which docker
 
-      - run: which podman
+      # - run: which podman
 
-      - name: Build image podman
+      - name: Build image docker
         id: build-image
         env:
           BASE_PATH: 
           GIT_SHA: ${{ github.sha }}
           STAGING: true
           E2E: false
-        run: podman build \
+        run: docker build \
                 --tag "grapa:staging-local" \
                 --label "org.opencontainers.image.revision=$GIT_SHA" \
                 --label "org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
