@@ -35,10 +35,11 @@ jobs:
           GIT_SHA: ${{ github.sha }}
           STAGING: true
           E2E: false
-        run: docker build . \
+        run: docker build
                 --tag "grapa:staging-local" \
                 --label "org.opencontainers.image.revision=$GIT_SHA" \
                 --label "org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+                . \
 
       # - name: Build image
       #   id: build-image
