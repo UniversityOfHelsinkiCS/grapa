@@ -141,6 +141,7 @@ const ProgramTrack = ({
   const { i18n } = useTranslation()
   const { programs, isLoading: programsLoading } = usePrograms({
     includeNotManaged: true,
+    useStudentApi: isStudentView,
     enabled: !isStudentView,
   })
 
@@ -1041,7 +1042,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
         </Popup>
       )}
 
-      {thesis && (
+      {thesis && currentUser && isEthesisAdmin(currentUser) && (
         <ThesisModal
           open={ethesisAdminModalOpen}
           onClose={() => setEthesisAdminModalOpen(false)}

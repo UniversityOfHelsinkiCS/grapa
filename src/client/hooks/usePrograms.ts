@@ -26,6 +26,7 @@ const usePrograms = (params: UseProgramsParams) => {
     params?.includeNotManaged,
     params?.includeDisabled,
     params?.includeManagedStudyTracks,
+    params?.useStudentApi,
     language,
   ]
 
