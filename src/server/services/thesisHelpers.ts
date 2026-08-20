@@ -273,6 +273,9 @@ const buildPermissionsConditions = async (
       `EXISTS (SELECT 1 FROM "${Supervision.tableName}" WHERE "${Supervision.tableName}"."thesis_id" = "Thesis"."id" AND "${Supervision.tableName}"."user_id" = '${actionUser.id}')`
     ),
     literal(
+      `EXISTS (SELECT 1 FROM "${SeminarSupervision.tableName}" WHERE "${SeminarSupervision.tableName}"."thesis_id" = "Thesis"."id" AND "${SeminarSupervision.tableName}"."user_id" = '${actionUser.id}')`
+    ),
+    literal(
       `EXISTS (SELECT 1 FROM "${Approver.tableName}" WHERE "${Approver.tableName}"."thesis_id" = "Thesis"."id" AND "${Approver.tableName}"."user_id" = '${actionUser.id}')`
     ),
   ]
