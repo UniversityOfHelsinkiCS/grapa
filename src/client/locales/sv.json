@@ -126,6 +126,14 @@
     "featureFlagWarning": "Dessa inställningar påverkar tillgängligheten för funktioner i utbildningsprogrammet. Att ändra dem kan leda till problem med befintliga examensarbeten.",
     "configurationsTab": "Inställningar",
     "managePermissionsTab": "Hantera behörigheter",
+    "helperTexts": "Hjälptexter",
+    "topicDescriptionHelperText": {
+      "title": "Ämnesbeskrivning (Ladda upp ämnesbeskrivning)",
+      "description": "Denna text visas ovanför uppladdningsfältet för ämnesbeskrivning i avhandlingsblanketten. Fyll i anvisningar för studenten om hur man fyller i och laddar upp ämnesbeskrivningen här.",
+      "confirmTitle": "Bekräfta text",
+      "enableConfirm": "Är du säker på att du vill spara denna text?",
+      "disableConfirm": "Är du säker på att du vill spara denna text?"
+    },
     "seminar": {
       "toggle": "Seminarium",
       "tooltip": "Avhandlingen måste ha en seminariehandledare",
@@ -312,6 +320,7 @@
     "version": "Version",
     "approverHeader": "Ansvarig",
     "approverInstructions": "Välj den programansvariga vars expertis ligger närmast avhandlingens ämne för att hantera processen.",
+    "topicDescriptionInstructionsTitle": "Anvisningar för att fylla i ämnesbeskrivningen",
     "errorSummary": "Blanketten innehåller följande fel",
     "errorSummaryAriaLabel": "Blanketten innehåller följande fel",
     "serverError": "Serverfel",

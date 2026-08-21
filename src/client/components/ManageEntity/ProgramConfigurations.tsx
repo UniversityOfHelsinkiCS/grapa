@@ -75,6 +75,8 @@ interface FeatureFlagControlProps {
   disabled?: boolean
   versioned?: boolean
   isMultilingualInput?: boolean
+  singleValue?: boolean
+  multiline?: boolean
 }
 
 interface OptionValue {
@@ -166,20 +168,22 @@ const FeatureFlagControl = ({
   )
 }
 
-export type ListValue = {
+export type FeatureInputValue = {
   value: string | Record<string, string>
 }
 
-const ListInput = ({
+const FeatureInput = ({
   isDateInput = false,
   program,
   feature,
   versioned,
   isMultilingualInput = false,
+  singleValue = false,
+  multiline = false,
 }: FeatureFlagControlProps) => {
   const { t: translation } = useTranslation()
   const updateMutation = useUpdateProgramMutation()
-  const [listValues, setListValues] = useState<ListValue[]>(() => {
+  const [values, setValues] = useState<FeatureInputValue[]>(() => {
     let initial =
       program.options && program.options[feature]
         ? versioned
@@ -189,8 +193,20 @@ const ListInput = ({
           : program.options[feature]
         : []
 
+    if (singleValue) {
+      const isEmpty =
+        !initial || (Array.isArray(initial) && initial.length === 0)
+      const defaultValue = isMultilingualInput ? { fi: '', sv: '', en: '' } : ''
+
+      initial = isEmpty
+        ? [{ value: defaultValue }]
+        : Array.isArray(initial)
+          ? initial
+          : [{ value: initial }]
+    }
+
     if (isMultilingualInput) {
-      initial = initial.map((item: ListValue) => {
+      initial = initial.map((item: FeatureInputValue) => {
         const val = item.value
         if (typeof val === 'string') {
           return { value: { fi: val, sv: val, en: val } }
@@ -201,15 +217,19 @@ const ListInput = ({
     return initial
   })
 
-  const [pendingValue, setPendingValue] = useState<ListValue[] | null>(null)
+  const [pendingValue, setPendingValue] = useState<FeatureInputValue[] | null>(
+    null
+  )
 
   const handleSave = () => {
     const validValues = isDateInput
-      ? listValues.filter((v: ListValue) => dayjs(v.value as string).isValid())
-      : listValues
+      ? values.filter((v: FeatureInputValue) =>
+          dayjs(v.value as string).isValid()
+        )
+      : values
 
-    if (isDateInput && validValues.length !== listValues.length) {
-      setListValues(validValues)
+    if (isDateInput && validValues.length !== values.length) {
+      setValues(validValues)
     }
     setPendingValue(validValues)
   }
@@ -240,7 +260,11 @@ const ListInput = ({
       (options[feature] as VersionedOption).versions = []
     if (versioned)
       (options[feature] as VersionedOption).versions!.push(pendingValue)
-    else options[feature] = pendingValue
+    else
+      options[feature] =
+        singleValue && pendingValue.length > 0
+          ? pendingValue[0].value
+          : pendingValue
 
     await updateMutation.mutateAsync({
       programId: program.id,
@@ -257,13 +281,7 @@ const ListInput = ({
           gap: '1rem',
         }}
       >
-        <Typography variant="h5">
-          {translation(`programOverviewPage:${feature}:title`)}
-        </Typography>
-        <Typography variant="body1">
-          {translation(`programOverviewPage:${feature}:description`)}
-        </Typography>
-        {listValues.map((value: ListValue, index: number) => {
+        {values.map((value: FeatureInputValue, index: number) => {
           return (
             <Paper
               variant="outlined"
@@ -291,8 +309,8 @@ const ListInput = ({
                     value={value.value ? dayjs(value.value as string) : null}
                     format="DD.MM.YYYY"
                     onChange={(date) => {
-                      setListValues(
-                        listValues.map((v: ListValue, i: number) => {
+                      setValues(
+                        values.map((v: FeatureInputValue, i: number) => {
                           return i == index
                             ? { value: date ? date.format('YYYY-MM-DD') : '' }
                             : v
@@ -305,9 +323,11 @@ const ListInput = ({
                   />
                 ) : isMultilingualInput ? (
                   <Stack direction="column" sx={{ width: '100%', gap: 1 }}>
-                    <Typography variant="subtitle2">
-                      {`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
-                    </Typography>
+                    {!singleValue && (
+                      <Typography variant="subtitle2">
+                        {`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
+                      </Typography>
+                    )}
                     {['fi', 'sv', 'en'].map((lang) => (
                       <TextField
                         key={lang}
@@ -320,8 +340,8 @@ const ListInput = ({
                         onChange={(
                           event: React.ChangeEvent<HTMLInputElement>
                         ) => {
-                          setListValues(
-                            listValues.map((v: ListValue, i: number) => {
+                          setValues(
+                            values.map((v: FeatureInputValue, i: number) => {
                               if (i === index) {
                                 return {
                                   ...v,
@@ -335,43 +355,53 @@ const ListInput = ({
                             })
                           )
                         }}
+                        multiline={multiline}
                       />
                     ))}
                   </Stack>
                 ) : (
                   <TextField
                     variant="outlined"
-                    label={`${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`}
+                    label={
+                      singleValue
+                        ? translation(
+                            `programOverviewPage:${feature}:fieldTitle`
+                          )
+                        : `${index + 1}. ${translation(`programOverviewPage:${feature}:fieldTitle`)}`
+                    }
                     value={value.value}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                      setListValues(
-                        listValues.map((v: ListValue, i: number) => {
+                      setValues(
+                        values.map((v: FeatureInputValue, i: number) => {
                           return i == index ? { value: event.target.value } : v
                         })
                       )
                     }}
+                    multiline={multiline}
                     sx={{
                       width: '100%',
                     }}
                   ></TextField>
                 )}
-                <Stack sx={{ justifyContent: 'center' }}>
-                  <Tooltip title={translation('deleteButton', 'Poista')}>
-                    <IconButton
-                      arial-label={translation('deleteButton', 'Poista')}
-                      onClick={() => {
-                        setListValues(
-                          listValues.filter(
-                            (_v: ListValue, i: number) => i != index
+                {!singleValue && (
+                  <Stack sx={{ justifyContent: 'center' }}>
+                    <Tooltip title={translation('deleteButton', 'Poista')}>
+                      <IconButton
+                        arial-label={translation('deleteButton', 'Poista')}
+                        onClick={() => {
+                          setValues(
+                            values.filter(
+                              (_v: FeatureInputValue, i: number) => i != index
+                            )
                           )
-                        )
-                      }}
-                      color="error"
-                    >
-                      <RemoveCircleOutlineOutlinedIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Stack>
+                        }}
+                        color="error"
+                      >
+                        <RemoveCircleOutlineOutlinedIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
+                )}
               </Stack>
             </Paper>
           )
@@ -380,21 +410,23 @@ const ListInput = ({
           <Button variant="contained" onClick={handleSave}>
             {translation('common:saveButton')}
           </Button>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              setListValues([
-                ...listValues,
-                isDateInput
-                  ? { value: null }
-                  : isMultilingualInput
-                    ? { value: { fi: '', sv: '', en: '' } }
-                    : { value: '' },
-              ])
-            }}
-          >
-            {translation('common:addItem')}
-          </Button>
+          {!singleValue && (
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setValues([
+                  ...values,
+                  isDateInput
+                    ? { value: null }
+                    : isMultilingualInput
+                      ? { value: { fi: '', sv: '', en: '' } }
+                      : { value: '' },
+                ])
+              }}
+            >
+              {translation('common:addItem')}
+            </Button>
+          )}
         </Stack>
       </Stack>
 
@@ -711,23 +743,59 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     <>
       <Stack spacing={2}>
         {program.options?.useMilestones && (
-          <ListInput
-            feature="milestones"
-            isMultilingualInput
-            program={program}
-            versioned
-          ></ListInput>
+          <Stack spacing={1}>
+            <Typography variant="h5">
+              {t(`programOverviewPage:milestones:title`)}
+            </Typography>
+            <Typography variant="body1">
+              {t(`programOverviewPage:milestones:description`)}
+            </Typography>
+            <FeatureInput
+              feature="milestones"
+              isMultilingualInput
+              program={program}
+              versioned
+            />
+          </Stack>
         )}
 
-        <ListInput
-          isDateInput={true}
-          feature="targetDates"
-          program={program}
-        ></ListInput>
+        <Stack spacing={1}>
+          <Typography variant="h5">
+            {t(`programOverviewPage:targetDates:title`)}
+          </Typography>
+          <Typography variant="body1">
+            {t(`programOverviewPage:targetDates:description`)}
+          </Typography>
+          <FeatureInput
+            isDateInput={true}
+            feature="targetDates"
+            program={program}
+          />
+        </Stack>
 
         {Boolean(program.studyTracks?.length) && (
           <CombinedStudyTracksInput program={program} />
         )}
+
+        <Typography variant="h5">
+          {t(`programOverviewPage:helperTexts`)}
+        </Typography>
+
+        <Stack spacing={1}>
+          <Typography variant="h6">
+            {t(`programOverviewPage:topicDescriptionHelperText:title`)}
+          </Typography>
+          <Typography variant="body1">
+            {t(`programOverviewPage:topicDescriptionHelperText:description`)}
+          </Typography>
+          <FeatureInput
+            feature="topicDescriptionHelperText"
+            isMultilingualInput
+            singleValue
+            multiline
+            program={program}
+          />
+        </Stack>
 
         <Typography variant="h5">{t(`programOverviewPage:other`)}</Typography>
 

@@ -1,4 +1,5 @@
-import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
+import AlertBox from '../../Common/AlertBox'
 import { EmployeeUser as User } from '@backend/validators/userResponse'
 import { GraderData } from '@backend/validators/thesisResponse'
 import { useTranslation } from 'react-i18next'
@@ -74,13 +75,11 @@ const GraderSelect = ({
         {t('thesisForm:graders')}
       </Typography>
 
-      <Alert
+      <AlertBox
         id="grader-select-instructions"
         severity="info"
-        variant="outlined"
-        sx={{ whiteSpace: 'pre-line' }}
+        title={t('thesisForm:graderInstructions:title')}
       >
-        <AlertTitle>{t('thesisForm:graderInstructions:title')}</AlertTitle>
         {t('thesisForm:graderInstructions:content1')}
         {maxGraders > 1 && (
           <>
@@ -88,23 +87,22 @@ const GraderSelect = ({
             {t('thesisForm:graderInstructions:content2')}
           </>
         )}
-      </Alert>
+      </AlertBox>
 
       {generalGraderErrors.length > 0 && (
-        <Alert
+        <AlertBox
           id="graders-general-grader-error"
           data-testid="graders-general-grader-error"
           severity="error"
           aria-live="polite"
-          sx={{ whiteSpace: 'pre-line' }}
+          title={t('formErrors:graderGeneralErrorsTitle')}
         >
-          <AlertTitle>{t('formErrors:graderGeneralErrorsTitle')}</AlertTitle>
           {generalGraderErrors.map((error, index) => (
             <Typography variant="body2" key={error.message}>
               {`${t(`${error.message}Content`)} ${index < generalGraderErrors.length - 1 ? '\n\n' : ''}`}
             </Typography>
           ))}
-        </Alert>
+        </AlertBox>
       )}
 
       {graderSelections.map((selection, index) => {

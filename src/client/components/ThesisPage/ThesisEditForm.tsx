@@ -10,8 +10,6 @@ import { TranslationLanguage } from '@backend/validators/departmentResponse'
 import { ThesisData } from '@backend/validators/thesisResponse'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
 import {
-  Alert,
-  AlertTitle,
   Autocomplete,
   Button,
   FormControl,
@@ -44,6 +42,8 @@ import { getFormErrors } from './util'
 import GraderSelect from './GraderSelect/GraderSelect'
 import SeminarSupervisorSelect from './SeminarSupervisorSelect/SeminarSupervisorSelect'
 import ErrorSummary from '../Common/ErrorSummary'
+import Markdown from '../Common/Markdown'
+import AlertBox from '../Common/AlertBox'
 import { ProgramData as Program } from '@backend/validators/programResponse'
 import { StatusLocale } from '../../types'
 import FileDropzone from './Dropzone/Dropzone'
@@ -364,6 +364,7 @@ const ThesisEditForm = ({
             <Typography component="legend" sx={{ px: '1rem' }}>
               {t('thesisForm:basicInfo')}
             </Typography>
+
             <TextField
               data-testid="topic-select-input"
               autoFocus
@@ -540,16 +541,11 @@ const ThesisEditForm = ({
               approvers.length > 0 &&
               !selectedProgram?.options?.thesisProgramManagerNotRequired && (
                 <>
-                  <Alert
-                    id="grader-select-instructions"
+                  <AlertBox
+                    id="approver-select-instructions"
                     severity="info"
-                    variant="outlined"
-                    sx={{ whiteSpace: 'pre-line' }}
-                  >
-                    <AlertTitle>
-                      {t('thesisForm:approverInstructions')}
-                    </AlertTitle>
-                  </Alert>
+                    title={t('thesisForm:approverInstructions')}
+                  />
                   <FormControl fullWidth>
                     <InputLabel id="approver-select-label">
                       {`${t('thesisForm:approverHeader')}*`}
@@ -800,9 +796,9 @@ const ThesisEditForm = ({
             {showMilestoneForm && (
               <>
                 {hasMultipleMilestoneVersions && (
-                  <Alert severity="warning">
+                  <AlertBox severity="warning">
                     {t('thesisForm:milestoneVersionWarning')}
-                  </Alert>
+                  </AlertBox>
                 )}
                 <Stack spacing={2} direction={{ xs: 'column', md: 'row' }}>
                   <Tooltip
@@ -1041,6 +1037,24 @@ const ThesisEditForm = ({
             <Typography component="legend" sx={{ px: '1rem' }}>
               {t('thesisForm:appendices')}
             </Typography>
+
+            {selectedProgram?.options?.topicDescriptionHelperText?.[
+              language
+            ] && (
+              <AlertBox
+                severity="info"
+                sx={{ mx: 2, mb: 2 }}
+                title={t('thesisForm:topicDescriptionInstructionsTitle')}
+              >
+                <Markdown>
+                  {
+                    selectedProgram.options.topicDescriptionHelperText[
+                      language
+                    ] as string
+                  }
+                </Markdown>
+              </AlertBox>
+            )}
 
             <FileDropzone
               id="researchPlan"

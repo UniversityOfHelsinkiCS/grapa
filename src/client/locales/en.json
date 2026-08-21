@@ -126,6 +126,14 @@
     "featureFlagWarning": "These settings affect the availability of features in the study programme. Modifying them may lead to problems with existing theses.",
     "configurationsTab": "Configurations",
     "managePermissionsTab": "Manage permissions",
+    "helperTexts": "Helper texts",
+    "topicDescriptionHelperText": {
+      "title": "Topic description (Upload topic description)",
+      "description": "This text will be shown above the topic description upload field in the thesis form. Fill in instructions for the student on how to fill out and upload the topic description here.",
+      "confirmTitle": "Confirm text",
+      "enableConfirm": "Are you sure you want to save this text?",
+      "disableConfirm": "Are you sure you want to save this text?"
+    },
     "seminar": {
       "toggle": "Seminar",
       "tooltip": "The thesis must include a seminar supervisor",
@@ -312,6 +320,7 @@
     "version": "Version",
     "approverHeader": "Program manager",
     "approverInstructions": "Select a program manager, whose expertise is closest to the topic of the thesis, to manage the process.",
+    "topicDescriptionInstructionsTitle": "Instructions for filling out the topic description",
     "errorSummary": "Form contains the following errors",
     "errorSummaryAriaLabel": "Form contains the following errors",
     "serverError": "Server error",

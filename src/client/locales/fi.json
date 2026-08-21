@@ -124,6 +124,14 @@
     "featureFlagWarning": "Nämä asetukset vaikuttavat ominaisuuksien saatavuuteen koulutusohjelmassa, muokkaaminen saattaa johtaa ongelmatilanteisiin olemassaolevien tutkielmien kanssa.",
     "configurationsTab": "Asetukset",
     "managePermissionsTab": "Hallinnoi oikeuksia",
+    "helperTexts": "Ohjetekstit",
+    "topicDescriptionHelperText": {
+      "title": "Aihekuvaus (Lataa aihekuvaus)",
+      "description": "Tämä teksti näytetään aihekuvauksen latauskentän yläpuolella tutkielmalomakkeessa. Täytä tähän ohjeet opiskelijalle aihekuvauksen täyttämistä ja lataamista varten.",
+      "confirmTitle": "Vahvista teksti",
+      "enableConfirm": "Haluatko varmasti tallentaa tämän tekstin?",
+      "disableConfirm": "Haluatko varmasti tallentaa tämän tekstin?"
+    },
     "seminar": {
       "toggle": "Seminaari",
       "tooltip": "tutkielman tulee sisältää seminaarin ohjaaja",
@@ -310,6 +318,7 @@
     "version": "Versio",
     "approverHeader": "Vastaava",
     "approverInstructions": "Valitse ohjelmavastaava, joka on lähimpänä tutkielman aihepiiriä, hallinnoimaan prosessia.",
+    "topicDescriptionInstructionsTitle": "Ohjeita aihekuvauksen täyttämiseen",
     "errorSummary": "Lomake sisältää seuraavia virheitä",
     "errorSummaryAriaLabel": "Lomake sisältää seuraavia virheitä",
     "serverError": "Palvelin virhe",

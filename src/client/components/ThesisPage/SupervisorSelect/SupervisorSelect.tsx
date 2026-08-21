@@ -1,18 +1,11 @@
-import {
-  Alert,
-  AlertTitle,
-  Box,
-  Divider,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Box, Divider, Stack, Tooltip, Typography } from '@mui/material'
 import { EmployeeUser as User } from '@backend/validators/userResponse'
 import { SupervisionData } from '@backend/validators/thesisResponse'
 
 import { v4 as uuidv4 } from 'uuid'
 import { useTranslation } from 'react-i18next'
 import { ZodIssue } from 'zod'
+import AlertBox from '../../Common/AlertBox'
 import SingleSupervisorSelect from './SingleSupervisorSelect'
 import {
   getEqualSupervisorSelectionWorkloads,
@@ -144,22 +137,19 @@ const SupervisorSelect = ({
       </Typography>
 
       {generalSupervisorErrors.length > 0 && (
-        <Alert
+        <AlertBox
           id="supervisions-general-supervisor-error"
           data-testid="supervisions-general-supervisor-error"
           severity="error"
           aria-live="polite"
-          sx={{ whiteSpace: 'pre-line' }}
+          title={t('formErrors:supervisorGeneralErrorsTitle')}
         >
-          <AlertTitle>
-            {t('formErrors:supervisorGeneralErrorsTitle')}
-          </AlertTitle>
           {generalSupervisorErrors.map((error, index) => (
             <Typography variant="body2" key={error.message}>
               {`${t(`${error.message}Content`)} ${index < generalSupervisorErrors.length - 1 ? '\n\n' : ''}`}
             </Typography>
           ))}
-        </Alert>
+        </AlertBox>
       )}
 
       {displayedSelections.map((selection, index) => {
