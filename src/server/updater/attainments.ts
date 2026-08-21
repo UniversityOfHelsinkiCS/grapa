@@ -119,7 +119,7 @@ export const fetchThesesAttainments = async () => {
 
   for (const [orgCode, personIds] of Object.entries(personIdsPerOrganisation)) {
     await mangleData({
-      url: `masters-attainments/${orgCode}`,
+      url: `attainments/${orgCode}`,
       limit: 10_000,
       handler: attainmentsHandler(unfinishedTheses),
       queryParams: { personIds },
