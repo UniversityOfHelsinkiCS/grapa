@@ -783,6 +783,54 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
 
         <Stack spacing={1}>
           <Typography variant="h6">
+            {t(`programOverviewPage:generalHelperText:title`)}
+          </Typography>
+          <Typography variant="body1">
+            {t(`programOverviewPage:generalHelperText:description`)}
+          </Typography>
+          <FeatureInput
+            feature="generalHelperText"
+            isMultilingualInput
+            singleValue
+            multiline
+            program={program}
+          />
+        </Stack>
+
+        <Stack spacing={1}>
+          <Typography variant="h6">
+            {t(`programOverviewPage:supervisorHelperText:title`)}
+          </Typography>
+          <Typography variant="body1">
+            {t(`programOverviewPage:supervisorHelperText:description`)}
+          </Typography>
+          <FeatureInput
+            feature="supervisorHelperText"
+            isMultilingualInput
+            singleValue
+            multiline
+            program={program}
+          />
+        </Stack>
+
+        <Stack spacing={1}>
+          <Typography variant="h6">
+            {t(`programOverviewPage:seminarSupervisorHelperText:title`)}
+          </Typography>
+          <Typography variant="body1">
+            {t(`programOverviewPage:seminarSupervisorHelperText:description`)}
+          </Typography>
+          <FeatureInput
+            feature="seminarSupervisorHelperText"
+            isMultilingualInput
+            singleValue
+            multiline
+            program={program}
+          />
+        </Stack>
+
+        <Stack spacing={1}>
+          <Typography variant="h6">
             {t(`programOverviewPage:topicDescriptionHelperText:title`)}
           </Typography>
           <Typography variant="body1">

@@ -21,6 +21,7 @@ interface SupervisorSelectProps {
   setSupervisorSelections: (newSupervisions: SupervisionData[]) => void
   disabledMode: boolean
   allowEmpty?: boolean
+  helperTextNode?: React.ReactNode
 }
 
 const SupervisorSelect = ({
@@ -30,6 +31,7 @@ const SupervisorSelect = ({
   setSupervisorSelections,
   disabledMode,
   allowEmpty = false,
+  helperTextNode,
 }: SupervisorSelectProps) => {
   const { t } = useTranslation()
 
@@ -135,6 +137,8 @@ const SupervisorSelect = ({
       <Typography component="legend" sx={{ px: '1rem' }}>
         {t('thesisForm:supervisors')}
       </Typography>
+
+      {helperTextNode}
 
       {generalSupervisorErrors.length > 0 && (
         <AlertBox

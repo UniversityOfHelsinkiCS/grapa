@@ -127,6 +127,27 @@
     "configurationsTab": "Inställningar",
     "managePermissionsTab": "Hantera behörigheter",
     "helperTexts": "Hjälptexter",
+    "generalHelperText": {
+      "title": "Allmänna anvisningar",
+      "description": "Denna text visas högst upp på avhandlingsblanketten.",
+      "confirmTitle": "Bekräfta text",
+      "enableConfirm": "Är du säker på att du vill spara denna text?",
+      "disableConfirm": "Är du säker på att du vill spara denna text?"
+    },
+    "supervisorHelperText": {
+      "title": "Anvisningar för handledare",
+      "description": "Denna text visas ovanför fältet för val av handledare.",
+      "confirmTitle": "Bekräfta text",
+      "enableConfirm": "Är du säker på att du vill spara denna text?",
+      "disableConfirm": "Är du säker på att du vill spara denna text?"
+    },
+    "seminarSupervisorHelperText": {
+      "title": "Anvisningar för seminariehandledare",
+      "description": "Denna text visas ovanför fältet för val av seminariehandledare.",
+      "confirmTitle": "Bekräfta text",
+      "enableConfirm": "Är du säker på att du vill spara denna text?",
+      "disableConfirm": "Är du säker på att du vill spara denna text?"
+    },
     "topicDescriptionHelperText": {
       "title": "Ämnesbeskrivning (Ladda upp ämnesbeskrivning)",
       "description": "Denna text visas ovanför uppladdningsfältet för ämnesbeskrivning i avhandlingsblanketten. Fyll i anvisningar för studenten om hur man fyller i och laddar upp ämnesbeskrivningen här.",
@@ -320,6 +341,9 @@
     "version": "Version",
     "approverHeader": "Ansvarig",
     "approverInstructions": "Välj den programansvariga vars expertis ligger närmast avhandlingens ämne för att hantera processen.",
+    "generalHelperTextTitle": "Anvisningar för att fylla i blanketten",
+    "supervisorHelperTextTitle": "Anvisningar för att fylla i handledare",
+    "seminarSupervisorHelperTextTitle": "Anvisningar för att fylla i seminariehandledare",
     "topicDescriptionInstructionsTitle": "Anvisningar för att fylla i ämnesbeskrivningen",
     "errorSummary": "Blanketten innehåller följande fel",
     "errorSummaryAriaLabel": "Blanketten innehåller följande fel",

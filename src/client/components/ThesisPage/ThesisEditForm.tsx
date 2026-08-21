@@ -351,7 +351,18 @@ const ThesisEditForm = ({
             ))}
           </ErrorSummary>
         )}
-        <Stack spacing={6}>
+        <Stack spacing={3}>
+          {selectedProgram?.options?.generalHelperText?.[language] && (
+            <AlertBox
+              severity="info"
+              title={t('thesisForm:generalHelperTextTitle')}
+            >
+              <Markdown>
+                {selectedProgram.options.generalHelperText[language] as string}
+              </Markdown>
+            </AlertBox>
+          )}
+
           <Stack
             spacing={3}
             sx={{
@@ -973,6 +984,23 @@ const ThesisEditForm = ({
               }
             >
               <SupervisorSelect
+                helperTextNode={
+                  selectedProgram?.options?.supervisorHelperText?.[language] ? (
+                    <AlertBox
+                      severity="info"
+                      sx={{ mb: 2 }}
+                      title={t('thesisForm:supervisorHelperTextTitle')}
+                    >
+                      <Markdown>
+                        {
+                          selectedProgram.options.supervisorHelperText[
+                            language
+                          ] as string
+                        }
+                      </Markdown>
+                    </AlertBox>
+                  ) : undefined
+                }
                 errors={formErrors}
                 setErrors={(errors) => setFormErrors(errors)}
                 supervisorSelections={editedThesis.supervisions}
@@ -992,6 +1020,25 @@ const ThesisEditForm = ({
 
           {Boolean(selectedProgram?.options?.seminar) && (
             <SeminarSupervisorSelect
+              helperTextNode={
+                selectedProgram?.options?.seminarSupervisorHelperText?.[
+                  language
+                ] ? (
+                  <AlertBox
+                    severity="info"
+                    sx={{ mb: 2 }}
+                    title={t('thesisForm:seminarSupervisorHelperTextTitle')}
+                  >
+                    <Markdown>
+                      {
+                        selectedProgram.options.seminarSupervisorHelperText[
+                          language
+                        ] as string
+                      }
+                    </Markdown>
+                  </AlertBox>
+                ) : undefined
+              }
               errors={formErrors}
               setErrors={(errors) => setFormErrors(errors)}
               seminarSupervisorSelections={

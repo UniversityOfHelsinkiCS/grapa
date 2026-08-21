@@ -23,6 +23,7 @@ interface SeminarSupervisorSelectProps {
     seminarSupervisions: SeminarSupervisionData[]
   ) => void
   allowMultiple?: boolean
+  helperTextNode?: React.ReactNode
 }
 
 const SeminarSupervisorSelect = ({
@@ -31,6 +32,7 @@ const SeminarSupervisorSelect = ({
   seminarSupervisorSelections,
   setSeminarSupervisorSelections,
   allowMultiple = false,
+  helperTextNode,
 }: SeminarSupervisorSelectProps) => {
   const { t } = useTranslation()
   const [userSearch, setUserSearch] = useState('')
@@ -141,6 +143,8 @@ const SeminarSupervisorSelect = ({
         <Typography component="legend" sx={{ px: '1rem' }}>
           {t('thesisForm:seminarSupervisor')}
         </Typography>
+
+        {helperTextNode}
 
         {selectionsToRender.map((selection, index) => (
           <SingleSeminarSupervisorSelect

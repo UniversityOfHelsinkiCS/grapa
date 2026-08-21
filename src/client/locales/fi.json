@@ -125,6 +125,27 @@
     "configurationsTab": "Asetukset",
     "managePermissionsTab": "Hallinnoi oikeuksia",
     "helperTexts": "Ohjetekstit",
+    "generalHelperText": {
+      "title": "Yleiset ohjeet",
+      "description": "Tämä teksti näytetään tutkielmalomakkeen yläreunassa.",
+      "confirmTitle": "Vahvista teksti",
+      "enableConfirm": "Haluatko varmasti tallentaa tämän tekstin?",
+      "disableConfirm": "Haluatko varmasti tallentaa tämän tekstin?"
+    },
+    "supervisorHelperText": {
+      "title": "Ohjaajien ohjeet",
+      "description": "Tämä teksti näytetään ohjaajien valintakentän yläpuolella.",
+      "confirmTitle": "Vahvista teksti",
+      "enableConfirm": "Haluatko varmasti tallentaa tämän tekstin?",
+      "disableConfirm": "Haluatko varmasti tallentaa tämän tekstin?"
+    },
+    "seminarSupervisorHelperText": {
+      "title": "Seminaariohjaajien ohjeet",
+      "description": "Tämä teksti näytetään seminaariohjaajien valintakentän yläpuolella.",
+      "confirmTitle": "Vahvista teksti",
+      "enableConfirm": "Haluatko varmasti tallentaa tämän tekstin?",
+      "disableConfirm": "Haluatko varmasti tallentaa tämän tekstin?"
+    },
     "topicDescriptionHelperText": {
       "title": "Aihekuvaus (Lataa aihekuvaus)",
       "description": "Tämä teksti näytetään aihekuvauksen latauskentän yläpuolella tutkielmalomakkeessa. Täytä tähän ohjeet opiskelijalle aihekuvauksen täyttämistä ja lataamista varten.",
@@ -318,6 +339,9 @@
     "version": "Versio",
     "approverHeader": "Vastaava",
     "approverInstructions": "Valitse ohjelmavastaava, joka on lähimpänä tutkielman aihepiiriä, hallinnoimaan prosessia.",
+    "generalHelperTextTitle": "Ohjeita lomakkeen täyttämiseen",
+    "supervisorHelperTextTitle": "Ohjeita ohjaajien täyttämiseen",
+    "seminarSupervisorHelperTextTitle": "Ohjeita seminaariohjaajien täyttämiseen",
     "topicDescriptionInstructionsTitle": "Ohjeita aihekuvauksen täyttämiseen",
     "errorSummary": "Lomake sisältää seuraavia virheitä",
     "errorSummaryAriaLabel": "Lomake sisältää seuraavia virheitä",
