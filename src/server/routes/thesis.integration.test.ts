@@ -106,6 +106,7 @@ describe('thesis router', () => {
             isThesisVeryLate: false,
             lastMilestone: false,
             missingSecondGrader: false,
+            missingSupervisor: false,
             suggested: false,
           },
         })
