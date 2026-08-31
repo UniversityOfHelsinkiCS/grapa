@@ -26,12 +26,38 @@ export const authorizeStatusChange = async (
   // to anyone.
   // But only users with elevated permissions
   // can change the status to anything else.
-  if (req.body.status === 'PLANNING' || req.body.status === 'DRAFT') {
+
+  if (req.body.status === 'PLANNING') {
     next()
     return
   }
 
   const thesis = await Thesis.findByPk(req.params.id as string)
+
+  // Only setting the DRAFT status when rejecting a thesis suggestion
+  if (
+    req.body.status === 'DRAFT' && thesis ? thesis.status !== 'SUGGESTED' : true
+  ) {
+    throw new CustomAuthorizationError(
+      'User is not authorized to change the status of the thesis to DRAFT',
+      {
+        programId: [
+          'User is not authorized to change the status of the thesis to DRAFT',
+        ],
+      }
+    )
+  }
+
+  if (thesis && thesis.status === 'DRAFT') {
+    throw new CustomAuthorizationError(
+      'User is not authorized to change the status of the thesis from DRAFT',
+      {
+        programId: [
+          'User is not authorized to change the status of the thesis from DRAFT',
+        ],
+      }
+    )
+  }
 
   const isNewThesisWithStatusCompleted =
     !thesis && req.body.status === 'COMPLETED'
