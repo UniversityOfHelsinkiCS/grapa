@@ -969,6 +969,11 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
           submitText={t('common:submitButton')}
           cancelText={t('common:cancelButton')}
         >
+          {!thesis.program?.options?.allowStudentStartedProcess && (
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              {t('thesisForm:toSubmitEthesisInfo')}
+            </Typography>
+          )}
           <Box sx={{ mt: 1, maxHeight: 300, overflowY: 'auto' }}>
             <List dense disablePadding>
               <ListItem disableGutters sx={{ alignItems: 'flex-start' }}>
