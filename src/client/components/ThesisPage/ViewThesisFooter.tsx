@@ -608,20 +608,36 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                       Save to Ethesis
                     </Button>
                   )}
-                {(!isStudentView || thesis.status === THESIS_STATUSES.DRAFT) &&
+                {(currentUser.isAdmin ||
+                  (!isStudentView && thesis.status !== THESIS_STATUSES.DRAFT) ||
+                  (isStudentView && thesis.status === THESIS_STATUSES.DRAFT)) &&
                   !hideEdit && (
-                    <Button
-                      variant="outlined"
-                      sx={{
-                        fontSize: '12px',
-                        height: 24,
-                        px: 2,
-                        fontWeight: 600,
-                      }}
-                      onClick={() => handleEditThesis(thesis)}
+                    <Tooltip
+                      title={
+                        canApprove(thesis, currentUser!) && !currentUser.isAdmin
+                          ? t('viewThesisFooter:editTooltipDisabled')
+                          : t('viewThesisFooter:editTooltip')
+                      }
                     >
-                      {t('editButton')}
-                    </Button>
+                      <Box>
+                        <Button
+                          variant="outlined"
+                          sx={{
+                            fontSize: '12px',
+                            height: 24,
+                            px: 2,
+                            fontWeight: 600,
+                          }}
+                          disabled={
+                            canApprove(thesis, currentUser!) &&
+                            !currentUser.isAdmin
+                          }
+                          onClick={() => handleEditThesis(thesis)}
+                        >
+                          {t('editButton')}
+                        </Button>
+                      </Box>
+                    </Tooltip>
                   )}
 
                 {isStudentView &&
@@ -901,7 +917,9 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
             setPendingAction(null)
             setRejectMessage('')
           }}
-          submitText={t('approveButton')}
+          submitText={
+            pendingAction == 'reject' ? t('rejectButton') : t('approveButton')
+          }
           cancelText={t('cancelButton')}
         >
           <Typography>
