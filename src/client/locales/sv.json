@@ -32,6 +32,7 @@
     "exportCsvTooltip": "Filen använder kommatecken (,) för att separera kolumner. Om ditt kalkylprogram frågar, välj kommatecken som avgränsare.",
     "editButton": "Redigera",
     "approveButton": "Godkänn",
+    "rejectButton": "Avslå",
     "approveButtonConfirmTitle": "Bekräfta godkännande",
     "approveButtonConfirmContent": "Är du säker på att du vill godkänna denna avhandlingsplan?",
     "approveBulkButtonConfirmContent": "Är du säker på att du vill godkänna dessa avhandlingsplaner?",
@@ -595,8 +596,8 @@
     "inProgress": "Pågår"
   },
   "help": {
-    "table": "<b>Filtreringsverktyg</b><br><br>Högst upp i tabellen finns flera filtreringsalternativ, till exempel aktiva eller inaktiva avhandlingar. Om du håller muspekaren över en knapp visas mer information om valet.<br><br><b>Måldatum</b><br><br>Kolumnen Måldatum färgas när måldatumet överskrids. När måldatumet överskrids med en månad blir kolumnen gul, och efter sex månader blir den röd.<br><br><b>Fas</b><br><br>Kolumnen Fas blir grönare ju längre avhandlingens faser har fortskridit. Denna funktion är endast tillgänglig i utbildningsprogram som använder faser.<br><br><b>Ikoner</b><br><br>Ikoner kan visas i slutet av en rad. Om du håller muspekaren över en ikon visas mer information. En stjärnikon anger att du är huvudhandledare för avhandlingen. Ett utropstecken anger att avhandlingen väntar på ditt godkännande.",
-    "button": "Hjälp"
+    "table": "<b>Flikar</b><br>De avhandlingar som visas i avhandlingsvyn kan avgränsas med hjälp av flikarna överst.<ul>    <li>Aktiva visar alla avhandlingar som har en annan status än färdig eller avbruten</li>    <li>Inaktiva visar färdiga och avbrutna avhandlingar</li>    <li>Alla visar alla avhandlingar</li></ul><b>Åtgärdsfilter</b><ul>    <li>        Under flikarna visas vid behov knappar med vilka avhandlingar kan filtreras utifrån de åtgärder de        kräver.    </li></ul><b>Sökfunktion</b><ul>    <li>        Avhandlingar kan sökas utifrån ämne och författare.    </li></ul><b>Etappavgränsning</b><ul>    <li>        Avhandlingar i utbildningsprogram som använder etapper kan också avgränsas utifrån etapp    </li></ul><b>Sortering av tabellen</b><ul>    <li>        Tabellen kan sorteras enligt önskad kolumn genom att trycka på ikonen till höger om kolumnens namn.    </li></ul><b>Skapa en ny avhandling</b><ul>    <li>        En ny avhandling kan skapas genom att trycka på knappen \"Ny avhandling\" eller, i utbildningsprogram som använder en studentinitierad process, genom att trycka på de tre punkterna och välja ny avhandling.    </li></ul>",
+    "button": "Anvisning"
   },
   "adminOtherPage": {
     "pageTitle": "Administratörsverktyg",
@@ -632,6 +633,8 @@
     "rejectButton": "Avslå",
     "rejectButtonConfirmTitle": "Bekräfta avslag",
     "rejectButtonConfirmContent": "Är du säker på att du vill avslå denna uppsatsplan?",
-    "rejectMessageToStudent": "Meddelande till studenten"
+    "rejectMessageToStudent": "Meddelande till studenten",
+    "editTooltipDisabled": "Avhandlingen måste godkännas innan den kan redigeras, du kan också avslå avhandlingsplanen och lämna ett meddelande till studenten om nödvändiga ändringar",
+    "editTooltip": "Redigera avhandling"
   }
 }

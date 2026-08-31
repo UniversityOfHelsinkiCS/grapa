@@ -31,6 +31,7 @@
     "exportCsv": "Vie CSV",
     "exportCsvTooltip": "Tiedosto käyttää pilkkuja (,) sarakkeiden erottamiseen. Jos taulukkolaskentaohjelmasi kysyy, valitse erottimeksi pilkku.",
     "approveButton": "Hyväksy",
+    "rejectButton": "Hylkää",
     "approveButtonConfirmTitle": "Vahvista hyväksyntä",
     "approveButtonConfirmContent": "Oletko varma, että haluat hyväksyä tämän tutkielmasuunnitelman?",
     "approveBulkButtonConfirmContent": "Oletko varma, että haluat hyväksyä nämä tutkielmasuunnitelmat?",
@@ -594,7 +595,7 @@
     "inProgress": "Käynnissä"
   },
   "help": {
-    "table": "<b>Rajaustyökalut</b><br><br>Taulukon ylälaidassa on valittavana useita rajausvaihtoehtoja, kuten aktiiviset tai ei aktiiviset tutkielmat. Osoittimen vieminen painikkeen päälle näyttää lisätietoja kyseisestä valinnasta.<br><br><b>Tavoitepäivä</b><br><br>Tavoitepäivä-sarake värjäytyy tavoitepäivän ylittyessä. Kun tavoitepäivä ylittyy kuukaudella, sarake värjäytyy keltaiseksi, ja puolen vuoden jälkeen punaiseksi.<br><br><b>Vaihe</b><br><br>Vaihe-sarake värjäytyy sitä vihreämmäksi, mitä pidemmälle tutkielman etapit ovat edenneet. Tämä toiminnallisuus on käytössä vain etappeja käyttävissä koulutusohjelmissa.<br><br><b>Kuvakkeet</b><br><br>Rivin lopussa voi näkyä kuvakkeita. Osoittimen vieminen kuvakkeen päälle näyttää lisätietoja. Tähtikuvake merkitsee, että olet tutkielman pääohjaaja. Huutomerkki ilmaisee, että tutkielma odottaa hyväksyntääsi.",
+    "table": "<b>Välilehdet</b><br>Tutkielmanäkymän näyttämiä tutkielmia voidaan rajata käyttämällä sen ylälaidassa olevia välilehtiä.<ul>    <li>Aktiiviset näyttää kaikki tutkielmat jotka ovat muussa tilassa kuin valmis tai keskeytetty</li>    <li>Ei aktiiviset näyttää valmiit ja keskeytetyt tutkielmat</li>    <li>Kaikki näyttää kaikki tutkielmat</li></ul><b>Toimenpidesuodattimet</b><ul>    <li>        Välilehtien alapuolelle tulee näkyviin tarvittaessa painikkeita, joilla voidaan suodattaa tutkielmia niiden        vaatimien toimenpiteiden perusteella.    </li></ul><b>Hakutoiminto</b><ul>    <li>        Tutkielmia voidaan hakea aiheen ja tekijän perusteella.    </li></ul><b>Etappirajaus</b><ul>    <li>        Etappeja käyttävien koulutusohjelmien tutkielmia voidaan myös rajata etapin perusteella    </li></ul><b>Taulukon järjestäminen</b><ul>    <li>        Taulukko voidaan järjestään halutun sarakkeen perusteella painamalla sarakkeen nimen oikealla puolella olevaa        kuvaketta.    </li></ul><b>Uuden tutkielman luonti</b><ul>    <li>        Uuden tutkielman voi luoda painamalla \"Uusi tutkielma\" -painiketta tai opiskelijalähtöistä prosessia        käyttävissä        koulutusohjelmissa painamalla kolmea pistettä ja valitsemalla uusi tutkielma.    </li></ul>",
     "button": "Ohje"
   },
   "adminOtherPage": {
@@ -631,6 +632,8 @@
     "rejectButton": "Hylkää",
     "rejectButtonConfirmTitle": "Vahvista hylkäys",
     "rejectButtonConfirmContent": "Oletko varma, että haluat hylätä tämän tutkielmasuunnitelman?",
-    "rejectMessageToStudent": "Viesti opiskelijalle"
+    "rejectMessageToStudent": "Viesti opiskelijalle",
+    "editTooltipDisabled": "Tutkielma täytyy hyväksyä ennen muokkaamista, voit myös hylätä tutkielmasuunnitelman ja jättää opiskelijalle viestin tarvittavista muutoksista",
+    "editTooltip": "Muokkaa tutkielmaa"
   }
 }

@@ -32,6 +32,7 @@
     "exportCsvTooltip": "The file uses commas (,) to separate columns. If asked by your spreadsheet program, choose comma as the delimiter.",
     "editButton": "Edit",
     "approveButton": "Approve",
+    "rejectButton": "Reject",
     "approveButtonConfirmTitle": "Confirm Approval",
     "approveButtonConfirmContent": "Are you sure you want to approve this thesis plan?",
     "approveBulkButtonConfirmContent": "Are you sure you want to approve these thesis plans?",
@@ -595,7 +596,7 @@
     "inProgress": "In progress"
   },
   "help": {
-    "table": "<b>Filtering Tools</b><br><br>The top of the table offers several filtering options, such as active or inactive theses. Hovering the cursor over a button displays additional information about that selection.<br><br><b>Target Date</b><br><br>The Target Date column is colored when the target date is exceeded. When the target date is exceeded by a month, the column turns yellow, and after six months, it turns red.<br><br><b>Phase</b><br><br>The Phase column becomes greener the further the thesis stages have progressed. This functionality is only available in degree programs that use stages.<br><br><b>Icons</b><br><br>Icons may appear at the end of a row. Hovering the cursor over an icon displays additional information. A star icon indicates that you are the main supervisor of the thesis. An exclamation mark indicates that the thesis is awaiting your approval.",
+    "table": "<b>Tabs</b><br>The theses shown in the thesis view can be limited by using the tabs at the top.<ul>    <li>Active shows all theses that are in a status other than completed or cancelled</li>    <li>Inactive shows completed and cancelled theses</li>    <li>All shows all theses</li></ul><b>Action filters</b><ul>    <li>        If necessary, buttons will appear below the tabs, allowing theses to be filtered based on the actions they        require.    </li></ul><b>Search function</b><ul>    <li>        Theses can be searched by topic and author.    </li></ul><b>Milestone filter</b><ul>    <li>        Theses in degree programmes that use milestones can also be filtered by milestone    </li></ul><b>Sorting the table</b><ul>    <li>        The table can be sorted by the desired column by pressing the icon to the right of the column name.    </li></ul><b>Creating a new thesis</b><ul>    <li>        A new thesis can be created by pressing the \"New thesis\" button or, in degree programmes that use a student-initiated process, by pressing the three dots and selecting new thesis.    </li></ul>",
     "button": "Help"
   },
   "adminOtherPage": {
@@ -632,6 +633,8 @@
     "rejectButton": "Reject",
     "rejectButtonConfirmTitle": "Confirm rejection",
     "rejectButtonConfirmContent": "Are you sure you want to reject this thesis suggestion?",
-    "rejectMessageToStudent": "Message to the student"
+    "rejectMessageToStudent": "Message to the student",
+    "editTooltipDisabled": "The thesis must be approved before editing, you can also reject the thesis plan and leave the student a message about the required changes",
+    "editTooltip": "Edit thesis"
   }
 }
