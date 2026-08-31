@@ -1085,7 +1085,9 @@ const ThesisTable = ({
         isSelected={(row: any) =>
           isSelected(row.id) || bulkSelection.has(row.id)
         }
-        isRowDimmed={(row) => !!row.original.isIdle}
+        isRowDimmed={(row) =>
+          !!row.original.isIdle || row.original.status === 'DRAFT'
+        }
         pagination={{
           totalCount: totalCount ?? previousData.current.totalCount,
           page: pageNumber,
