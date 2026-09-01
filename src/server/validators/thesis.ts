@@ -159,63 +159,74 @@ export const thesisDataValidator = async (
   })
 
   if (!options.isStudent) {
-    if (!thesisData.graders || thesisData.graders.length === 0) {
-      throw new CustomValidationError('At least one grader is required', {
-        graders: ['At least one grader is required'],
-      })
+    const hasSupervisors =
+      thesisData.supervisions && thesisData.supervisions.length > 0
+    const gradersRequired =
+      hasSupervisors || !programOptions?.supervisorOptional
+
+    if (gradersRequired) {
+      if (!thesisData.graders || thesisData.graders.length === 0) {
+        throw new CustomValidationError('At least one grader is required', {
+          graders: ['At least one grader is required'],
+        })
+      }
     }
 
-    if (thesisData.graders.length > 5) {
+    const hasGraders = thesisData.graders && thesisData.graders.length > 0
+
+    if (hasGraders && thesisData.graders.length > 5) {
       throw new CustomValidationError('Maximum 5 graders are allowed', {
         graders: ['Maximum 5 graders are allowed'],
       })
     }
 
-    const uniqueGraders = uniqBy(
-      thesisData.graders,
-      (grader) => grader.user?.email
-    )
-
-    if (uniqueGraders.length !== thesisData.graders.length) {
-      throw new CustomValidationError('Graders must be unique', {
-        graders: ['Graders must be unique'],
-      })
-    }
-
-    thesisData.graders.forEach(({ user, isExternal }) => {
-      if (isExternal) {
-        validateExtUser(user)
-      } else {
-        validateUser(user)
-      }
-    })
-
-    // primary grader must be set
-    if (!thesisData.graders.some((grader) => grader.isPrimaryGrader)) {
-      throw new CustomValidationError('Primary grader must be set', {
-        graders: ['Primary grader must be set'],
-      })
-    }
-
-    if (
-      thesisData.graders.length > 1 &&
-      thesisData.graders.every((grader) => grader.isPrimaryGrader)
-    ) {
-      throw new CustomValidationError('Only one primary grader is allowed', {
-        graders: ['Only one primary grader is allowed'],
-      })
-    }
-
-    const primaryGrader = thesisData.graders.find(
-      (grader) => grader.isPrimaryGrader
-    )
-    if (primaryGrader.isExternal) {
-      throw new CustomValidationError(
-        'Primary grader cannot be an external user',
-        {
-          graders: ['Primary grader cannot be an external user'],
-        }
+    if (hasGraders) {
+      const uniqueGraders = uniqBy(
+        thesisData.graders,
+        (grader) => grader.user?.email
       )
+
+      if (uniqueGraders.length !== thesisData.graders.length) {
+        throw new CustomValidationError('Graders must be unique', {
+          graders: ['Graders must be unique'],
+        })
+      }
+
+      thesisData.graders.forEach(({ user, isExternal }) => {
+        if (isExternal) {
+          validateExtUser(user)
+        } else {
+          validateUser(user)
+        }
+      })
+
+      // primary grader must be set
+      if (!thesisData.graders.some((grader) => grader.isPrimaryGrader)) {
+        throw new CustomValidationError('Primary grader must be set', {
+          graders: ['Primary grader must be set'],
+        })
+      }
+
+      if (
+        thesisData.graders.length > 1 &&
+        thesisData.graders.every((grader) => grader.isPrimaryGrader)
+      ) {
+        throw new CustomValidationError('Only one primary grader is allowed', {
+          graders: ['Only one primary grader is allowed'],
+        })
+      }
+
+      const primaryGrader = thesisData.graders.find(
+        (grader) => grader.isPrimaryGrader
+      )
+      if (primaryGrader && primaryGrader.isExternal) {
+        throw new CustomValidationError(
+          'Primary grader cannot be an external user',
+          {
+            graders: ['Primary grader cannot be an external user'],
+          }
+        )
+      }
     }
   }
 

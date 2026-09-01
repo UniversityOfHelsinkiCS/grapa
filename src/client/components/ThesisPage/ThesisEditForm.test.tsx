@@ -63,6 +63,12 @@ const programs: any = [
         name: { en: 'Test Track 1', fi: 'Testi opintosuunta 1' },
       },
     ],
+    options: {
+      allowMultipleAuthors: true,
+      numberOfGraders: 2,
+      seminar: true,
+      allowStudentStartedProcess: true,
+    },
   },
   {
     id: '2',
@@ -73,6 +79,13 @@ const programs: any = [
         name: { en: 'Test Track 2', fi: 'Testi opintosuunta 2' },
       },
     ],
+    options: {
+      allowMultipleAuthors: false,
+      numberOfGraders: 1,
+      disableStudyTracks: true,
+      seminar: false,
+      allowStudentStartedProcess: true,
+    },
   },
 ]
 
@@ -174,7 +187,7 @@ describe('ThesisEditForm', () => {
       )
     })
 
-    it('renders ThesisEditForm correctly and renders all validation errors', () => {
+    it('renders ThesisEditForm correctly and renders all validation errors', async () => {
       expect(screen.getByTestId('thesis-form-title')).toBeInTheDocument()
       expect(screen.getByTestId('topic-select-input')).toBeInTheDocument()
 
@@ -192,15 +205,17 @@ describe('ThesisEditForm', () => {
       expect(submitButton).toBeEnabled()
       fireEvent.click(submitButton)
 
-      expect(screen.getByTestId('errorsummary-topic')).toBeInTheDocument()
-      expect(screen.getByTestId('errorsummary-authors')).toBeInTheDocument()
-      expect(
-        screen.getByTestId('errorsummary-researchPlan')
-      ).toBeInTheDocument()
-      // ways of working document is optional
-      expect(
-        screen.queryByTestId('errorsummary-waysOfWorking')
-      ).not.toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByTestId('errorsummary-topic')).toBeInTheDocument()
+        expect(screen.getByTestId('errorsummary-authors')).toBeInTheDocument()
+        expect(
+          screen.getByTestId('errorsummary-researchPlan')
+        ).toBeInTheDocument()
+        // ways of working document is optional
+        expect(
+          screen.queryByTestId('errorsummary-waysOfWorking')
+        ).not.toBeInTheDocument()
+      })
     })
 
     describe('when all required fields are filled', () => {
@@ -368,6 +383,120 @@ describe('ThesisEditForm', () => {
       expect(screen.getByTestId('add-supervisor-button')).toBeInTheDocument()
 
       expect(screen.getByRole('button', { name: 'Tallenna' })).toBeEnabled()
+    })
+  })
+
+  describe('when changing programs', () => {
+    beforeEach(() => {
+      // Start with program 1 which allows multiple authors, study tracks, 2 graders and seminar
+      const initialThesis = {
+        programId: programs[0].id,
+        studyTrackId: programs[0].studyTracks[0].id,
+        approvers: [
+          {
+            id: '4',
+            firstName: 'Henri',
+            lastName: 'Tunkkaaja',
+            username: 'tunkkaus',
+            email: 'henri@example.com',
+          },
+        ],
+        supervisions: [
+          {
+            user: { id: '1', email: 'john@example.com' },
+            percentage: 100,
+            isPrimarySupervisor: true,
+          },
+        ],
+        seminarSupervisions: [{ user: { id: '3' } }] as never[],
+        authors: [
+          {
+            id: '1',
+            firstName: 'John',
+            lastName: 'Doe',
+            username: 'johndoe',
+            email: 'john@example.com',
+          },
+          {
+            id: '2',
+            firstName: 'Jane',
+            lastName: 'Smith',
+            username: 'janesmith',
+            email: 'jane@example.com',
+          },
+        ],
+        graders: [
+          {
+            user: {
+              id: '1',
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+            },
+            isPrimaryGrader: true,
+          },
+          {
+            user: {
+              id: '2',
+              firstName: 'Jane',
+              lastName: 'Smith',
+              username: 'janesmith',
+            },
+            isPrimaryGrader: false,
+          },
+        ],
+        topic: 'Data Pollution Test',
+        status: 'IN_PROGRESS',
+        startDate: dayjs().format('YYYY-MM-DD'),
+        targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
+        researchPlan: { name: 'researchPlan.pdf' },
+        waysOfWorking: {},
+      }
+
+      void initializeI18n()
+
+      render(
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <ThesisEditForm
+            formTitle="Data Pollution Test Form"
+            isStudentView={false}
+            programs={programs}
+            initialThesis={initialThesis as never}
+            onClose={mockOnClose}
+            onSubmit={mockOnSubmit}
+          />
+        </LocalizationProvider>
+      )
+    })
+
+    it('cleans up data like extra authors, extra graders, and study tracks when switching to restricted program', async () => {
+      const user = userEvent.setup()
+
+      // Change program to program 2
+      const programSelect: any = screen.getAllByRole('combobox')[0]
+      await user.click(programSelect)
+      await user.click(screen.getByTestId('program-select-item-2'))
+
+      const submitButton = screen.getByTestId('submit-button')
+      expect(submitButton).toBeEnabled()
+
+      await userEvent.click(submitButton)
+
+      // Get the payload submitted
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalled()
+      })
+
+      const submittedPayload = mockOnSubmit.mock.calls[0][0]
+
+      // Program 2 options: allowMultipleAuthors: false, numberOfGraders: 1, disableStudyTracks: true, seminar: false
+      expect(submittedPayload.programId).toBe('2')
+      expect(submittedPayload.authors).toHaveLength(1) // Should have sliced authors down to 1
+      expect(submittedPayload.authors[0].id).toBe('1') // Should keep the first author
+      expect(submittedPayload.graders).toHaveLength(1) // Should have sliced graders down to 1
+      expect(submittedPayload.graders[0].user.id).toBe('1')
+      expect(submittedPayload.studyTrackId).toBeNull() // disabled study tracks
+      expect(submittedPayload.seminarSupervisions).toHaveLength(0) // seminar disabled
     })
   })
 })

@@ -1,13 +1,14 @@
-import { SupervisionData, ThesisData } from '@backend/validators/thesisResponse'
+import { SupervisionData } from '@backend/validators/thesisResponse'
 
-import { ThesisSchema, ThesisDateSchema } from './thesisValidator'
-
-export const getTotalPercentage = (supervisions: SupervisionData[]) =>
-  supervisions.reduce((total, selection) => total + selection.percentage, 0)
+export const getTotalPercentage = (supervisions: Partial<SupervisionData>[]) =>
+  supervisions.reduce(
+    (total, selection) => total + (selection.percentage || 0),
+    0
+  )
 
 export const getEqualSupervisorSelectionWorkloads = (
   numberOfSupervisors: number,
-  supervisorSelections: SupervisionData[]
+  supervisorSelections: Partial<SupervisionData>[]
 ) => {
   const defaultPercentage = (1 / numberOfSupervisors) * 100
   const roundedDefaultPercentage = Math.floor(defaultPercentage)
@@ -33,118 +34,4 @@ export const getEqualSupervisorSelectionWorkloads = (
   })
 
   return updatedSelections
-}
-
-export interface GetFormErrorsOptions {
-  hasApprovers?: boolean
-  seminarSupervisionRequired?: boolean
-  allowMultipleSeminarResponsibles?: boolean
-  waysOfWorkingRequired?: boolean
-  isStudentView?: boolean
-  supervisionRequired?: boolean
-}
-
-export const getFormErrors = (
-  thesis: ThesisData,
-  options: GetFormErrorsOptions = {}
-) => {
-  const {
-    hasApprovers = false,
-    seminarSupervisionRequired = false,
-    allowMultipleSeminarResponsibles = false,
-    waysOfWorkingRequired = false,
-    isStudentView = false,
-    supervisionRequired = false,
-  } = options
-
-  const validatedThesis = ThesisSchema.safeParse(thesis)
-  const validatedDates = ThesisDateSchema.safeParse({
-    startDate: thesis.startDate,
-    targetDate: thesis.targetDate,
-  })
-
-  const formErrors = []
-
-  if (!validatedThesis?.success)
-    formErrors.push(...validatedThesis.error.issues)
-  if (!validatedDates?.success) formErrors.push(...validatedDates.error.issues)
-
-  if (
-    seminarSupervisionRequired &&
-    (!thesis.seminarSupervisions || thesis.seminarSupervisions.length === 0)
-  ) {
-    formErrors.push({
-      code: 'custom' as const,
-      message: 'formErrors:seminarSupervisorRequired',
-      path: ['general', 'seminar', 'supervisor', 'error'],
-      params: {},
-    })
-  }
-
-  if (
-    supervisionRequired &&
-    (!thesis.supervisions || thesis.supervisions.length === 0)
-  ) {
-    formErrors.push({
-      code: 'custom' as const,
-      message: 'formErrors:supervisors',
-      path: ['general', 'supervisor', 'error'],
-      params: {},
-    })
-  }
-
-  if (
-    !allowMultipleSeminarResponsibles &&
-    thesis.seminarSupervisions &&
-    thesis.seminarSupervisions.length > 1
-  ) {
-    formErrors.push({
-      code: 'custom' as const,
-      message: 'formErrors:singleSeminarSupervisor',
-      path: ['general', 'seminar', 'supervisor', 'error'],
-      params: {},
-    })
-  }
-
-  // Add custom validation for approvers when they are available
-  if (
-    !isStudentView &&
-    hasApprovers &&
-    (!thesis.approvers || thesis.approvers.length === 0 || !thesis.approvers[0])
-  ) {
-    formErrors.push({
-      code: 'custom' as const,
-      message: 'formErrors:approver',
-      path: ['approver'],
-      params: {},
-    })
-  }
-
-  if (
-    waysOfWorkingRequired &&
-    (!thesis.waysOfWorking || !(thesis.waysOfWorking as any).name)
-  ) {
-    formErrors.push({
-      code: 'custom' as const,
-      message: 'formErrors:waysOfWorking',
-      path: ['waysOfWorking'],
-      params: {},
-    })
-  }
-
-  const hasWaysOfWorkingFile =
-    thesis.waysOfWorking && (thesis.waysOfWorking as any).name
-  if (
-    (waysOfWorkingRequired || hasWaysOfWorkingFile) &&
-    !thesis.waysOfWorkingValidUntil
-  ) {
-    formErrors.push({
-      code: 'custom' as const,
-      message: 'formErrors:waysOfWorkingValidUntil',
-      path: ['waysOfWorkingValidUntil'],
-      params: {},
-    })
-  }
-
-  return formErrors
 }

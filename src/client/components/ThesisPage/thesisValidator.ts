@@ -1,5 +1,6 @@
 import { uniqBy } from 'lodash-es'
-import { z } from 'zod'
+import { z, type IssueData } from 'zod'
+import { ThesisData } from '@backend/validators/thesisResponse'
 
 const userSchema = z.object({
   id: z.string(),
@@ -21,6 +22,23 @@ const extUserSchema = z.object({
     .string({ message: 'formErrors:affiliation' })
     .min(1, 'formErrors:affiliation'),
 })
+
+export const getPersonSelectionDefaults = (
+  type: 'supervisor' | 'grader' | 'seminarSupervisor',
+  index: number,
+  totalLength: number = 1
+) => {
+  return {
+    isExternal: false,
+    ...(type === 'supervisor' && {
+      isPrimarySupervisor: index === 0,
+      percentage: totalLength <= 1 ? 100 : 0,
+    }),
+    ...(type === 'grader' && {
+      isPrimaryGrader: index === 0,
+    }),
+  }
+}
 
 const supervisionSchema = z
   .object({
@@ -215,3 +233,134 @@ export const ThesisSchema = z.object({
 })
 
 export type ValidatedThesis = z.infer<typeof ThesisSchema>
+
+export interface GetFormErrorsOptions {
+  hasApprovers?: boolean
+  seminarSupervisionRequired?: boolean
+  allowMultipleSeminarResponsibles?: boolean
+  waysOfWorkingRequired?: boolean
+  isStudentView?: boolean
+  supervisionRequired?: boolean
+  gradersRequired?: boolean
+}
+
+// We use z.any().superRefine(...) so it ALWAYS evaluates, meaning we can collect
+// ALL errors (base schema, date schema, and dynamic logic) without Zod short-circuiting.
+export const createThesisSchema = (options: GetFormErrorsOptions = {}) => {
+  const {
+    hasApprovers = false,
+    seminarSupervisionRequired = false,
+    allowMultipleSeminarResponsibles = false,
+    waysOfWorkingRequired = false,
+    isStudentView = false,
+    supervisionRequired = false,
+    gradersRequired = true,
+  } = options
+
+  return z.custom<Partial<ThesisData>>().superRefine((thesis, ctx) => {
+    // 1. Run base schema
+    const baseResult = ThesisSchema.safeParse(thesis)
+    if (!baseResult.success) {
+      baseResult.error.issues.forEach((issue) =>
+        ctx.addIssue(issue as IssueData)
+      )
+    }
+
+    // 2. Run date schema
+    const dateResult = ThesisDateSchema.safeParse({
+      startDate: thesis?.startDate || '',
+      targetDate: thesis?.targetDate || '',
+    })
+    if (!dateResult.success) {
+      dateResult.error.issues.forEach((issue) =>
+        ctx.addIssue(issue as IssueData)
+      )
+    }
+
+    // 3. Dynamic rules
+    if (
+      !isStudentView &&
+      gradersRequired &&
+      (!thesis?.graders || thesis.graders.length === 0)
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:graders',
+        path: ['general', 'grader', 'error'],
+      })
+    }
+
+    if (
+      seminarSupervisionRequired &&
+      (!thesis?.seminarSupervisions || thesis.seminarSupervisions.length === 0)
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:seminarSupervisorRequired',
+        path: ['general', 'seminar', 'supervisor', 'error'],
+      })
+    }
+
+    if (
+      supervisionRequired &&
+      (!thesis?.supervisions || thesis.supervisions.length === 0)
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:supervisors',
+        path: ['general', 'supervisor', 'error'],
+      })
+    }
+
+    if (
+      !allowMultipleSeminarResponsibles &&
+      thesis?.seminarSupervisions &&
+      thesis.seminarSupervisions.length > 1
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:singleSeminarSupervisor',
+        path: ['general', 'seminar', 'supervisor', 'error'],
+      })
+    }
+
+    // Add custom validation for approvers when they are available
+    if (
+      !isStudentView &&
+      hasApprovers &&
+      (!thesis?.approvers ||
+        thesis.approvers.length === 0 ||
+        !thesis.approvers[0])
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:approver',
+        path: ['approver'],
+      })
+    }
+
+    if (
+      waysOfWorkingRequired &&
+      (!(thesis as any)?.waysOfWorking || !(thesis as any).waysOfWorking.name)
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:waysOfWorking',
+        path: ['waysOfWorking'],
+      })
+    }
+
+    const hasWaysOfWorkingFile =
+      (thesis as any)?.waysOfWorking && (thesis as any).waysOfWorking.name
+    if (
+      (waysOfWorkingRequired || hasWaysOfWorkingFile) &&
+      !(thesis as any)?.waysOfWorkingValidUntil
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'formErrors:waysOfWorkingValidUntil',
+        path: ['waysOfWorkingValidUntil'],
+      })
+    }
+  })
+}
