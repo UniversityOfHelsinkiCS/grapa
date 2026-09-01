@@ -1,5 +1,5 @@
-import CustomUnauthorizedError from '../errors/UnauthorizedError'
 import { NextFunction, Response } from 'express'
+import logger from '../util/logger'
 
 export const has_access = (user: {
   isAdmin: any
@@ -10,13 +10,18 @@ export const has_access = (user: {
 
 export const employeesAndAdminOnly = (
   req: any,
-  _: Response,
+  res: Response,
   next: NextFunction
 ) => {
   const currentUser = req.user
 
   if (!currentUser || !currentUser.id || !has_access(currentUser)) {
-    throw new CustomUnauthorizedError('Unauthorized')
+    logger.log(
+      'warn',
+      `401 for ${req.method} ${req.path} as ${currentUser ? `${currentUser?.id}/${currentUser?.username}` : 'anonymous user'}`
+    )
+    res.status(401).send()
+    return
   }
 
   return next()
