@@ -16,12 +16,14 @@ interface NewPersonControlsProps {
   personGroup: 'supervisor' | 'grader' | 'seminar-supervisor'
   options: { label: string; isExternal: boolean }[]
   handleAddPerson: (isExternal: boolean) => void
+  ariaLabel: string
 }
 
 const NewPersonControls = ({
   personGroup,
   options,
   handleAddPerson,
+  ariaLabel,
 }: NewPersonControlsProps) => {
   const { t } = useTranslation()
 
@@ -65,7 +67,7 @@ const NewPersonControls = ({
         data-testid={`add-${personGroup}-button`}
         aria-controls={open ? `${personGroup}-button-menu` : undefined}
         aria-expanded={open ? 'true' : undefined}
-        aria-label={t(`thesisForm:${personGroup}ButtonGroupAriaLabel`)}
+        aria-label={ariaLabel}
         sx={{
           borderRadius: '0.5rem',
           justifyContent: 'center',
