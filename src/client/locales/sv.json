@@ -332,7 +332,12 @@
     "waysOfWorkingValidUntil": "Vänligen ange giltighetsdatum för överenskommelsen om handledning",
     "startDate": "Startdatum måste vara före måldatumet",
     "targetDate": "Måldatum måste vara efter startdatumet",
-    "approver": "Vänligen välj en programdirektör"
+    "approver": "Vänligen välj en programdirektör",
+    "gradersContent": "Avhandlingen måste ha minst en bedömare.",
+    "seminarSupervisorGeneralErrorsTitle": "Fel vid tillägg av seminariehandledare",
+    "seminarSupervisorRequiredContent": "Avhandlingen måste ha minst en seminariehandledare.",
+    "singleSeminarSupervisorContent": "Avhandlingen kan endast ha en seminariehandledare.",
+    "seminarSupervisorInternalOnlyContent": "Seminariehandledaren måste vara anställd vid universitetet."
   },
   "thesisForm": {
     "milestoneVersion": "Milstolpsversion",
@@ -375,7 +380,8 @@
     "appendices": "Bilagor",
     "removeAppendixConfirmationTitle": "Ta bort bilaga",
     "removeAppendixConfirmationContent": "Är du säker på att du vill ta bort bilagan: {{name}}?",
-    "supervisorButtonGroupAriaLabel": "Handledaråtgärder",
+    "graderButtonGroupAriaLabel": "Bedömarens åtgärder",
+    "supervisorButtonGroupAriaLabel": "Handledarens åtgärder",
     "addSupervisor": "Lägg till handledare",
     "addExternalSupervisor": "Lägg till extern handledare",
     "seminar-supervisorButtonGroupAriaLabel": "Seminariehandledaråtgärder",
@@ -396,6 +402,7 @@
     "uploadResearchPlan": "Ladda upp ämnesbeskrivning",
     "selectSupervisorPercentage": "Procent",
     "totalSupervisionPercentage": "Total handledningsprocent: {{totalPercentage}} %",
+    "supervisionPercentageTooltip": "Arbetsfördelningen måste uppgå till totalt 100%",
     "removeSupervisorConfirmationTitle": "Ta bort handledare",
     "removeSupervisorConfirmationContent": "Är du säker på att du vill ta bort handledaren: {{name}}?",
     "removeSupervisorConfirmationNoName": "Är du säker på att du vill ta bort handledare {{index}}?",

@@ -330,7 +330,12 @@
     "waysOfWorkingValidUntil": "Anna työskentelysopimuksen voimassaolopäivä",
     "startDate": "Aloituspäivän on oltava ennen tavoitepäivää",
     "targetDate": "Tavoitepäivän on oltava aloituspäivän jälkeen",
-    "approver": "Valitse ohjelmavastaava"
+    "approver": "Valitse ohjelmavastaava",
+    "gradersContent": "Tutkielmalla tulee olla vähintään yksi arvioija.",
+    "seminarSupervisorGeneralErrorsTitle": "Virheitä seminaariohjaajien lisäämisessä",
+    "seminarSupervisorRequiredContent": "Tutkielmalla tulee olla vähintään yksi seminaariohjaaja.",
+    "singleSeminarSupervisorContent": "Tutkielmalla voi olla vain yksi seminaariohjaaja.",
+    "seminarSupervisorInternalOnlyContent": "Seminaariohjaajan on oltava yliopiston työntekijä."
   },
   "thesisForm": {
     "milestoneVersion": "Etappien versio",
@@ -373,6 +378,7 @@
     "appendices": "Liitteet",
     "removeAppendixConfirmationTitle": "Poista liite",
     "removeAppendixConfirmationContent": "Haluatko varmasti poistaa liitteen: {{name}}?",
+    "graderButtonGroupAriaLabel": "Arvioijien lisäys",
     "supervisorButtonGroupAriaLabel": "Ohjaajien lisäys",
     "addSupervisor": "Lisää ohjaaja",
     "addExternalSupervisor": "Lisää ulkopuolinen ohjaaja",
@@ -394,6 +400,7 @@
     "waysOfWorkingHelperText": "Työskentelysopimus on pakollinen, jos se vaaditaan koulutusohjelmassa",
     "selectSupervisorPercentage": "Osuus",
     "totalSupervisionPercentage": "Työjakauma yhteensä: {{totalPercentage}} %",
+    "supervisionPercentageTooltip": "Työjakauman tulee olla yhteensä 100%",
     "removeSupervisorConfirmationTitle": "Poista ohjaaja",
     "removeSupervisorConfirmationContent": "Haluatko varmasti poistaa ohjaajan: {{name}}?",
     "removeSupervisorConfirmationNoName": "Haluatko varmasti poistaa ohjaajan {{index}}?",

@@ -332,7 +332,12 @@
     "waysOfWorkingValidUntil": "Please provide the valid until date for the ways of working agreement",
     "startDate": "Start date must be before target date",
     "targetDate": "Target date must be after start date",
-    "approver": "Please select a program manager"
+    "approver": "Please select a program manager",
+    "gradersContent": "The thesis must have at least one grader.",
+    "seminarSupervisorGeneralErrorsTitle": "Errors related to adding seminar supervisors",
+    "seminarSupervisorRequiredContent": "The thesis must have at least one seminar supervisor.",
+    "singleSeminarSupervisorContent": "The thesis can have only one seminar supervisor.",
+    "seminarSupervisorInternalOnlyContent": "The seminar supervisor must be an internal staff member."
   },
   "thesisForm": {
     "milestoneVersion": "Milestone version",
@@ -374,7 +379,8 @@
     "seminarSupervisorsLabel": "Seminar supervisors",
     "appendices": "Appendices",
     "removeAppendixConfirmationTitle": "Delete appendix",
-    "removeAppendixConfirmationContent": "Are you sure you want to delete the appendix: {{name}}?",
+    "removeAppendixConfirmationContent": "Are you sure you want to delete the attachment: {{name}}?",
+    "graderButtonGroupAriaLabel": "Grader actions",
     "supervisorButtonGroupAriaLabel": "Supervisor actions",
     "addSupervisor": "Add supervisor",
     "addExternalSupervisor": "Add external supervisor",
@@ -396,6 +402,7 @@
     "uploadResearchPlan": "Upload topic description",
     "selectSupervisorPercentage": "Percentage",
     "totalSupervisionPercentage": "Total supervision percentage: {{totalPercentage}} %",
+    "supervisionPercentageTooltip": "The work distribution must total 100%",
     "removeSupervisorConfirmationTitle": "Delete supervisor",
     "removeSupervisorConfirmationContent": "Are you sure you want to delete the supervisor: {{name}}?",
     "removeSupervisorConfirmationNoName": "Are you sure you want to delete the supervisor {{index}}?",
