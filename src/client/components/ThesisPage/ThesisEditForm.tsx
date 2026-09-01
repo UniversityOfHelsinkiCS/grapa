@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ZodIssue } from 'zod'
+import { z } from 'zod'
 import 'dayjs/locale/fi'
 import dayjs from 'dayjs'
 import { sortBy } from 'lodash-es'
@@ -77,7 +77,7 @@ const ThesisEditForm = ({
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
 
-  const [formErrors, setFormErrors] = useState<ZodIssue[]>([])
+  const [formErrors, setFormErrors] = useState<z.core.$ZodIssue[]>([])
   const [confirmSendOpen, setConfirmSendOpen] = useState(false)
   const [userSearch, setUserSearch] = useState('')
 
@@ -216,7 +216,7 @@ const ThesisEditForm = ({
   function validateForm(payload: Partial<ThesisData>): {
     isValid: boolean
     parsedThesis?: ValidatedThesis
-    thesisErrors: ZodIssue[]
+    thesisErrors: z.core.$ZodIssue[]
   } {
     const options = {
       hasApprovers: Boolean(

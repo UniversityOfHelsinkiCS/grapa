@@ -1,5 +1,5 @@
 import { uniqBy } from 'lodash-es'
-import { z, type IssueData } from 'zod'
+import { z } from 'zod'
 import { ThesisData } from '@backend/validators/thesisResponse'
 
 const userSchema = z.object({
@@ -262,7 +262,7 @@ export const createThesisSchema = (options: GetFormErrorsOptions = {}) => {
     const baseResult = ThesisSchema.safeParse(thesis)
     if (!baseResult.success) {
       baseResult.error.issues.forEach((issue) =>
-        ctx.addIssue(issue as IssueData)
+        ctx.addIssue(issue as z.core.$ZodRawIssue)
       )
     }
 
@@ -273,7 +273,7 @@ export const createThesisSchema = (options: GetFormErrorsOptions = {}) => {
     })
     if (!dateResult.success) {
       dateResult.error.issues.forEach((issue) =>
-        ctx.addIssue(issue as IssueData)
+        ctx.addIssue(issue as z.core.$ZodRawIssue)
       )
     }
 
