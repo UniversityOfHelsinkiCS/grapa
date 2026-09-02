@@ -36,7 +36,8 @@ export const authorizeStatusChange = async (
 
   // Only setting the DRAFT status when rejecting a thesis suggestion
   if (
-    req.body.status === 'DRAFT' && thesis ? thesis.status !== 'SUGGESTED' : true
+    req.body.status === 'DRAFT' &&
+    (!thesis || thesis.status !== 'SUGGESTED')
   ) {
     throw new CustomAuthorizationError(
       'User is not authorized to change the status of the thesis to DRAFT',

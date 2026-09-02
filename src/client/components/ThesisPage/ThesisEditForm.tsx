@@ -325,7 +325,7 @@ const ThesisEditForm = ({
 
   const isOptionNative = {
     DRAFT: Boolean(
-      canChangeStatus && selectedProgram?.options?.allowStudentStartedProcess
+      user.isAdmin && selectedProgram?.options?.allowStudentStartedProcess
     ),
     SUGGESTED: Boolean(
       canChangeStatus && selectedProgram?.options?.allowStudentStartedProcess
