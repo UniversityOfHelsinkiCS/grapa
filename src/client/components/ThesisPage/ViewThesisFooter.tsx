@@ -614,7 +614,11 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                   !hideEdit && (
                     <Tooltip
                       title={
-                        canApprove(thesis, currentUser!) && !currentUser.isAdmin
+                        Boolean(
+                          thesis.program?.options?.allowStudentStartedProcess
+                        ) &&
+                        canApprove(thesis, currentUser!) &&
+                        !currentUser.isAdmin
                           ? t('viewThesisFooter:editTooltipDisabled')
                           : t('viewThesisFooter:editTooltip')
                       }
@@ -629,6 +633,10 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                             fontWeight: 600,
                           }}
                           disabled={
+                            Boolean(
+                              thesis.program?.options
+                                ?.allowStudentStartedProcess
+                            ) &&
                             canApprove(thesis, currentUser!) &&
                             !currentUser.isAdmin
                           }
