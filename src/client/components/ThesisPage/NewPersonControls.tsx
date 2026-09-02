@@ -10,7 +10,6 @@ import {
   Stack,
 } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-import { useTranslation } from 'react-i18next'
 
 interface NewPersonControlsProps {
   personGroup: 'supervisor' | 'grader' | 'seminar-supervisor'
@@ -25,8 +24,6 @@ const NewPersonControls = ({
   handleAddPerson,
   ariaLabel,
 }: NewPersonControlsProps) => {
-  const { t } = useTranslation()
-
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef<HTMLButtonElement>(null)
 
