@@ -21,7 +21,7 @@ userRouter.get(
   async (req: RequestWithUser, res: any) => {
     const { user } = req
 
-    if (!user) return res.send({})
+    if (!user) return res.status(401).send({ error: 'Unauthorized' })
 
     const managedPrograms = await ProgramManagement.findAll({
       where: { userId: user.id },

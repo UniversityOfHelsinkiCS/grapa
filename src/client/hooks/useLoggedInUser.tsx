@@ -13,7 +13,14 @@ const useLoggedInUser = () => {
     return data
   }
 
-  const { data: user, ...rest } = useQuery({ queryKey, queryFn })
+  const { data: user, ...rest } = useQuery({
+    queryKey,
+    queryFn,
+    retry: (failureCount, error: any) => {
+      if (error?.response?.status === 401) return false
+      return failureCount < 3
+    },
+  })
 
   const hasStaffAccess = Boolean(
     user?.isAdmin ||
