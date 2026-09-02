@@ -328,7 +328,7 @@ const ThesisEditForm = ({
       user.isAdmin && selectedProgram?.options?.allowStudentStartedProcess
     ),
     SUGGESTED: Boolean(
-      canChangeStatus && selectedProgram?.options?.allowStudentStartedProcess
+      user.isAdmin && selectedProgram?.options?.allowStudentStartedProcess
     ),
     PLANNING: Boolean(
       canChangeStatus && !selectedProgram?.options?.allowStudentStartedProcess
@@ -362,7 +362,9 @@ const ThesisEditForm = ({
     const newStudyTracks = newProgram?.studyTracks || []
     const disableStudyTracks = Boolean(newProgram?.options?.disableStudyTracks)
     const firstAvailableStatus = newProgram?.options?.allowStudentStartedProcess
-      ? 'DRAFT'
+      ? isStudentView || user.isAdmin
+        ? 'DRAFT'
+        : 'IN_PROGRESS'
       : 'PLANNING'
 
     const oldValues = form.store.state.values

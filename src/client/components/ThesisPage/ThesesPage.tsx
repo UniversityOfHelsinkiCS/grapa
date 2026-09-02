@@ -239,7 +239,9 @@ const ThesesPage = ({
       ],
       topic: '',
       status: programOptions[0]?.options?.allowStudentStartedProcess
-        ? 'DRAFT'
+        ? currentUser.isAdmin
+          ? 'DRAFT'
+          : 'IN_PROGRESS'
         : 'PLANNING',
       startDate: dayjs().format('YYYY-MM-DD'),
       targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
