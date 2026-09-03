@@ -13,6 +13,8 @@ interface ExternalPersonSelectProps {
   selection: BasePersonSelection
   field: AnyFieldApi
   disabledMode?: boolean
+  errors?: Record<string, string>
+  onClearErrors?: () => void
   onRemove: () => void
 }
 
@@ -22,6 +24,8 @@ const ExternalPersonSelect = ({
   selection,
   field,
   disabledMode,
+  errors = {},
+  onClearErrors,
   onRemove,
 }: ExternalPersonSelectProps) => {
   const { t } = useTranslation()
@@ -38,11 +42,19 @@ const ExternalPersonSelect = ({
 
   const userBase = `${field.name}[${index}].user`
 
+  const errorText = (userField: AnyFieldApi, name: string) => {
+    const error = errors[name] ?? userField.state.meta.errors[0]
+
+    return error ? t(error) : undefined
+  }
+
   const handleUserFieldChange = (
     handleChange: (value: string) => void,
     fieldName: string,
     value: string
   ) => {
+    onClearErrors?.()
+
     const currentArr = field.state.value || []
     if (
       !currentArr[index] ||
@@ -121,12 +133,8 @@ const ExternalPersonSelect = ({
                 }
                 fullWidth
                 variant="outlined"
-                error={f.state.meta.errors.length > 0}
-                helperText={
-                  f.state.meta.errors.length > 0
-                    ? t(f.state.meta.errors[0])
-                    : undefined
-                }
+                error={Boolean(errorText(f, 'firstName'))}
+                helperText={errorText(f, 'firstName')}
               />
             )}
           </form.Field>
@@ -148,12 +156,8 @@ const ExternalPersonSelect = ({
                 }
                 fullWidth
                 variant="outlined"
-                error={f.state.meta.errors.length > 0}
-                helperText={
-                  f.state.meta.errors.length > 0
-                    ? t(f.state.meta.errors[0])
-                    : undefined
-                }
+                error={Boolean(errorText(f, 'lastName'))}
+                helperText={errorText(f, 'lastName')}
               />
             )}
           </form.Field>
@@ -173,12 +177,8 @@ const ExternalPersonSelect = ({
                 }
                 fullWidth
                 variant="outlined"
-                error={f.state.meta.errors.length > 0}
-                helperText={
-                  f.state.meta.errors.length > 0
-                    ? t(f.state.meta.errors[0])
-                    : undefined
-                }
+                error={Boolean(errorText(f, 'email'))}
+                helperText={errorText(f, 'email')}
               />
             )}
           </form.Field>
@@ -200,12 +200,8 @@ const ExternalPersonSelect = ({
                 }
                 fullWidth
                 variant="outlined"
-                error={f.state.meta.errors.length > 0}
-                helperText={
-                  f.state.meta.errors.length > 0
-                    ? t(f.state.meta.errors[0])
-                    : undefined
-                }
+                error={Boolean(errorText(f, 'affiliation'))}
+                helperText={errorText(f, 'affiliation')}
               />
             )}
           </form.Field>

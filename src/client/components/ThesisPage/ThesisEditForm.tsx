@@ -134,6 +134,18 @@ const ThesisEditForm = ({
     (programManagement) => programManagement.user
   )
 
+  const personErrorsOf = (fieldName: string) =>
+    formErrors.filter((error) => error.path[0] === fieldName)
+
+  const clearPersonErrors = (fieldName: string, index?: number) =>
+    setFormErrors((errors) =>
+      errors.filter(
+        (error) =>
+          error.path[0] !== fieldName ||
+          (index !== undefined && error.path[1] !== index)
+      )
+    )
+
   const clearURL = () => {
     if (window.location.hash) {
       window.history.pushState('', document.title, window.location.pathname)
@@ -1082,6 +1094,10 @@ const ThesisEditForm = ({
                           e.path.join('-').endsWith('general-supervisor-error')
                         )
                         .map((e) => e.message)}
+                      personErrors={personErrorsOf('supervisions')}
+                      onClearErrors={(index) =>
+                        clearPersonErrors('supervisions', index)
+                      }
                     />
                   )}
                 </form.Field>
@@ -1124,6 +1140,10 @@ const ThesisEditForm = ({
                           .endsWith('general-seminar-supervisor-error')
                       )
                       .map((e) => e.message)}
+                    personErrors={personErrorsOf('seminarSupervisions')}
+                    onClearErrors={(index) =>
+                      clearPersonErrors('seminarSupervisions', index)
+                    }
                   />
                 )}
               </form.Field>
@@ -1166,6 +1186,10 @@ const ThesisEditForm = ({
                             e.path.join('-').endsWith('general-grader-error')
                           )
                           .map((e) => e.message)}
+                        personErrors={personErrorsOf('graders')}
+                        onClearErrors={(index) =>
+                          clearPersonErrors('graders', index)
+                        }
                       />
                     )}
                   </form.Subscribe>

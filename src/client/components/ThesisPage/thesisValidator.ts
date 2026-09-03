@@ -194,7 +194,11 @@ export const ThesisSchema = z.object({
       })
     }
 
-    if (!supervisions.some((supervisor) => supervisor.isPrimarySupervisor)) {
+    if (
+      !supervisions.some(
+        (supervisor) => supervisor.isPrimarySupervisor && !supervisor.isExternal
+      )
+    ) {
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:primarySupervisor',

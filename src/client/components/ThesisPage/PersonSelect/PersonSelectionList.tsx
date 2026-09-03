@@ -2,6 +2,7 @@ import React from 'react'
 import { Box, Divider, Stack, Typography, Tooltip } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
+import { z } from 'zod'
 
 import NewPersonControls from '../NewPersonControls'
 import SinglePersonSelect from './SinglePersonSelect'
@@ -70,6 +71,8 @@ interface PersonSelectionListProps {
   allowMultiple?: boolean
   helperTextNode?: React.ReactNode
   generalErrors?: string[]
+  personErrors?: z.core.$ZodIssue[]
+  onClearErrors?: (index?: number) => void
 }
 
 const PersonSelectionList = ({
@@ -81,6 +84,8 @@ const PersonSelectionList = ({
   allowMultiple = true,
   helperTextNode,
   generalErrors = [],
+  personErrors = [],
+  onClearErrors,
 }: PersonSelectionListProps) => {
   const { t } = useTranslation()
 
@@ -104,6 +109,46 @@ const PersonSelectionList = ({
 
   const totalPercentage = getTotalPercentage(displayedSelections)
 
+  const allowExternal = type !== 'seminarSupervisor' && selections.length > 0
+
+  const withPrimarySupervisor = <
+    T extends { isExternal?: boolean; isPrimarySupervisor?: boolean },
+  >(
+    supervisions: T[]
+  ) => {
+    if (
+      supervisions.some(
+        (supervision) =>
+          supervision.isPrimarySupervisor && !supervision.isExternal
+      )
+    ) {
+      return supervisions
+    }
+
+    const primaryIndex = supervisions.findIndex(
+      (supervision) => !supervision.isExternal
+    )
+
+    return supervisions.map((supervision, index) => ({
+      ...supervision,
+      isPrimarySupervisor: index === primaryIndex,
+    }))
+  }
+
+  const getPersonErrors = (index: number) => {
+    if (selections.length === 0) return { user: generalErrors[0] }
+
+    return personErrors
+      .filter((error) => error.path[1] === index && error.path[2] === 'user')
+      .reduce<Record<string, string>>(
+        (errors, error) => ({
+          [(error.path[3] as string) ?? 'user']: error.message,
+          ...errors,
+        }),
+        {}
+      )
+  }
+
   const handleAddPerson = (isExternal: boolean) => {
     const newLength = selections.length + 1
     const newItem: BasePersonSelection = {
@@ -118,13 +163,15 @@ const PersonSelectionList = ({
         newLength,
         selections
       )
-      field.setValue([
-        ...updated,
-        {
-          ...newItem,
-          percentage: Math.floor((1 / newLength) * 100),
-        },
-      ])
+      field.setValue(
+        withPrimarySupervisor([
+          ...updated,
+          {
+            ...newItem,
+            percentage: Math.floor((1 / newLength) * 100),
+          },
+        ])
+      )
     } else if (type === 'grader') {
       field.pushValue(newItem)
     } else {
@@ -133,6 +180,8 @@ const PersonSelectionList = ({
   }
 
   const handleRemovePerson = (index: number) => {
+    onClearErrors?.()
+
     if (selections.length === 1 && !allowEmpty) {
       if (type === 'seminarSupervisor' && !allowMultiple) {
         const newSelections = [...selections]
@@ -158,7 +207,7 @@ const PersonSelectionList = ({
         newSelections.length,
         newSelections
       )
-      field.setValue(updated)
+      field.setValue(withPrimarySupervisor(updated))
     } else if (type === 'grader') {
       if (index === 0 && newSelections.length > 0) {
         newSelections[0].isPrimaryGrader = true
@@ -232,6 +281,8 @@ const PersonSelectionList = ({
                 selection={selection}
                 field={field}
                 disabledMode={disabledMode}
+                errors={getPersonErrors(index)}
+                onClearErrors={() => onClearErrors?.(index)}
                 onRemove={() => {
                   setItemToDeleteIndex(index)
                   setDeleteDialogOpen(true)
@@ -245,6 +296,8 @@ const PersonSelectionList = ({
                 field={field}
                 allowEmpty={allowEmpty}
                 totalLength={displayedSelections.length}
+                errors={getPersonErrors(index)}
+                onClearErrors={() => onClearErrors?.(index)}
                 onRemove={() => {
                   setItemToDeleteIndex(index)
                   setDeleteDialogOpen(true)
@@ -296,7 +349,7 @@ const PersonSelectionList = ({
               label: t(translationKeys[type].addPrimary),
               isExternal: false,
             },
-            ...(type !== 'seminarSupervisor'
+            ...(allowExternal
               ? [
                   {
                     label: t(translationKeys[type].addExternal),

@@ -588,7 +588,50 @@ describe('ThesisEditForm', () => {
         ).toBeInTheDocument()
       })
 
+      // The error is shown under the grader that is missing, not the filled one
+      expect(
+        within(screen.getByTestId('grader-select-input-2')).getByText(
+          'Anna puuttuvat arvioijatiedot'
+        )
+      ).toBeInTheDocument()
+      expect(
+        within(screen.getByTestId('grader-select-input-1')).queryByText(
+          'Anna puuttuvat arvioijatiedot'
+        )
+      ).not.toBeInTheDocument()
+
       expect(mockOnSubmit).not.toHaveBeenCalled()
+    })
+
+    it('clears the error when the grader is selected', async () => {
+      const user = userEvent.setup()
+
+      await user.click(screen.getByTestId('submit-button'))
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('errorsummary-graders-1-user')
+        ).toBeInTheDocument()
+      })
+
+      const graderSelect = screen.getByTestId('grader-select-input-2')
+      const graderInput = within(graderSelect).getByRole('combobox')
+
+      graderSelect.focus()
+      fireEvent.change(graderInput, { target: { value: 'Bob Luukkainen' } })
+      fireEvent.keyDown(graderSelect, { key: 'ArrowDown' })
+      fireEvent.keyDown(graderSelect, { key: 'Enter' })
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('errorsummary-graders-1-user')
+        ).not.toBeInTheDocument()
+      })
+      expect(
+        within(screen.getByTestId('grader-select-input-2')).queryByText(
+          'Anna puuttuvat arvioijatiedot'
+        )
+      ).not.toBeInTheDocument()
     })
   })
 
@@ -703,6 +746,22 @@ describe('ThesisEditForm', () => {
       )
     }
 
+    it('reports a missing grader under the empty grader row', async () => {
+      renderWithGraders([])
+
+      await userEvent.click(screen.getByTestId('submit-button'))
+
+      await waitFor(() => {
+        expect(screen.getByTestId('grader-general-error')).toBeInTheDocument()
+      })
+
+      expect(
+        within(screen.getByTestId('grader-select-input-1')).getByText(
+          'Anna puuttuvat arvioijatiedot'
+        )
+      ).toBeInTheDocument()
+    })
+
     it('does not offer the external option when there are no graders', async () => {
       renderWithGraders([])
 
@@ -739,6 +798,158 @@ describe('ThesisEditForm', () => {
           screen.getByTestId('add-grader-menu-item-external')
         ).toBeInTheDocument()
       })
+    })
+  })
+
+  describe('when the only supervisor is external', () => {
+    const externalSupervisor = {
+      user: {
+        firstName: 'Erkki',
+        lastName: 'Esimerkki',
+        email: 'erkki@example.com',
+        affiliation: 'Aalto',
+      },
+      isExternal: true,
+      percentage: 100,
+      isPrimarySupervisor: true,
+    }
+
+    beforeEach(() => {
+      const initialThesis = {
+        programId: programs[0].id,
+        studyTrackId: programs[0].studyTracks[0].id,
+        approvers: [
+          {
+            id: '4',
+            firstName: 'Henri',
+            lastName: 'Tunkkaaja',
+            username: 'tunkkaus',
+            email: 'henri@example.com',
+          },
+        ],
+        supervisions: [externalSupervisor],
+        seminarSupervisions: [{ user: { id: '3' } }] as never[],
+        authors: [
+          {
+            id: '1',
+            firstName: 'John',
+            lastName: 'Doe',
+            username: 'johndoe',
+            email: 'john@example.com',
+          },
+        ],
+        graders: [
+          {
+            user: {
+              id: '1',
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+              email: 'john@example.com',
+            },
+            isPrimaryGrader: true,
+          },
+        ],
+        topic: 'External Supervisor Test',
+        status: 'IN_PROGRESS',
+        startDate: dayjs().format('YYYY-MM-DD'),
+        targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
+        researchPlan: { name: 'researchPlan.pdf' },
+      }
+
+      void initializeI18n()
+
+      render(
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <ThesisEditForm
+            formTitle="Test"
+            isStudentView={false}
+            programs={programs}
+            initialThesis={initialThesis as never}
+            onClose={mockOnClose}
+            onSubmit={mockOnSubmit}
+          />
+        </LocalizationProvider>
+      )
+    })
+
+    it('does not submit without an internal primary supervisor', async () => {
+      await userEvent.click(screen.getByTestId('submit-button'))
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(
+            'errorsummary-supervisions-general-supervisor-error'
+          )
+        ).toBeInTheDocument()
+      })
+
+      expect(mockOnSubmit).not.toHaveBeenCalled()
+    })
+
+    it('sets an added internal supervisor as the primary one', async () => {
+      const user = userEvent.setup()
+
+      // The external supervisor has no star, so nothing is primary yet
+      expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
+
+      await user.click(screen.getByTestId('add-supervisor-button'))
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('add-supervisor-menu-item-internal')
+        ).toBeInTheDocument()
+      })
+      await user.click(screen.getByTestId('add-supervisor-menu-item-internal'))
+
+      const stars = screen.getAllByRole('checkbox')
+      expect(stars).toHaveLength(1)
+      expect(stars[0]).toBeChecked()
+    })
+  })
+
+  describe('when adding supervisors', () => {
+    beforeEach(() => {
+      const initialThesis = {
+        programId: programs[0].id,
+        studyTrackId: programs[0].studyTracks[0].id,
+        approvers: [] as never[],
+        supervisions: [] as never[],
+        seminarSupervisions: [] as never[],
+        authors: [] as never[],
+        graders: [] as never[],
+        topic: 'External Supervisor Test',
+        status: 'IN_PROGRESS',
+        startDate: dayjs().format('YYYY-MM-DD'),
+        targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
+      }
+
+      void initializeI18n()
+
+      render(
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <ThesisEditForm
+            formTitle="Test"
+            isStudentView={false}
+            programs={programs}
+            initialThesis={initialThesis as never}
+            onClose={mockOnClose}
+            onSubmit={mockOnSubmit}
+          />
+        </LocalizationProvider>
+      )
+    })
+
+    it('does not offer the external option when there are no supervisors', async () => {
+      await userEvent.click(screen.getByTestId('add-supervisor-button'))
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('add-supervisor-menu-item-internal')
+        ).toBeInTheDocument()
+      })
+      expect(
+        screen.queryByTestId('add-supervisor-menu-item-external')
+      ).not.toBeInTheDocument()
     })
   })
 })

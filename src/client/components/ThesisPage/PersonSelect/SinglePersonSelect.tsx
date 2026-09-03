@@ -28,6 +28,8 @@ interface SinglePersonSelectProps {
   field: AnyFieldApi
   allowEmpty: boolean
   totalLength: number
+  errors?: Record<string, string>
+  onClearErrors?: () => void
   onRemove: () => void
   onPrimaryChange: () => void
 }
@@ -39,6 +41,8 @@ const SinglePersonSelect = ({
   field,
   allowEmpty,
   totalLength,
+  errors = {},
+  onClearErrors,
   onRemove,
   onPrimaryChange,
 }: SinglePersonSelectProps) => {
@@ -69,6 +73,8 @@ const SinglePersonSelect = ({
     (totalLength > 1 && type === 'grader' && selection.isPrimaryGrader)
 
   const handleUserChange = (handleChange: (value: any) => void, value: any) => {
+    onClearErrors?.()
+
     const currentArr = field.state.value || []
     if (
       !currentArr[index] ||
@@ -129,16 +135,17 @@ const SinglePersonSelect = ({
                 <TextField
                   {...params}
                   label={label}
-                  required={
-                    isSupervisor ||
-                    (isGrader && index === 0) ||
-                    isSeminarSupervisor
-                  }
-                  error={userField.state.meta.errors.length > 0}
-                  helperText={
+                  required
+                  error={
+                    Boolean(errors.user) ||
                     userField.state.meta.errors.length > 0
-                      ? t(userField.state.meta.errors[0])
-                      : undefined
+                  }
+                  helperText={
+                    errors.user
+                      ? t(errors.user)
+                      : userField.state.meta.errors.length > 0
+                        ? t(userField.state.meta.errors[0])
+                        : undefined
                   }
                 />
               )}
@@ -199,7 +206,9 @@ const SinglePersonSelect = ({
         </Tooltip>
       )}
 
-      {(!isGrader || !selection.isPrimaryGrader) && (
+      {(!isGrader ||
+        !selection.isPrimaryGrader ||
+        (allowEmpty && totalLength === 1)) && (
         <Tooltip
           title={
             removeDisabled
