@@ -433,7 +433,7 @@
     "cancelled": "Keskeytetty",
     "ethesis": "E-thesiksessä",
     "ethesis_studentstarted": "Lupa palauttaa",
-    "ethesisSent": "E-thesikseen lähetetty"
+    "ethesisSent": "E-thesis-vastaavan käsittelyssä"
   },
   "thesesTableToolbar": {
     "newThesisButton": "Uusi tutkielma",
@@ -490,8 +490,8 @@
         "tooltip": "Näyttää tutkielmat, jotka ovat E-thesiksessä"
       },
       "ethesisSent": {
-        "name": "E-thesikseen lähetetty",
-        "tooltip": "Näyttää tutkielmat, jotka on lähetetty E-thesikseen"
+        "name": "E-thesis-vastaavan käsittelyssä",
+        "tooltip": "Näyttää tutkielmat, jotka ovat E-thesis-vastaavan käsittelyssä"
       }
     },
     "actionNeeded": "Vaatii toimenpiteitä"
@@ -642,5 +642,19 @@
     "rejectMessageToStudent": "Viesti opiskelijalle",
     "editTooltipDisabled": "Tutkielma täytyy hyväksyä ennen muokkaamista, voit myös hylätä tutkielmasuunnitelman ja jättää opiskelijalle viestin tarvittavista muutoksista",
     "editTooltip": "Muokkaa tutkielmaa"
+  },
+  "ethesisModal": {
+    "saveToEthesisButton": "Merkitse tallennetuksi E-thesikseen",
+    "saving": "Tallennetaan...",
+    "close": "Sulje",
+    "invalidDate": "Virheellinen päivämäärä",
+    "savedToEthesis": "Tallennettu E-thesikseen",
+    "submittedToEthesis": "Lähetetty E-thesikseen",
+    "graders": "Arvostelijat",
+    "primary": "Pää",
+    "confirmation": "Vahvistus",
+    "confirmationText": "Haluatko varmasti merkitä tämän tutkielman tallennetuksi E-thesikseen?",
+    "yes": "Kyllä",
+    "cancel": "Peruuta"
   }
 }

@@ -415,7 +415,7 @@
     "setSentToEthesisLabel": "Thesis ready for assesment:",
     "setSentToEthesis": "Mark the thesis as ready for E-thesis registration",
     "toSubmitEthesis": "Mark thesis ready for E-thesis registration",
-    "toSubmitEthesisInfo": "When you save, the thesis is marked as ready and an E-thesis responsible can register it in E-thesis.",
+    "toSubmitEthesisInfo": "When you save, the thesis is marked as ready and an E-thesis coordinator can register it in E-thesis.",
     "toSubmitEthesisStudentStarted": "Give the student permission to submit to E-thesis",
     "send": "Send",
     "customDate": "Custom date",
@@ -434,7 +434,7 @@
     "cancelled": "Cancelled",
     "ethesis": "Saved to E-thesis",
     "ethesis_studentstarted": "Permission to submit",
-    "ethesisSent": "Submitted to E-thesis"
+    "ethesisSent": "Being processed by E-thesis coordinator"
   },
   "thesesTableToolbar": {
     "newThesisButton": "New thesis",
@@ -491,8 +491,8 @@
         "tooltip": "Shows theses that are saved to E-thesis"
       },
       "ethesisSent": {
-        "name": "Submitted to E-thesis",
-        "tooltip": "Shows theses that have been submitted to E-thesis"
+        "name": "Being processed by E-thesis coordinator",
+        "tooltip": "Shows theses that are being processed by an E-thesis coordinator"
       }
     },
     "actionNeeded": "Action needed"
@@ -643,5 +643,19 @@
     "rejectMessageToStudent": "Message to the student",
     "editTooltipDisabled": "The thesis must be approved before editing, you can also reject the thesis plan and leave the student a message about the required changes",
     "editTooltip": "Edit thesis"
+  },
+  "ethesisModal": {
+    "saveToEthesisButton": "Mark as saved in E-thesis",
+    "saving": "Saving...",
+    "close": "Close",
+    "invalidDate": "Invalid Date",
+    "savedToEthesis": "Saved to E-thesis",
+    "submittedToEthesis": "Submitted to E-thesis",
+    "graders": "Graders",
+    "primary": "Primary",
+    "confirmation": "Confirmation",
+    "confirmationText": "Are you sure you want to mark this thesis as saved in E-thesis?",
+    "yes": "Yes",
+    "cancel": "Cancel"
   }
 }

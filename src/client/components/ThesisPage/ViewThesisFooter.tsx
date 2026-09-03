@@ -605,7 +605,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                       }}
                       onClick={() => setEthesisAdminModalOpen(true)}
                     >
-                      Save to Ethesis
+                      {t('ethesisModal:saveToEthesisButton')}
                     </Button>
                   )}
                 {(currentUser.isAdmin ||

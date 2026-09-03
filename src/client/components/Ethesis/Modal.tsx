@@ -10,6 +10,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useEditThesisMutation } from '../../hooks/useThesesMutation'
 import usePrograms from '../../hooks/usePrograms'
+import { TFunction } from 'i18next'
 import { TranslatedName } from '@backend/validators/departmentResponse'
 
 interface ThesisModalProps {
@@ -18,11 +19,11 @@ interface ThesisModalProps {
   thesis: any
 }
 
-const formatDate = (dateString: string | undefined) => {
+const formatDate = (dateString: string | undefined, t: TFunction) => {
   if (!dateString) return 'N/A'
 
   const date = new Date(dateString)
-  if (isNaN(date.getTime())) return 'Invalid Date'
+  if (isNaN(date.getTime())) return t('ethesisModal:invalidDate')
 
   return date.toISOString().split('T')[0] // Returns YYYY-MM-DD format
 }
@@ -30,7 +31,7 @@ const formatDate = (dateString: string | undefined) => {
 const ThesisModal = ({ open, onClose, thesis }: ThesisModalProps) => {
   const editThesisMutation = useEditThesisMutation()
   const { programs } = usePrograms({ includeNotManaged: true })
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
 
   const getProgramName = () => {
@@ -123,18 +124,22 @@ const ThesisModal = ({ open, onClose, thesis }: ThesisModalProps) => {
               </Typography>
 
               <Typography>
-                {thesis.status === 'ETHESIS_SENT' ? 'Submitted' : 'Saved'} to
-                Ethesis {formatDate(thesis.ethesisDate)}
+                {thesis.status === 'ETHESIS_SENT'
+                  ? t('ethesisModal:submittedToEthesis')
+                  : t('ethesisModal:savedToEthesis')}{' '}
+                {formatDate(thesis.ethesisDate, t)}
               </Typography>
 
               <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-                Graders
+                {t('ethesisModal:graders')}
               </Typography>
               {thesis.graders && thesis.graders.length > 0 ? (
                 thesis.graders.map((grader: any, index: number) => (
                   <Typography key={index}>
                     {`${grader.title[i18n.language as keyof TranslatedName]} ${grader.user.firstName} ${grader.user.lastName} (${grader.user.email || 'N/A'})${
-                      grader.isPrimaryGrader ? ' - Primary' : ''
+                      grader.isPrimaryGrader
+                        ? ` - ${t('ethesisModal:primary')}`
+                        : ''
                     }`}
                   </Typography>
                 ))
@@ -160,12 +165,12 @@ const ThesisModal = ({ open, onClose, thesis }: ThesisModalProps) => {
                     disabled={editThesisMutation.isPending}
                   >
                     {editThesisMutation.isPending
-                      ? 'Saving...'
-                      : 'Save to Ethesis'}
+                      ? t('ethesisModal:saving')
+                      : t('ethesisModal:saveToEthesisButton')}
                   </Button>
                 )}
                 <Button variant="outlined" onClick={onClose}>
-                  Close
+                  {t('ethesisModal:close')}
                 </Button>
               </Box>
             </>
@@ -176,15 +181,19 @@ const ThesisModal = ({ open, onClose, thesis }: ThesisModalProps) => {
       <Popup
         open={confirmDialogOpen}
         onClose={handleCancelConfirmation}
-        title="Confirmation"
+        title={t('ethesisModal:confirmation')}
         onSubmit={handleConfirmSetEthesis}
-        submitText={editThesisMutation.isPending ? 'Saving...' : 'Yes'}
+        submitText={
+          editThesisMutation.isPending
+            ? t('ethesisModal:saving')
+            : t('ethesisModal:yes')
+        }
         submitColor="warning"
         submitDisabled={editThesisMutation.isPending}
-        cancelText="Cancel"
+        cancelText={t('ethesisModal:cancel')}
       >
         <DialogContentText id="confirm-dialog-description">
-          Are you sure you want to mark that this thesis has been saved Ethesis?
+          {t('ethesisModal:confirmationText')}
         </DialogContentText>
       </Popup>
     </>

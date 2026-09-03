@@ -415,7 +415,7 @@
     "setSentToEthesisLabel": "Avhandlingen är klar för bedömning:",
     "setSentToEthesis": "Markera avhandlingen som klar för registrering i E-thesis",
     "toSubmitEthesis": "Markera avhandlingen som klar för registrering i E-thesis",
-    "toSubmitEthesisInfo": "När du sparar markeras avhandlingen som klar och E-thesis-ansvarig kan registrera den i E-thesis.",
+    "toSubmitEthesisInfo": "När du sparar markeras avhandlingen som klar och en E-thesis-koordinator kan registrera den i E-thesis.",
     "toSubmitEthesisStudentStarted": "Ge studenten tillstånd att skicka till E-thesis",
     "send": "Skicka",
     "customDate": "Anpassat datum",
@@ -433,8 +433,8 @@
     "completed": "Betyg i Sisu",
     "cancelled": "Avbruten",
     "ethesis": "Sparad i E-thesis",
-    "ethesis_studentstarted": "Tillstånd att skicka in",
-    "ethesisSent": "Skickad till E-thesis"
+    "ethesis_studentstarted": "Tillstånd att inlämna",
+    "ethesisSent": "Behandlas av en E-thesis-koordinator"
   },
   "thesesTableToolbar": {
     "newThesisButton": "Ny avhandling",
@@ -491,8 +491,8 @@
         "tooltip": "Visar avhandlingar som är sparade i E-thesis"
       },
       "ethesisSent": {
-        "name": "Skickad till E-thesis",
-        "tooltip": "Visar avhandlingar som har skickats till E-thesis"
+        "name": "Behandlas av en E-thesis-koordinator",
+        "tooltip": "Visar avhandlingar som behandlas av en E-thesis-koordinator"
       }
     },
     "actionNeeded": "Kräver åtgärder"
@@ -643,5 +643,19 @@
     "rejectMessageToStudent": "Meddelande till studenten",
     "editTooltipDisabled": "Avhandlingen måste godkännas innan den kan redigeras, du kan också avslå avhandlingsplanen och lämna ett meddelande till studenten om nödvändiga ändringar",
     "editTooltip": "Redigera avhandling"
+  },
+  "ethesisModal": {
+    "saveToEthesisButton": "Markera som sparad i E-thesis",
+    "saving": "Sparar...",
+    "close": "Stäng",
+    "invalidDate": "Ogiltigt datum",
+    "savedToEthesis": "Sparad i E-thesis",
+    "submittedToEthesis": "Skickad till E-thesis",
+    "graders": "Bedömare",
+    "primary": "Huvud",
+    "confirmation": "Bekräftelse",
+    "confirmationText": "Är du säker på att du vill markera den här avhandlingen som sparad i E-thesis?",
+    "yes": "Ja",
+    "cancel": "Avbryt"
   }
 }
