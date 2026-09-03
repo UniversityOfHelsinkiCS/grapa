@@ -644,6 +644,10 @@
     "editTooltipDisabled": "Avhandlingen måste godkännas innan den kan redigeras, du kan också avslå avhandlingsplanen och lämna ett meddelande till studenten om nödvändiga ändringar",
     "editTooltip": "Redigera avhandling"
   },
+  "footer": {
+    "privacyPolicy": "Dataskydd",
+    "privacyPolicyUrl": "https://www.helsinki.fi/sv/om-oss/behandling-av-uppgifter-vid-universitetet/dataskydd"
+  },
   "ethesisModal": {
     "saveToEthesisButton": "Markera som sparad i E-thesis",
     "saving": "Sparar...",

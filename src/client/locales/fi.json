@@ -643,6 +643,10 @@
     "editTooltipDisabled": "Tutkielma täytyy hyväksyä ennen muokkaamista, voit myös hylätä tutkielmasuunnitelman ja jättää opiskelijalle viestin tarvittavista muutoksista",
     "editTooltip": "Muokkaa tutkielmaa"
   },
+  "footer": {
+    "privacyPolicy": "Tietosuojaseloste",
+    "privacyPolicyUrl": "https://www.helsinki.fi/fi/tutustu-meihin/tietojen-kasittely-yliopistolla/tietosuoja"
+  },
   "ethesisModal": {
     "saveToEthesisButton": "Merkitse tallennetuksi E-thesikseen",
     "saving": "Tallennetaan...",

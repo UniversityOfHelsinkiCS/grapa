@@ -30,6 +30,13 @@ const Footer = () => {
           <p>{t('contactInfo')}: </p>
           <Link href="mailto:grp-toska@helsinki.fi">grp-toska@helsinki.fi</Link>
         </Box>
+        <Link
+          href={t('footer:privacyPolicyUrl')}
+          target="_blank"
+          rel="noopener"
+        >
+          {t('footer:privacyPolicy')}
+        </Link>
       </Box>
     </Box>
   )

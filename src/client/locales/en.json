@@ -644,6 +644,10 @@
     "editTooltipDisabled": "The thesis must be approved before editing, you can also reject the thesis plan and leave the student a message about the required changes",
     "editTooltip": "Edit thesis"
   },
+  "footer": {
+    "privacyPolicy": "Data protection",
+    "privacyPolicyUrl": "https://www.helsinki.fi/en/about-us/processing-data-university/data-protection"
+  },
   "ethesisModal": {
     "saveToEthesisButton": "Mark as saved in E-thesis",
     "saving": "Saving...",
