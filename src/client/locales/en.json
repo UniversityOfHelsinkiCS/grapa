@@ -323,7 +323,7 @@
     "primarySupervisorContent": "Thesis must have one primary supervisor, set one of the supervisors as the primary supervisor by clicking the star icon next to the supervisor. Primary supervisor cannot be an external supervisor.",
     "duplicateSupervisorEmails": "Supervisors' emails must be unique",
     "duplicateSupervisorEmailsContent": "Please check the supervisors' emails. Supervisors must have unique email addresses",
-    "graders": "Please provide missing primary grader information",
+    "graders": "Please provide missing grader information",
     "graderGeneralErrorsTitle": "Errors related to adding graders",
     "duplicateGraderEmails": "Graders' emails must be unique",
     "duplicateGraderEmailsContent": "Please check the graders' emails. Graders must have unique email addresses",

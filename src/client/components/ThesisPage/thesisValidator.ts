@@ -103,7 +103,7 @@ const graderSchema = z
     isExternal: z.boolean(),
   })
   .superRefine((data, ctx) => {
-    if (!data.isExternal && data.isPrimaryGrader && !data.user) {
+    if (!data.isExternal && !data.user) {
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:graders',

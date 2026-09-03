@@ -323,7 +323,7 @@
     "primarySupervisorContent": "Avhandlingen måste ha en huvudhandledare. Ställ in en av handledarna som huvudhandledare genom att klicka på stjärnikonen bredvid handledaren. Huvudhandledaren kan inte vara en extern handledare.",
     "duplicateSupervisorEmails": "Handledarnas e-postadresser måste vara unika",
     "duplicateSupervisorEmailsContent": "Vänligen kontrollera handledarnas e-postadresser. Handledarna måste ha unika e-postadresser",
-    "graders": "Vänligen ange information om den primära bedömaren",
+    "graders": "Vänligen ange information om bedömaren",
     "graderGeneralErrorsTitle": "Fel vid tillägg av bedömare",
     "duplicateGraderEmails": "Bedömarnas e-postadresser måste vara unika",
     "duplicateGraderEmailsContent": "Vänligen kontrollera bedömarnas e-postadresser. Bedömarna måste ha unika e-postadresser",

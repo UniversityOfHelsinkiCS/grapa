@@ -87,6 +87,18 @@ const programs: any = [
       allowStudentStartedProcess: true,
     },
   },
+  {
+    id: '3',
+    name: { en: 'Test program 3', fi: 'testi 3' },
+    studyTracks: [],
+    options: {
+      allowMultipleAuthors: false,
+      numberOfGraders: 2,
+      supervisorOptional: true,
+      disableStudyTracks: true,
+      seminar: false,
+    },
+  },
 ]
 
 vi.mock('../../hooks/useLoggedInUser', () => ({
@@ -497,6 +509,236 @@ describe('ThesisEditForm', () => {
       expect(submittedPayload.graders[0].user.id).toBe('1')
       expect(submittedPayload.studyTrackId).toBeNull() // disabled study tracks
       expect(submittedPayload.seminarSupervisions).toHaveLength(0) // seminar disabled
+    })
+  })
+
+  describe('when a grader row is left empty', () => {
+    beforeEach(() => {
+      const initialThesis = {
+        programId: programs[0].id,
+        studyTrackId: programs[0].studyTracks[0].id,
+        approvers: [
+          {
+            id: '4',
+            firstName: 'Henri',
+            lastName: 'Tunkkaaja',
+            username: 'tunkkaus',
+            email: 'henri@example.com',
+          },
+        ],
+        supervisions: [
+          {
+            user: { id: '1', email: 'john@example.com' },
+            percentage: 100,
+            isPrimarySupervisor: true,
+          },
+        ],
+        seminarSupervisions: [{ user: { id: '3' } }] as never[],
+        authors: [
+          {
+            id: '1',
+            firstName: 'John',
+            lastName: 'Doe',
+            username: 'johndoe',
+            email: 'john@example.com',
+          },
+        ],
+        graders: [
+          {
+            user: {
+              id: '1',
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+              email: 'john@example.com',
+            },
+            isPrimaryGrader: true,
+          },
+          { user: null, isPrimaryGrader: false },
+        ],
+        topic: 'Empty Grader Test',
+        status: 'IN_PROGRESS',
+        startDate: dayjs().format('YYYY-MM-DD'),
+        targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
+        researchPlan: { name: 'researchPlan.pdf' },
+      }
+
+      void initializeI18n()
+
+      render(
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <ThesisEditForm
+            formTitle="Test"
+            isStudentView={false}
+            programs={programs}
+            initialThesis={initialThesis as never}
+            onClose={mockOnClose}
+            onSubmit={mockOnSubmit}
+          />
+        </LocalizationProvider>
+      )
+    })
+
+    it('does not submit and reports the missing grader', async () => {
+      await userEvent.click(screen.getByTestId('submit-button'))
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('errorsummary-graders-1-user')
+        ).toBeInTheDocument()
+      })
+
+      expect(mockOnSubmit).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('when supervisors are optional and none are selected', () => {
+    beforeEach(() => {
+      const initialThesis = {
+        programId: programs[2].id,
+        studyTrackId: '',
+        approvers: [
+          {
+            id: '4',
+            firstName: 'Henri',
+            lastName: 'Tunkkaaja',
+            username: 'tunkkaus',
+            email: 'henri@example.com',
+          },
+        ],
+        supervisions: [] as never[],
+        seminarSupervisions: [] as never[],
+        authors: [
+          {
+            id: '1',
+            firstName: 'John',
+            lastName: 'Doe',
+            username: 'johndoe',
+            email: 'john@example.com',
+          },
+        ],
+        graders: [
+          {
+            user: {
+              id: '1',
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe',
+              email: 'john@example.com',
+            },
+            isPrimaryGrader: true,
+          },
+        ],
+        topic: 'Optional Supervisor Test',
+        status: 'IN_PROGRESS',
+        startDate: dayjs().format('YYYY-MM-DD'),
+        targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
+        researchPlan: { name: 'researchPlan.pdf' },
+      }
+
+      void initializeI18n()
+
+      render(
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <ThesisEditForm
+            formTitle="Test"
+            isStudentView={false}
+            programs={programs}
+            initialThesis={initialThesis as never}
+            onClose={mockOnClose}
+            onSubmit={mockOnSubmit}
+          />
+        </LocalizationProvider>
+      )
+    })
+
+    it('allows removing the only grader and submits without graders', async () => {
+      const user = userEvent.setup()
+
+      const removeGraderButton = screen.getByTestId('remove-grader-button')
+      expect(removeGraderButton).toBeEnabled()
+
+      await user.click(removeGraderButton)
+      await user.click(screen.getByTestId('delete-confirm-button'))
+
+      await user.click(screen.getByTestId('submit-button'))
+
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalled()
+      })
+
+      expect(mockOnSubmit.mock.calls[0][0].graders).toHaveLength(0)
+    })
+  })
+
+  describe('when adding graders', () => {
+    const renderWithGraders = (graders: any[]) => {
+      const initialThesis = {
+        programId: programs[0].id,
+        studyTrackId: programs[0].studyTracks[0].id,
+        approvers: [] as never[],
+        supervisions: [] as never[],
+        seminarSupervisions: [] as never[],
+        authors: [] as never[],
+        graders,
+        topic: 'External Grader Test',
+        status: 'IN_PROGRESS',
+        startDate: dayjs().format('YYYY-MM-DD'),
+        targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
+      }
+
+      void initializeI18n()
+
+      render(
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <ThesisEditForm
+            formTitle="Test"
+            isStudentView={false}
+            programs={programs}
+            initialThesis={initialThesis as never}
+            onClose={mockOnClose}
+            onSubmit={mockOnSubmit}
+          />
+        </LocalizationProvider>
+      )
+    }
+
+    it('does not offer the external option when there are no graders', async () => {
+      renderWithGraders([])
+
+      await userEvent.click(screen.getByTestId('add-grader-button'))
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('add-grader-menu-item-internal')
+        ).toBeInTheDocument()
+      })
+      expect(
+        screen.queryByTestId('add-grader-menu-item-external')
+      ).not.toBeInTheDocument()
+    })
+
+    it('offers the external option once the primary grader is set', async () => {
+      renderWithGraders([
+        {
+          user: {
+            id: '1',
+            firstName: 'John',
+            lastName: 'Doe',
+            username: 'johndoe',
+            email: 'john@example.com',
+          },
+          isPrimaryGrader: true,
+        },
+      ])
+
+      await userEvent.click(screen.getByTestId('add-grader-button'))
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('add-grader-menu-item-external')
+        ).toBeInTheDocument()
+      })
     })
   })
 })
