@@ -42,7 +42,7 @@ export const getPersonSelectionDefaults = (
 
 const supervisionSchema = z
   .object({
-    user: z.object({}).passthrough().nullable(),
+    user: z.looseObject({}).nullable(),
     percentage: z.number().min(0).max(100),
     isExternal: z.boolean(),
     isPrimarySupervisor: z.boolean(),
@@ -75,7 +75,7 @@ const supervisionSchema = z
 
 const seminarSupervisionSchema = z
   .object({
-    user: z.object({}).passthrough().nullable(),
+    user: z.looseObject({}).nullable(),
     isExternal: z.boolean(),
   })
   .superRefine((data, ctx) => {
@@ -90,7 +90,7 @@ const seminarSupervisionSchema = z
 
 const graderSchema = z
   .object({
-    user: z.object({}).passthrough().nullable(),
+    user: z.looseObject({}).nullable(),
     isPrimaryGrader: z.boolean(),
     isExternal: z.boolean(),
   })
