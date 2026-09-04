@@ -603,6 +603,14 @@ describe('ThesisEditForm', () => {
       expect(mockOnSubmit).not.toHaveBeenCalled()
     })
 
+    it('renders a delete button for every grader row', () => {
+      const removeButtons = screen.getAllByTestId('remove-grader-button')
+
+      expect(removeButtons).toHaveLength(2)
+      expect(removeButtons[0]).toBeDisabled()
+      expect(removeButtons[1]).toBeEnabled()
+    })
+
     it('clears the error when the grader is selected', async () => {
       const user = userEvent.setup()
 
@@ -878,11 +886,18 @@ describe('ThesisEditForm', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId(
-            'errorsummary-supervisions-general-supervisor-error'
-          )
+          screen.getByTestId('errorsummary-supervisions-general')
         ).toBeInTheDocument()
       })
+
+      // The summary links to the errors of the supervisor list
+      const summaryLink = within(
+        screen.getByTestId('errorsummary-supervisions-general')
+      ).getByRole('link')
+      expect(summaryLink).toHaveAttribute('href', '#supervisions-general')
+      expect(document.getElementById('supervisions-general')).toBe(
+        screen.getByTestId('supervisor-general-error')
+      )
 
       expect(mockOnSubmit).not.toHaveBeenCalled()
     })

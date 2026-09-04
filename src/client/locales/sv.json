@@ -389,6 +389,7 @@
     "primarySupervisor": "Huvudhandledare",
     "setPrimarySupervisor": "Sätt som huvudhandledare",
     "primarySupervisorDeleteError": "Huvudhandledaren kan inte tas bort",
+    "primaryGraderDeleteError": "Den primära bedömaren kan inte tas bort",
     "firstName": "Förnamn",
     "lastName": "Efternamn",
     "email": "E-post",

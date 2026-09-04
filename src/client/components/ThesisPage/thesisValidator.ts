@@ -86,14 +86,6 @@ const seminarSupervisionSchema = z
         path: ['user'],
       })
     }
-
-    if (data.isExternal) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'formErrors:seminarSupervisorInternalOnly',
-        path: ['general', 'seminar', 'supervisor', 'error'],
-      })
-    }
   })
 
 const graderSchema = z
@@ -190,7 +182,7 @@ export const ThesisSchema = z.object({
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:supervisorPercentage',
-        path: ['general', 'supervisor', 'error'],
+        path: ['general'],
       })
     }
 
@@ -202,7 +194,7 @@ export const ThesisSchema = z.object({
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:primarySupervisor',
-        path: ['general', 'supervisor', 'error'],
+        path: ['general'],
       })
     }
 
@@ -215,11 +207,22 @@ export const ThesisSchema = z.object({
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:duplicateSupervisorEmails',
-        path: ['general', 'supervisor', 'error'],
+        path: ['general'],
       })
     }
   }),
-  seminarSupervisions: z.array(seminarSupervisionSchema).default([]),
+  seminarSupervisions: z
+    .array(seminarSupervisionSchema)
+    .superRefine((seminarSupervisions, ctx) => {
+      if (seminarSupervisions.some((supervision) => supervision.isExternal)) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'formErrors:seminarSupervisorInternalOnly',
+          path: ['general'],
+        })
+      }
+    })
+    .default([]),
   graders: z.array(graderSchema).superRefine((graders, ctx) => {
     const nonDuplicateGraders = uniqBy(graders, (grader) => grader.user?.email)
 
@@ -227,7 +230,7 @@ export const ThesisSchema = z.object({
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:duplicateGraderEmails',
-        path: ['general', 'grader', 'error'],
+        path: ['general'],
       })
     }
   }),
@@ -290,7 +293,7 @@ export const createThesisSchema = (options: GetFormErrorsOptions = {}) => {
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:graders',
-        path: ['general', 'grader', 'error'],
+        path: ['graders', 'general'],
       })
     }
 
@@ -301,7 +304,7 @@ export const createThesisSchema = (options: GetFormErrorsOptions = {}) => {
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:seminarSupervisorRequired',
-        path: ['general', 'seminar', 'supervisor', 'error'],
+        path: ['seminarSupervisions', 'general'],
       })
     }
 
@@ -312,7 +315,7 @@ export const createThesisSchema = (options: GetFormErrorsOptions = {}) => {
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:supervisors',
-        path: ['general', 'supervisor', 'error'],
+        path: ['supervisions', 'general'],
       })
     }
 
@@ -324,7 +327,7 @@ export const createThesisSchema = (options: GetFormErrorsOptions = {}) => {
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:singleSeminarSupervisor',
-        path: ['general', 'seminar', 'supervisor', 'error'],
+        path: ['seminarSupervisions', 'general'],
       })
     }
 
@@ -339,7 +342,7 @@ export const createThesisSchema = (options: GetFormErrorsOptions = {}) => {
       ctx.addIssue({
         code: 'custom',
         message: 'formErrors:approver',
-        path: ['approver'],
+        path: ['approvers'],
       })
     }
 

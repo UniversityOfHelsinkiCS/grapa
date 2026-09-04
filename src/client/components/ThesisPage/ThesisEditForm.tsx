@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { z } from 'zod'
 import 'dayjs/locale/fi'
 import dayjs from 'dayjs'
 import { sortBy } from 'lodash-es'
@@ -43,6 +42,7 @@ import {
   ThesisSchema,
   ValidatedThesis,
 } from './thesisValidator'
+import { useThesisFormErrors } from './thesisFormErrors'
 
 import ErrorSummary from '../Common/ErrorSummary'
 import Markdown from '../Common/Markdown'
@@ -77,7 +77,7 @@ const ThesisEditForm = ({
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
 
-  const [formErrors, setFormErrors] = useState<z.core.$ZodIssue[]>([])
+  const errors = useThesisFormErrors()
   const [confirmSendOpen, setConfirmSendOpen] = useState(false)
   const [userSearch, setUserSearch] = useState('')
 
@@ -95,24 +95,22 @@ const ThesisEditForm = ({
     })(),
     onSubmit: async ({ value }) => {
       const payload = getSubmitPayload(value)
-      const { isValid, parsedThesis } = validateForm(payload)
+      const validThesis = validateForm(payload)
 
-      if (!isValid || !parsedThesis) {
-        return
-      }
+      if (!validThesis) return
 
-      const finalPayload = { ...payload, ...parsedThesis }
+      const finalPayload = { ...payload, ...validThesis }
 
       try {
         await onSubmit(finalPayload as ThesisData)
-        setFormErrors([])
+        errors.set([])
         clearURL()
       } catch (e: any) {
         const status = e?.response?.status || e?.status
         const errorMessage = status
           ? `${t('thesisForm:serverError')} (${status})`
           : t('thesisForm:serverUnreachableError')
-        setFormErrors([{ code: 'custom', message: errorMessage, path: [] }])
+        errors.set([{ code: 'custom', message: errorMessage, path: [] }])
       }
     },
   })
@@ -133,18 +131,6 @@ const ThesisEditForm = ({
   const approvers = programManagementsOfApprovers?.map(
     (programManagement) => programManagement.user
   )
-
-  const personErrorsOf = (fieldName: string) =>
-    formErrors.filter((error) => error.path[0] === fieldName)
-
-  const clearPersonErrors = (fieldName: string, index?: number) =>
-    setFormErrors((errors) =>
-      errors.filter(
-        (error) =>
-          error.path[0] !== fieldName ||
-          (index !== undefined && error.path[1] !== index)
-      )
-    )
 
   const clearURL = () => {
     if (window.location.hash) {
@@ -225,11 +211,9 @@ const ThesisEditForm = ({
   const selectedProgram =
     programs && programs.find((program) => program.id === currentProgramId)
 
-  function validateForm(payload: Partial<ThesisData>): {
-    isValid: boolean
-    parsedThesis?: ValidatedThesis
-    thesisErrors: z.core.$ZodIssue[]
-  } {
+  function validateForm(
+    payload: Partial<ThesisData>
+  ): ValidatedThesis | undefined {
     const options = {
       hasApprovers: Boolean(
         approvers?.length &&
@@ -254,33 +238,15 @@ const ThesisEditForm = ({
       ),
     }
 
-    const schema = createThesisSchema(options)
-    const result = schema.safeParse(payload)
+    const result = createThesisSchema(options).safeParse(payload)
     const validatedThesis = ThesisSchema.safeParse(payload)
+    const issues = result.success ? [] : result.error.issues
 
-    const thesisErrors = result.success ? [] : result.error.issues
-    const parsedThesis = validatedThesis.success
+    errors.set(issues)
+
+    return issues.length === 0 && validatedThesis.success
       ? validatedThesis.data
       : undefined
-
-    if (thesisErrors.length > 0 || !parsedThesis) {
-      setFormErrors(thesisErrors)
-
-      // Also map some common errors to fields
-      thesisErrors.forEach((err) => {
-        if (err.path && err.path.length > 0 && err.path[0] !== 'general') {
-          const fieldStr = err.path.join('.')
-          // We could theoretically use form.setError here but setting it in state is easier for Summary
-          form.setFieldMeta(fieldStr as any, (meta) => ({
-            ...meta,
-            errors: [err.message],
-          }))
-        }
-      })
-      return { isValid: false, parsedThesis: undefined, thesisErrors }
-    }
-
-    return { isValid: true, parsedThesis, thesisErrors: [] }
   }
 
   const allowMultipleAuthors = Boolean(
@@ -402,7 +368,7 @@ const ThesisEditForm = ({
     form.setFieldValue('milestone', undefined)
     form.setFieldValue('milestoneVersion', undefined)
 
-    setFormErrors(formErrors.filter((error) => error.path[0] !== 'programId'))
+    errors.clear('programId')
   }
 
   const submitStudentDraft = async () => {
@@ -420,11 +386,8 @@ const ThesisEditForm = ({
       // On student view submit button, we want to change status to SUGGESTED
       // But we need to validate first
       const payload = getSubmitPayload(form.store.state.values)
-      const { isValid } = validateForm(payload)
 
-      if (!isValid) {
-        return
-      }
+      if (!validateForm(payload)) return
 
       setConfirmSendOpen(true)
     } else {
@@ -471,9 +434,9 @@ const ThesisEditForm = ({
             onClose()
           }}
         >
-          {formErrors.length > 0 && (
+          {errors.issues.length > 0 && (
             <ErrorSummary autofocus label={t('thesisForm:errorSummary')}>
-              {formErrors.map((error, index) => (
+              {errors.issues.map((error, index) => (
                 <li
                   data-testid={`errorsummary-${error.path.join('-')}`}
                   key={`error-${error.path.join('-')}-${error.message}`}
@@ -527,23 +490,9 @@ const ThesisEditForm = ({
                     value={field.state.value}
                     onChange={(e) => {
                       field.handleChange(e.target.value)
-                      setFormErrors(
-                        formErrors.filter((error) => error.path[0] !== 'topic')
-                      )
+                      errors.clear('topic')
                     }}
-                    error={
-                      formErrors.some((error) => error.path[0] === 'topic') ||
-                      field.state.meta.errors.length > 0
-                    }
-                    helperText={
-                      t(
-                        formErrors.find((error) => error.path[0] === 'topic')
-                          ?.message
-                      ) ||
-                      (field.state.meta.errors.length > 0
-                        ? t(field.state.meta.errors[0] as string)
-                        : '')
-                    }
+                    {...errors.fieldProps('topic')}
                     fullWidth
                     variant="outlined"
                   />
@@ -564,11 +513,7 @@ const ThesisEditForm = ({
                       onChange={(e) =>
                         handleProgramChange(e.target.value as string)
                       }
-                      error={
-                        formErrors.some(
-                          (error) => error.path[0] === 'programId'
-                        ) || field.state.meta.errors.length > 0
-                      }
+                      error={errors.has('programId')}
                       renderValue={(value) =>
                         programs.find((program) => program.id === value)?.name[
                           language
@@ -601,14 +546,7 @@ const ThesisEditForm = ({
                       ))}
                     </Select>
                     <FormHelperText error>
-                      {t(
-                        formErrors.find(
-                          (error) => error.path[0] === 'programId'
-                        )?.message
-                      ) ||
-                        (field.state.meta.errors.length > 0
-                          ? t(field.state.meta.errors[0] as string)
-                          : '')}
+                      {errors.message('programId')}
                     </FormHelperText>
                   </FormControl>
                 )}
@@ -634,17 +572,9 @@ const ThesisEditForm = ({
                         name="studyTrackId"
                         onChange={(e) => {
                           field.handleChange(e.target.value as string)
-                          setFormErrors(
-                            formErrors.filter(
-                              (error) => error.path[0] !== 'studyTrackId'
-                            )
-                          )
+                          errors.clear('studyTrackId')
                         }}
-                        error={
-                          formErrors.some(
-                            (error) => error.path[0] === 'studyTrackId'
-                          ) || field.state.meta.errors.length > 0
-                        }
+                        error={errors.has('studyTrackId')}
                       >
                         <MenuItem value="">
                           <em>{t('common:none')}</em>
@@ -682,26 +612,16 @@ const ThesisEditForm = ({
                                 ? field.state.value[0]?.id
                                 : ''
                             }
-                            id="approver"
+                            id="approvers"
                             label="Approver"
-                            name="approver"
+                            name="approvers"
                             onChange={(e) => {
                               field.handleChange([
                                 approvers.find((a) => a.id === e.target.value),
                               ])
-                              setFormErrors(
-                                formErrors.filter(
-                                  (error) => error.path[0] !== 'approver'
-                                )
-                              )
+                              errors.clear('approvers')
                             }}
-                            error={
-                              formErrors.some(
-                                (error) =>
-                                  error.path[0] === 'approver' ||
-                                  error.path[0] === 'approvers'
-                              ) || field.state.meta.errors.length > 0
-                            }
+                            error={errors.has('approvers')}
                           >
                             {approvers.map((approver) => (
                               <MenuItem key={approver.id} value={approver.id}>
@@ -710,13 +630,7 @@ const ThesisEditForm = ({
                             ))}
                           </Select>
                           <FormHelperText error>
-                            {t(
-                              formErrors.find(
-                                (error) =>
-                                  error.path[0] === 'approver' ||
-                                  error.path[0] === 'approvers'
-                              )?.message
-                            )}
+                            {errors.message('approvers')}
                           </FormHelperText>
                         </FormControl>
                       </>
@@ -758,11 +672,7 @@ const ThesisEditForm = ({
                               ? [value as User]
                               : []
                         )
-                        setFormErrors(
-                          formErrors.filter(
-                            (error) => error.path[0] !== 'authors'
-                          )
-                        )
+                        errors.clear('authors')
                       }}
                       renderInput={(params) => (
                         <TextField
@@ -773,21 +683,7 @@ const ThesisEditForm = ({
                               : t('author')
                           }
                           required={field.state.value.length === 0}
-                          error={
-                            formErrors.some(
-                              (error) => error.path[0] === 'authors'
-                            ) || field.state.meta.errors.length > 0
-                          }
-                          helperText={
-                            t(
-                              formErrors.find(
-                                (error) => error.path[0] === 'authors'
-                              )?.message
-                            ) ||
-                            (field.state.meta.errors.length > 0
-                              ? t(field.state.meta.errors[0] as string)
-                              : '')
-                          }
+                          {...errors.fieldProps('authors')}
                         />
                       )}
                     />
@@ -813,17 +709,9 @@ const ThesisEditForm = ({
                           field.handleChange(
                             e.target.value as ThesisData['status']
                           )
-                          setFormErrors(
-                            formErrors.filter(
-                              (error) => error.path[0] !== 'status'
-                            )
-                          )
+                          errors.clear('status')
                         }}
-                        error={
-                          formErrors.some(
-                            (error) => error.path[0] === 'status'
-                          ) || field.state.meta.errors.length > 0
-                        }
+                        error={errors.has('status')}
                       >
                         {[
                           'DRAFT',
@@ -857,13 +745,7 @@ const ThesisEditForm = ({
                         </MenuItem>
                       </Select>
                       <FormHelperText error>
-                        {t(
-                          formErrors.find((error) => error.path[0] === 'status')
-                            ?.message
-                        ) ||
-                          (field.state.meta.errors.length > 0
-                            ? t(field.state.meta.errors[0] as string)
-                            : '')}
+                        {errors.message('status')}
                       </FormHelperText>
                     </FormControl>
                   )}
@@ -988,19 +870,9 @@ const ThesisEditForm = ({
                           textField: {
                             id: 'startDate',
                             helperText:
-                              t(
-                                formErrors.find(
-                                  (error) => error.path[0] === 'startDate'
-                                )?.message
-                              ) ||
-                              (field.state.meta.errors.length > 0
-                                ? t(field.state.meta.errors[0] as string)
-                                : 'DD.MM.YYYY'),
+                              errors.message('startDate') ?? 'DD.MM.YYYY',
                             fullWidth: true,
-                            error:
-                              formErrors.some(
-                                (error) => error.path[0] === 'startDate'
-                              ) || field.state.meta.errors.length > 0,
+                            error: errors.has('startDate'),
                           },
                         }}
                         name="startDate"
@@ -1010,11 +882,7 @@ const ThesisEditForm = ({
                           field.handleChange(
                             date ? date.format('YYYY-MM-DD') : ''
                           )
-                          setFormErrors(
-                            formErrors.filter(
-                              (error) => error.path[0] !== 'startDate'
-                            )
-                          )
+                          errors.clear('startDate')
                         }}
                       />
                     )}
@@ -1034,15 +902,8 @@ const ThesisEditForm = ({
                         }
                         targetDate={field.state.value}
                         startDate={currentStartDate}
-                        formErrors={formErrors}
+                        errors={errors}
                         onChange={(date) => field.handleChange(date)}
-                        onClearError={() =>
-                          setFormErrors(
-                            formErrors.filter(
-                              (error) => error.path[0] !== 'targetDate'
-                            )
-                          )
-                        }
                       />
                     )}
                   </form.Field>
@@ -1066,6 +927,7 @@ const ThesisEditForm = ({
                     <PersonSelectionList
                       type="supervisor"
                       field={field}
+                      errors={errors}
                       disabledMode={false}
                       allowEmpty={Boolean(
                         selectedProgram?.options?.supervisorOptional
@@ -1089,15 +951,6 @@ const ThesisEditForm = ({
                           </AlertBox>
                         ) : undefined
                       }
-                      generalErrors={formErrors
-                        .filter((e) =>
-                          e.path.join('-').endsWith('general-supervisor-error')
-                        )
-                        .map((e) => e.message)}
-                      personErrors={personErrorsOf('supervisions')}
-                      onClearErrors={(index) =>
-                        clearPersonErrors('supervisions', index)
-                      }
                     />
                   )}
                 </form.Field>
@@ -1110,6 +963,7 @@ const ThesisEditForm = ({
                   <PersonSelectionList
                     type="seminarSupervisor"
                     field={field}
+                    errors={errors}
                     allowMultiple={Boolean(
                       selectedProgram?.options?.allowMultipleSeminarResponsibles
                     )}
@@ -1133,17 +987,6 @@ const ThesisEditForm = ({
                         </AlertBox>
                       ) : undefined
                     }
-                    generalErrors={formErrors
-                      .filter((e) =>
-                        e.path
-                          .join('-')
-                          .endsWith('general-seminar-supervisor-error')
-                      )
-                      .map((e) => e.message)}
-                    personErrors={personErrorsOf('seminarSupervisions')}
-                    onClearErrors={(index) =>
-                      clearPersonErrors('seminarSupervisions', index)
-                    }
                   />
                 )}
               </form.Field>
@@ -1159,6 +1002,7 @@ const ThesisEditForm = ({
                       <PersonSelectionList
                         type="grader"
                         field={field}
+                        errors={errors}
                         maxItems={Number(maxGraders)}
                         allowEmpty={
                           Boolean(
@@ -1180,15 +1024,6 @@ const ThesisEditForm = ({
                               </>
                             )}
                           </AlertBox>
-                        }
-                        generalErrors={formErrors
-                          .filter((e) =>
-                            e.path.join('-').endsWith('general-grader-error')
-                          )
-                          .map((e) => e.message)}
-                        personErrors={personErrorsOf('graders')}
-                        onClearErrors={(index) =>
-                          clearPersonErrors('graders', index)
                         }
                       />
                     )}
@@ -1235,29 +1070,11 @@ const ThesisEditForm = ({
                       id="researchPlan"
                       label={t('thesisForm:uploadResearchPlan')}
                       required
-                      error={
-                        formErrors.some(
-                          (error) => error.path[0] === 'researchPlan'
-                        ) || field.state.meta.errors.length > 0
-                      }
-                      helperText={
-                        t(
-                          formErrors.find(
-                            (error) => error.path[0] === 'researchPlan'
-                          )?.message
-                        ) ||
-                        (field.state.meta.errors.length > 0
-                          ? t(field.state.meta.errors[0] as string)
-                          : '')
-                      }
+                      {...errors.fieldProps('researchPlan')}
                       uploadedFile={field.state.value}
                       handleFileUpload={(files) => {
                         field.handleChange(files[0])
-                        setFormErrors(
-                          formErrors.filter(
-                            (error) => error.path[0] !== 'researchPlan'
-                          )
-                        )
+                        errors.clear('researchPlan')
                       }}
                       inputProps={{
                         'data-testid': 'research-plan-input',
@@ -1284,20 +1101,12 @@ const ThesisEditForm = ({
                       required={Boolean(
                         selectedProgram?.options?.waysOfWorkingRequired
                       )}
-                      error={
-                        formErrors.some(
-                          (error) => error.path[0] === 'waysOfWorking'
-                        ) || field.state.meta.errors.length > 0
-                      }
+                      error={errors.has('waysOfWorking')}
                       helperText={t('thesisForm:waysOfWorkingHelperText')}
                       uploadedFile={field.state.value}
                       handleFileUpload={(files) => {
                         field.handleChange(files[0])
-                        setFormErrors(
-                          formErrors.filter(
-                            (error) => error.path[0] !== 'waysOfWorking'
-                          )
-                        )
+                        errors.clear('waysOfWorking')
                       }}
                       inputProps={{
                         'data-testid': 'ways-of-working-input',
@@ -1336,22 +1145,10 @@ const ThesisEditForm = ({
                             textField: {
                               id: 'waysOfWorkingValidUntil',
                               helperText:
-                                t(
-                                  formErrors.find(
-                                    (error) =>
-                                      error.path[0] ===
-                                      'waysOfWorkingValidUntil'
-                                  )?.message
-                                ) ||
-                                (field.state.meta.errors.length > 0
-                                  ? t(field.state.meta.errors[0] as string)
-                                  : 'DD.MM.YYYY'),
+                                errors.message('waysOfWorkingValidUntil') ??
+                                'DD.MM.YYYY',
                               fullWidth: true,
-                              error:
-                                formErrors.some(
-                                  (error) =>
-                                    error.path[0] === 'waysOfWorkingValidUntil'
-                                ) || field.state.meta.errors.length > 0,
+                              error: errors.has('waysOfWorkingValidUntil'),
                             },
                           }}
                           name="waysOfWorkingValidUntil"
@@ -1363,12 +1160,7 @@ const ThesisEditForm = ({
                             field.handleChange(
                               date ? date.format('YYYY-MM-DD') : null
                             )
-                            setFormErrors(
-                              formErrors.filter(
-                                (error) =>
-                                  error.path[0] !== 'waysOfWorkingValidUntil'
-                              )
-                            )
+                            errors.clear('waysOfWorkingValidUntil')
                           }}
                         />
                       )}

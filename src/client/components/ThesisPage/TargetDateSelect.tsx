@@ -9,24 +9,23 @@ import {
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
-import { ZodIssue } from 'zod'
+
+import { ThesisFormErrors } from './thesisFormErrors'
 
 interface TargetDateSelectProps {
   targetDates: { value: string }[]
   targetDate?: string
   startDate?: string
-  formErrors: ZodIssue[]
+  errors: ThesisFormErrors
   onChange: (date: string) => void
-  onClearError: () => void
 }
 
 const TargetDateSelect = ({
   targetDates,
   targetDate,
   startDate,
-  formErrors,
+  errors,
   onChange,
-  onClearError,
 }: TargetDateSelectProps) => {
   const { t } = useTranslation()
   const [forceCustomTargetDate, setForceCustomTargetDate] = useState(false)
@@ -65,12 +64,11 @@ const TargetDateSelect = ({
               } else {
                 setForceCustomTargetDate(false)
                 onChange(value)
-                onClearError()
+                errors.clear('targetDate')
               }
             }}
             error={
-              formErrors.some((error) => error.path[0] === 'targetDate') &&
-              targetDateDropdownValue !== 'custom'
+              errors.has('targetDate') && targetDateDropdownValue !== 'custom'
             }
           >
             {targetDates.map((td, index) => (
@@ -81,13 +79,8 @@ const TargetDateSelect = ({
             <MenuItem value="custom">{t('thesisForm:customDate')}</MenuItem>
           </Select>
           {targetDateDropdownValue !== 'custom' && (
-            <FormHelperText
-              error={formErrors.some((error) => error.path[0] === 'targetDate')}
-            >
-              {t(
-                formErrors.find((error) => error.path[0] === 'targetDate')
-                  ?.message
-              ) || 'DD.MM.YYYY'}
+            <FormHelperText error={errors.has('targetDate')}>
+              {errors.message('targetDate') ?? 'DD.MM.YYYY'}
             </FormHelperText>
           )}
         </FormControl>
@@ -101,13 +94,9 @@ const TargetDateSelect = ({
           slotProps={{
             textField: {
               id: 'targetDate',
-              helperText:
-                t(
-                  formErrors.find((error) => error.path[0] === 'targetDate')
-                    ?.message
-                ) || 'DD.MM.YYYY',
+              helperText: errors.message('targetDate') ?? 'DD.MM.YYYY',
               fullWidth: true,
-              error: formErrors.some((error) => error.path[0] === 'targetDate'),
+              error: errors.has('targetDate'),
             },
           }}
           name="targetDate"
@@ -116,7 +105,7 @@ const TargetDateSelect = ({
           minDate={startDate ? dayjs(startDate) : undefined}
           onChange={(date) => {
             onChange(date ? date.format('YYYY-MM-DD') : '')
-            onClearError()
+            errors.clear('targetDate')
           }}
         />
       )}

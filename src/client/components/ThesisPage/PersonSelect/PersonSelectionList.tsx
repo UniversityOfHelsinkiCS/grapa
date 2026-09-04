@@ -2,7 +2,6 @@ import React from 'react'
 import { Box, Divider, Stack, Typography, Tooltip } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
-import { z } from 'zod'
 
 import NewPersonControls from '../NewPersonControls'
 import SinglePersonSelect from './SinglePersonSelect'
@@ -16,6 +15,7 @@ import {
 } from '../util'
 
 import { getPersonSelectionDefaults } from '../thesisValidator'
+import { ErrorPath, ThesisFormErrors } from '../thesisFormErrors'
 import { AnyFieldApi } from '@tanstack/react-form'
 
 export type PersonType = 'supervisor' | 'grader' | 'seminarSupervisor'
@@ -65,27 +65,23 @@ const translationKeys = {
 interface PersonSelectionListProps {
   type: PersonType
   field: AnyFieldApi // The field from @tanstack/react-form
+  errors: ThesisFormErrors
   disabledMode?: boolean
   maxItems?: number
   allowEmpty?: boolean
   allowMultiple?: boolean
   helperTextNode?: React.ReactNode
-  generalErrors?: string[]
-  personErrors?: z.core.$ZodIssue[]
-  onClearErrors?: (index?: number) => void
 }
 
 const PersonSelectionList = ({
   type,
   field,
+  errors,
   disabledMode = false,
   maxItems = 5,
   allowEmpty = false,
   allowMultiple = true,
   helperTextNode,
-  generalErrors = [],
-  personErrors = [],
-  onClearErrors,
 }: PersonSelectionListProps) => {
   const { t } = useTranslation()
 
@@ -135,19 +131,12 @@ const PersonSelectionList = ({
     }))
   }
 
-  const getPersonErrors = (index: number) => {
-    if (selections.length === 0) return { user: generalErrors[0] }
+  const generalErrors = errors.at(field.name, 'general')
 
-    return personErrors
-      .filter((error) => error.path[1] === index && error.path[2] === 'user')
-      .reduce<Record<string, string>>(
-        (errors, error) => ({
-          [(error.path[3] as string) ?? 'user']: error.message,
-          ...errors,
-        }),
-        {}
-      )
-  }
+  const errorPath = (index: number): ErrorPath =>
+    selections.length === 0
+      ? [field.name, 'general']
+      : [field.name, index, 'user']
 
   const handleAddPerson = (isExternal: boolean) => {
     const newLength = selections.length + 1
@@ -180,7 +169,7 @@ const PersonSelectionList = ({
   }
 
   const handleRemovePerson = (index: number) => {
-    onClearErrors?.()
+    errors.clear(field.name)
 
     if (selections.length === 1 && !allowEmpty) {
       if (type === 'seminarSupervisor' && !allowMultiple) {
@@ -252,15 +241,15 @@ const PersonSelectionList = ({
 
       {generalErrors.length > 0 && (
         <AlertBox
-          id={`${type}-general-error`}
+          id={`${field.name}-general`}
           data-testid={`${type}-general-error`}
           severity="error"
           aria-live="polite"
           title={t(translationKeys[type].generalErrorsTitle)}
         >
-          {generalErrors.map((err, i) => (
-            <Typography variant="body2" key={err}>
-              {`${t(`${err}Content`)} ${i < generalErrors.length - 1 ? '\n\n' : ''}`}
+          {generalErrors.map((error, index) => (
+            <Typography variant="body2" key={error.message}>
+              {`${t(`${error.message}Content`)} ${index < generalErrors.length - 1 ? '\n\n' : ''}`}
             </Typography>
           ))}
         </AlertBox>
@@ -281,8 +270,8 @@ const PersonSelectionList = ({
                 selection={selection}
                 field={field}
                 disabledMode={disabledMode}
-                errors={getPersonErrors(index)}
-                onClearErrors={() => onClearErrors?.(index)}
+                errors={errors}
+                errorPath={errorPath(index)}
                 onRemove={() => {
                   setItemToDeleteIndex(index)
                   setDeleteDialogOpen(true)
@@ -296,8 +285,8 @@ const PersonSelectionList = ({
                 field={field}
                 allowEmpty={allowEmpty}
                 totalLength={displayedSelections.length}
-                errors={getPersonErrors(index)}
-                onClearErrors={() => onClearErrors?.(index)}
+                errors={errors}
+                errorPath={errorPath(index)}
                 onRemove={() => {
                   setItemToDeleteIndex(index)
                   setDeleteDialogOpen(true)

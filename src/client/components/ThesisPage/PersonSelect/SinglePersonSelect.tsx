@@ -19,6 +19,7 @@ import useUsers from '../../../hooks/useUsers'
 import { useDebounce } from '../../../hooks/useDebounce'
 import PercentageInput from '../PercentageInput'
 import { PersonType, BasePersonSelection } from './PersonSelectionList'
+import { ErrorPath, ThesisFormErrors } from '../thesisFormErrors'
 import { EmployeeUser as User } from '@backend/validators/userResponse'
 
 interface SinglePersonSelectProps {
@@ -28,8 +29,8 @@ interface SinglePersonSelectProps {
   field: AnyFieldApi
   allowEmpty: boolean
   totalLength: number
-  errors?: Record<string, string>
-  onClearErrors?: () => void
+  errors: ThesisFormErrors
+  errorPath: ErrorPath
   onRemove: () => void
   onPrimaryChange: () => void
 }
@@ -41,8 +42,8 @@ const SinglePersonSelect = ({
   field,
   allowEmpty,
   totalLength,
-  errors = {},
-  onClearErrors,
+  errors,
+  errorPath,
   onRemove,
   onPrimaryChange,
 }: SinglePersonSelectProps) => {
@@ -73,7 +74,7 @@ const SinglePersonSelect = ({
     (totalLength > 1 && type === 'grader' && selection.isPrimaryGrader)
 
   const handleUserChange = (handleChange: (value: any) => void, value: any) => {
-    onClearErrors?.()
+    errors.clear(...errorPath)
 
     const currentArr = field.state.value || []
     if (
@@ -136,17 +137,7 @@ const SinglePersonSelect = ({
                   {...params}
                   label={label}
                   required
-                  error={
-                    Boolean(errors.user) ||
-                    userField.state.meta.errors.length > 0
-                  }
-                  helperText={
-                    errors.user
-                      ? t(errors.user)
-                      : userField.state.meta.errors.length > 0
-                        ? t(userField.state.meta.errors[0])
-                        : undefined
-                  }
+                  {...errors.fieldProps(...errorPath)}
                 />
               )}
               filterOptions={(x) => x}
@@ -173,7 +164,7 @@ const SinglePersonSelect = ({
               }
               percentageInputProps={{
                 required: true,
-                error: percentageField.state.meta.errors.length > 0,
+                error: errors.has(field.name, index, 'percentage'),
               }}
             />
           )}

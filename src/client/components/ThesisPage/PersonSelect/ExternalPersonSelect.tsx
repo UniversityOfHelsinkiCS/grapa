@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { useTranslation } from 'react-i18next'
 import PercentageInput from '../PercentageInput'
 import { PersonType, BasePersonSelection } from './PersonSelectionList'
+import { ErrorPath, ThesisFormErrors } from '../thesisFormErrors'
 
 interface ExternalPersonSelectProps {
   type: PersonType
@@ -13,8 +14,8 @@ interface ExternalPersonSelectProps {
   selection: BasePersonSelection
   field: AnyFieldApi
   disabledMode?: boolean
-  errors?: Record<string, string>
-  onClearErrors?: () => void
+  errors: ThesisFormErrors
+  errorPath: ErrorPath
   onRemove: () => void
 }
 
@@ -24,8 +25,8 @@ const ExternalPersonSelect = ({
   selection,
   field,
   disabledMode,
-  errors = {},
-  onClearErrors,
+  errors,
+  errorPath,
   onRemove,
 }: ExternalPersonSelectProps) => {
   const { t } = useTranslation()
@@ -42,18 +43,12 @@ const ExternalPersonSelect = ({
 
   const userBase = `${field.name}[${index}].user`
 
-  const errorText = (userField: AnyFieldApi, name: string) => {
-    const error = errors[name] ?? userField.state.meta.errors[0]
-
-    return error ? t(error) : undefined
-  }
-
   const handleUserFieldChange = (
     handleChange: (value: string) => void,
     fieldName: string,
     value: string
   ) => {
-    onClearErrors?.()
+    errors.clear(...errorPath)
 
     const currentArr = field.state.value || []
     if (
@@ -133,8 +128,7 @@ const ExternalPersonSelect = ({
                 }
                 fullWidth
                 variant="outlined"
-                error={Boolean(errorText(f, 'firstName'))}
-                helperText={errorText(f, 'firstName')}
+                {...errors.fieldProps(...errorPath, 'firstName')}
               />
             )}
           </form.Field>
@@ -156,8 +150,7 @@ const ExternalPersonSelect = ({
                 }
                 fullWidth
                 variant="outlined"
-                error={Boolean(errorText(f, 'lastName'))}
-                helperText={errorText(f, 'lastName')}
+                {...errors.fieldProps(...errorPath, 'lastName')}
               />
             )}
           </form.Field>
@@ -177,8 +170,7 @@ const ExternalPersonSelect = ({
                 }
                 fullWidth
                 variant="outlined"
-                error={Boolean(errorText(f, 'email'))}
-                helperText={errorText(f, 'email')}
+                {...errors.fieldProps(...errorPath, 'email')}
               />
             )}
           </form.Field>
@@ -200,8 +192,7 @@ const ExternalPersonSelect = ({
                 }
                 fullWidth
                 variant="outlined"
-                error={Boolean(errorText(f, 'affiliation'))}
-                helperText={errorText(f, 'affiliation')}
+                {...errors.fieldProps(...errorPath, 'affiliation')}
               />
             )}
           </form.Field>
@@ -217,7 +208,7 @@ const ExternalPersonSelect = ({
                   }
                   percentageInputProps={{
                     required: true,
-                    error: f.state.meta.errors.length > 0,
+                    error: errors.has(field.name, index, 'percentage'),
                   }}
                 />
               )}

@@ -389,6 +389,7 @@
     "primarySupervisor": "Primary supervisor",
     "setPrimarySupervisor": "Set as primary supervisor",
     "primarySupervisorDeleteError": "Primary supervisor cannot be deleted",
+    "primaryGraderDeleteError": "Primary grader cannot be deleted",
     "firstName": "First name",
     "lastName": "Last name",
     "email": "Email",

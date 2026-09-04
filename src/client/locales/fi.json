@@ -387,6 +387,7 @@
     "primarySupervisor": "Pääohjaaja",
     "setPrimarySupervisor": "Aseta tämä ohjaaja pääohjaajaksi",
     "primarySupervisorDeleteError": "Pääohjaajaa ei voi poistaa",
+    "primaryGraderDeleteError": "Ensisijaista arvioijaa ei voi poistaa",
     "firstName": "Etunimi",
     "lastName": "Sukunimi",
     "email": "Sähköposti",
