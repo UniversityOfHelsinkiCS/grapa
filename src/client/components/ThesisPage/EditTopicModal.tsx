@@ -23,15 +23,22 @@ const EditTopicModal = ({
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async () => {
-    if (!topic.trim()) {
+    const trimmedTopic = topic.trim()
+
+    if (!trimmedTopic) {
       setError(t('thesisForm:topicMissingError', 'Topic cannot be empty'))
+      return
+    }
+
+    if (trimmedTopic === initialTopic.trim()) {
+      onClose()
       return
     }
 
     try {
       setIsSubmitting(true)
       setError(null)
-      await onSubmit(topic.trim())
+      await onSubmit(trimmedTopic)
       onClose()
     } catch {
       setError(t('thesisForm:serverError', 'Server error'))
