@@ -22,6 +22,8 @@ import { PersonType, BasePersonSelection } from './PersonSelectionList'
 import { ErrorPath, ThesisFormErrors } from '../thesisFormErrors'
 import { EmployeeUser as User } from '@backend/validators/userResponse'
 
+const inputHeight = '3.5rem'
+
 interface SinglePersonSelectProps {
   type: PersonType
   index: number
@@ -185,6 +187,7 @@ const SinglePersonSelect = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              height: inputHeight,
             }}
           >
             <Checkbox
@@ -197,32 +200,37 @@ const SinglePersonSelect = ({
         </Tooltip>
       )}
 
-      {(!isGrader ||
-        !selection.isPrimaryGrader ||
-        (allowEmpty && totalLength === 1)) && (
-        <Tooltip
-          title={
-            removeDisabled
-              ? isSupervisor
-                ? t('thesisForm:primarySupervisorDeleteError')
+      <Tooltip
+        title={
+          removeDisabled
+            ? isSupervisor
+              ? t('thesisForm:primarySupervisorDeleteError')
+              : isGrader
+                ? t('thesisForm:primaryGraderDeleteError')
                 : ''
-              : `${t('removeButton')} ${label}`
-          }
+            : `${t('removeButton')} ${label}`
+        }
+      >
+        <Box
+          component="span"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            height: inputHeight,
+          }}
         >
-          <Box component="span" sx={{ alignContent: 'center' }}>
-            <IconButton
-              data-testid={`remove-${type}-button`}
-              type="button"
-              onClick={() => onRemove()}
-              color="error"
-              size="small"
-              disabled={removeDisabled}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Box>
-        </Tooltip>
-      )}
+          <IconButton
+            data-testid={`remove-${type}-button`}
+            type="button"
+            onClick={() => onRemove()}
+            color="error"
+            size="small"
+            disabled={removeDisabled}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Box>
+      </Tooltip>
     </Stack>
   )
 }
