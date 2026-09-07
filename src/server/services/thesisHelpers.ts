@@ -103,6 +103,7 @@ export interface ThesisFiltersOptions {
   hideStudentStartedEthesis?: boolean
   isThesisLate?: boolean
   isThesisVeryLate?: boolean
+  requireStudentStartedProcess?: boolean
 }
 
 export const buildThesisIncludes = (language?: string): Includeable[] => {
@@ -320,6 +321,7 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
     hideStudentStartedEthesis,
     isThesisLate,
     isThesisVeryLate,
+    requireStudentStartedProcess,
   } = options
 
   const whereClause: any = {}
@@ -441,6 +443,14 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
   )
   if (permissionCondition) {
     andConditions.push(permissionCondition)
+  }
+
+  if (requireStudentStartedProcess) {
+    andConditions.push(
+      literal(
+        `COALESCE((SELECT options->>'allowStudentStartedProcess' FROM "programs" WHERE id = "Thesis"."program_id"), 'false') = 'true'`
+      )
+    )
   }
 
   if (andConditions.length > 0) {

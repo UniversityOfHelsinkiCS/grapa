@@ -122,15 +122,8 @@ studentRouter.get('/theses', async (req: RequestWithUser, res: any) => {
     isThesisLate: req.query.isThesisLate === 'true',
     isThesisVeryLate: req.query.isThesisVeryLate === 'true',
     hideUserProperties: true,
+    requireStudentStartedProcess: true,
   })
-
-  // This should ideally be done in db, but to do that thesisHelpers would need major modifications
-  const filtered_theses: ThesisData[] = result.theses.filter(
-    (thesis) => thesis.program.options.allowStudentStartedProcess
-  )
-
-  //@ts-expect-error these are the same type
-  result.theses = filtered_theses
 
   const safeData = PaginatedStudentThesesSchema.parse(result)
   return res.send(safeData)

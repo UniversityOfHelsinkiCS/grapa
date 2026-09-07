@@ -95,6 +95,7 @@ export interface GetPaginatedThesesParams {
   hideStudentStartedEthesis?: boolean
   isThesisLate?: boolean
   isThesisVeryLate?: boolean
+  requireStudentStartedProcess?: boolean
 }
 
 export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
@@ -123,6 +124,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     hideStudentStartedEthesis,
     isThesisLate,
     isThesisVeryLate,
+    requireStudentStartedProcess,
   } = params
 
   const allowedLanguages = ['fi', 'sv', 'en']
@@ -171,6 +173,7 @@ export const getPaginatedTheses = async (params: GetPaginatedThesesParams) => {
     hideStudentStartedEthesis,
     isThesisLate,
     isThesisVeryLate,
+    requireStudentStartedProcess,
   })
 
   const fullWhere = { ...baseWhere }
