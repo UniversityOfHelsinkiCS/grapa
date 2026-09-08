@@ -36,10 +36,10 @@ const ExternalPersonSelect = ({
   const isSeminarSupervisor = type === 'seminarSupervisor'
 
   const legendLocKey = isSupervisor
-    ? 'supervisor'
+    ? 'common:supervisor'
     : isSeminarSupervisor
-      ? 'seminarSupervisor'
-      : 'grader'
+      ? 'thesisForm:seminarSupervisor'
+      : 'common:grader'
 
   const userBase = `${field.name}[${index}].user`
 

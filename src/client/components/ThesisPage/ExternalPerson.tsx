@@ -82,10 +82,10 @@ const ExternalPersonInput = ({
 
   const legendLocKey =
     inputGroup === 'supervisions'
-      ? 'supervisor'
+      ? 'common:supervisor'
       : inputGroup === 'seminarSupervisions'
-        ? 'seminarSupervisor'
-        : 'grader'
+        ? 'thesisForm:seminarSupervisor'
+        : 'common:grader'
   const deleteConfirmationTitleLocKey =
     inputGroup === 'supervisions'
       ? 'removeSupervisorConfirmationTitle'

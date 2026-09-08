@@ -61,9 +61,9 @@ const SinglePersonSelect = ({
 
   const label = t(
     isSupervisor
-      ? 'supervisor'
+      ? 'common:supervisor'
       : isGrader
-        ? 'grader'
+        ? 'common:grader'
         : 'thesisForm:seminarSupervisor',
     isSeminarSupervisor ? undefined : { index: index + 1 }
   )
@@ -203,11 +203,7 @@ const SinglePersonSelect = ({
       <Tooltip
         title={
           removeDisabled
-            ? isSupervisor
-              ? t('thesisForm:primarySupervisorDeleteError')
-              : isGrader
-                ? t('thesisForm:primaryGraderDeleteError')
-                : ''
+            ? t('thesisForm:removeDisabledError')
             : `${t('removeButton')} ${label}`
         }
       >
