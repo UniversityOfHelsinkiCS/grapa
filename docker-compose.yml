@@ -16,7 +16,7 @@ services:
       - grapa_internal
 
   db:
-    image: docker.io/library/postgres:15.10
+    image: docker.io/library/postgres:15.19
     environment:
       - PGDATA=/data
       - POSTGRES_PASSWORD=postgres
