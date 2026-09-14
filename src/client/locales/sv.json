@@ -39,6 +39,7 @@
     "approveBulkButtonConfirmContent": "Är du säker på att du vill godkänna dessa avhandlingsplaner?",
     "deleteButton": "Ta bort",
     "cancelButton": "Avbryt",
+    "closeButton": "Stäng",
     "submitButton": "Skicka in",
     "saving": "Sparar...",
     "saveButton": "Spara",
@@ -129,6 +130,9 @@
     "configurationsTab": "Inställningar",
     "managePermissionsTab": "Hantera behörigheter",
     "helperTexts": "Hjälptexter",
+    "helperTextsPreviewButton": "Förhandsgranska blanketten",
+    "helperTextsPreviewFormTitle": "Förhandsgranskning av avhandlingsblanketten",
+    "helperTextsPreviewDescription": "Förhandsgranskningarna visar de sparade hjälptexterna så som en studerande ser dem på avhandlingsblanketten. Förhandsgranskningsblanketten kan inte skickas.",
     "generalHelperText": {
       "title": "Allmänna anvisningar",
       "description": "Denna text visas högst upp på avhandlingsblanketten.",

@@ -39,6 +39,7 @@
     "editButton": "Muokkaa",
     "deleteButton": "Poista",
     "cancelButton": "Peruuta",
+    "closeButton": "Sulje",
     "submitButton": "Tallenna",
     "saving": "Tallennetaan...",
     "saveButton": "Tallenna",
@@ -127,6 +128,9 @@
     "configurationsTab": "Asetukset",
     "managePermissionsTab": "Hallinnoi oikeuksia",
     "helperTexts": "Ohjetekstit",
+    "helperTextsPreviewButton": "Esikatsele lomaketta",
+    "helperTextsPreviewFormTitle": "Tutkielmalomakkeen esikatselu",
+    "helperTextsPreviewDescription": "Esikatselut näyttävät tallennetut ohjetekstit sellaisina kuin opiskelija näkee ne tutkielmalomakkeella. Esikatselulomaketta ei voi lähettää.",
     "generalHelperText": {
       "title": "Yleiset ohjeet",
       "description": "Tämä teksti näytetään tutkielmalomakkeen yläreunassa.",

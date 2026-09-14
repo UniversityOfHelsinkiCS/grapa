@@ -39,6 +39,7 @@
     "approveBulkButtonConfirmContent": "Are you sure you want to approve these thesis plans?",
     "deleteButton": "Delete",
     "cancelButton": "Cancel",
+    "closeButton": "Close",
     "submitButton": "Submit",
     "saving": "Saving...",
     "saveButton": "Save",
@@ -129,6 +130,9 @@
     "configurationsTab": "Configurations",
     "managePermissionsTab": "Manage permissions",
     "helperTexts": "Helper texts",
+    "helperTextsPreviewButton": "Preview form",
+    "helperTextsPreviewFormTitle": "Thesis form preview",
+    "helperTextsPreviewDescription": "The previews show the saved helper texts as a student sees them on the thesis form. The preview form cannot be submitted.",
     "generalHelperText": {
       "title": "General instructions",
       "description": "This text will be shown at the very top of the thesis form.",

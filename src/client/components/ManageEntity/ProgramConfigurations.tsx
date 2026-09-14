@@ -29,6 +29,8 @@ import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOut
 import { useTranslation } from 'react-i18next'
 import { TranslationLanguage } from '@backend/validators/departmentResponse'
 import { ProgramData } from '@backend/validators/programResponse'
+import { ThesisData } from '@backend/validators/thesisResponse'
+import ThesisEditForm from '../ThesisPage/ThesisEditForm'
 
 interface ProgramConfigurationsProps {
   program: ProgramData
@@ -683,6 +685,79 @@ const CombinedStudyTracksInput = ({ program }: { program: ProgramData }) => {
   )
 }
 
+const HELPER_TEXT_FEATURES = [
+  'generalHelperText',
+  'supervisorHelperText',
+  'seminarSupervisorHelperText',
+  'topicDescriptionHelperText',
+] as const
+
+const HelperTextSection = ({
+  program,
+  feature,
+}: {
+  program: ProgramData
+  feature: (typeof HELPER_TEXT_FEATURES)[number]
+}) => {
+  const { t: translation } = useTranslation()
+  const [previewOpen, setPreviewOpen] = useState(false)
+
+  const previewThesis: ThesisData = {
+    programId: program.id,
+    studyTrackId: program.studyTracks?.[0]?.id ?? null,
+    supervisions: [],
+    seminarSupervisions: [],
+    authors: [],
+    approvers: [],
+    graders: [],
+    topic: '',
+    status: 'DRAFT',
+    startDate: dayjs().format('YYYY-MM-DD'),
+    targetDate: dayjs().add(1, 'year').format('YYYY-MM-DD'),
+  }
+
+  return (
+    <Stack spacing={1}>
+      <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+        <Typography variant="h6">
+          {translation(`programOverviewPage:${feature}:title`)}
+        </Typography>
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={() => setPreviewOpen(true)}
+          data-testid={`${feature}-preview-button`}
+        >
+          {translation('programOverviewPage:helperTextsPreviewButton')}
+        </Button>
+      </Stack>
+      <Typography variant="body1">
+        {translation(`programOverviewPage:${feature}:description`)}
+      </Typography>
+      <FeatureInput
+        feature={feature}
+        isMultilingualInput
+        singleValue
+        multiline
+        program={program}
+      />
+      {previewOpen && (
+        <ThesisEditForm
+          programs={[program]}
+          formTitle={translation(
+            'programOverviewPage:helperTextsPreviewFormTitle'
+          )}
+          initialThesis={previewThesis}
+          onSubmit={async () => {}}
+          onClose={() => setPreviewOpen(false)}
+          isStudentView
+          isPreview
+        />
+      )}
+    </Stack>
+  )
+}
+
 const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   const { t } = useTranslation()
   const updateProgramOptionsMutation = useUpdateProgramMutation()
@@ -780,70 +855,17 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
         <Typography variant="h5">
           {t(`programOverviewPage:helperTexts`)}
         </Typography>
+        <Typography variant="body1">
+          {t(`programOverviewPage:helperTextsPreviewDescription`)}
+        </Typography>
 
-        <Stack spacing={1}>
-          <Typography variant="h6">
-            {t(`programOverviewPage:generalHelperText:title`)}
-          </Typography>
-          <Typography variant="body1">
-            {t(`programOverviewPage:generalHelperText:description`)}
-          </Typography>
-          <FeatureInput
-            feature="generalHelperText"
-            isMultilingualInput
-            singleValue
-            multiline
+        {HELPER_TEXT_FEATURES.map((feature) => (
+          <HelperTextSection
+            key={feature}
+            feature={feature}
             program={program}
           />
-        </Stack>
-
-        <Stack spacing={1}>
-          <Typography variant="h6">
-            {t(`programOverviewPage:supervisorHelperText:title`)}
-          </Typography>
-          <Typography variant="body1">
-            {t(`programOverviewPage:supervisorHelperText:description`)}
-          </Typography>
-          <FeatureInput
-            feature="supervisorHelperText"
-            isMultilingualInput
-            singleValue
-            multiline
-            program={program}
-          />
-        </Stack>
-
-        <Stack spacing={1}>
-          <Typography variant="h6">
-            {t(`programOverviewPage:seminarSupervisorHelperText:title`)}
-          </Typography>
-          <Typography variant="body1">
-            {t(`programOverviewPage:seminarSupervisorHelperText:description`)}
-          </Typography>
-          <FeatureInput
-            feature="seminarSupervisorHelperText"
-            isMultilingualInput
-            singleValue
-            multiline
-            program={program}
-          />
-        </Stack>
-
-        <Stack spacing={1}>
-          <Typography variant="h6">
-            {t(`programOverviewPage:topicDescriptionHelperText:title`)}
-          </Typography>
-          <Typography variant="body1">
-            {t(`programOverviewPage:topicDescriptionHelperText:description`)}
-          </Typography>
-          <FeatureInput
-            feature="topicDescriptionHelperText"
-            isMultilingualInput
-            singleValue
-            multiline
-            program={program}
-          />
-        </Stack>
+        ))}
 
         <Typography variant="h5">{t(`programOverviewPage:other`)}</Typography>
 

@@ -64,6 +64,7 @@ interface ThesisEditFormProps {
   onClose: () => void
   onSubmit: (data: ThesisData) => Promise<void>
   isStudentView: boolean
+  isPreview?: boolean
 }
 
 const ThesisEditForm = ({
@@ -73,6 +74,7 @@ const ThesisEditForm = ({
   onSubmit,
   onClose,
   isStudentView,
+  isPreview = false,
 }: ThesisEditFormProps) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -414,9 +416,9 @@ const ThesisEditForm = ({
           onClose={handleClose}
           title={formTitle}
           titleProps={{ 'data-testid': 'thesis-form-title' }}
-          onSubmit={handleSubmitWrapper}
+          onSubmit={isPreview ? undefined : handleSubmitWrapper}
           extraActionsLeft={
-            isStudentView ? (
+            isStudentView && !isPreview ? (
               <Button onClick={submitStudentDraft} color="inherit">
                 {t('viewThesisFooter:saveAsDraftButton')}
               </Button>
@@ -428,7 +430,7 @@ const ThesisEditForm = ({
               : t('submitButton')
           }
           submitButtonProps={{ 'data-testid': 'submit-button' } as any}
-          cancelText={t('cancelButton')}
+          cancelText={isPreview ? t('closeButton') : t('cancelButton')}
           onCancel={() => {
             clearURL()
             onClose()
@@ -1172,7 +1174,7 @@ const ThesisEditForm = ({
           </Stack>
         </Popup>
 
-        {isStudentView && (
+        {isStudentView && !isPreview && (
           <Popup
             open={confirmSendOpen}
             onClose={() => setConfirmSendOpen(false)}
