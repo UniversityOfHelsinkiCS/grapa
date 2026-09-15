@@ -765,6 +765,9 @@ const ThesisTable = ({
     getRowId: (row) => row.id,
   })
 
+  const paginationTotalCount = totalCount ?? previousData.current.totalCount
+  const hidePagination = isStudentView && paginationTotalCount <= pageSize
+
   const selectedTheses = Array.from(bulkSelection.values())
   const selectedApprovable = selectedTheses.filter((t) => canApprove(t, user))
 
@@ -1088,16 +1091,23 @@ const ThesisTable = ({
         isRowDimmed={(row) =>
           !!row.original.isIdle || row.original.status === 'DRAFT'
         }
-        pagination={{
-          totalCount: totalCount ?? previousData.current.totalCount,
-          page: pageNumber,
-          pageSize: pageSize,
-          onPageChange: changePage,
-          onPageSizeChange: (newPageSize) => {
-            setPageSize(newPageSize)
-            onPaginationChange({ pageIndex: pageNumber, pageSize: newPageSize })
-          },
-        }}
+        pagination={
+          hidePagination
+            ? undefined
+            : {
+                totalCount: paginationTotalCount,
+                page: pageNumber,
+                pageSize: pageSize,
+                onPageChange: changePage,
+                onPageSizeChange: (newPageSize) => {
+                  setPageSize(newPageSize)
+                  onPaginationChange({
+                    pageIndex: pageNumber,
+                    pageSize: newPageSize,
+                  })
+                },
+              }
+        }
         sorting={{
           sortedField,
           sortedDir,
