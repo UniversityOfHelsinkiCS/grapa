@@ -27,10 +27,10 @@ export const PersonList = ({
   showStudentNumber?: boolean
   showTitle?: boolean
 }) => {
-  if (!users.length) return null
-
   const { t, i18n } = useTranslation()
   const { language } = i18n
+
+  if (!users.length) return null
 
   return (
     <Stack
@@ -51,6 +51,7 @@ export const PersonList = ({
         </Typography>
         <Tooltip title={t('common:copyEmails')}>
           <IconButton
+            aria-label={`${t('common:copyEmails')}, ${title}`}
             sx={{
               ml: 'auto',
               opacity: 0.5,
