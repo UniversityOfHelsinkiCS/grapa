@@ -53,7 +53,16 @@
     "theses": "Tutkielmat",
     "none": "Ei opintosuuntaa",
     "admin": "admin",
-    "copyEmails": "Kopioi sähköpostiosoitteet"
+    "copyEmails": "Kopioi sähköpostiosoitteet",
+    "nameLabel": "Nimi",
+    "actionRequiredLabel": "Vaatii toimenpiteitä",
+    "noticeLabel": "Huomio",
+    "warningLabel": "Varoitus",
+    "opensInNewTab": "avautuu uuteen välilehteen",
+    "emailLabel": "Sähköposti",
+    "studentNumberLabel": "Opiskelijanumero",
+    "titleLabel": "Titteli",
+    "degreeLabel": "Tutkinto"
   },
   "eventLog": {
     "thesis": "Tutkielma",
@@ -505,7 +514,8 @@
     "actionRequiredTooltip": "Tämä tutkielma vaatii sinulta toimenpiteitä.",
     "primarySupervisorTooltip": "Olet tämän tutkielman pääohjaaja",
     "milestonePercentageHeader": "Edistyminen",
-    "noRows": "Ei rivejä"
+    "noRows": "Ei rivejä",
+    "showThesisPreview": "näytä tutkielman esikatselu"
   },
   "customFilters": {
     "valuesLabel": "Arvot"
@@ -595,6 +605,14 @@
     "deleteWarning": "Huom: Yksikköä ei voi poistaa luomisen jälkeen"
   },
   "progressView": {
+    "milestonePosition": "Etappi {{number}}/{{total}}",
+    "stepsListLabel": "Tutkielman edistymisen vaiheet",
+    "stepNumber": "Vaihe {{number}}",
+    "stepStatusCompleted": "Tämä vaihe on valmis",
+    "stepStatusCurrent": "Tämä on nykyinen vaihe",
+    "stepStatusUpcoming": "Tätä vaihetta ei ole aloitettu",
+    "currentStepStatus": "Nykyinen vaihe: {{step}}",
+    "milestoneActionsLabel": "Etappien toiminnot",
     "lastMilestoneConfirmationTitle": "Vahvistus",
     "lastMilestoneConfirmationDescription": "Oletko varma että haluat merkitä viimeisen vaiheen valmiiksi? Tätä toimintoa ei voi peruuttaa",
     "lastMilestoneConfirmationText": "Olen toimittanut viimeisen version tutkielmasta ohjaajalle",

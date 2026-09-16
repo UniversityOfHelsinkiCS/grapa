@@ -53,7 +53,16 @@
     "theses": "Theses",
     "none": "No studytrack",
     "admin": "admin",
-    "copyEmails": "Copy emails"
+    "copyEmails": "Copy emails",
+    "nameLabel": "Name",
+    "actionRequiredLabel": "Action required",
+    "noticeLabel": "Note",
+    "warningLabel": "Warning",
+    "opensInNewTab": "opens in a new tab",
+    "emailLabel": "Email",
+    "studentNumberLabel": "Student number",
+    "titleLabel": "Title",
+    "degreeLabel": "Degree"
   },
   "eventLog": {
     "thesis": "Thesis",
@@ -506,7 +515,8 @@
     "actionRequiredTooltip": "This thesis requires actions from you.",
     "primarySupervisorTooltip": "You are the primary supervisor of this thesis",
     "milestonePercentageHeader": "Progress",
-    "noRows": "No rows"
+    "noRows": "No rows",
+    "showThesisPreview": "show thesis preview"
   },
   "customFilters": {
     "valuesLabel": "Values"
@@ -596,6 +606,14 @@
     "deleteWarning": "Note: A department cannot be deleted once created"
   },
   "progressView": {
+    "milestonePosition": "Milestone {{number}} of {{total}}",
+    "stepsListLabel": "Thesis progress steps",
+    "stepNumber": "Step {{number}}",
+    "stepStatusCompleted": "This step is completed",
+    "stepStatusCurrent": "This is the current step",
+    "stepStatusUpcoming": "This step has not been started",
+    "currentStepStatus": "Current step: {{step}}",
+    "milestoneActionsLabel": "Milestone actions",
     "lastMilestoneConfirmationTitle": "Confirmation",
     "lastMilestoneConfirmationDescription": "Are you sure you want to complete the last milestone? This action cannot be undone",
     "lastMilestoneConfirmationText": "I have delivered the final version of the thesis to the supervisor",

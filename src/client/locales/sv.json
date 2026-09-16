@@ -53,7 +53,16 @@
     "theses": "Avhandlingar",
     "none": "Ingen studieinriktning",
     "admin": "admin",
-    "copyEmails": "Kopiera e-postadresser"
+    "copyEmails": "Kopiera e-postadresser",
+    "nameLabel": "Namn",
+    "actionRequiredLabel": "Åtgärd krävs",
+    "noticeLabel": "Observera",
+    "warningLabel": "Varning",
+    "opensInNewTab": "öppnas i en ny flik",
+    "emailLabel": "E-post",
+    "studentNumberLabel": "Studentnummer",
+    "titleLabel": "Titel",
+    "degreeLabel": "Examen"
   },
   "eventLog": {
     "thesis": "Avhandling",
@@ -506,7 +515,8 @@
     "actionRequiredTooltip": "Denna avhandling kräver åtgärder från dig.",
     "primarySupervisorTooltip": "Du är huvudhandledare för denna avhandling",
     "milestonePercentageHeader": "Framsteg",
-    "noRows": "Inga rader"
+    "noRows": "Inga rader",
+    "showThesisPreview": "visa förhandsgranskning av avhandlingen"
   },
   "customFilters": {
     "valuesLabel": "Värden"
@@ -596,6 +606,14 @@
     "deleteWarning": "Obs: En avdelning kan inte tas bort när den väl har skapats"
   },
   "progressView": {
+    "milestonePosition": "Milstolpe {{number}} av {{total}}",
+    "stepsListLabel": "Avhandlingens steg",
+    "stepNumber": "Steg {{number}}",
+    "stepStatusCompleted": "Det här steget är klart",
+    "stepStatusCurrent": "Det här är det nuvarande steget",
+    "stepStatusUpcoming": "Det här steget har inte påbörjats",
+    "currentStepStatus": "Nuvarande steg: {{step}}",
+    "milestoneActionsLabel": "Milstolpsåtgärder",
     "noMilestone": "Ingen etapp",
     "lastMilestoneConfirmationTitle": "Bekräftelse",
     "lastMilestoneConfirmationDescription": "Är du säker på att du vill slutföra det sista steget? Detta kan inte ångras.",
