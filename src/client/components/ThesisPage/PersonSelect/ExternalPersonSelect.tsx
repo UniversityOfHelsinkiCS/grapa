@@ -223,6 +223,7 @@ const ExternalPersonSelect = ({
         onClick={() => onRemove()}
         color="error"
         size="small"
+        aria-label={`${t('removeButton')} ${t(legendLocKey, { index: index + 1 })}`}
       >
         <DeleteIcon />
       </IconButton>

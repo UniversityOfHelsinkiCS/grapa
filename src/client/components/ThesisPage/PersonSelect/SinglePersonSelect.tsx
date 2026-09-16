@@ -75,6 +75,8 @@ const SinglePersonSelect = ({
       selection.isPrimarySupervisor) ||
     (totalLength > 1 && type === 'grader' && selection.isPrimaryGrader)
 
+  const removeLabel = `${t('removeButton')} ${label}`
+
   const handleUserChange = (handleChange: (value: any) => void, value: any) => {
     errors.clear(...errorPath)
 
@@ -202,9 +204,7 @@ const SinglePersonSelect = ({
 
       <Tooltip
         title={
-          removeDisabled
-            ? t('thesisForm:removeDisabledError')
-            : `${t('removeButton')} ${label}`
+          removeDisabled ? t('thesisForm:removeDisabledError') : removeLabel
         }
       >
         <Box
@@ -222,6 +222,7 @@ const SinglePersonSelect = ({
             color="error"
             size="small"
             disabled={removeDisabled}
+            aria-label={removeLabel}
           >
             <DeleteIcon />
           </IconButton>
