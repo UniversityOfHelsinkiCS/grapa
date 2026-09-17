@@ -967,7 +967,7 @@ const ThesisTable = ({
             </Box>
           )}
 
-          {!hideFiltering && (
+          {!hideFiltering && !isStudentView && (
             <PrethesisHelp
               text={t('help:table')}
               sx={{ height: 24 }}
