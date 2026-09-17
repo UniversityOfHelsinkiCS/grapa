@@ -37,8 +37,8 @@ import {
   Tabs,
   Tab,
   Link,
+  TableCellProps,
 } from '@mui/material'
-import { visuallyHidden } from '@mui/utils'
 import { useTranslation } from 'react-i18next'
 import {
   getMilestoneCount,
@@ -72,10 +72,13 @@ import {
 } from '../../../shared/utils/thesisUtils'
 
 import PrethesisTable from '../Common/PrethesisTable'
+import { VisuallyHidden } from '../Common/HiddenLabel'
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData, TValue> {
-    getCellContext: (context: CellContext<TData, TValue>) => any | void
+    getCellContext?: (
+      context: CellContext<TData, TValue>
+    ) => Pick<TableCellProps, 'sx'>
   }
 }
 
@@ -111,6 +114,7 @@ interface Props {
   hideFiltering?: boolean
   showEthesisDateColumn?: boolean
   showGraders?: boolean
+  previewRegionId?: string
 }
 
 const ThesisTable = ({
@@ -135,6 +139,7 @@ const ThesisTable = ({
   hideFiltering = false,
   showEthesisDateColumn = false,
   showGraders = false,
+  previewRegionId,
 }: Props) => {
   const { t, i18n } = useTranslation()
   const { language } = i18n as { language: TranslationLanguage }
@@ -275,7 +280,7 @@ const ThesisTable = ({
     favoritePrograms.length > 0 &&
     favoritePrograms.every((p) => p.options?.allowStudentStartedProcess)
 
-  const showHiddenNewThesisButton =
+  const newThesisInMenu =
     (programsLoading || allFavProgramsAllowStudentStarted) && !isStudentView
 
   /* Selection */
@@ -308,10 +313,61 @@ const ThesisTable = ({
   const skeletonCount =
     rows.length > 0 ? rows.length : Math.max(1, previousData.current.rowCount)
 
+  const getAuthorNames = (thesis: Thesis) =>
+    thesis.authors
+      .toSorted((a, b) => a.lastName.localeCompare(b.lastName))
+      .map(
+        (author) =>
+          `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
+      )
+      .join(', ')
+
+  const getStatusLabel = (thesis: Thesis) => {
+    const status = thesis.status as keyof typeof StatusLocale
+    const isEthesisStudentStarted =
+      status === 'ETHESIS' &&
+      thesis.program?.options?.allowStudentStartedProcess
+
+    const translationKey = isEthesisStudentStarted
+      ? 'thesisStages:ethesis_studentstarted'
+      : StatusLocale[status]
+
+    if (thesis.isIdle) {
+      return `${t(translationKey)} (${t('thesisStages:idle')})`
+    }
+
+    if (isThesisLate(thesis.targetDate) && status === 'IN_PROGRESS') {
+      return `${t(translationKey)} (${t('thesisStages:late')})`
+    }
+
+    return t(translationKey)
+  }
+
   const hasEligibleRowsToDisplay =
     isLoading && rows.length === 0
       ? previousData.current.eligibleRowsLength > 0
       : eligibleRows.length > 0
+
+  const tableData =
+    isLoading && rows.length === 0 ? previousData.current.rows : rows
+
+  const isPrimarySupervisor = (thesis: Thesis) =>
+    thesis.supervisions.some(
+      (supervision) =>
+        supervision.user?.id == user?.id && supervision.isPrimarySupervisor
+    )
+
+  const needsAction = (thesis: Thesis) =>
+    (user &&
+      (canApprove(thesis, user) ||
+        canSetEthesisMilestones(thesis, user) ||
+        needsEthesisAdminAction(thesis, user))) ||
+    needsStudentAction(thesis, isStudentView)
+
+  const hasIndicators = tableData.some(
+    (thesis) =>
+      isPrimarySupervisor(thesis) || needsAction(thesis) || thesis.isIdle
+  )
 
   const columns = [
     ...(isStudentView || (!hasEligibleRowsToDisplay && bulkSelection.size === 0)
@@ -394,6 +450,7 @@ const ThesisTable = ({
           <>
             <Tooltip title={data.name[language]}>
               <Chip
+                aria-hidden
                 label={data.id}
                 variant="outlined"
                 sx={{
@@ -401,6 +458,9 @@ const ThesisTable = ({
                 }}
               />
             </Tooltip>
+            <VisuallyHidden component="span">
+              {`${data.id}: ${data.name[language]}`}
+            </VisuallyHidden>
           </>
         ) : (
           ''
@@ -417,6 +477,9 @@ const ThesisTable = ({
           component="button"
           type="button"
           underline="none"
+          aria-label={`${info.getValue()}, ${t('thesesPage:showThesisPreview')}`}
+          aria-expanded={isSelected(info.row.original.id)}
+          aria-controls={previewRegionId}
           sx={{ color: 'inherit', textAlign: 'left' }}
         >
           <Typography variant="small">{info.getValue()}</Typography>
@@ -430,14 +493,7 @@ const ThesisTable = ({
       enableSorting: !isStudentView,
       cell: (info) => (
         <Typography variant="small">
-          {info
-            .getValue()
-            .toSorted((a, b) => a.lastName.localeCompare(b.lastName))
-            .map(
-              (author) =>
-                `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
-            )
-            .join(', ')}
+          {getAuthorNames(info.row.original)}
         </Typography>
       ),
       header: t('authorsHeader'),
@@ -505,27 +561,19 @@ const ThesisTable = ({
     columnHelper.accessor('status', {
       size: 50,
       enableSorting: !isStudentView,
-      cell: (info) => {
-        const status = info.getValue() as keyof typeof StatusLocale
-        const isEthesisStudentStarted =
-          status === 'ETHESIS' &&
-          info.row.original?.program?.options?.allowStudentStartedProcess
-
-        const translationKey = isEthesisStudentStarted
-          ? 'thesisStages:ethesis_studentstarted'
-          : StatusLocale[status]
-
-        const targetDate = info.row.original?.targetDate
-
-        const labelText = info.row.original?.isIdle
-          ? `${t(translationKey)} (${t('thesisStages:idle')})`
-          : isThesisLate(targetDate) &&
-              info.row.original.status == 'IN_PROGRESS'
-            ? `${t(translationKey)} (${t('thesisStages:late')})`
-            : t(translationKey)
-
-        return <Chip label={labelText} variant="outlined" sx={{}} />
-      },
+      cell: (info) => (
+        <>
+          <Chip
+            aria-hidden
+            label={getStatusLabel(info.row.original)}
+            variant="outlined"
+            sx={{}}
+          />
+          <VisuallyHidden component="span">
+            {getStatusLabel(info.row.original)}
+          </VisuallyHidden>
+        </>
+      ),
       meta: {
         getCellContext(context) {
           const status = context.row.original.status
@@ -651,10 +699,7 @@ const ThesisTable = ({
       },
       enableResizing: true,
     }),
-    ...((isLoading && rows.length === 0
-      ? previousData.current.rows
-      : rows
-    ).some((row) => row.waysOfWorkingValidUntil)
+    ...(tableData.some((row) => row.waysOfWorkingValidUntil)
       ? [
           columnHelper.accessor('waysOfWorkingValidUntil', {
             id: 'waysOfWorkingValidUntil',
@@ -694,68 +739,76 @@ const ThesisTable = ({
           }),
         ]
       : []),
-    columnHelper.display({
-      id: 'actions',
-      size: 0,
-      enableSorting: false,
-      cell: (info) => (
-        <Stack direction="row">
-          {info.row.original.supervisions.filter(
-            (supervision) =>
-              supervision.user?.id == user?.id &&
-              supervision.isPrimarySupervisor
-          ).length != 0 ? (
-            <Tooltip title={t('thesesPage:primarySupervisorTooltip')}>
-              <IconButton>
-                <Star
-                  sx={{
-                    color: 'primary.main',
-                  }}
-                ></Star>
-              </IconButton>
-            </Tooltip>
-          ) : null}
+    ...(!hasIndicators
+      ? []
+      : [
+          columnHelper.display({
+            id: 'actions',
+            size: 0,
+            enableSorting: false,
+            cell: (info) => (
+              <Stack direction="row">
+                {isPrimarySupervisor(info.row.original) ? (
+                  <>
+                    <Tooltip title={t('thesesPage:primarySupervisorTooltip')}>
+                      <Box aria-hidden sx={{ p: 1, display: 'inline-flex' }}>
+                        <Star
+                          sx={{
+                            color: 'primary.main',
+                          }}
+                        ></Star>
+                      </Box>
+                    </Tooltip>
+                    <VisuallyHidden component="span">
+                      {t('thesesPage:primarySupervisorTooltip')}
+                    </VisuallyHidden>
+                  </>
+                ) : null}
 
-          {(user &&
-            (canApprove(info.row.original, user) ||
-              canSetEthesisMilestones(info.row.original, user) ||
-              needsEthesisAdminAction(info.row.original, user))) ||
-          needsStudentAction(info.row.original, isStudentView) ? (
-            <Tooltip title={t('thesesPage:actionRequiredTooltip')}>
-              <IconButton>
-                <PriorityHigh
-                  sx={{
-                    color: 'primary.main',
-                  }}
-                ></PriorityHigh>
-              </IconButton>
-            </Tooltip>
-          ) : null}
+                {needsAction(info.row.original) ? (
+                  <>
+                    <Tooltip title={t('thesesPage:actionRequiredTooltip')}>
+                      <Box aria-hidden sx={{ p: 1, display: 'inline-flex' }}>
+                        <PriorityHigh
+                          sx={{
+                            color: 'primary.main',
+                          }}
+                        ></PriorityHigh>
+                      </Box>
+                    </Tooltip>
+                    <VisuallyHidden component="span">
+                      {t('thesesPage:actionRequiredTooltip')}
+                    </VisuallyHidden>
+                  </>
+                ) : null}
 
-          {info.row.original?.isIdle ? (
-            <Tooltip title={t('thesisStages:idle')}>
-              <IconButton>
-                <Bedtime
-                  sx={{
-                    color: 'primary.main',
-                  }}
-                ></Bedtime>
-              </IconButton>
-            </Tooltip>
-          ) : null}
-        </Stack>
-      ),
-      header: () => (
-        <Box component="span" sx={visuallyHidden}>
-          {t('thesesTableToolbar:actionNeeded')}
-        </Box>
-      ),
-      enableResizing: true,
-    }),
+                {info.row.original?.isIdle ? (
+                  <>
+                    <Tooltip title={t('thesisStages:idle')}>
+                      <Box aria-hidden sx={{ p: 1, display: 'inline-flex' }}>
+                        <Bedtime
+                          sx={{
+                            color: 'primary.main',
+                          }}
+                        ></Bedtime>
+                      </Box>
+                    </Tooltip>
+                    <VisuallyHidden component="span">
+                      {t('thesisStages:idle')}
+                    </VisuallyHidden>
+                  </>
+                ) : null}
+              </Stack>
+            ),
+            header: () => (
+              <VisuallyHidden component="span">
+                {t('thesesTableToolbar:actionNeeded')}
+              </VisuallyHidden>
+            ),
+            enableResizing: true,
+          }),
+        ]),
   ]
-
-  const tableData =
-    isLoading && rows.length === 0 ? previousData.current.rows : rows
 
   const table = useReactTable({
     data: tableData,
@@ -771,7 +824,44 @@ const ThesisTable = ({
   const selectedTheses = Array.from(bulkSelection.values())
   const selectedApprovable = selectedTheses.filter((t) => canApprove(t, user))
 
-  const toolbar = (
+  const showNewThesisButton = !noAddThesisButton && !newThesisInMenu
+  const showNewThesisMenu = !noAddThesisButton && newThesisInMenu
+
+  const newThesisButton = (
+    <Button
+      variant="contained"
+      size="small"
+      sx={{
+        fontSize: '12px',
+        height: 24,
+        px: 2,
+        fontWeight: 700,
+        boxShadow: 0,
+      }}
+      onClick={handleNewThesisClick}
+    >
+      {t('thesesTableToolbar:newThesisButton')}
+    </Button>
+  )
+
+  const studentToolbar = showNewThesisButton ? (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+        borderBottom: 1,
+        borderColor: 'divider',
+        mb: 2,
+      }}
+    >
+      <Stack direction="row" sx={{ gap: 2, pb: 1, alignItems: 'center' }}>
+        {newThesisButton}
+      </Stack>
+    </Box>
+  ) : null
+
+  const staffToolbar = (
     <>
       {/* Row 1: Main Views and Actions */}
       <Box
@@ -853,24 +943,9 @@ const ThesisTable = ({
             </Button>
           )}
 
-          {!noAddThesisButton && !showHiddenNewThesisButton && (
-            <Button
-              variant="contained"
-              size="small"
-              sx={{
-                fontSize: '12px',
-                height: 24,
-                px: 2,
-                fontWeight: 700,
-                boxShadow: 0,
-              }}
-              onClick={handleNewThesisClick}
-            >
-              {t('thesesTableToolbar:newThesisButton')}
-            </Button>
-          )}
+          {showNewThesisButton && newThesisButton}
 
-          {!noAddThesisButton && showHiddenNewThesisButton && (
+          {showNewThesisMenu && (
             <Box>
               <IconButton onClick={handleMenuClick} size="small">
                 <MoreVertIcon />
@@ -1054,7 +1129,9 @@ const ThesisTable = ({
 
             <TextField
               size="small"
+              type="search"
               placeholder={t('thesesTableToolbar:search')}
+              aria-label={t('thesesTableToolbar:search')}
               variant="outlined"
               onChange={(e) => {
                 if (debounceTimeout != null) {
@@ -1074,10 +1151,13 @@ const ThesisTable = ({
     </>
   )
 
+  const toolbar = isStudentView ? studentToolbar : staffToolbar
+
   return (
     <>
       <PrethesisTable
         table={table}
+        label={t('common:theses')}
         isLoading={isLoading}
         skeletonCount={skeletonCount}
         onRowClick={(row) => {
@@ -1156,15 +1236,7 @@ const ThesisTable = ({
                     }
                     secondary={
                       <Typography variant="caption" color="text.secondary">
-                        {thesis.authors
-                          .toSorted((a, b) =>
-                            a.lastName.localeCompare(b.lastName)
-                          )
-                          .map(
-                            (author) =>
-                              `${author.lastName} ${author.firstName} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
-                          )
-                          .join(', ')}
+                        {getAuthorNames(thesis)}
                       </Typography>
                     }
                   />

@@ -40,6 +40,7 @@ interface Props<TData> {
   }
   toolbar?: React.ReactNode
   noDataText?: string
+  label?: string
 }
 
 export function PrethesisTable<TData>({
@@ -53,9 +54,11 @@ export function PrethesisTable<TData>({
   sorting,
   toolbar,
   noDataText,
+  label,
 }: Props<TData>) {
   const { t } = useTranslation()
   const rows = table.getRowModel().rows
+  const visibleColumns = table.getVisibleLeafColumns()
   const noRowsText = noDataText || t('thesesPage:noRows')
 
   return (
@@ -74,6 +77,8 @@ export function PrethesisTable<TData>({
       <TableContainer>
         <Table
           size="small"
+          aria-label={label}
+          aria-busy={isLoading || undefined}
           sx={{
             tableLayout: 'auto',
           }}
@@ -83,6 +88,12 @@ export function PrethesisTable<TData>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const canSort = header.column.getCanSort()
+                  const isSorted = sorting
+                    ? sorting.sortedField === header.id
+                    : Boolean(header.column.getIsSorted())
+                  const isSortedDesc = sorting
+                    ? sorting.sortedDir === 'desc'
+                    : header.column.getIsSorted() === 'desc'
 
                   return (
                     <TableCell
@@ -127,13 +138,7 @@ export function PrethesisTable<TData>({
                         {!header.isPlaceholder && canSort && (
                           <IconButton
                             sx={{
-                              opacity: (
-                                sorting
-                                  ? sorting.sortedField === header.id
-                                  : header.column.getIsSorted()
-                              )
-                                ? 1
-                                : 0.3,
+                              opacity: isSorted ? 1 : 0.3,
                               ':hover': {
                                 opacity: 0.5,
                               },
@@ -152,16 +157,8 @@ export function PrethesisTable<TData>({
                                 : header.column.getToggleSortingHandler()
                             }
                           >
-                            {(
-                              sorting
-                                ? sorting.sortedField === header.id
-                                : header.column.getIsSorted()
-                            ) ? (
-                              (
-                                sorting
-                                  ? sorting.sortedDir === 'desc'
-                                  : header.column.getIsSorted() === 'desc'
-                              ) ? (
+                            {isSorted ? (
+                              isSortedDesc ? (
                                 <ArrowDownward />
                               ) : (
                                 <ArrowUpward />
@@ -182,7 +179,7 @@ export function PrethesisTable<TData>({
             {isLoading ? (
               rows.length > 0 ? (
                 rows.map((row, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={index} aria-hidden>
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} sx={{ position: 'relative' }}>
                         <Box sx={{ visibility: 'hidden' }}>
@@ -222,8 +219,8 @@ export function PrethesisTable<TData>({
                 ))
               ) : (
                 Array.from(new Array(skeletonCount)).map((_, index) => (
-                  <TableRow key={index}>
-                    {table.getVisibleLeafColumns().map((column) => (
+                  <TableRow key={index} aria-hidden>
+                    {visibleColumns.map((column) => (
                       <TableCell key={column.id}>
                         {column.id === 'select' ? (
                           <Checkbox
@@ -268,20 +265,18 @@ export function PrethesisTable<TData>({
                         'status',
                         'actions',
                       ].includes(cell.column.id)
-                      const metaProps: any = cell.column.columnDef.meta
-                        ? cell.column.columnDef.meta.getCellContext(
-                            cell.getContext()
-                          )
-                        : {}
+                      const meta = cell.column.columnDef.meta
+                      const cellSx = meta?.getCellContext?.(
+                        cell.getContext()
+                      )?.sx
 
                       return (
                         <TableCell
                           key={cell.id}
-                          {...metaProps}
-                          sx={{
-                            ...(metaProps?.sx || {}),
-                            opacity: dimmed && isTextColumn ? 0.5 : 1,
-                          }}
+                          sx={[
+                            ...(Array.isArray(cellSx) ? cellSx : [cellSx]),
+                            { opacity: dimmed && isTextColumn ? 0.5 : 1 },
+                          ]}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -295,7 +290,10 @@ export function PrethesisTable<TData>({
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={1000} sx={{ textAlign: 'center' }}>
+                <TableCell
+                  colSpan={visibleColumns.length}
+                  sx={{ textAlign: 'center' }}
+                >
                   <Typography>{noRowsText}</Typography>
                 </TableCell>
               </TableRow>
