@@ -20,7 +20,6 @@
     "supervisionPercentageHeader": "Ohjausprosentti",
     "supervisionsTable": "Ohjaukset",
     "targetDateHeader": "Tavoitepäivä",
-    "sortBy": "Järjestä",
     "durationHeader": "Kesto (pv)",
     "completedDateHeader": "Arvosana Sisussa",
     "validUntilHeader": "Sopimus",
@@ -606,7 +605,6 @@
   },
   "progressView": {
     "milestonePosition": "Etappi {{number}}/{{total}}",
-    "stepsListLabel": "Tutkielman edistymisen vaiheet",
     "stepNumber": "Vaihe {{number}}",
     "stepStatusCompleted": "Tämä vaihe on valmis",
     "stepStatusCurrent": "Tämä on nykyinen vaihe",

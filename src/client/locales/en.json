@@ -20,7 +20,6 @@
     "supervisionPercentageHeader": "Supervision percentage",
     "supervisionsTable": "Supervisions",
     "targetDateHeader": "Target date",
-    "sortBy": "Sort by",
     "durationHeader": "Duration (days)",
     "completedDateHeader": "Grade in Sisu",
     "validUntilHeader": "Contract",
@@ -607,7 +606,6 @@
   },
   "progressView": {
     "milestonePosition": "Milestone {{number}} of {{total}}",
-    "stepsListLabel": "Thesis progress steps",
     "stepNumber": "Step {{number}}",
     "stepStatusCompleted": "This step is completed",
     "stepStatusCurrent": "This is the current step",

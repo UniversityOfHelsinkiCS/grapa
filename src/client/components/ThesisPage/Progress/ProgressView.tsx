@@ -9,10 +9,11 @@ import {
   DialogContentText,
 } from '@mui/material'
 import Popup from '../../Common/Popup'
+import { VisuallyHidden } from '../../Common/HiddenLabel'
 
 import { useTranslation } from 'react-i18next'
 import { useEditThesisMutation } from '../../../hooks/useThesesMutation'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import {
   getMilestonesArray,
   parseMilestoneDescription,
@@ -34,6 +35,7 @@ export const ProgressView = ({
   const editThesisMutation = useEditThesisMutation(isStudentView)
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
   const [lastMilestoneChecked, setLastMilestoneChecked] = useState(false)
+  const dialogDescriptionId = useId()
 
   const useStudentStartedProcess =
     thesis.program.options?.allowStudentStartedProcess
@@ -129,6 +131,36 @@ export const ProgressView = ({
   const milestoneStep = thesis.milestone || 0
   const step = getCalculatedStep()
 
+  const getStepStatus = (index: number) => {
+    if (index === step - 1) return t('progressView:stepStatusCurrent')
+    if (index < step - 1) return t('progressView:stepStatusCompleted')
+
+    return t('progressView:stepStatusUpcoming')
+  }
+
+  const getStepName = (progressStep: ProgressStep) =>
+    progressStep.milestone && progressStep.milestone_index
+      ? t('progressView:milestonePosition', {
+          number: progressStep.milestone_index,
+          total: milestones.length,
+        })
+      : progressStep.name
+
+  const currentStep = steps[step - 1]
+  const progressSummary = currentStep
+    ? t('progressView:currentStepStatus', {
+        step: [getStepName(currentStep), currentStep.description]
+          .filter(Boolean)
+          .join('. '),
+      })
+    : ''
+
+  const showMilestoneActions =
+    thesis.status === 'IN_PROGRESS' &&
+    step >= 1 &&
+    (steps[step - 1]?.milestone || steps[step]?.milestone) &&
+    steps[step - 1]?.milestone_index !== milestones.length
+
   const saveMilestone = (delta: number) => {
     editThesisMutation.mutate({
       thesisId: thesis.id,
@@ -170,134 +202,156 @@ export const ProgressView = ({
           p: 2,
         }}
       >
-        <Typography variant="h5" sx={{ mb: 2 }}>
+        <Typography variant="h5" component="h4" sx={{ mb: 2 }}>
           {t('progressView:title')}
         </Typography>
 
+        <VisuallyHidden aria-live="polite">{progressSummary}</VisuallyHidden>
+
         <Stack
+          component="ol"
           direction="row"
           sx={{
             justifyContent: 'space-between',
+            listStyle: 'none',
+            m: 0,
+            p: 0,
           }}
         >
-          {steps.map((label, index) => (
-            <Box
-              key={label.name}
-              sx={{
-                flexGrow: label.milestone ? 1 : 0.1,
-                borderTop: steps[index].milestone
-                  ? step > index
-                    ? '0.25rem solid #005a94'
-                    : '0.25rem solid #9e9e9e'
-                  : 'none',
-                maxWidth: '20rem',
-                color:
-                  step > index || (step == index && steps[step].milestone)
-                    ? 'black'
-                    : '#9e9e9e',
-              }}
-            >
+          {steps.map((label, index) => {
+            const isCurrent = index === step - 1
+            const isReached = step > index
+            const stepNumber = t('progressView:stepNumber', {
+              number: getVisibleStep(index),
+            })
+
+            return (
               <Box
+                component="li"
+                key={label.name}
+                aria-current={isCurrent ? 'step' : undefined}
                 sx={{
-                  px: 2,
-                  py: 2,
-                  mt: steps[index].milestone ? 2 : 0,
+                  flexGrow: label.milestone ? 1 : 0.1,
+                  borderTop: label.milestone
+                    ? isReached
+                      ? '0.25rem solid #005a94'
+                      : '0.25rem solid #9e9e9e'
+                    : 'none',
                   maxWidth: '20rem',
-                  backgroundColor: step - 1 == index ? '#cfe0eb' : null,
+                  color:
+                    isReached || (step === index && label.milestone)
+                      ? 'black'
+                      : '#9e9e9e',
                 }}
               >
                 <Box
                   sx={{
-                    backgroundColor: step > index ? 'primary.main' : '#9e9e9e',
-                    width: '2rem',
-                    height: '2rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 'bold',
-                    color: 'white',
-                    mb: 1,
+                    px: 2,
+                    py: 2,
+                    mt: label.milestone ? 2 : 0,
+                    maxWidth: '20rem',
+                    backgroundColor: isCurrent ? '#cfe0eb' : null,
                   }}
                 >
-                  {getVisibleStep(index)}
-                </Box>
-                {!label.milestone && (
-                  <Typography
-                    variant="subtitle2"
+                  <Box
+                    aria-hidden
                     sx={{
+                      backgroundColor: isReached ? 'primary.main' : '#9e9e9e',
+                      width: '2rem',
+                      height: '2rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                       fontWeight: 'bold',
+                      color: 'white',
+                      mb: 1,
                     }}
                   >
-                    {label.name}
+                    {getVisibleStep(index)}
+                  </Box>
+                  <VisuallyHidden component="span">
+                    {`${stepNumber}.`}
+                  </VisuallyHidden>
+                  {!label.milestone && (
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {label.name}
+                    </Typography>
+                  )}
+                  <Typography
+                    sx={{
+                      fontSize: 'small',
+                    }}
+                  >
+                    {label.description}
                   </Typography>
-                )}
-                <Typography
-                  sx={{
-                    fontSize: 'small',
-                  }}
-                >
-                  {label.description}
-                </Typography>
+                  <VisuallyHidden component="span">
+                    {`${getStepStatus(index)}.`}
+                  </VisuallyHidden>
+                </Box>
               </Box>
-            </Box>
-          ))}
+            )
+          })}
         </Stack>
 
-        {thesis.status === 'IN_PROGRESS' &&
-          step >= 1 &&
-          (steps[step - 1].milestone ||
-            (steps[step] && steps[step].milestone)) &&
-          steps[step - 1]?.milestone_index !== milestones.length && (
-            <Stack
-              direction="row"
-              sx={{
-                gap: 1,
-                mt: 3,
+        {showMilestoneActions && (
+          <Stack
+            direction="row"
+            role="group"
+            aria-label={t('progressView:milestoneActionsLabel')}
+            sx={{
+              gap: 1,
+              mt: 3,
+            }}
+          >
+            <Button
+              variant="contained"
+              disabled={!steps[step]?.milestone}
+              onClick={() => {
+                if (steps[step]?.milestone_index === milestones.length) {
+                  setConfirmDialogOpen(true)
+                } else {
+                  saveMilestone(1)
+                }
               }}
             >
-              <Button
-                variant="contained"
-                disabled={!steps[step].milestone}
-                onClick={() => {
-                  if (steps[step]?.milestone_index === milestones.length) {
-                    setConfirmDialogOpen(true)
-                  } else {
-                    saveMilestone(1)
-                  }
-                }}
-              >
-                {t('progressView:doneButton').replace(
-                  '{0}',
-                  steps[step]?.milestone_index
-                    ? inProgressIndex + 1 + '.' + steps[step].milestone_index
-                    : ''
-                )}
-              </Button>
+              {t('progressView:doneButton').replace(
+                '{0}',
+                steps[step]?.milestone_index
+                  ? inProgressIndex + 1 + '.' + steps[step].milestone_index
+                  : ''
+              )}
+            </Button>
 
-              <Button
-                variant="outlined"
-                disabled={
-                  (step >= 1 && !steps[step - 1]?.milestone) ||
-                  editThesisMutation.isPending
-                }
-                onClick={() => saveMilestone(-1)}
-              >
-                {t('progressView:cancelButton')}
-              </Button>
-            </Stack>
-          )}
+            <Button
+              variant="outlined"
+              disabled={
+                (step >= 1 && !steps[step - 1]?.milestone) ||
+                editThesisMutation.isPending
+              }
+              onClick={() => saveMilestone(-1)}
+            >
+              {t('progressView:cancelButton')}
+            </Button>
+          </Stack>
+        )}
       </Card>
       <Popup
         open={confirmDialogOpen}
         onClose={handleCancelConfirmation}
         title={t('progressView:lastMilestoneConfirmationTitle')}
+        aria-describedby={dialogDescriptionId}
         onSubmit={handleConfirmLastMilestone}
         submitText={t('common:approveButton')}
         submitColor="primary"
         submitDisabled={editThesisMutation.isPending || !lastMilestoneChecked}
         cancelText={t('common:cancelButton')}
       >
-        <DialogContentText id="confirm-dialog-description">
+        <DialogContentText id={dialogDescriptionId}>
           {t('progressView:lastMilestoneConfirmationDescription')}
         </DialogContentText>
         <FormControlLabel

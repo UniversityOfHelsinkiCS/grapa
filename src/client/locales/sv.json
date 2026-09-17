@@ -20,7 +20,6 @@
     "supervisionPercentageHeader": "Handledningsprocent",
     "supervisionsTable": "Handledningar",
     "targetDateHeader": "Måldatum",
-    "sortBy": "Sortera efter",
     "durationHeader": "Längd (dagar)",
     "completedDateHeader": "Betyg i Sisu",
     "validUntilHeader": "Avtal",
@@ -607,7 +606,6 @@
   },
   "progressView": {
     "milestonePosition": "Milstolpe {{number}} av {{total}}",
-    "stepsListLabel": "Avhandlingens steg",
     "stepNumber": "Steg {{number}}",
     "stepStatusCompleted": "Det här steget är klart",
     "stepStatusCurrent": "Det här är det nuvarande steget",
