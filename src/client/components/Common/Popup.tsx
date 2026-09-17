@@ -8,7 +8,7 @@ import {
   ButtonProps,
   DialogProps,
 } from '@mui/material'
-import { ReactNode, useRef } from 'react'
+import { ReactNode, useId, useRef } from 'react'
 
 interface PopupProps extends Omit<
   DialogProps,
@@ -33,6 +33,7 @@ interface PopupProps extends Omit<
 }
 
 const Popup = ({ open, onClose, testId = 'popup', ...props }: PopupProps) => {
+  const generatedTitleId = useId()
   const cachedProps = useRef(props)
   if (open) {
     cachedProps.current = props
@@ -55,15 +56,24 @@ const Popup = ({ open, onClose, testId = 'popup', ...props }: PopupProps) => {
     submitVariant = 'contained',
     ...dialogProps
   } = displayProps
+
+  const hasTitle = Boolean(title || titleProps)
+  const titleId = titleProps?.id ?? generatedTitleId
+
   return (
     <Dialog
       data-testid={`${testId}-dialog`}
       open={open}
       onClose={onClose}
+      aria-labelledby={hasTitle ? titleId : undefined}
       {...dialogProps}
     >
-      {(title || titleProps) && (
-        <DialogTitle data-testid={`${testId}-title`} {...titleProps}>
+      {hasTitle && (
+        <DialogTitle
+          data-testid={`${testId}-title`}
+          id={titleId}
+          {...titleProps}
+        >
           {title}
         </DialogTitle>
       )}
