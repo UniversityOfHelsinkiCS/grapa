@@ -459,7 +459,7 @@ const ThesisTable = ({
               />
             </Tooltip>
             <VisuallyHidden component="span">
-              {`${data.id}: ${data.name[language]}`}
+              {`${data.id}, ${data.name[language]}`}
             </VisuallyHidden>
           </>
         ) : (
