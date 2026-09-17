@@ -1,6 +1,7 @@
 import { Box, Link } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import styles from '../styles'
+import { NewTabHint } from './Common/HiddenLabel'
 
 import toskaColor from '../assets/toscalogo_color.svg'
 
@@ -24,6 +25,7 @@ const Footer = () => {
             underline="hover"
           >
             <img src={toskaColor} alt="Toska" width="70" />
+            <NewTabHint />
           </Link>
         </Box>
         <Box sx={footerStyles.contactBox}>
@@ -36,6 +38,7 @@ const Footer = () => {
           rel="noopener"
         >
           {t('footer:privacyPolicy')}
+          <NewTabHint />
         </Link>
       </Box>
     </Box>

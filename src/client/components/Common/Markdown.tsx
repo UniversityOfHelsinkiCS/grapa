@@ -2,6 +2,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
 import { Box, Link } from '@mui/material'
+import { NewTabHint } from './HiddenLabel'
 
 interface MarkdownProps {
   children: string
@@ -26,13 +27,16 @@ const Markdown = ({ children }: MarkdownProps) => {
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkBreaks]}
         components={{
-          a: ({ node: _node, ...props }) => (
+          a: ({ node: _node, children, ...props }) => (
             <Link
               {...props}
               target="_blank"
               rel="noopener noreferrer"
               underline="hover"
-            />
+            >
+              {children}
+              <NewTabHint />
+            </Link>
           ),
         }}
       >
