@@ -459,6 +459,10 @@
     "milestone": "Milstolpe",
     "all": "Alla",
     "filterViews": {
+      "current": {
+        "name": "Aktuella",
+        "tooltip": "Visar ofärdiga avhandlingar, men för avhandlingar som syns endast via en programledarroll, endast de som ännu inte har godkänts"
+      },
       "active": {
         "name": "Aktiva",
         "tooltip": "Visar ofärdiga avhandlingar"

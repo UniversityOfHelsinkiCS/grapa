@@ -29,6 +29,7 @@ interface UsePaginatedThesesParams {
   hideStudentStartedEthesis?: boolean
   isThesisLate?: boolean
   isThesisVeryLate?: boolean
+  onlyCurrent?: boolean
 }
 
 export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
@@ -58,6 +59,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
     params.hideStudentStartedEthesis,
     params.isThesisLate,
     params.isThesisVeryLate,
+    params.onlyCurrent,
     language,
     params.useStudentApi,
   ]
@@ -92,6 +94,7 @@ export const usePaginatedTheses = (params: UsePaginatedThesesParams) => {
         hideStudentStartedEthesis: params.hideStudentStartedEthesis,
         isThesisLate: params.isThesisLate,
         isThesisVeryLate: params.isThesisVeryLate,
+        onlyCurrent: params.onlyCurrent,
         language,
         ...params.order,
       },
@@ -137,6 +140,7 @@ export const useExportThesesCsv = (params: UsePaginatedThesesParams) => {
         hideStudentStartedEthesis: params.hideStudentStartedEthesis,
         isThesisLate: params.isThesisLate,
         isThesisVeryLate: params.isThesisVeryLate,
+        onlyCurrent: params.onlyCurrent,
         language,
         ...params.order,
       },

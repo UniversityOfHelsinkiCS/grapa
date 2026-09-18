@@ -47,7 +47,7 @@ const router = createBrowserRouter(
         },
         {
           path: '/supervised-theses',
-          element: <ThesesPage key="supervised" />,
+          element: <ThesesPage key="supervised" showCurrentView />,
           errorElement: <RootBoundary />,
         },
         {

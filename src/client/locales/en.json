@@ -459,6 +459,10 @@
     "milestone": "Milestone",
     "all": "All",
     "filterViews": {
+      "current": {
+        "name": "Current",
+        "tooltip": "Shows unfinished theses, but for theses visible only through a programme manager role, only those that have not been accepted yet"
+      },
       "active": {
         "name": "Active",
         "tooltip": "Shows unfinished theses"

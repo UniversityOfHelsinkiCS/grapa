@@ -458,6 +458,10 @@
     "milestone": "Etappi",
     "all": "Kaikki",
     "filterViews": {
+      "current": {
+        "name": "Ajankohtaiset",
+        "tooltip": "Näyttää keskeneräiset tutkielmat, mutta vain vastaavan roolilla näkyvistä tutkielmista ne, joita ei ole vielä hyväksytty"
+      },
       "active": {
         "name": "Aktiiviset",
         "tooltip": "Näyttää keskeneräiset tutkielmat"

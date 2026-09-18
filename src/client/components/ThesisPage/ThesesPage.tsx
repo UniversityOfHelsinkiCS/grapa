@@ -45,6 +45,7 @@ interface Props {
   hideEdit?: boolean
   hideDelete?: boolean
   showGraders?: boolean
+  showCurrentView?: boolean
 }
 const ThesesPage = ({
   filteringProgramId,
@@ -63,6 +64,7 @@ const ThesesPage = ({
   hideEdit = false,
   hideDelete = false,
   showGraders = false,
+  showCurrentView = false,
 }: Props) => {
   const footerRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
@@ -98,6 +100,7 @@ const ThesesPage = ({
   const [filterIsThesisLate, setFilterIsThesisLate] = useState<boolean>(false)
   const [filterIsThesisVeryLate, setFilterIsThesisVeryLate] =
     useState<boolean>(false)
+  const [filterOnlyCurrent, setFilterOnlyCurrent] = useState<boolean>(false)
 
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -118,6 +121,7 @@ const ThesesPage = ({
     hideStudentStartedEthesis,
     isThesisLate: filterIsThesisLate,
     isThesisVeryLate: filterIsThesisVeryLate,
+    onlyCurrent: filterOnlyCurrent,
     milestone: filterMilestone !== null ? filterMilestone : undefined,
 
     onlyAuthored: isStudentView,
@@ -262,6 +266,7 @@ const ThesesPage = ({
     setFilterEthesisReadyStudentStarted(false)
     setFilterIsThesisLate(false)
     setFilterIsThesisVeryLate(false)
+    setFilterOnlyCurrent(false)
 
     setCurrentFilters(filterModel)
 
@@ -294,6 +299,9 @@ const ThesesPage = ({
           break
         case 'isThesisVeryLate':
           setFilterIsThesisVeryLate(true)
+          break
+        case 'onlyCurrent':
+          setFilterOnlyCurrent(true)
           break
 
         default:
@@ -389,6 +397,32 @@ const ThesesPage = ({
                             },
                           }
                         : {
+                            ...(showCurrentView
+                              ? {
+                                  current: {
+                                    filterModel: [
+                                      {
+                                        id: 'status',
+                                        value: [
+                                          'DRAFT',
+                                          'SUGGESTED',
+                                          'PLANNING',
+                                          'IN_PROGRESS',
+                                          'ETHESIS',
+                                          'ETHESIS_SENT',
+                                        ],
+                                      },
+                                      {
+                                        id: 'onlyCurrent',
+                                        value: true,
+                                      },
+                                    ],
+                                    sortingModel: [
+                                      { id: 'startDate', desc: true },
+                                    ],
+                                  },
+                                }
+                              : {}),
                             active: {
                               filterModel: [
                                 {

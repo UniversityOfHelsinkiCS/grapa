@@ -79,6 +79,7 @@ const getPaginatedQuery = (req: ServerGetRequest) => ({
   hideStudentStartedEthesis: req.query.hideStudentStartedEthesis === 'true',
   isThesisLate: req.query.isThesisLate === 'true',
   isThesisVeryLate: req.query.isThesisVeryLate === 'true',
+  onlyCurrent: req.query.onlyCurrent === 'true',
 })
 
 thesisRouter.get(

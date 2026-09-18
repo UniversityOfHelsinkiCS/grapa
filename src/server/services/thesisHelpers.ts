@@ -31,6 +31,7 @@ import {
   getSecondaryStudyTrackIds,
   getPrimaryStudyTrackId,
 } from '../util/studyTracks'
+import { sequelize } from '../db/connection'
 import { ThesisData, User as UserType, SupervisionData } from '../types'
 import { VALID_THESIS_STATUSES } from '../../config'
 import logger from '../util/logger'
@@ -104,6 +105,7 @@ export interface ThesisFiltersOptions {
   isThesisLate?: boolean
   isThesisVeryLate?: boolean
   requireStudentStartedProcess?: boolean
+  onlyCurrent?: boolean
 }
 
 export const buildThesisIncludes = (language?: string): Includeable[] => {
@@ -196,6 +198,16 @@ const getStudyTrackIds = async (studyTrackId: string): Promise<string[]> => {
   return [studyTrackId, ...secondaryIds]
 }
 
+// Tables that tie a user to a thesis personally. Approvers are deliberately
+// left out: those rows are filled from the programme's thesis approvers, so
+// being one is the programme management relationship, not a personal role
+const PERSONAL_ROLE_TABLES = [Supervision, SeminarSupervision, Grader, Author]
+
+const hasThesisRole = (model: { tableName: string }, userId: string) =>
+  literal(
+    `EXISTS (SELECT 1 FROM "${model.tableName}" WHERE "${model.tableName}"."thesis_id" = "Thesis"."id" AND "${model.tableName}"."user_id" = ${sequelize.escape(userId)})`
+  )
+
 const buildPermissionsConditions = async (
   actionUser: UserType,
   departmentId?: string,
@@ -214,14 +226,10 @@ const buildPermissionsConditions = async (
   }
 
   if (onlySeminarSupervised) {
-    return literal(
-      `EXISTS (SELECT 1 FROM "${SeminarSupervision.tableName}" WHERE "${SeminarSupervision.tableName}"."thesis_id" = "Thesis"."id" AND "${SeminarSupervision.tableName}"."user_id" = '${actionUser.id}')`
-    )
+    return hasThesisRole(SeminarSupervision, actionUser.id)
   }
   if (onlyAuthored) {
-    return literal(
-      `EXISTS (SELECT 1 FROM "${Author.tableName}" WHERE "${Author.tableName}"."thesis_id" = "Thesis"."id" AND "${Author.tableName}"."user_id" = '${actionUser.id}')`
-    )
+    return hasThesisRole(Author, actionUser.id)
   }
 
   // Otherwise, user is restricted to what they supervise, approve, or programs/study tracks they manage
@@ -271,15 +279,9 @@ const buildPermissionsConditions = async (
   }
 
   const orConditions: any[] = [
-    literal(
-      `EXISTS (SELECT 1 FROM "${Supervision.tableName}" WHERE "${Supervision.tableName}"."thesis_id" = "Thesis"."id" AND "${Supervision.tableName}"."user_id" = '${actionUser.id}')`
-    ),
-    literal(
-      `EXISTS (SELECT 1 FROM "${SeminarSupervision.tableName}" WHERE "${SeminarSupervision.tableName}"."thesis_id" = "Thesis"."id" AND "${SeminarSupervision.tableName}"."user_id" = '${actionUser.id}')`
-    ),
-    literal(
-      `EXISTS (SELECT 1 FROM "${Approver.tableName}" WHERE "${Approver.tableName}"."thesis_id" = "Thesis"."id" AND "${Approver.tableName}"."user_id" = '${actionUser.id}')`
-    ),
+    hasThesisRole(Supervision, actionUser.id),
+    hasThesisRole(SeminarSupervision, actionUser.id),
+    hasThesisRole(Approver, actionUser.id),
   ]
 
   if (programIds.length > 0) {
@@ -289,7 +291,9 @@ const buildPermissionsConditions = async (
     orConditions.push({ studyTrackId: Array.from(expandedStudyTrackIds) })
   }
   if (departmentIds.length > 0) {
-    const departmentIdsStr = departmentIds.map((id) => `'${id}'`).join(', ')
+    const departmentIdsStr = departmentIds
+      .map((id) => sequelize.escape(id))
+      .join(', ')
     orConditions.push(
       literal(
         `EXISTS (SELECT 1 FROM "${Supervision.tableName}" INNER JOIN "${User.tableName}" ON "${Supervision.tableName}"."user_id" = "${User.tableName}"."id" WHERE "${Supervision.tableName}"."thesis_id" = "Thesis"."id" AND "${User.tableName}"."department_id" IN (${departmentIdsStr}))`
@@ -322,6 +326,7 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
     isThesisLate,
     isThesisVeryLate,
     requireStudentStartedProcess,
+    onlyCurrent,
   } = options
 
   const whereClause: any = {}
@@ -346,7 +351,7 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
   if (departmentId) {
     andConditions.push(
       literal(
-        `EXISTS (SELECT 1 FROM "${Supervision.tableName}" INNER JOIN "${User.tableName}" ON "${Supervision.tableName}"."user_id" = "${User.tableName}"."id" WHERE "${Supervision.tableName}"."thesis_id" = "Thesis"."id" AND "${User.tableName}"."department_id" = '${departmentId}')`
+        `EXISTS (SELECT 1 FROM "${Supervision.tableName}" INNER JOIN "${User.tableName}" ON "${Supervision.tableName}"."user_id" = "${User.tableName}"."id" WHERE "${Supervision.tableName}"."thesis_id" = "Thesis"."id" AND "${User.tableName}"."department_id" = ${sequelize.escape(departmentId)})`
       )
     )
   }
@@ -443,6 +448,19 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
   )
   if (permissionCondition) {
     andConditions.push(permissionCondition)
+  }
+
+  // Keeps only the theses in PLANNING and the ones the user is tied to
+  // through PERSONAL_ROLE_TABLES
+  if (onlyCurrent) {
+    andConditions.push({
+      [Op.or]: [
+        { status: 'PLANNING' },
+        ...PERSONAL_ROLE_TABLES.map((model) =>
+          hasThesisRole(model, actionUser.id)
+        ),
+      ],
+    })
   }
 
   if (requireStudentStartedProcess) {
