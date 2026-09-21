@@ -669,6 +669,12 @@
     "editTooltipDisabled": "The thesis must be approved before editing, you can also reject the thesis plan and leave the student a message about the required changes",
     "editTooltip": "Edit thesis"
   },
+  "ktdkFeedbackBanner": {
+    "url": "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=WXWumNwQiEKOLkWT5i_j7ue3R1-g25VMlW03P5EMkBdUMk0yMjMyVDEwTkpEWjI3TUdUWEEyQUNIRi4u",
+    "text": "Prethesis has been renewed,",
+    "linkText": "answer the feedback survey",
+    "dismiss": "Hide the feedback banner"
+  },
   "footer": {
     "privacyPolicy": "Data protection",
     "privacyPolicyUrl": "https://www.helsinki.fi/en/about-us/processing-data-university/data-protection"

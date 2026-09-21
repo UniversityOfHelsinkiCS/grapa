@@ -668,6 +668,12 @@
     "editTooltipDisabled": "Tutkielma täytyy hyväksyä ennen muokkaamista, voit myös hylätä tutkielmasuunnitelman ja jättää opiskelijalle viestin tarvittavista muutoksista",
     "editTooltip": "Muokkaa tutkielmaa"
   },
+  "ktdkFeedbackBanner": {
+    "url": "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=WXWumNwQiEKOLkWT5i_j7ue3R1-g25VMlW03P5EMkBdUMk0yMjMyVDEwTkpEWjI3TUdUWEEyQUNIRi4u",
+    "text": "Prethesis on uudistunut,",
+    "linkText": "vastaa palautekyselyyn",
+    "dismiss": "Piilota palautepalkki"
+  },
   "footer": {
     "privacyPolicy": "Tietosuojaseloste",
     "privacyPolicyUrl": "https://www.helsinki.fi/fi/tutustu-meihin/tietojen-kasittely-yliopistolla/tietosuoja"

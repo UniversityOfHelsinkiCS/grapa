@@ -26,6 +26,9 @@ export const FULL_URL = inProduction
 
 export const SELECTED_LANGUAGE_STORAGE_KEY = 'grapa-admin-selected-language'
 
+export const KTDK_FEEDBACK_BANNER_DISMISSED_STORAGE_KEY =
+  'grapa-ktdk-feedback-banner-dismissed'
+
 export const LOGIN_AS_LOCAL_STORAGE_KEY = 'grapa-admin-logged-in-as'
 export const LOGIN_AS_HEADER_KEY = 'x-admin-logged-in-as'
 

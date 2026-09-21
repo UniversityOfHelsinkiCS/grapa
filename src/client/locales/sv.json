@@ -669,6 +669,12 @@
     "editTooltipDisabled": "Avhandlingen måste godkännas innan den kan redigeras, du kan också avslå avhandlingsplanen och lämna ett meddelande till studenten om nödvändiga ändringar",
     "editTooltip": "Redigera avhandling"
   },
+  "ktdkFeedbackBanner": {
+    "url": "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=WXWumNwQiEKOLkWT5i_j7ue3R1-g25VMlW03P5EMkBdUMk0yMjMyVDEwTkpEWjI3TUdUWEEyQUNIRi4u",
+    "text": "Prethesis har förnyats,",
+    "linkText": "svara på feedbackenkäten",
+    "dismiss": "Dölj feedbackbannern"
+  },
   "footer": {
     "privacyPolicy": "Dataskydd",
     "privacyPolicyUrl": "https://www.helsinki.fi/sv/om-oss/behandling-av-uppgifter-vid-universitetet/dataskydd"

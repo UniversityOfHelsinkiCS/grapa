@@ -14,6 +14,7 @@ import Footer from './components/Footer'
 import NavBar from './components/NavBar/NavBar'
 import LoggedInAsBanner from './components/Admin/LoginAsBanner'
 import DepartmentSelector from './components/DepartmentSelector'
+import KtdkFeedbackBanner from './components/KtdkFeedbackBanner'
 
 const App = () => {
   const theme = useTheme()
@@ -41,6 +42,7 @@ const App = () => {
             }}
           >
             <NavBar />
+            <KtdkFeedbackBanner />
             <Box
               component="main"
               style={{
