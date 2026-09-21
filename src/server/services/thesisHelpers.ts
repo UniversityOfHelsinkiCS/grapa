@@ -450,12 +450,12 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
     andConditions.push(permissionCondition)
   }
 
-  // Keeps only the theses in PLANNING and the ones the user is tied to
-  // through PERSONAL_ROLE_TABLES
+  // Keeps only the theses still waiting for approval and the ones the user is
+  // tied to through PERSONAL_ROLE_TABLES.
   if (onlyCurrent) {
     andConditions.push({
       [Op.or]: [
-        { status: 'PLANNING' },
+        { status: ['PLANNING', 'SUGGESTED'] },
         ...PERSONAL_ROLE_TABLES.map((model) =>
           hasThesisRole(model, actionUser.id)
         ),
