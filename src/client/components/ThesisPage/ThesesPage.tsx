@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { cloneDeep } from 'lodash-es'
 
@@ -68,6 +68,8 @@ const ThesesPage = ({
 }: Props) => {
   const footerRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
+  const previewRegionId = useId()
+  const deleteInstructionsId = useId()
   const { user: currentUser, hasStaffAccess } = useLoggedInUser()
 
   const [paginationModel, setPaginationModel] = useState<PaginationState>({
@@ -178,8 +180,12 @@ const ThesesPage = ({
   const { mutateAsync: deleteThesis } = useDeleteThesisMutation(isStudentView)
   const { mutateAsync: createThesis } = useCreateThesisMutation(isStudentView)
 
+  const hasPreview = Object.keys(rowSelectionModel).some(
+    (id) => rowSelectionModel[id]
+  )
+
   useEffect(() => {
-    if (Object.keys(rowSelectionModel).some((id) => rowSelectionModel[id])) {
+    if (hasPreview) {
       footerRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
   }, [rowSelectionModel])
@@ -360,6 +366,7 @@ const ThesesPage = ({
             showMilestonePercentage && theses?.some((t) => t.milestone != null)
           }
           showEthesisDateColumn={showEthesisDateColumn}
+          previewRegionId={previewRegionId}
           onExportCsv={() =>
             exportCsv(`theses-export-${dayjs().format('YYYY-MM-DD')}.csv`)
           }
@@ -553,7 +560,12 @@ const ThesesPage = ({
                 ].filter((group) => Object.keys(group.items).length > 0)
           }
         ></ThesisTable>
-        <Box ref={footerRef}>
+        <Box
+          ref={footerRef}
+          id={previewRegionId}
+          role={hasPreview ? 'region' : undefined}
+          aria-label={hasPreview ? t('common:thesisPreview') : undefined}
+        >
           <ViewThesisFooter
             footerRef={footerRef}
             rowSelectionModel={rowSelectionModel}
@@ -630,7 +642,11 @@ const ThesesPage = ({
             })}
 
             <Box sx={{ mt: 4 }}>
-              <Typography variant="body2" color="textSecondary">
+              <Typography
+                id={deleteInstructionsId}
+                variant="body2"
+                color="textSecondary"
+              >
                 <Trans
                   i18nKey="removeConfirmation"
                   values={{ confirmationText: deletedThesis.topic }}
@@ -639,6 +655,9 @@ const ThesesPage = ({
               <TextField
                 id="delete-confirm-textfield"
                 size="small"
+                slotProps={{
+                  htmlInput: { 'aria-labelledby': deleteInstructionsId },
+                }}
                 value={deleteConfirmation}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   setDeleteConfirmation(event.target.value)

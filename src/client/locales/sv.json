@@ -614,7 +614,7 @@
     "stepStatusCompleted": "Det här steget är klart",
     "stepStatusCurrent": "Det här är det nuvarande steget",
     "stepStatusUpcoming": "Det här steget har inte påbörjats",
-    "currentStepStatus": "Nuvarande steg: {{step}}",
+    "currentStepStatus": "Nuvarande steg, {{step}}",
     "milestoneActionsLabel": "Milstolpsåtgärder",
     "noMilestone": "Ingen etapp",
     "lastMilestoneConfirmationTitle": "Bekräftelse",

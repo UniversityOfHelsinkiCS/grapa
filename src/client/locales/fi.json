@@ -613,7 +613,7 @@
     "stepStatusCompleted": "Tämä vaihe on valmis",
     "stepStatusCurrent": "Tämä on nykyinen vaihe",
     "stepStatusUpcoming": "Tätä vaihetta ei ole aloitettu",
-    "currentStepStatus": "Nykyinen vaihe: {{step}}",
+    "currentStepStatus": "Nykyinen vaihe, {{step}}",
     "milestoneActionsLabel": "Etappien toiminnot",
     "lastMilestoneConfirmationTitle": "Vahvistus",
     "lastMilestoneConfirmationDescription": "Oletko varma että haluat merkitä viimeisen vaiheen valmiiksi? Tätä toimintoa ei voi peruuttaa",

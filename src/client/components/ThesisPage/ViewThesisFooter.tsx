@@ -21,6 +21,7 @@ import {
   TextField,
 } from '@mui/material'
 import Popup from '../Common/Popup'
+import { HiddenLabel, VisuallyHidden } from '../Common/HiddenLabel'
 import { LoggedInUser as User } from '@backend/validators/userResponse'
 import {
   TranslatedName,
@@ -41,7 +42,7 @@ import { useSingleThesis } from '../../hooks/useTheses'
 import { BASE_PATH, THESIS_STATUSES } from '../../../config'
 import EventsView from '../EventsView/EventsView'
 import EditTopicModal from './EditTopicModal'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import {
   Bedtime,
   Check,
@@ -80,48 +81,61 @@ import {
   hasMilestones,
 } from '../../../shared/utils/thesisUtils'
 
-const StatusRow = ({ thesis }: { thesis: Thesis }) => (
-  <Box
-    sx={{
-      display: 'flex',
-      flexDirection: 'row',
-      px: 2,
-      mt: 2,
-      fontSize: '10pt',
-    }}
-  >
-    <Typography
-      component="span"
+const StatusRow = ({ thesis }: { thesis: Thesis }) => {
+  const { t } = useTranslation()
+
+  const startDate = dayjs(thesis.startDate).format('YYYY-MM-DD')
+  const targetDate = dayjs(thesis.targetDate).format('YYYY-MM-DD')
+
+  return (
+    <Box
       sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        px: 2,
+        mt: 2,
         fontSize: '10pt',
-        fontWeight: 600,
-        textTransform: 'capitalize',
       }}
     >
-      {dayjs(thesis.startDate).format('YYYY-MM-DD')} -{' '}
-      {dayjs(thesis.targetDate).format('YYYY-MM-DD')}
-    </Typography>
-  </Box>
-)
-
-const Authors = ({ authors }: { authors: User[] }) => (
-  <Typography component="p">
-    {authors.map((author, index) => (
       <Typography
-        key={author.id}
         component="span"
-        variant="subtitle2"
         sx={{
-          fontWeight: 400,
+          fontSize: '10pt',
+          fontWeight: 600,
+          textTransform: 'capitalize',
         }}
       >
-        {author.firstName} {author.lastName}{' '}
-        {author.studentNumber ? `(${author.studentNumber})` : ''}
-        {index < authors.length - 1 ? ', ' : ''}
+        <HiddenLabel text={t('common:startDateHeader')} />
+        {startDate} - <HiddenLabel text={t('common:targetDateHeader')} />
+        {targetDate}
       </Typography>
-    ))}
-  </Typography>
-)
+    </Box>
+  )
+}
+
+const Authors = ({ authors }: { authors: User[] }) => {
+  const { t } = useTranslation()
+
+  return (
+    <Typography component="p">
+      <HiddenLabel text={t('common:authorsHeader')} />
+      {authors.map((author, index) => (
+        <Typography
+          key={author.id}
+          component="span"
+          variant="subtitle2"
+          sx={{
+            fontWeight: 400,
+          }}
+        >
+          {author.firstName} {author.lastName}{' '}
+          {author.studentNumber ? `(${author.studentNumber})` : ''}
+          {index < authors.length - 1 ? ', ' : ''}
+        </Typography>
+      ))}
+    </Typography>
+  )
+}
 
 const ProgramTrack = ({
   programId,
@@ -138,7 +152,7 @@ const ProgramTrack = ({
   currentUser?: User
   thesis?: Thesis
 }) => {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { programs, isLoading: programsLoading } = usePrograms({
     includeNotManaged: true,
     useStudentApi: isStudentView,
@@ -162,11 +176,17 @@ const ProgramTrack = ({
         color: 'black',
       }}
     >
-      <Chip
-        variant="outlined"
-        sx={{ fontFamily: 'monospace' }}
-        label={program?.id}
-      />
+      <Box
+        component="span"
+        sx={{ display: 'inline-flex', alignItems: 'center' }}
+      >
+        <HiddenLabel text={t('common:programHeader')} />
+        <Chip
+          variant="outlined"
+          sx={{ fontFamily: 'monospace' }}
+          label={program?.id}
+        />
+      </Box>
       <ButtonBase
         component={NavLink}
         to={`/programs/${thesis ? thesis.programId : ''}`}
@@ -270,6 +290,7 @@ const Attachments = ({
         {files.map((fileContainer) => (
           <Link
             href={`${BASE_PATH}/api/${isStudentView ? 'student/' : ''}attachments/${(fileContainer.file as FileData).filename}`}
+            aria-label={`${fileContainer.translation}, ${fileContainer.file.name}`}
             sx={{ textDecoration: 'none' }}
             key={fileContainer.translation}
           >
@@ -290,7 +311,7 @@ const Attachments = ({
                   <Typography sx={{ fontSize: '10pt', fontWeight: 600 }}>
                     {fileContainer.translation}
                   </Typography>
-                  <Typography>{researchPlan.name}</Typography>
+                  <Typography>{fileContainer.file.name}</Typography>
                 </Stack>
               </Stack>
             </Paper>
@@ -418,6 +439,8 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
   const { language } = i18n as unknown as { language: TranslationLanguage }
   const { user: currentUser } = useLoggedInUser()
   const [eventLogOpen, setEventLogOpen] = useState(false)
+  const eventLogId = useId()
+  const newTabHintId = useId()
   const { thesis, isLoading: thesisLoading } = useSingleThesis(
     thesisId,
     isStudentView,
@@ -446,14 +469,33 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
 
   const ethesisReady = thesis && currentUser && isEthesisReady(thesis)
 
+  const ethesisButtonLabel = thesis?.program?.options
+    ?.allowStudentStartedProcess
+    ? t('thesisForm:setEthesisStudentStarted')
+    : t('thesisForm:setSentToEthesis')
+
+  const editDisabled =
+    Boolean(thesis?.program?.options?.allowStudentStartedProcess) &&
+    Boolean(thesis && currentUser && canApprove(thesis, currentUser)) &&
+    !currentUser?.isAdmin
+
   const difference = getThesisLateDays(thesis?.targetDate)
   const isLate = isThesisLate(thesis?.targetDate)
+
+  const degreeLabel = thesis?.program?.options?.isBachelorProgram
+    ? t('viewThesisFooter:bachelorsThesis')
+    : t('viewThesisFooter:mastersThesis')
+
+  const thesisLateMessage = `${t('viewThesisFooter:thesisLate').replace(
+    '{difference}',
+    difference.toString()
+  )} ${dayjs(thesis?.targetDate).format('YYYY-MM-DD')}`
 
   return (
     <>
       {thesis ? (
         <Box sx={{ m: 2 }}>
-          <Divider></Divider>
+          <Divider aria-hidden></Divider>
           <Stack
             direction="row"
             spacing={2}
@@ -583,9 +625,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                             },
                           }}
                         >
-                          {thesis.program?.options?.allowStudentStartedProcess
-                            ? t('thesisForm:setEthesisStudentStarted')
-                            : t('thesisForm:setSentToEthesis')}
+                          {ethesisButtonLabel}
                         </Button>
                       </Box>
                     </Tooltip>
@@ -614,11 +654,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                   !hideEdit && (
                     <Tooltip
                       title={
-                        Boolean(
-                          thesis.program?.options?.allowStudentStartedProcess
-                        ) &&
-                        canApprove(thesis, currentUser!) &&
-                        !currentUser.isAdmin
+                        editDisabled
                           ? t('viewThesisFooter:editTooltipDisabled')
                           : t('viewThesisFooter:editTooltip')
                       }
@@ -632,14 +668,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                             px: 2,
                             fontWeight: 600,
                           }}
-                          disabled={
-                            Boolean(
-                              thesis.program?.options
-                                ?.allowStudentStartedProcess
-                            ) &&
-                            canApprove(thesis, currentUser!) &&
-                            !currentUser.isAdmin
-                          }
+                          disabled={editDisabled}
                           onClick={() => handleEditThesis(thesis)}
                         >
                           {t('editButton')}
@@ -712,18 +741,21 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                 fontWeight: 800,
               }}
             >
+              <HiddenLabel text={t('common:topicHeader')} />
               {thesis.topic}
             </Typography>
             {thesis?.program?.options && (
-              <Chip
-                size="small"
-                variant="outlined"
-                label={
-                  thesis?.program?.options?.isBachelorProgram
-                    ? t('viewThesisFooter:bachelorsThesis')
-                    : t('viewThesisFooter:mastersThesis')
-                }
-              ></Chip>
+              <Box
+                component="span"
+                sx={{ display: 'inline-flex', alignItems: 'center' }}
+              >
+                <HiddenLabel text={t('common:degreeLabel')} />
+                <Chip
+                  size="small"
+                  variant="outlined"
+                  label={degreeLabel}
+                ></Chip>
+              </Box>
             )}
           </Stack>
 
@@ -736,28 +768,28 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
               }
               sx={{ my: 1.5 }}
             >
-              {t('viewThesisFooter:thesisLate').replace(
-                '{difference}',
-                difference.toString()
-              )}{' '}
-              {dayjs(thesis.targetDate).format('YYYY-MM-DD')}
+              <HiddenLabel text={t('common:warningLabel')} />
+              {thesisLateMessage}
             </Alert>
           )}
 
           {thesis.status == 'COMPLETED' && (
             <Alert severity="info" sx={{ my: 1.5 }} icon={<Check />}>
+              <HiddenLabel text={t('common:noticeLabel')} />
               {t('viewThesisFooter:thesisComplete')}
             </Alert>
           )}
 
           {thesis.isIdle && (
             <Alert severity="info" sx={{ my: 1.5 }} icon={<Bedtime />}>
+              <HiddenLabel text={t('common:noticeLabel')} />
               {t('viewThesisFooter:thesisIdle')}
             </Alert>
           )}
 
           {thesis && currentUser && canApprove(thesis, currentUser) && (
             <Alert color="warning" icon={<PriorityHigh />} sx={{ my: 1.5 }}>
+              <HiddenLabel text={t('common:actionRequiredLabel')} />
               {t('viewThesisFooter:requiresApproval')}
             </Alert>
           )}
@@ -766,14 +798,17 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
             currentUser &&
             (isMissingGradersActionRequired(thesis, currentUser) ? (
               <Alert color="warning" icon={<PriorityHigh />} sx={{ my: 1.5 }}>
+                <HiddenLabel text={t('common:actionRequiredLabel')} />
                 {t('viewThesisFooter:missingGradersActionRequired')}
               </Alert>
             ) : canSetEthesisMilestones(thesis, currentUser) ? (
               <Alert color="warning" icon={<PriorityHigh />} sx={{ my: 1.5 }}>
+                <HiddenLabel text={t('common:actionRequiredLabel')} />
                 {t('viewThesisFooter:requiresEthesisPermission')}
               </Alert>
             ) : needsEthesisAdminAction(thesis, currentUser) ? (
               <Alert color="warning" icon={<PriorityHigh />} sx={{ my: 1.5 }}>
+                <HiddenLabel text={t('common:actionRequiredLabel')} />
                 {t('viewThesisFooter:requiresEthesisAdminAction')}
               </Alert>
             ) : null)}
@@ -782,6 +817,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
             currentUser &&
             isStudentDraftActionRequired(thesis, isStudentView) && (
               <Alert color="info" icon={<Send />} sx={{ my: 1.5 }}>
+                <HiddenLabel text={t('common:actionRequiredLabel')} />
                 {t('viewThesisFooter:studentActionRequired')}
               </Alert>
             )}
@@ -790,6 +826,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
             currentUser &&
             isStudentEthesisActionRequired(thesis, isStudentView) && (
               <Alert color="info" icon={<Send />} sx={{ my: 1.5 }}>
+                <HiddenLabel text={t('common:actionRequiredLabel')} />
                 <Trans
                   i18nKey="viewThesisFooter:studentEthesisActionRequired"
                   components={{
@@ -798,10 +835,14 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                         href={t('viewThesisFooter:ethesisInstructionsLink')}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-describedby={newTabHintId}
                       />
                     ),
                   }}
                 />
+                <VisuallyHidden component="span" id={newTabHintId}>
+                  {t('common:opensInNewTab')}
+                </VisuallyHidden>
               </Alert>
             )}
 
@@ -859,12 +900,20 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
               }}
             >
               <Typography
-                component="legend"
+                component="button"
+                type="button"
+                aria-expanded={eventLogOpen}
+                aria-controls={eventLogId}
                 sx={{
                   cursor: 'pointer',
                   color: 'text.primary',
                   display: 'flex',
                   alignItems: 'flex-start',
+                  width: '100%',
+                  background: 'none',
+                  border: 'none',
+                  p: 0,
+                  textAlign: 'left',
                 }}
                 onClick={() => setEventLogOpen(!eventLogOpen)}
               >
@@ -873,7 +922,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                 </span>
                 {t('eventLog:title')}
               </Typography>
-              <Collapse in={eventLogOpen}>
+              <Collapse id={eventLogId} in={eventLogOpen}>
                 <EventsView events={events} />
               </Collapse>
             </Paper>

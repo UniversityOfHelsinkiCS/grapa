@@ -614,7 +614,7 @@
     "stepStatusCompleted": "This step is completed",
     "stepStatusCurrent": "This is the current step",
     "stepStatusUpcoming": "This step has not been started",
-    "currentStepStatus": "Current step: {{step}}",
+    "currentStepStatus": "Current step, {{step}}",
     "milestoneActionsLabel": "Milestone actions",
     "lastMilestoneConfirmationTitle": "Confirmation",
     "lastMilestoneConfirmationDescription": "Are you sure you want to complete the last milestone? This action cannot be undone",
