@@ -198,11 +198,6 @@ const getStudyTrackIds = async (studyTrackId: string): Promise<string[]> => {
   return [studyTrackId, ...secondaryIds]
 }
 
-// Tables that tie a user to a thesis personally. Approvers are deliberately
-// left out: those rows are filled from the programme's thesis approvers, so
-// being one is the programme management relationship, not a personal role
-const PERSONAL_ROLE_TABLES = [Supervision, SeminarSupervision, Grader, Author]
-
 const hasThesisRole = (model: { tableName: string }, userId: string) =>
   literal(
     `EXISTS (SELECT 1 FROM "${model.tableName}" WHERE "${model.tableName}"."thesis_id" = "Thesis"."id" AND "${model.tableName}"."user_id" = ${sequelize.escape(userId)})`
@@ -451,12 +446,16 @@ export const buildThesisWhereClause = async (options: ThesisFiltersOptions) => {
   }
 
   // Keeps only the theses still waiting for approval and the ones the user is
-  // tied to through PERSONAL_ROLE_TABLES.
+  // tied to personally. Approvers are deliberately left out: those rows are
+  // filled from the programme's thesis approvers, so being one is the programme
+  // management relationship, not a personal role
   if (onlyCurrent) {
+    const personalRoleTables = [Supervision, SeminarSupervision, Grader, Author]
+
     andConditions.push({
       [Op.or]: [
         { status: ['PLANNING', 'SUGGESTED'] },
-        ...PERSONAL_ROLE_TABLES.map((model) =>
+        ...personalRoleTables.map((model) =>
           hasThesisRole(model, actionUser.id)
         ),
       ],
