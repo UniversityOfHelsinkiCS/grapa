@@ -907,7 +907,17 @@ const ThesisTable = ({
               <Tab
                 key={filterView}
                 value={filterView}
-                label={t(`thesesTableToolbar:filterViews:${filterView}:name`)}
+                label={
+                  <Tooltip
+                    title={t(
+                      `thesesTableToolbar:filterViews:${filterView}:tooltip`
+                    )}
+                  >
+                    <Box component="span">
+                      {t(`thesesTableToolbar:filterViews:${filterView}:name`)}
+                    </Box>
+                  </Tooltip>
+                }
                 sx={{
                   textTransform: 'none',
                   minHeight: 'auto',
