@@ -51,14 +51,10 @@ const ExternalPersonSelect = ({
     errors.clear(...errorPath)
 
     const currentArr = field.state.value || []
-    if (
-      !currentArr[index] ||
-      selection.creationTimeIdentifier === 'default-empty'
-    ) {
+    if (!currentArr[index]) {
       const newArr = [...currentArr]
       newArr[index] = {
         ...selection,
-        creationTimeIdentifier: undefined,
         user: { ...selection.user, [fieldName]: value },
       }
       field.setValue(newArr)
@@ -72,14 +68,10 @@ const ExternalPersonSelect = ({
     value: number
   ) => {
     const currentArr = field.state.value || []
-    if (
-      !currentArr[index] ||
-      selection.creationTimeIdentifier === 'default-empty'
-    ) {
+    if (!currentArr[index]) {
       const newArr = [...currentArr]
       newArr[index] = {
         ...selection,
-        creationTimeIdentifier: undefined,
         percentage: value,
       }
       field.setValue(newArr)
@@ -115,6 +107,7 @@ const ExternalPersonSelect = ({
             {(f: AnyFieldApi) => (
               <TextField
                 required
+                id={`${field.name}-${index}-firstName`}
                 disabled={disabledMode}
                 margin="dense"
                 label={t('thesisForm:firstName')}

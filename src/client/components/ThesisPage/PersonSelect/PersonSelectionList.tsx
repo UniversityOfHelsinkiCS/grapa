@@ -1,7 +1,7 @@
 import React from 'react'
+import { flushSync } from 'react-dom'
 import { Box, Divider, Stack, Typography, Tooltip } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { v4 as uuidv4 } from 'uuid'
 
 import NewPersonControls from '../NewPersonControls'
 import SinglePersonSelect from './SinglePersonSelect'
@@ -90,6 +90,15 @@ const PersonSelectionList = ({
     number | null
   >(null)
 
+  const [deleteConfirmed, setDeleteConfirmed] = React.useState(false)
+  const addButtonId = `${field.name}-add-person`
+
+  const openDeleteDialog = (index: number) => {
+    setDeleteConfirmed(false)
+    setItemToDeleteIndex(index)
+    setDeleteDialogOpen(true)
+  }
+
   const selections: BasePersonSelection[] = field.state.value || []
 
   const displayedSelections =
@@ -97,7 +106,6 @@ const PersonSelectionList = ({
       ? [
           {
             user: null,
-            creationTimeIdentifier: 'default-empty',
             ...getPersonSelectionDefaults(type, 0, 1),
           } as BasePersonSelection,
         ]
@@ -131,6 +139,33 @@ const PersonSelectionList = ({
     }))
   }
 
+  const focusRow = (index: number, isExternal?: boolean) => {
+    const inputId = isExternal
+      ? `${field.name}-${index}-firstName`
+      : `${field.name}-${index}-user`
+
+    const target =
+      document.getElementById(inputId) ?? document.getElementById(addButtonId)
+
+    target?.focus()
+  }
+
+  const replaceSelections = (
+    next: BasePersonSelection[],
+    focusIndex: number
+  ) => {
+    const derived =
+      type === 'supervisor'
+        ? withPrimarySupervisor(
+            getEqualSupervisorSelectionWorkloads(next.length, next)
+          )
+        : next
+
+    flushSync(() => field.setValue(derived))
+
+    focusRow(focusIndex, derived[focusIndex]?.isExternal)
+  }
+
   const generalErrors = errors.at(field.name, 'general')
 
   const errorPath = (index: number): ErrorPath =>
@@ -139,33 +174,14 @@ const PersonSelectionList = ({
       : [field.name, index, 'user']
 
   const handleAddPerson = (isExternal: boolean) => {
-    const newLength = selections.length + 1
+    const newIndex = selections.length
     const newItem: BasePersonSelection = {
       user: null,
-      creationTimeIdentifier: uuidv4(),
-      ...getPersonSelectionDefaults(type, selections.length, newLength),
+      ...getPersonSelectionDefaults(type, newIndex, newIndex + 1),
       isExternal,
     }
 
-    if (type === 'supervisor') {
-      const updated = getEqualSupervisorSelectionWorkloads(
-        newLength,
-        selections
-      )
-      field.setValue(
-        withPrimarySupervisor([
-          ...updated,
-          {
-            ...newItem,
-            percentage: Math.floor((1 / newLength) * 100),
-          },
-        ])
-      )
-    } else if (type === 'grader') {
-      field.pushValue(newItem)
-    } else {
-      field.pushValue(newItem)
-    }
+    replaceSelections([...selections, newItem], newIndex)
   }
 
   const handleRemovePerson = (index: number) => {
@@ -173,17 +189,13 @@ const PersonSelectionList = ({
 
     if (selections.length === 1 && !allowEmpty) {
       if (type === 'seminarSupervisor' && !allowMultiple) {
-        const newSelections = [...selections]
-        newSelections[index] = {
-          ...newSelections[index],
+        const emptied = [...selections]
+        emptied[index] = {
+          ...emptied[index],
           user: null,
           isExternal: false,
         }
-        field.setValue(newSelections)
-        return
-      }
-      if (allowEmpty) {
-        field.setValue([])
+        replaceSelections(emptied, index)
       }
       return
     }
@@ -191,20 +203,11 @@ const PersonSelectionList = ({
     const newSelections = [...selections]
     newSelections.splice(index, 1)
 
-    if (type === 'supervisor') {
-      const updated = getEqualSupervisorSelectionWorkloads(
-        newSelections.length,
-        newSelections
-      )
-      field.setValue(withPrimarySupervisor(updated))
-    } else if (type === 'grader') {
-      if (index === 0 && newSelections.length > 0) {
-        newSelections[0].isPrimaryGrader = true
-      }
-      field.setValue(newSelections)
-    } else {
-      field.setValue(newSelections)
+    if (type === 'grader' && index === 0 && newSelections.length > 0) {
+      newSelections[0].isPrimaryGrader = true
     }
+
+    replaceSelections(newSelections, Math.max(index - 1, 0))
   }
 
   const handlePrimaryChange = (index: number) => {
@@ -244,7 +247,7 @@ const PersonSelectionList = ({
           id={`${field.name}-general`}
           data-testid={`${type}-general-error`}
           severity="error"
-          aria-live="polite"
+          role="presentation"
           title={t(translationKeys[type].generalErrorsTitle)}
         >
           {generalErrors.map((error, index) => (
@@ -257,9 +260,7 @@ const PersonSelectionList = ({
 
       {displayedSelections.map((selection, index) => {
         const isExternal = selection.isExternal
-        const key =
-          selection.user?.id ??
-          `${type}-${selection.creationTimeIdentifier ?? index}`
+        const key = `${type}-${index}`
 
         return (
           <React.Fragment key={key}>
@@ -272,10 +273,7 @@ const PersonSelectionList = ({
                 disabledMode={disabledMode}
                 errors={errors}
                 errorPath={errorPath(index)}
-                onRemove={() => {
-                  setItemToDeleteIndex(index)
-                  setDeleteDialogOpen(true)
-                }}
+                onRemove={() => openDeleteDialog(index)}
               />
             ) : (
               <SinglePersonSelect
@@ -287,10 +285,7 @@ const PersonSelectionList = ({
                 totalLength={displayedSelections.length}
                 errors={errors}
                 errorPath={errorPath(index)}
-                onRemove={() => {
-                  setItemToDeleteIndex(index)
-                  setDeleteDialogOpen(true)
-                }}
+                onRemove={() => openDeleteDialog(index)}
                 onPrimaryChange={() => handlePrimaryChange(index)}
               />
             )}
@@ -348,6 +343,7 @@ const PersonSelectionList = ({
               : []),
           ]}
           handleAddPerson={handleAddPerson}
+          buttonId={addButtonId}
         />
       )}
 
@@ -355,11 +351,13 @@ const PersonSelectionList = ({
         <Popup
           open={deleteDialogOpen}
           testId="delete-confirm"
+          disableRestoreFocus={deleteConfirmed}
           onClose={() => {
             setDeleteDialogOpen(false)
             setItemToDeleteIndex(null)
           }}
           onSubmit={() => {
+            setDeleteConfirmed(true)
             setDeleteDialogOpen(false)
             handleRemovePerson(itemToDeleteIndex)
             setItemToDeleteIndex(null)

@@ -61,7 +61,12 @@
     "emailLabel": "E-post",
     "studentNumberLabel": "Studentnummer",
     "titleLabel": "Titel",
-    "degreeLabel": "Examen"
+    "degreeLabel": "Examen",
+    "userSearchSuggestions": "Förslag: {{count}}",
+    "userSearchLoading": "Söker användare…",
+    "selectedAuthors": "Valda skribenter: {{authors}}",
+    "clearAllAuthors": "Rensa alla valda skribenter",
+    "clearAuthor": "Rensa den valda skribenten"
   },
   "eventLog": {
     "thesis": "Avhandling",
@@ -401,6 +406,7 @@
     "addSeminarSupervisor": "Lägg till seminariehandledare",
     "primarySupervisor": "Huvudhandledare",
     "setPrimarySupervisor": "Sätt som huvudhandledare",
+    "primarySupervisorCheckbox": "Huvudhandledare {{person}}",
     "removeDisabledError": "Det här valet är obligatoriskt",
     "firstName": "Förnamn",
     "lastName": "Efternamn",

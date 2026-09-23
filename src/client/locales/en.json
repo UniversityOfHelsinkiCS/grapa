@@ -61,7 +61,12 @@
     "emailLabel": "Email",
     "studentNumberLabel": "Student number",
     "titleLabel": "Title",
-    "degreeLabel": "Degree"
+    "degreeLabel": "Degree",
+    "userSearchSuggestions": "Suggestions available: {{count}}",
+    "userSearchLoading": "Searching for users…",
+    "selectedAuthors": "Selected authors: {{authors}}",
+    "clearAllAuthors": "Clear all selected authors",
+    "clearAuthor": "Clear the selected author"
   },
   "eventLog": {
     "thesis": "Thesis",
@@ -401,6 +406,7 @@
     "addSeminarSupervisor": "Add seminar supervisor",
     "primarySupervisor": "Primary supervisor",
     "setPrimarySupervisor": "Set as primary supervisor",
+    "primarySupervisorCheckbox": "Primary supervisor {{person}}",
     "removeDisabledError": "This selection is required",
     "firstName": "First name",
     "lastName": "Last name",

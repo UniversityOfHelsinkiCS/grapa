@@ -1,14 +1,5 @@
 import * as React from 'react'
-import {
-  Button,
-  ClickAwayListener,
-  Grow,
-  MenuItem,
-  MenuList,
-  Paper,
-  Popper,
-  Stack,
-} from '@mui/material'
+import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 
 interface NewPersonControlsProps {
@@ -16,6 +7,7 @@ interface NewPersonControlsProps {
   options: { label: string; isExternal: boolean }[]
   handleAddPerson: (isExternal: boolean) => void
   ariaLabel: string
+  buttonId?: string
 }
 
 const NewPersonControls = ({
@@ -23,36 +15,19 @@ const NewPersonControls = ({
   options,
   handleAddPerson,
   ariaLabel,
+  buttonId,
 }: NewPersonControlsProps) => {
-  const [open, setOpen] = React.useState(false)
-  const anchorRef = React.useRef<HTMLButtonElement>(null)
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
+  const [optionPicked, setOptionPicked] = React.useState(false)
+  const open = Boolean(anchorEl)
+  const menuId = `${personGroup}-split-button-menu`
 
-  const handleClick = (selectedIndex: number) => {
-    const selectedAction = options[selectedIndex]
-    handleAddPerson(selectedAction.isExternal)
-  }
+  const handleClose = () => setAnchorEl(null)
 
-  const handleMenuItemClick = (
-    _: React.MouseEvent<HTMLLIElement, MouseEvent>,
-    index: number
-  ) => {
-    handleClick(index)
-    setOpen(false)
-  }
-
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen)
-  }
-
-  const handleClose = (event: Event) => {
-    if (
-      anchorRef.current &&
-      anchorRef.current.contains(event.target as HTMLElement)
-    ) {
-      return
-    }
-
-    setOpen(false)
+  const handleMenuItemClick = (index: number) => {
+    setOptionPicked(true)
+    handleAddPerson(options[index].isExternal)
+    handleClose()
   }
 
   return (
@@ -60,58 +35,43 @@ const NewPersonControls = ({
       <Button
         disableElevation
         variant="contained"
-        ref={anchorRef}
+        id={buttonId}
         data-testid={`add-${personGroup}-button`}
-        aria-controls={open ? `${personGroup}-button-menu` : undefined}
+        aria-controls={open ? menuId : undefined}
         aria-expanded={open ? 'true' : undefined}
-        aria-label={ariaLabel}
+        aria-haspopup="menu"
         sx={{
           borderRadius: '0.5rem',
           justifyContent: 'center',
           width: 'fit-content',
         }}
-        onClick={handleToggle}
+        onClick={(event) => {
+          setOptionPicked(false)
+          setAnchorEl(event.currentTarget)
+        }}
       >
         {options[0].label}
         <ArrowDropDownIcon />
       </Button>
 
-      <Popper
-        sx={{
-          zIndex: 1,
-        }}
+      <Menu
+        id={menuId}
+        anchorEl={anchorEl}
         open={open}
-        anchorEl={anchorRef.current}
-        role={undefined}
-        transition
-        disablePortal
+        onClose={handleClose}
+        disableRestoreFocus={optionPicked}
+        slotProps={{ list: { 'aria-label': ariaLabel } }}
       >
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin:
-                placement === 'bottom' ? 'center top' : 'center bottom',
-            }}
+        {options.map((option, index) => (
+          <MenuItem
+            key={option.label}
+            data-testid={`add-${personGroup}-menu-item-${option.isExternal ? 'external' : 'internal'}`}
+            onClick={() => handleMenuItemClick(index)}
           >
-            <Paper>
-              <ClickAwayListener onClickAway={handleClose}>
-                <MenuList id={`${personGroup}-split-button-menu`} autoFocusItem>
-                  {options.map((option, index) => (
-                    <MenuItem
-                      key={option.label}
-                      data-testid={`add-${personGroup}-menu-item-${option.isExternal ? 'external' : 'internal'}`}
-                      onClick={(event) => handleMenuItemClick(event, index)}
-                    >
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
+            {option.label}
+          </MenuItem>
+        ))}
+      </Menu>
     </Stack>
   )
 }

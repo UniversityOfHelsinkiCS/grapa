@@ -21,6 +21,7 @@ import PercentageInput from '../PercentageInput'
 import { PersonType, BasePersonSelection } from './PersonSelectionList'
 import { ErrorPath, ThesisFormErrors } from '../thesisFormErrors'
 import { EmployeeUser as User } from '@backend/validators/userResponse'
+import SearchSuggestionsStatus from '../../Common/SearchSuggestionsStatus'
 
 const inputHeight = '3.5rem'
 
@@ -52,12 +53,25 @@ const SinglePersonSelect = ({
   const { t } = useTranslation()
   const form = useAppFormContext()
   const [userSearch, setUserSearch] = React.useState('')
+  const [suggestionsOpen, setSuggestionsOpen] = React.useState(false)
   const debouncedSearch = useDebounce(userSearch, 700)
-  const { users } = useUsers({ search: debouncedSearch, onlyEmployees: true })
+  const { users, isFetching } = useUsers({
+    search: debouncedSearch,
+    onlyEmployees: true,
+  })
 
   const isSupervisor = type === 'supervisor'
   const isGrader = type === 'grader'
   const isSeminarSupervisor = type === 'seminarSupervisor'
+
+  const searchTooShort = userSearch.length < 5
+
+  const noOptionsText = searchTooShort
+    ? t('userSearchNoOptions')
+    : t('userSearchExtPersonHint')
+
+  const isSearching =
+    !searchTooShort && (isFetching || debouncedSearch !== userSearch)
 
   const label = t(
     isSupervisor
@@ -77,18 +91,20 @@ const SinglePersonSelect = ({
 
   const removeLabel = `${t('removeButton')} ${label}`
 
+  const primarySupervisorLabel = t('thesisForm:primarySupervisorCheckbox', {
+    person: selection.user
+      ? `${selection.user.firstName} ${selection.user.lastName}`
+      : label,
+  })
+
   const handleUserChange = (handleChange: (value: any) => void, value: any) => {
     errors.clear(...errorPath)
 
     const currentArr = field.state.value || []
-    if (
-      !currentArr[index] ||
-      selection.creationTimeIdentifier === 'default-empty'
-    ) {
+    if (!currentArr[index]) {
       const newArr = [...currentArr]
       newArr[index] = {
         ...selection,
-        creationTimeIdentifier: undefined,
         user: value,
       }
       field.setValue(newArr)
@@ -102,14 +118,10 @@ const SinglePersonSelect = ({
     value: number
   ) => {
     const currentArr = field.state.value || []
-    if (
-      !currentArr[index] ||
-      selection.creationTimeIdentifier === 'default-empty'
-    ) {
+    if (!currentArr[index]) {
       const newArr = [...currentArr]
       newArr[index] = {
         ...selection,
-        creationTimeIdentifier: undefined,
         percentage: value,
       }
       field.setValue(newArr)
@@ -125,13 +137,14 @@ const SinglePersonSelect = ({
           <FormControl fullWidth>
             <Autocomplete<Partial<User>>
               id={`${field.name}-${index}-user`}
-              noOptionsText={
-                userSearch.length < 5
-                  ? t('userSearchNoOptions')
-                  : t('userSearchExtPersonHint')
-              }
+              noOptionsText={noOptionsText}
+              loading={isSearching}
+              loadingText={t('userSearchLoading')}
               data-testid={`${type}-select-input-${index + 1}`}
               disablePortal
+              autoHighlight
+              onOpen={() => setSuggestionsOpen(true)}
+              onClose={() => setSuggestionsOpen(false)}
               options={users ?? []}
               getOptionLabel={(user) =>
                 `${user.firstName} ${user.lastName} ${user.email ? `(${user.email})` : ''}`
@@ -152,6 +165,13 @@ const SinglePersonSelect = ({
                 handleUserChange(userField.handleChange, value)
               }
               onInputChange={(_, value) => setUserSearch(value)}
+            />
+            <SearchSuggestionsStatus
+              open={suggestionsOpen}
+              loading={isSearching}
+              count={users?.length ?? 0}
+              loadingText={t('userSearchLoading')}
+              noOptionsText={noOptionsText}
             />
           </FormControl>
         )}
@@ -197,6 +217,9 @@ const SinglePersonSelect = ({
               checkedIcon={<Star />}
               checked={selection.isPrimarySupervisor}
               onChange={onPrimaryChange}
+              slotProps={{
+                input: { 'aria-label': primarySupervisorLabel },
+              }}
             />
           </FormControl>
         </Tooltip>

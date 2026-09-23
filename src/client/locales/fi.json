@@ -61,7 +61,12 @@
     "emailLabel": "Sähköposti",
     "studentNumberLabel": "Opiskelijanumero",
     "titleLabel": "Titteli",
-    "degreeLabel": "Tutkinto"
+    "degreeLabel": "Tutkinto",
+    "userSearchSuggestions": "Ehdotuksia: {{count}}",
+    "userSearchLoading": "Haetaan käyttäjiä…",
+    "selectedAuthors": "Valitut tekijät: {{authors}}",
+    "clearAllAuthors": "Tyhjennä kaikki valitut tekijät",
+    "clearAuthor": "Tyhjennä valittu tekijä"
   },
   "eventLog": {
     "thesis": "Tutkielma",
@@ -399,6 +404,7 @@
     "addSeminarSupervisor": "Lisää seminaariryhmän vetäjä",
     "primarySupervisor": "Pääohjaaja",
     "setPrimarySupervisor": "Aseta tämä ohjaaja pääohjaajaksi",
+    "primarySupervisorCheckbox": "Pääohjaaja {{person}}",
     "removeDisabledError": "Tämä valinta on pakollinen",
     "firstName": "Etunimi",
     "lastName": "Sukunimi",
