@@ -39,10 +39,20 @@ const FileDropzone = ({
 }: FileDropzoneProps) => {
   const { t } = useTranslation()
   const helperTextId = useId()
+  const instructionsId = useId()
 
   const [uploading, setUploading] = useState(false)
 
   const uploadSuccess = Boolean(uploadedFile)
+
+  const describedBy =
+    [
+      inputProps['aria-describedby'],
+      instructionsId,
+      helperText ? helperTextId : undefined,
+    ]
+      .filter(Boolean)
+      .join(' ') || undefined
 
   const { getRootProps, getInputProps, isDragAccept, isDragReject } =
     useDropzone({
@@ -76,6 +86,7 @@ const FileDropzone = ({
   return (
     <Box>
       <InputLabel
+        id={`${id}-label`}
         htmlFor={`${id}-input`}
         error={error}
         required={required}
@@ -105,15 +116,26 @@ const FileDropzone = ({
           backgroundColor,
           transition: 'border .24s ease-in-out',
           cursor: uploadSuccess ? 'default' : 'pointer',
+          '&:focus-visible': {
+            outline: '2px solid',
+            outlineColor: 'primary.main',
+            outlineOffset: '2px',
+          },
         }}
-        {...getRootProps()}
+        {...getRootProps({
+          role: 'button',
+          'aria-labelledby': `${id}-label`,
+          'aria-describedby': describedBy,
+          'aria-invalid': error || undefined,
+          'aria-disabled': uploading || uploadSuccess || undefined,
+        })}
       >
         <input
           {...getInputProps({
             ...inputProps,
             id: `${id}-input`,
-            'aria-invalid': error,
-            'aria-describedby': helperTextId,
+            tabIndex: -1,
+            'aria-hidden': true,
             style: {
               clip: 'rect(0 0 0 0)',
               clipPath: 'inset(50%)',
@@ -163,6 +185,8 @@ const FileDropzone = ({
           )}
         </Box>
         <Typography
+          id={instructionsId}
+          aria-hidden
           className="dropzone-text"
           variant="body2"
           sx={{ fontWeight: '600', fontSize: '10pt', color: 'text.primary' }}

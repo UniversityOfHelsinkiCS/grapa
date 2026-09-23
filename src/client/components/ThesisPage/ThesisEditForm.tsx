@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { flushSync } from 'react-dom'
 import 'dayjs/locale/fi'
 import dayjs from 'dayjs'
 import { sortBy } from 'lodash-es'
@@ -45,6 +46,9 @@ import {
 import { useThesisFormErrors } from './thesisFormErrors'
 
 import ErrorSummary from '../Common/ErrorSummary'
+import SearchSuggestionsStatus from '../Common/SearchSuggestionsStatus'
+import { VisuallyHidden } from '../Common/HiddenLabel'
+import RemovableChip from '../Common/RemovableChip'
 import Markdown from '../Common/Markdown'
 import AlertBox from '../Common/AlertBox'
 import { ProgramData as Program } from '@backend/validators/programResponse'
@@ -56,6 +60,21 @@ import Popup from '../Common/Popup'
 
 import PersonSelectionList from './PersonSelect/PersonSelectionList'
 import { useAppForm } from './thesisFormContext'
+
+const focusAfter = (update: () => void, id: string) => {
+  flushSync(update)
+
+  document.getElementById(id)?.focus()
+}
+
+const getAuthorLabel = (author: User) =>
+  [
+    `${author.firstName} ${author.lastName}`,
+    author.email ? `(${author.email})` : '',
+    author.studentNumber ? `(${author.studentNumber})` : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
 
 interface ThesisEditFormProps {
   programs: Program[]
@@ -82,12 +101,16 @@ const ThesisEditForm = ({
   const errors = useThesisFormErrors()
   const [confirmSendOpen, setConfirmSendOpen] = useState(false)
   const [userSearch, setUserSearch] = useState('')
+  const [authorSuggestionsOpen, setAuthorSuggestionsOpen] = useState(false)
 
   const debouncedSearch = useDebounce(userSearch, 700)
-  const { users: authorOptions } = useUsers({
+  const { users: authorOptions, isFetching: isFetchingAuthors } = useUsers({
     search: debouncedSearch,
     onlyWithStudyRight: true,
   })
+  const isSearchingAuthors =
+    userSearch.length >= 5 &&
+    (isFetchingAuthors || debouncedSearch !== userSearch)
   const { user } = useLoggedInUser()
 
   const form = useAppForm({
@@ -1074,20 +1097,34 @@ const ThesisEditForm = ({
                       required
                       {...errors.fieldProps('researchPlan')}
                       uploadedFile={field.state.value}
-                      handleFileUpload={(files) => {
-                        field.handleChange(files[0])
-                        errors.clear('researchPlan')
-                      }}
+                      handleFileUpload={(files) =>
+                        focusAfter(() => {
+                          field.handleChange(files[0])
+                          errors.clear('researchPlan')
+                        }, 'researchPlan-remove')
+                      }
                       inputProps={{
                         'data-testid': 'research-plan-input',
                         accept: '.pdf',
                         type: 'file',
+                        ...(selectedProgram?.options
+                          ?.topicDescriptionHelperText?.[language]
+                          ? {
+                              'aria-describedby': 'research-plan-instructions',
+                            }
+                          : {}),
                       }}
                     />
                     {field.state.value && (
                       <FilePreview
                         file={field.state.value}
-                        onDelete={() => field.handleChange(undefined)}
+                        removeButtonId="researchPlan-remove"
+                        onDelete={() =>
+                          focusAfter(
+                            () => field.handleChange(undefined),
+                            'researchPlan'
+                          )
+                        }
                       />
                     )}
                   </>
@@ -1106,10 +1143,12 @@ const ThesisEditForm = ({
                       error={errors.has('waysOfWorking')}
                       helperText={t('thesisForm:waysOfWorkingHelperText')}
                       uploadedFile={field.state.value}
-                      handleFileUpload={(files) => {
-                        field.handleChange(files[0])
-                        errors.clear('waysOfWorking')
-                      }}
+                      handleFileUpload={(files) =>
+                        focusAfter(() => {
+                          field.handleChange(files[0])
+                          errors.clear('waysOfWorking')
+                        }, 'waysOfWorking-remove')
+                      }
                       inputProps={{
                         'data-testid': 'ways-of-working-input',
                         accept: '.pdf',
@@ -1119,10 +1158,13 @@ const ThesisEditForm = ({
                     {field.state.value && (
                       <FilePreview
                         file={field.state.value}
-                        onDelete={() => {
-                          field.handleChange(undefined)
-                          form.setFieldValue('waysOfWorkingValidUntil', null)
-                        }}
+                        removeButtonId="waysOfWorking-remove"
+                        onDelete={() =>
+                          focusAfter(() => {
+                            field.handleChange(undefined)
+                            form.setFieldValue('waysOfWorkingValidUntil', null)
+                          }, 'waysOfWorking')
+                        }
                       />
                     )}
                   </>
