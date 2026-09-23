@@ -506,7 +506,6 @@ const ThesisEditForm = ({
                 {(field) => (
                   <TextField
                     data-testid="topic-select-input"
-                    autoFocus
                     required
                     margin="dense"
                     id="topic"
@@ -527,18 +526,22 @@ const ThesisEditForm = ({
               <form.Field name="programId">
                 {(field) => (
                   <FormControl fullWidth>
-                    <InputLabel id="program-select-label">{`${t('programHeader')}*`}</InputLabel>
+                    <InputLabel id="program-select-label" required>
+                      {t('programHeader')}
+                    </InputLabel>
                     <Select
                       data-testid="program-select-input"
                       required
                       value={field.state.value}
                       id="programId"
-                      label="Program"
+                      labelId="program-select-label"
+                      label={`${t('programHeader')} *`}
                       name="programId"
                       onChange={(e) =>
                         handleProgramChange(e.target.value as string)
                       }
                       error={errors.has('programId')}
+                      aria-describedby="programId-helper-text"
                       renderValue={(value) =>
                         programs.find((program) => program.id === value)?.name[
                           language
@@ -570,7 +573,7 @@ const ThesisEditForm = ({
                         </MenuItem>
                       ))}
                     </Select>
-                    <FormHelperText error>
+                    <FormHelperText id="programId-helper-text" error>
                       {errors.message('programId')}
                     </FormHelperText>
                   </FormControl>
@@ -585,7 +588,7 @@ const ThesisEditForm = ({
                 <form.Field name="studyTrackId">
                   {(field) => (
                     <FormControl fullWidth>
-                      <InputLabel id="study-track-select-label">
+                      <InputLabel id="study-track-select-label" required>
                         {t('studyTrackHeader')}
                       </InputLabel>
                       <Select
@@ -593,8 +596,10 @@ const ThesisEditForm = ({
                         required
                         value={field.state.value ?? ''}
                         id="studyTrackId"
-                        label="Study Track"
+                        labelId="study-track-select-label"
+                        label={`${t('studyTrackHeader')} *`}
                         name="studyTrackId"
+                        aria-describedby="studyTrackId-helper-text"
                         onChange={(e) => {
                           field.handleChange(e.target.value as string)
                           errors.clear('studyTrackId')
@@ -610,6 +615,9 @@ const ThesisEditForm = ({
                           </MenuItem>
                         ))}
                       </Select>
+                      <FormHelperText id="studyTrackId-helper-text" error>
+                        {errors.message('studyTrackId')}
+                      </FormHelperText>
                     </FormControl>
                   )}
                 </form.Field>
@@ -628,7 +636,9 @@ const ThesisEditForm = ({
                           title={t('thesisForm:approverInstructions')}
                         />
                         <FormControl fullWidth>
-                          <InputLabel id="approver-select-label">{`${t('thesisForm:approverHeader')}*`}</InputLabel>
+                          <InputLabel id="approver-select-label" required>
+                            {t('thesisForm:approverHeader')}
+                          </InputLabel>
                           <Select
                             data-testid="approver-select-input"
                             required
@@ -638,8 +648,10 @@ const ThesisEditForm = ({
                                 : ''
                             }
                             id="approvers"
-                            label="Approver"
+                            labelId="approver-select-label"
+                            label={`${t('thesisForm:approverHeader')} *`}
                             name="approvers"
+                            aria-describedby="approver-select-instructions approvers-helper-text"
                             onChange={(e) => {
                               field.handleChange([
                                 approvers.find((a) => a.id === e.target.value),
@@ -654,7 +666,7 @@ const ThesisEditForm = ({
                               </MenuItem>
                             ))}
                           </Select>
-                          <FormHelperText error>
+                          <FormHelperText id="approvers-helper-text" error>
                             {errors.message('approvers')}
                           </FormHelperText>
                         </FormControl>
@@ -664,56 +676,148 @@ const ThesisEditForm = ({
                 )}
 
               <form.Field name="authors">
-                {(field) => (
-                  <FormControl fullWidth>
-                    <Autocomplete<User, boolean>
-                      id="authors"
-                      noOptionsText={t('userSearchNoOptions')}
-                      data-testid="author-select-input"
-                      disablePortal
-                      multiple={allowMultipleAuthors as any}
-                      options={authorOptions ?? []}
-                      getOptionLabel={(author: User) =>
-                        `${author.firstName} ${author.lastName} ${author.email ? `(${author.email})` : ''} ${author.studentNumber ? `(${author.studentNumber})` : ''}`
-                      }
-                      inputValue={userSearch}
-                      filterOptions={(x: any) => x}
-                      isOptionEqualToValue={(option: User, value: User) =>
-                        option.id === value.id
-                      }
-                      onInputChange={(_, value) => setUserSearch(value)}
-                      value={
-                        allowMultipleAuthors
-                          ? field.state.value
-                          : ((field.state.value.length > 0
-                              ? field.state.value[0]
-                              : null) as any)
-                      }
-                      onChange={(_, value) => {
-                        field.handleChange(
+                {(field) => {
+                  const selectedAuthors = allowMultipleAuthors
+                    ? field.state.value.map(getAuthorLabel).join(', ')
+                    : ''
+
+                  const removeAuthor = (index: number) => {
+                    const remaining = field.state.value.filter(
+                      (_: User, i: number) => i !== index
+                    )
+
+                    focusAfter(
+                      () => field.handleChange(remaining),
+                      remaining.length === 0
+                        ? 'authors'
+                        : `author-remove-${Math.min(index, remaining.length - 1)}`
+                    )
+                  }
+
+                  const authorsDescribedBy =
+                    [
+                      selectedAuthors ? 'authors-selection' : null,
+                      errors.has('authors') ? 'authors-helper-text' : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' ') || undefined
+
+                  return (
+                    <FormControl fullWidth>
+                      <Autocomplete<User, boolean>
+                        id="authors"
+                        noOptionsText={t('userSearchNoOptions')}
+                        loading={isSearchingAuthors}
+                        loadingText={t('userSearchLoading')}
+                        data-testid="author-select-input"
+                        disablePortal
+                        autoHighlight
+                        clearText={
                           allowMultipleAuthors
-                            ? (value as User[])
-                            : value
-                              ? [value as User]
-                              : []
-                        )
-                        errors.clear('authors')
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label={
+                            ? t('common:clearAllAuthors')
+                            : t('common:clearAuthor')
+                        }
+                        slotProps={{
+                          clearIndicator: {
+                            tabIndex: 0,
+                            sx: {
+                              '&:focus, &:focus-visible': {
+                                visibility: 'visible',
+                              },
+                            },
+                          },
+                        }}
+                        renderValue={
+                          allowMultipleAuthors ? (): null => null : undefined
+                        }
+                        onOpen={() => setAuthorSuggestionsOpen(true)}
+                        onClose={() => setAuthorSuggestionsOpen(false)}
+                        multiple={allowMultipleAuthors as any}
+                        options={authorOptions ?? []}
+                        getOptionLabel={getAuthorLabel}
+                        inputValue={userSearch}
+                        filterOptions={(x: any) => x}
+                        isOptionEqualToValue={(option: User, value: User) =>
+                          option.id === value.id
+                        }
+                        onInputChange={(_, value) => setUserSearch(value)}
+                        value={
+                          allowMultipleAuthors
+                            ? field.state.value
+                            : ((field.state.value.length > 0
+                                ? field.state.value[0]
+                                : null) as any)
+                        }
+                        onChange={(_, value) => {
+                          field.handleChange(
                             allowMultipleAuthors
-                              ? t('authorsHeader')
-                              : t('author')
-                          }
-                          required={field.state.value.length === 0}
-                          {...errors.fieldProps('authors')}
-                        />
+                              ? (value as User[])
+                              : value
+                                ? [value as User]
+                                : []
+                          )
+                          errors.clear('authors')
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label={
+                              allowMultipleAuthors
+                                ? t('authorsHeader')
+                                : t('author')
+                            }
+                            required={field.state.value.length === 0}
+                            slotProps={{
+                              ...params.slotProps,
+                              htmlInput: {
+                                ...params.slotProps.htmlInput,
+                                'aria-describedby': authorsDescribedBy,
+                              },
+                            }}
+                            {...errors.fieldProps('authors')}
+                          />
+                        )}
+                      />
+                      {allowMultipleAuthors && field.state.value.length > 0 && (
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          sx={{ flexWrap: 'wrap', rowGap: 1, mt: 1 }}
+                        >
+                          {field.state.value.map(
+                            (author: User, index: number) => (
+                              <RemovableChip
+                                key={author.id}
+                                variant="outlined"
+                                sx={{ maxWidth: 300 }}
+                                label={getAuthorLabel(author)}
+                                removeLabel={`${t('removeButton')} ${getAuthorLabel(author)}`}
+                                removeButtonId={`author-remove-${index}`}
+                                removeButtonTestId={`remove-author-button-${index}`}
+                                onRemove={() => removeAuthor(index)}
+                              />
+                            )
+                          )}
+                        </Stack>
                       )}
-                    />
-                  </FormControl>
-                )}
+
+                      {selectedAuthors && (
+                        <VisuallyHidden id="authors-selection" aria-hidden>
+                          {t('common:selectedAuthors', {
+                            authors: selectedAuthors,
+                          })}
+                        </VisuallyHidden>
+                      )}
+                      <SearchSuggestionsStatus
+                        open={authorSuggestionsOpen}
+                        loading={isSearchingAuthors}
+                        count={authorOptions?.length ?? 0}
+                        loadingText={t('userSearchLoading')}
+                        noOptionsText={t('userSearchNoOptions')}
+                      />
+                    </FormControl>
+                  )
+                }}
               </form.Field>
 
               {showStatusForm ? (
@@ -729,7 +833,9 @@ const ThesisEditForm = ({
                         value={field.state.value}
                         label={t('statusHeader')}
                         id="status"
+                        labelId="status-select-label"
                         name="status"
+                        aria-describedby="status-helper-text"
                         onChange={(e) => {
                           field.handleChange(
                             e.target.value as ThesisData['status']
@@ -769,7 +875,7 @@ const ThesisEditForm = ({
                           {t(StatusLocale.CANCELLED)}
                         </MenuItem>
                       </Select>
-                      <FormHelperText error>
+                      <FormHelperText id="status-helper-text" error>
                         {errors.message('status')}
                       </FormHelperText>
                     </FormControl>
@@ -778,15 +884,25 @@ const ThesisEditForm = ({
               ) : (
                 <form.Field name="status">
                   {(field) => (
-                    <FormControl fullWidth>
+                    <FormControl
+                      fullWidth
+                      role="group"
+                      aria-labelledby="status-readonly-label"
+                    >
                       <Typography
+                        id="status-readonly-label"
+                        component="span"
                         variant="body2"
                         color="textSecondary"
                         sx={{ mb: 1 }}
                       >
                         {t('statusHeader')}
                       </Typography>
-                      <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                      <Typography
+                        component="span"
+                        variant="body1"
+                        sx={{ fontWeight: 500 }}
+                      >
                         {t(
                           StatusLocale[
                             field.state.value as keyof typeof StatusLocale
@@ -821,6 +937,7 @@ const ThesisEditForm = ({
                               value={field.state.value ?? milestoneVersionIndex}
                               label={t('thesisForm:milestoneVersion')}
                               id="milestoneVersion"
+                              labelId="milestone-version-select-label"
                               name="milestoneVersion"
                               onChange={(e) => {
                                 const val = Number(e.target.value)
@@ -859,6 +976,7 @@ const ThesisEditForm = ({
                               value={field.state.value ?? 0}
                               label={t('progressView:milestone')}
                               id="milestone"
+                              labelId="milestone-select-label"
                               name="milestone"
                               onChange={(e) =>
                                 field.handleChange(Number(e.target.value))
@@ -894,6 +1012,7 @@ const ThesisEditForm = ({
                         slotProps={{
                           textField: {
                             id: 'startDate',
+                            required: true,
                             helperText:
                               errors.message('startDate') ?? 'DD.MM.YYYY',
                             fullWidth: true,
@@ -1074,6 +1193,7 @@ const ThesisEditForm = ({
                 language
               ] && (
                 <AlertBox
+                  id="research-plan-instructions"
                   severity="info"
                   sx={{ mx: 2, mb: 2 }}
                   title={t('thesisForm:topicDescriptionInstructionsTitle')}
@@ -1184,10 +1304,11 @@ const ThesisEditForm = ({
                     <form.Field name="waysOfWorkingValidUntil">
                       {(field) => (
                         <DatePicker
-                          label={`${t('thesisForm:waysOfWorkingValidUntil')}*`}
+                          label={t('thesisForm:waysOfWorkingValidUntil')}
                           slotProps={{
                             textField: {
                               id: 'waysOfWorkingValidUntil',
+                              required: true,
                               helperText:
                                 errors.message('waysOfWorkingValidUntil') ??
                                 'DD.MM.YYYY',

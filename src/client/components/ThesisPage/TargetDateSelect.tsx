@@ -54,7 +54,8 @@ const TargetDateSelect = ({
           </InputLabel>
           <Select
             labelId="target-date-select-label"
-            id="target-date-select"
+            id="targetDate"
+            aria-describedby="target-date-helper-text"
             value={targetDateDropdownValue}
             label={t('targetDateHeader')}
             onChange={(event) => {
@@ -79,7 +80,10 @@ const TargetDateSelect = ({
             <MenuItem value="custom">{t('thesisForm:customDate')}</MenuItem>
           </Select>
           {targetDateDropdownValue !== 'custom' && (
-            <FormHelperText error={errors.has('targetDate')}>
+            <FormHelperText
+              id="target-date-helper-text"
+              error={errors.has('targetDate')}
+            >
               {errors.message('targetDate') ?? 'DD.MM.YYYY'}
             </FormHelperText>
           )}
