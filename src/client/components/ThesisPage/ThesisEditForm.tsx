@@ -460,7 +460,11 @@ const ThesisEditForm = ({
           }}
         >
           {errors.issues.length > 0 && (
-            <ErrorSummary autofocus label={t('thesisForm:errorSummary')}>
+            <ErrorSummary
+              autofocus
+              focusKey={errors.version}
+              label={t('thesisForm:errorSummary')}
+            >
               {errors.issues.map((error, index) => (
                 <li
                   data-testid={`errorsummary-${error.path.join('-')}`}

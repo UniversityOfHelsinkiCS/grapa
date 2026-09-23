@@ -6,6 +6,7 @@ export type ErrorPath = (string | number)[]
 
 export interface ThesisFormErrors {
   issues: z.core.$ZodIssue[]
+  version: number
   at: (...path: ErrorPath) => z.core.$ZodIssue[]
   set: (issues: z.core.$ZodIssue[]) => void
   clear: (...path: ErrorPath) => void
@@ -20,6 +21,7 @@ const isUnder = (issuePath: readonly PropertyKey[], path: ErrorPath) =>
 export const useThesisFormErrors = (): ThesisFormErrors => {
   const { t } = useTranslation()
   const [issues, setIssues] = useState<z.core.$ZodIssue[]>([])
+  const [version, setVersion] = useState(0)
 
   const at = (...path: ErrorPath) =>
     issues.filter((issue) => isUnder(issue.path, path))
@@ -32,9 +34,13 @@ export const useThesisFormErrors = (): ThesisFormErrors => {
 
   return {
     issues,
+    version,
     at,
     message,
-    set: setIssues,
+    set: (newIssues) => {
+      setIssues(newIssues)
+      setVersion((current) => current + 1)
+    },
     clear: (...path) =>
       setIssues((current) =>
         current.filter((issue) => !isUnder(issue.path, path))
