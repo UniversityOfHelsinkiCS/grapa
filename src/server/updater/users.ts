@@ -77,6 +77,7 @@ const usersHandler = async (users: SisuUser[]) => {
         if (studyRight.selections.length > 0) {
           for (const selection_index in studyRight.selections) {
             const selection = studyRight.selections[selection_index]
+            if (!selection.code) continue
             parsedStudyRights.push({
               id: selection.id,
               baseId: studyRight.id,
@@ -98,6 +99,8 @@ const usersHandler = async (users: SisuUser[]) => {
             })
           }
         } else {
+          if (!studyRight.code) continue
+
           parsedStudyRights.push({
             id: studyRight.id,
             programId: programs.has(studyRight.code) ? studyRight.code : null,
