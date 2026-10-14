@@ -686,6 +686,7 @@
   },
   "ethesisModal": {
     "saveToEthesisButton": "Merkitse tallennetuksi E-thesikseen",
+    "saveToEthesisOnlyInEthesisView": "Tämän voi tehdä vain E-thesis-vastaavan näkymässä",
     "saving": "Tallennetaan...",
     "close": "Sulje",
     "invalidDate": "Virheellinen päivämäärä",

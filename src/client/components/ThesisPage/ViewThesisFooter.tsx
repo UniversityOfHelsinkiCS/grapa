@@ -428,6 +428,7 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
     onlySeminarSupervised,
     hideEdit,
     hideDelete,
+    enableSaveToEthesis,
   }: ThesisFooterProps = props
 
   const selectedIds = Object.keys(rowSelectionModel).filter(
@@ -632,21 +633,37 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
                   )}
                 {isEthesisAdmin(currentUser!) &&
                   thesis.status === THESIS_STATUSES.ETHESIS_SENT && (
-                    <Button
-                      variant="outlined"
-                      sx={{
-                        color: '#000',
-                        backgroundColor: '#fcd34d',
-                        borderColor: '#000',
-                        fontSize: '12px',
-                        height: 24,
-                        px: 2,
-                        fontWeight: 600,
-                      }}
-                      onClick={() => setEthesisAdminModalOpen(true)}
+                    <Tooltip
+                      title={
+                        !enableSaveToEthesis
+                          ? t('ethesisModal:saveToEthesisOnlyInEthesisView')
+                          : ''
+                      }
                     >
-                      {t('ethesisModal:saveToEthesisButton')}
-                    </Button>
+                      <Box component="span">
+                        <Button
+                          variant="outlined"
+                          disabled={!enableSaveToEthesis}
+                          sx={{
+                            color: '#000',
+                            backgroundColor: '#fcd34d',
+                            borderColor: '#000',
+                            fontSize: '12px',
+                            height: 24,
+                            px: 2,
+                            fontWeight: 600,
+                            '&.Mui-disabled': {
+                              color: 'rgba(0, 0, 0, 0.5)',
+                              backgroundColor: 'rgba(252, 211, 77, 0.5)',
+                              borderColor: 'rgba(0, 0, 0, 0.3)',
+                            },
+                          }}
+                          onClick={() => setEthesisAdminModalOpen(true)}
+                        >
+                          {t('ethesisModal:saveToEthesisButton')}
+                        </Button>
+                      </Box>
+                    </Tooltip>
                   )}
                 {(currentUser.isAdmin ||
                   (!isStudentView && thesis.status !== THESIS_STATUSES.DRAFT) ||

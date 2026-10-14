@@ -22,4 +22,5 @@ export interface ThesisFooterProps {
   onlySeminarSupervised?: boolean
   hideEdit?: boolean
   hideDelete?: boolean
+  enableSaveToEthesis?: boolean
 }

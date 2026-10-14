@@ -29,6 +29,7 @@ export const EthesisOverview = () => {
         showGraders
         hideEdit
         hideDelete
+        enableSaveToEthesis
         filteringStatuses={['ETHESIS_SENT', 'ETHESIS']}
       />
     </Box>

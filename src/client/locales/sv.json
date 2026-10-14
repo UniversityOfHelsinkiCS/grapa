@@ -687,6 +687,7 @@
   },
   "ethesisModal": {
     "saveToEthesisButton": "Markera som sparad i E-thesis",
+    "saveToEthesisOnlyInEthesisView": "Detta kan endast göras i E-thesis-ansvarigas vy",
     "saving": "Sparar...",
     "close": "Stäng",
     "invalidDate": "Ogiltigt datum",

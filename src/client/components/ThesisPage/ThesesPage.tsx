@@ -44,6 +44,7 @@ interface Props {
   showEthesisDateColumn?: boolean
   hideEdit?: boolean
   hideDelete?: boolean
+  enableSaveToEthesis?: boolean
   showGraders?: boolean
   showCurrentView?: boolean
 }
@@ -63,6 +64,7 @@ const ThesesPage = ({
   showEthesisDateColumn = false,
   hideEdit = false,
   hideDelete = false,
+  enableSaveToEthesis = false,
   showGraders = false,
   showCurrentView = false,
 }: Props) => {
@@ -575,6 +577,7 @@ const ThesesPage = ({
             onlySeminarSupervised={onlySeminarSupervised}
             hideEdit={hideEdit}
             hideDelete={hideDelete}
+            enableSaveToEthesis={enableSaveToEthesis}
           ></ViewThesisFooter>
         </Box>
       </Box>

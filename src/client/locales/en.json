@@ -687,6 +687,7 @@
   },
   "ethesisModal": {
     "saveToEthesisButton": "Mark as saved in E-thesis",
+    "saveToEthesisOnlyInEthesisView": "This can only be done in the E-thesis admin view",
     "saving": "Saving...",
     "close": "Close",
     "invalidDate": "Invalid Date",
