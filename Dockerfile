@@ -23,6 +23,9 @@ COPY . .
 
 RUN npm run build
 
+# The pod runs as a non-root user in the root group, so it can't create this itself
+RUN mkdir -p uploads && chgrp 0 uploads && chmod g+rwX uploads
+
 EXPOSE 8000
 
 CMD ["npm", "run", "start:prod"]
