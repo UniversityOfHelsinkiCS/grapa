@@ -20,5 +20,5 @@ services:
     container_name: grapa_test_db
 
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     container_name: grapa_test_redis
