@@ -1341,6 +1341,7 @@ const CSV_COLUMNS = [
   },
   {
     header: 'Author Student IDs',
+    containsStudentNumbers: true,
     getValue: (t: ThesisData) => {
       const ids = t.authors
         ?.map((a) => a.studentNumber)
@@ -1377,11 +1378,18 @@ const CSV_COLUMNS = [
   },
 ]
 
-export const thesesToCsv = (theses: ThesisData[], language = 'fi') => {
-  const headers = CSV_COLUMNS.map((col) => col.header)
+export const thesesToCsv = (
+  theses: ThesisData[],
+  language = 'fi',
+  hideStudentNumbers = false
+) => {
+  const columns = hideStudentNumbers
+    ? CSV_COLUMNS.filter((col) => !col.containsStudentNumbers)
+    : CSV_COLUMNS
+  const headers = columns.map((col) => col.header)
 
   const rows = theses.map((t) =>
-    CSV_COLUMNS.map((col) => escapeCsv(col.getValue(t, language)))
+    columns.map((col) => escapeCsv(col.getValue(t, language)))
   )
 
   return (

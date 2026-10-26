@@ -377,6 +377,49 @@ describe('thesis router', () => {
             })
           })
 
+          describe('when the user has hidden student numbers', () => {
+            beforeEach(async () => {
+              await User.update(
+                { studentNumber: '012345678' },
+                { where: { username: 'test2' } }
+              )
+            })
+
+            it('should return student numbers without the header', async () => {
+              const response = await request
+                .get('/api/theses/paginate')
+                .set({ hygroupcn: 'grp-toska', uid: 'hy-person-123' })
+              expect(response.status).toEqual(200)
+              expect(response.body.theses[0].authors[0].studentNumber).toEqual(
+                '012345678'
+              )
+            })
+
+            it('should omit student numbers from the response', async () => {
+              const response = await request.get('/api/theses/paginate').set({
+                hygroupcn: 'grp-toska',
+                uid: 'hy-person-123',
+                'x-hide-student-numbers': 'true',
+              })
+              expect(response.status).toEqual(200)
+              const author = response.body.theses[0].authors[0]
+              expect(author.username).toEqual('test2')
+              expect(author).not.toHaveProperty('studentNumber')
+            })
+
+            it('should omit the student number column from the csv', async () => {
+              const response = await request.get('/api/theses/csv').set({
+                hygroupcn: 'grp-toska',
+                uid: 'hy-person-123',
+                'x-hide-student-numbers': 'true',
+              })
+              expect(response.status).toEqual(200)
+              expect(response.text).toContain('test2')
+              expect(response.text).not.toContain('Author Student IDs')
+              expect(response.text).not.toContain('012345678')
+            })
+          })
+
           describe('when the user is a teacher-supervisor of one thesis and is a manager of the program that thesis belongs to', () => {
             let thesisSupervisedByOtherUser: Thesis
             beforeEach(async () => {

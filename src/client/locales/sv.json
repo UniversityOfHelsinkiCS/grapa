@@ -118,7 +118,9 @@
     "addToFavorites": "Lägg till programmet i favoriter",
     "removeFromFavorites": "Ta bort programmet från favoriter",
     "favoriteProgramsUpdated": "Favoritprogrammen har uppdaterats",
-    "favoriteProgramsUpdateFailed": "Misslyckades med att uppdatera favoritprogrammen"
+    "favoriteProgramsUpdateFailed": "Misslyckades med att uppdatera favoritprogrammen",
+    "privacySubHeader": "Integritet",
+    "hideStudentNumbers": "Dölj studentnummer"
   },
   "userInformation": {
     "username": "Användarnamn",

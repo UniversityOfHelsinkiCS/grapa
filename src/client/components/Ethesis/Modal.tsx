@@ -116,7 +116,7 @@ const ThesisModal = ({ open, onClose, thesis }: ThesisModalProps) => {
               </Typography>
 
               <Typography sx={{ mt: 2, mb: 1 }}>
-                {`${author.firstName} ${author.lastName} (${author.studentNumber})`}
+                {`${author.firstName} ${author.lastName}${author.studentNumber ? ` (${author.studentNumber})` : ''}`}
               </Typography>
 
               <Typography sx={{ fontStyle: 'italic', mt: 2, mb: 1 }}>

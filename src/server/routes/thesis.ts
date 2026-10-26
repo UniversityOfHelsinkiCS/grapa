@@ -121,7 +121,11 @@ thesisRouter.get(
     const result = await getPaginatedTheses(query)
 
     const language = (req.query.language as string) || 'fi'
-    const csvString = thesesToCsv(result.theses, language)
+    const csvString = thesesToCsv(
+      result.theses,
+      language,
+      req.hideStudentNumbers
+    )
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8')
     res.setHeader('Content-Disposition', 'attachment; filename="theses.csv"')

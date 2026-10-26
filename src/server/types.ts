@@ -48,6 +48,7 @@ export interface User {
 export interface RequestWithUser extends Request {
   user: User
   loginAs?: boolean
+  hideStudentNumbers?: boolean
 }
 
 export interface TitleData {
@@ -169,6 +170,7 @@ export interface DepartmentData {
 
 export interface ServerGetRequest extends Request {
   user: User
+  hideStudentNumbers?: boolean
 }
 
 export interface ServerDeleteRequest extends Request {

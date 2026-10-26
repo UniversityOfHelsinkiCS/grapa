@@ -116,7 +116,9 @@
     "addToFavorites": "Lisää ohjelma suosikkeihin",
     "removeFromFavorites": "Poista ohjelma suosikeista",
     "favoriteProgramsUpdated": "Suosikkikoulutusohjelmat päivitetty",
-    "favoriteProgramsUpdateFailed": "Suosikkikoulutusohjelmien päivitys epäonnistui"
+    "favoriteProgramsUpdateFailed": "Suosikkikoulutusohjelmien päivitys epäonnistui",
+    "privacySubHeader": "Yksityisyys",
+    "hideStudentNumbers": "Piilota opiskelijanumerot"
   },
   "userInformation": {
     "username": "Käyttäjätunnus",

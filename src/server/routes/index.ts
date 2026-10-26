@@ -6,6 +6,7 @@ import errorHandler from '../middleware/error'
 import userMiddleware from '../middleware/user'
 import accessLogger from '../middleware/access'
 import loginAsMiddleware from '../middleware/loginAs'
+import hideStudentNumbersMiddleware from '../middleware/hideStudentNumbers'
 import employeesAndAdminOnly from '../middleware/employeesAndAdmin'
 
 import userRouter from './user'
@@ -42,6 +43,9 @@ if (inE2EMode || inTest || (!localOIDC && inDevelopment))
 // @ts-expect-error req.user is added to the request
 // as part of oidc passport authentication
 router.use(loginAsMiddleware)
+
+// @ts-expect-error req.user is added to the request
+router.use(hideStudentNumbersMiddleware)
 
 router.use(sentryUserMiddleware)
 router.use(accessLogger)

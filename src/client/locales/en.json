@@ -118,7 +118,9 @@
     "addToFavorites": "Add this program to favorites",
     "removeFromFavorites": "Remove this program from favorites",
     "favoriteProgramsUpdated": "Favorite programs updated",
-    "favoriteProgramsUpdateFailed": "Failed to update favorite programs"
+    "favoriteProgramsUpdateFailed": "Failed to update favorite programs",
+    "privacySubHeader": "Privacy",
+    "hideStudentNumbers": "Hide student numbers"
   },
   "userInformation": {
     "username": "Username",

@@ -19,6 +19,7 @@ import useLoggedInUser from '../../hooks/useLoggedInUser'
 import useDepartments from '../../hooks/useDepartments'
 
 import LanguageSelect from './LanguageSelect'
+import HideStudentNumbers from './HideStudentNumbers'
 import FavoritePrograms from './FavoritePrograms'
 import Logout from './Logout'
 import DepartmentSelector from '../DepartmentSelector'
@@ -214,6 +215,8 @@ const ProfileMenu = ({ sx }: ProfileMenuProps) => {
         disableAutoFocusItem
       >
         <LanguageSelect />
+        <Divider />
+        <HideStudentNumbers />
         {hasStaffAccess && (
           <>
             <Divider />

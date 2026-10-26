@@ -32,6 +32,10 @@ export const KTDK_FEEDBACK_BANNER_DISMISSED_STORAGE_KEY =
 export const LOGIN_AS_LOCAL_STORAGE_KEY = 'grapa-admin-logged-in-as'
 export const LOGIN_AS_HEADER_KEY = 'x-admin-logged-in-as'
 
+export const HIDE_STUDENT_NUMBERS_LOCAL_STORAGE_KEY =
+  'grapa-hide-student-numbers'
+export const HIDE_STUDENT_NUMBERS_HEADER_KEY = 'x-hide-student-numbers'
+
 export const VALID_EVENT_LOG_TYPES = [
   'THESIS_CREATED',
   'THESIS_DELETED',
