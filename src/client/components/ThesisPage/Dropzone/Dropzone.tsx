@@ -12,6 +12,7 @@ import {
 import FileUploadIcon from '@mui/icons-material/FileUpload'
 import CheckIcon from '@mui/icons-material/Check'
 import { FileData } from '@backend/validators/thesisResponse'
+import { MAX_UPLOAD_SIZE_BYTES, MAX_UPLOAD_SIZE_MB } from '../../../../config'
 import { getBgColor, getColor } from './utils'
 
 interface FileDropzoneProps {
@@ -40,16 +41,20 @@ const FileDropzone = ({
   const { t } = useTranslation()
   const helperTextId = useId()
   const instructionsId = useId()
+  const tooLargeId = useId()
 
   const [uploading, setUploading] = useState(false)
+  const [tooLarge, setTooLarge] = useState(false)
 
   const uploadSuccess = Boolean(uploadedFile)
+  const hasError = error || tooLarge
 
   const describedBy =
     [
       inputProps['aria-describedby'],
       instructionsId,
       helperText ? helperTextId : undefined,
+      tooLarge ? tooLargeId : undefined,
     ]
       .filter(Boolean)
       .join(' ') || undefined
@@ -58,8 +63,15 @@ const FileDropzone = ({
     useDropzone({
       accept: { 'application/pdf': ['.pdf'] },
       multiple: false,
+      maxSize: MAX_UPLOAD_SIZE_BYTES,
       disabled: uploading || uploadSuccess,
-      onDrop: (acceptedFiles) => {
+      onDrop: (acceptedFiles, fileRejections) => {
+        setTooLarge(
+          fileRejections.some(({ errors }) =>
+            errors.some(({ code }) => code === 'file-too-large')
+          )
+        )
+
         if (acceptedFiles.length > 0) {
           setUploading(true)
 
@@ -72,13 +84,13 @@ const FileDropzone = ({
 
   const borderColor = getColor({
     uploadSuccess,
-    error,
+    error: hasError,
     isDragAccept,
     isDragReject,
   })
   const backgroundColor = getBgColor({
     uploadSuccess,
-    error,
+    error: hasError,
     isDragAccept,
     isDragReject,
   })
@@ -88,7 +100,7 @@ const FileDropzone = ({
       <InputLabel
         id={`${id}-label`}
         htmlFor={`${id}-input`}
-        error={error}
+        error={hasError}
         required={required}
         sx={{
           width: 'fit-content',
@@ -126,7 +138,7 @@ const FileDropzone = ({
           role: 'button',
           'aria-labelledby': `${id}-label`,
           'aria-describedby': describedBy,
-          'aria-invalid': error || undefined,
+          'aria-invalid': hasError || undefined,
           'aria-disabled': uploading || uploadSuccess || undefined,
         })}
       >
@@ -205,6 +217,17 @@ const FileDropzone = ({
           required
         >
           {helperText}
+        </FormHelperText>
+      )}
+      {tooLarge && (
+        <FormHelperText
+          id={tooLargeId}
+          error
+          margin="dense"
+          variant="filled"
+          role="alert"
+        >
+          {t('dropzone:fileTooLarge', { size: MAX_UPLOAD_SIZE_MB })}
         </FormHelperText>
       )}
     </Box>

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { ValidationError, UniqueConstraintError } from 'sequelize'
+import { MulterError } from 'multer'
 
 import * as Sentry from '@sentry/node'
 
@@ -16,6 +17,11 @@ const errorHandler = (
   next: NextFunction
 ) => {
   logger.error(`${error.message} ${error.name} ${error.stack}`)
+
+  if (error instanceof MulterError && error.code === 'LIMIT_FILE_SIZE') {
+    res.status(413).send({ error: error.message, data: null })
+    return
+  }
 
   if (inProduction) Sentry.captureException(error)
 

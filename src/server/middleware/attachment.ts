@@ -1,5 +1,5 @@
 import multer from 'multer'
-import { inTest } from '../../config'
+import { inTest, MAX_UPLOAD_SIZE_BYTES } from '../../config'
 
 const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
 
@@ -19,7 +19,10 @@ const storage = () => {
   }
 }
 
-const upload = multer({ storage: storage() }).fields([
+const upload = multer({
+  storage: storage(),
+  limits: { fileSize: MAX_UPLOAD_SIZE_BYTES },
+}).fields([
   { name: 'json', maxCount: 1 },
   { name: 'researchPlan', maxCount: 1 },
   { name: 'waysOfWorking', maxCount: 1 },

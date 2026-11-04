@@ -319,7 +319,8 @@
   },
   "dropzone": {
     "uploadText": "Dra och släpp en fil här eller klicka för att ladda upp",
-    "uploadSuccessText": "Filen har laddats upp framgångsrikt"
+    "uploadSuccessText": "Filen har laddats upp framgångsrikt",
+    "fileTooLarge": "Filen är för stor. Den maximala storleken är {{size}} MB."
   },
   "formErrors": {
     "topic": "Vänligen ange ett ämne för avhandlingen",

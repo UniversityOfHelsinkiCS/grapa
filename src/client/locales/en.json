@@ -319,7 +319,8 @@
   },
   "dropzone": {
     "uploadText": "Drop a file here or click to upload",
-    "uploadSuccessText": "File uploaded successfully"
+    "uploadSuccessText": "File uploaded successfully",
+    "fileTooLarge": "The file is too large. The maximum size is {{size}} MB."
   },
   "formErrors": {
     "topic": "Please provide a topic for the thesis",

@@ -317,7 +317,8 @@
   },
   "dropzone": {
     "uploadText": "Pudota tiedosto tähän tai klikkaa ladataksesi",
-    "uploadSuccessText": "Tiedosto ladattu onnistuneesti"
+    "uploadSuccessText": "Tiedosto ladattu onnistuneesti",
+    "fileTooLarge": "Tiedosto on liian suuri. Suurin sallittu koko on {{size}} Mt."
   },
   "formErrors": {
     "topic": "Anna tutkielman aihe",
