@@ -97,6 +97,10 @@ Thesis.belongsToMany(User, {
 Attachment.belongsTo(Thesis, { as: 'thesis' })
 Thesis.hasOne(Attachment, { as: 'researchPlan', foreignKey: 'thesisId' })
 Thesis.hasOne(Attachment, { as: 'waysOfWorking', foreignKey: 'thesisId' })
+Thesis.hasMany(Attachment, {
+  as: 'milestoneAttachments',
+  foreignKey: 'thesisId',
+})
 
 // Program and Thesis association
 Thesis.belongsTo(Program, { as: 'program', foreignKey: 'programId' })

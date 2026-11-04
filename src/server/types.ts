@@ -139,6 +139,7 @@ export interface ProgramOptions {
   allowMultipleAuthors?: boolean
   hideSendToEthesis?: boolean
   useMilestones?: boolean
+  allowMilestoneAttachments?: boolean
   disableStudyTracks?: boolean
   useIdleState?: boolean
   supervisorApproval?: boolean

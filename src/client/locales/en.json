@@ -225,6 +225,13 @@
       "enableConfirm": "Are you sure you want to enable milestones?",
       "disableConfirm": "Are you sure you want to disable milestones?"
     },
+    "allowMilestoneAttachments": {
+      "toggle": "Allow milestone files",
+      "tooltip": "Students, supervisors and seminar supervisors can attach a PDF file to the milestone currently in progress",
+      "confirmTitle": "Confirm milestone file settings",
+      "enableConfirm": "Are you sure you want to allow attaching files to milestones?",
+      "disableConfirm": "Are you sure you want to stop allowing files to be attached to milestones? Files that are already attached remain visible."
+    },
     "milestones": {
       "fieldTitle": "Milestone",
       "title": "Milestones",
@@ -634,7 +641,12 @@
     "title": "Progress",
     "doneButton": "Mark milestone {0} as done",
     "cancelButton": "Cancel",
-    "inProgress": "In progress"
+    "inProgress": "In progress",
+    "milestoneFileError": "Saving the file failed. Only PDF files up to {{size}} MB are allowed.",
+    "uploadFile": "Upload file",
+    "doneButtonUploadHint": "Upload the milestone's file before marking it as done",
+    "missingFileConfirmTitle": "No file uploaded",
+    "missingFileConfirmDescription": "No file has been uploaded for milestone {{number}}. Do you still want to mark it as done?"
   },
   "help": {
     "table": "<b>Tabs</b><br>The theses shown in the thesis view can be limited by using the tabs at the top.<ul>    <li>Active shows all theses that are in a status other than completed or cancelled</li>    <li>Inactive shows completed and cancelled theses</li>    <li>All shows all theses</li></ul><b>Action filters</b><ul>    <li>        If necessary, buttons will appear below the tabs, allowing theses to be filtered based on the actions they        require.    </li></ul><b>Search function</b><ul>    <li>        Theses can be searched by topic and author.    </li></ul><b>Milestone filter</b><ul>    <li>        Theses in degree programmes that use milestones can also be filtered by milestone    </li></ul><b>Sorting the table</b><ul>    <li>        The table can be sorted by the desired column by pressing the icon to the right of the column name.    </li></ul><b>Creating a new thesis</b><ul>    <li>        A new thesis can be created by pressing the \"New thesis\" button or, in degree programmes that use a student-initiated process, by pressing the three dots and selecting new thesis.    </li></ul>",

@@ -19,13 +19,17 @@ const storage = () => {
   }
 }
 
-const upload = multer({
+const multerInstance = multer({
   storage: storage(),
   limits: { fileSize: MAX_UPLOAD_SIZE_BYTES },
-}).fields([
+})
+
+const upload = multerInstance.fields([
   { name: 'json', maxCount: 1 },
   { name: 'researchPlan', maxCount: 1 },
   { name: 'waysOfWorking', maxCount: 1 },
 ])
+
+export const parseMilestoneFile = multerInstance.single('milestoneFile')
 
 export default upload

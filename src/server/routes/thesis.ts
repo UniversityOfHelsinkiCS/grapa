@@ -8,7 +8,9 @@ import {
   ServerPutRequest,
 } from '../types'
 import parseFormDataJson from '../middleware/parseFormDataJson'
-import parseMultipartFormData from '../middleware/attachment'
+import parseMultipartFormData, {
+  parseMilestoneFile,
+} from '../middleware/attachment'
 import { Thesis, EventLog, Program } from '../db/models'
 import { sequelize } from '../db/connection'
 import { validateThesisDataMiddleware } from '../validators/thesis'
@@ -42,6 +44,9 @@ import {
 import {
   deleteThesisAttachments,
   handleAttachmentByLabel,
+  saveMilestoneAttachment,
+  deleteMilestoneAttachment,
+  removeFile,
 } from './thesisAttachmentHelpers'
 import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus'
 import ethesisUserHandler from '../middleware/ethesisUser'
@@ -273,6 +278,56 @@ thesisRouter.put(
 
     const safeData = EmployeeThesisSchema.parse(updatedThesis)
     res.send(safeData)
+  }
+)
+
+const isSupervisorOf = (thesis: Thesis, userId: string) =>
+  [...thesis.supervisions, ...thesis.seminarSupervisions].some(
+    (supervision) => supervision.user?.id === userId
+  )
+
+thesisRouter.put(
+  '/:id/milestone-attachment',
+  ethesisUserHandler,
+  parseMilestoneFile,
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: ServerPutRequest, res: Response) => {
+    const thesis = await fetchThesisById(req.params.id as string, req.user)
+
+    if (!thesis) {
+      removeFile(req.file?.filename)
+      res.status(404).send('Thesis not found')
+      return
+    }
+    if (!isSupervisorOf(thesis, req.user.id)) {
+      removeFile(req.file?.filename)
+      res.status(403).send('Not a supervisor of the thesis')
+      return
+    }
+
+    await saveMilestoneAttachment(thesis, req.file)
+    res.status(204).send()
+  }
+)
+
+thesisRouter.delete(
+  '/:id/milestone-attachment',
+  ethesisUserHandler,
+  // @ts-expect-error the user middleware updates the req object with user field
+  async (req: ServerDeleteRequest, res: Response) => {
+    const thesis = await fetchThesisById(req.params.id as string, req.user)
+
+    if (!thesis) {
+      res.status(404).send('Thesis not found')
+      return
+    }
+    if (!isSupervisorOf(thesis, req.user.id)) {
+      res.status(403).send('Not a supervisor of the thesis')
+      return
+    }
+
+    await deleteMilestoneAttachment(thesis)
+    res.status(204).send()
   }
 )
 

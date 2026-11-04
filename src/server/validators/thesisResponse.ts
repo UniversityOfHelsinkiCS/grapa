@@ -64,6 +64,7 @@ export const EmployeeThesisSchema = z.object({
   graders: z.array(EmployeeGraderSchema).optional().default([]),
   researchPlan: z.any().optional(), // Could be FileData or File, hard to parse precisely here
   waysOfWorking: z.any().optional(),
+  milestoneAttachments: z.any().optional(),
   waysOfWorkingValidUntil: z
     .string()
     .or(z.date())

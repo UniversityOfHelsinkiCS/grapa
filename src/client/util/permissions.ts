@@ -6,6 +6,11 @@ import { THESIS_STATUSES } from '../../config'
 export const isSupervisor = (thesis: Thesis, user: User) =>
   Boolean(user && thesis.supervisions?.some((s) => s.user?.id === user.id))
 
+export const isSeminarSupervisor = (thesis: Thesis, user: User) =>
+  Boolean(
+    user && thesis.seminarSupervisions?.some((s) => s.user?.id === user.id)
+  )
+
 export const isProgramApprover = (thesis: Thesis, user: User) =>
   Boolean(user && user.approvableProgramIds?.includes(thesis.programId))
 

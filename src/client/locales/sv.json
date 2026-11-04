@@ -225,6 +225,13 @@
       "enableConfirm": "Är du säker på att du vill aktivera milstolpar?",
       "disableConfirm": "Är du säker på att du vill inaktivera milstolpar?"
     },
+    "allowMilestoneAttachments": {
+      "toggle": "Tillåt filer för milstolpar",
+      "tooltip": "Studenten, handledaren och seminariehandledaren kan bifoga en PDF-fil till den pågående milstolpen",
+      "confirmTitle": "Bekräfta inställningar för milstolpsfiler",
+      "enableConfirm": "Är du säker på att du vill tillåta att filer bifogas till milstolpar?",
+      "disableConfirm": "Är du säker på att du vill sluta tillåta att filer bifogas till milstolpar? Redan bifogade filer förblir synliga."
+    },
     "milestones": {
       "fieldTitle": "Milstolpe",
       "title": "Milstolpar",
@@ -634,7 +641,12 @@
     "title": "Framsteg",
     "doneButton": "Markera milstolpe {0} som klar",
     "cancelButton": "Avbryt",
-    "inProgress": "Pågår"
+    "inProgress": "Pågår",
+    "milestoneFileError": "Det gick inte att spara filen. Endast PDF-filer på högst {{size}} MB är tillåtna.",
+    "uploadFile": "Ladda upp fil",
+    "doneButtonUploadHint": "Ladda upp milstolpens fil innan du markerar den som klar",
+    "missingFileConfirmTitle": "Ingen fil uppladdad",
+    "missingFileConfirmDescription": "Ingen fil har laddats upp för milstolpe {{number}}. Vill du ändå markera den som klar?"
   },
   "help": {
     "table": "<b>Flikar</b><br>De avhandlingar som visas i avhandlingsvyn kan avgränsas med hjälp av flikarna överst.<ul>    <li>Aktiva visar alla avhandlingar som har en annan status än färdig eller avbruten</li>    <li>Inaktiva visar färdiga och avbrutna avhandlingar</li>    <li>Alla visar alla avhandlingar</li></ul><b>Åtgärdsfilter</b><ul>    <li>        Under flikarna visas vid behov knappar med vilka avhandlingar kan filtreras utifrån de åtgärder de        kräver.    </li></ul><b>Sökfunktion</b><ul>    <li>        Avhandlingar kan sökas utifrån ämne och författare.    </li></ul><b>Etappavgränsning</b><ul>    <li>        Avhandlingar i utbildningsprogram som använder etapper kan också avgränsas utifrån etapp    </li></ul><b>Sortering av tabellen</b><ul>    <li>        Tabellen kan sorteras enligt önskad kolumn genom att trycka på ikonen till höger om kolumnens namn.    </li></ul><b>Skapa en ny avhandling</b><ul>    <li>        En ny avhandling kan skapas genom att trycka på knappen \"Ny avhandling\" eller, i utbildningsprogram som använder en studentinitierad process, genom att trycka på de tre punkterna och välja ny avhandling.    </li></ul>",

@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Typography,
   Button,
@@ -7,6 +8,7 @@ import {
   FormControlLabel,
   Checkbox,
   DialogContentText,
+  Tooltip,
 } from '@mui/material'
 import Popup from '../../Common/Popup'
 import { VisuallyHidden } from '../../Common/HiddenLabel'
@@ -20,6 +22,9 @@ import {
   hasMilestones,
 } from '../../../../shared/utils/thesisUtils'
 import { TranslationLanguage } from '@backend/validators/departmentResponse'
+import useLoggedInUser from '../../../hooks/useLoggedInUser'
+import { isSeminarSupervisor, isSupervisor } from '../../../util/permissions'
+import { MilestoneAttachment } from './MilestoneAttachment'
 
 interface ProgressViewProps {
   thesis: any
@@ -31,6 +36,7 @@ export const ProgressView = ({
   isStudentView = false,
 }: ProgressViewProps) => {
   const { t, i18n } = useTranslation()
+  const { user } = useLoggedInUser()
   const { language } = i18n as { language: TranslationLanguage }
   const editThesisMutation = useEditThesisMutation(isStudentView)
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
@@ -131,9 +137,17 @@ export const ProgressView = ({
   const milestoneStep = thesis.milestone || 0
   const step = getCalculatedStep()
 
+  const nextMilestoneIndex = steps[step]?.milestone_index
+  const nextMilestoneLabel = nextMilestoneIndex
+    ? `${inProgressIndex + 1}.${nextMilestoneIndex}`
+    : ''
+
+  // Unreached statuses (e.g. permission to submit) are never highlighted
+  const focusIndex = nextMilestoneIndex ? step : step - 1
+
   const getStepStatus = (index: number) => {
-    if (index === step - 1) return t('progressView:stepStatusCurrent')
-    if (index < step - 1) return t('progressView:stepStatusCompleted')
+    if (index === focusIndex) return t('progressView:stepStatusCurrent')
+    if (index < step) return t('progressView:stepStatusCompleted')
 
     return t('progressView:stepStatusUpcoming')
   }
@@ -146,7 +160,7 @@ export const ProgressView = ({
         })
       : progressStep.name
 
-  const currentStep = steps[step - 1]
+  const currentStep = steps[focusIndex]
   const progressSummary = currentStep
     ? t('progressView:currentStepStatus', {
         step: [getStepName(currentStep), currentStep.description]
@@ -161,37 +175,40 @@ export const ProgressView = ({
     (steps[step - 1]?.milestone || steps[step]?.milestone) &&
     steps[step - 1]?.milestone_index !== milestones.length
 
-  const saveMilestone = (delta: number) => {
-    editThesisMutation.mutate({
-      thesisId: thesis.id,
-      data: {
-        ...thesis,
-        milestone: milestoneStep + delta,
-      },
-    })
-  }
+  const canManageMilestoneFiles = Boolean(
+    thesis.program.options?.allowMilestoneAttachments &&
+    thesis.status === 'IN_PROGRESS' &&
+    (isStudentView ||
+      isSupervisor(thesis, user) ||
+      isSeminarSupervisor(thesis, user))
+  )
 
-  const handleCancelConfirmation = () => {
-    setConfirmDialogOpen(false)
-    setLastMilestoneChecked(false)
-  }
+  const getMilestoneAttachment = (milestoneIndex?: number) =>
+    thesis.milestoneAttachments?.find(
+      (attachment: { milestone: number }) =>
+        attachment.milestone === milestoneIndex
+    )
 
-  const handleConfirmLastMilestone = () => {
+  const isLastMilestone = nextMilestoneIndex === milestones.length
+  const isMissingFile =
+    canManageMilestoneFiles && !getMilestoneAttachment(nextMilestoneIndex)
+
+  const saveMilestone = (delta: number, onSuccess?: () => void) => {
     editThesisMutation.mutate(
       {
         thesisId: thesis.id,
         data: {
           ...thesis,
-          milestone: milestoneStep + 1,
+          milestone: milestoneStep + delta,
         },
       },
-      {
-        onSuccess: () => {
-          setConfirmDialogOpen(false)
-          setLastMilestoneChecked(false)
-        },
-      }
+      { onSuccess }
     )
+  }
+
+  const handleCancelConfirmation = () => {
+    setConfirmDialogOpen(false)
+    setLastMilestoneChecked(false)
   }
 
   return (
@@ -219,7 +236,7 @@ export const ProgressView = ({
           }}
         >
           {steps.map((label, index) => {
-            const isCurrent = index === step - 1
+            const isCurrent = index === focusIndex
             const isReached = step > index
             const stepNumber = t('progressView:stepNumber', {
               number: getVisibleStep(index),
@@ -238,10 +255,7 @@ export const ProgressView = ({
                       : '0.25rem solid #9e9e9e'
                     : 'none',
                   maxWidth: '20rem',
-                  color:
-                    isReached || (step === index && label.milestone)
-                      ? 'black'
-                      : '#9e9e9e',
+                  color: isReached || isCurrent ? 'black' : '#9e9e9e',
                 }}
               >
                 <Box
@@ -289,6 +303,17 @@ export const ProgressView = ({
                   >
                     {label.description}
                   </Typography>
+                  {label.milestone && (
+                    <MilestoneAttachment
+                      thesisId={thesis.id}
+                      attachment={getMilestoneAttachment(label.milestone_index)}
+                      canManage={
+                        canManageMilestoneFiles &&
+                        label.milestone_index === nextMilestoneIndex
+                      }
+                      isStudentView={isStudentView}
+                    />
+                  )}
                   <VisuallyHidden component="span">
                     {`${getStepStatus(index)}.`}
                   </VisuallyHidden>
@@ -308,24 +333,31 @@ export const ProgressView = ({
               mt: 3,
             }}
           >
-            <Button
-              variant="contained"
-              disabled={!steps[step]?.milestone}
-              onClick={() => {
-                if (steps[step]?.milestone_index === milestones.length) {
-                  setConfirmDialogOpen(true)
-                } else {
-                  saveMilestone(1)
-                }
-              }}
-            >
-              {t('progressView:doneButton').replace(
-                '{0}',
-                steps[step]?.milestone_index
-                  ? inProgressIndex + 1 + '.' + steps[step].milestone_index
+            <Tooltip
+              describeChild
+              title={
+                canManageMilestoneFiles && nextMilestoneIndex
+                  ? t('progressView:doneButtonUploadHint')
                   : ''
-              )}
-            </Button>
+              }
+            >
+              <Button
+                variant="contained"
+                disabled={!steps[step]?.milestone}
+                onClick={() => {
+                  if (isLastMilestone || isMissingFile) {
+                    setConfirmDialogOpen(true)
+                  } else {
+                    saveMilestone(1)
+                  }
+                }}
+              >
+                {t('progressView:doneButton').replace(
+                  '{0}',
+                  nextMilestoneLabel
+                )}
+              </Button>
+            </Tooltip>
 
             <Button
               variant="outlined"
@@ -343,26 +375,46 @@ export const ProgressView = ({
       <Popup
         open={confirmDialogOpen}
         onClose={handleCancelConfirmation}
-        title={t('progressView:lastMilestoneConfirmationTitle')}
+        title={t(
+          isLastMilestone
+            ? 'progressView:lastMilestoneConfirmationTitle'
+            : 'progressView:missingFileConfirmTitle'
+        )}
         aria-describedby={dialogDescriptionId}
-        onSubmit={handleConfirmLastMilestone}
+        onSubmit={() => saveMilestone(1, handleCancelConfirmation)}
         submitText={t('common:approveButton')}
         submitColor="primary"
-        submitDisabled={editThesisMutation.isPending || !lastMilestoneChecked}
+        submitDisabled={
+          editThesisMutation.isPending ||
+          (isLastMilestone && !lastMilestoneChecked)
+        }
         cancelText={t('common:cancelButton')}
       >
         <DialogContentText id={dialogDescriptionId}>
-          {t('progressView:lastMilestoneConfirmationDescription')}
+          {isLastMilestone
+            ? t('progressView:lastMilestoneConfirmationDescription')
+            : t('progressView:missingFileConfirmDescription', {
+                number: nextMilestoneLabel,
+              })}
         </DialogContentText>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={lastMilestoneChecked}
-              onChange={(e) => setLastMilestoneChecked(e.target.checked)}
-            />
-          }
-          label={t('progressView:lastMilestoneConfirmationText')}
-        />
+        {isLastMilestone && isMissingFile && (
+          <Alert severity="warning" sx={{ my: 1 }}>
+            {t('progressView:missingFileConfirmDescription', {
+              number: nextMilestoneLabel,
+            })}
+          </Alert>
+        )}
+        {isLastMilestone && (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={lastMilestoneChecked}
+                onChange={(e) => setLastMilestoneChecked(e.target.checked)}
+              />
+            }
+            label={t('progressView:lastMilestoneConfirmationText')}
+          />
+        )}
       </Popup>
     </Box>
   )

@@ -179,6 +179,19 @@ export const buildThesisIncludes = (language?: string): Includeable[] => {
       required: false,
     },
     {
+      model: Attachment,
+      as: 'milestoneAttachments',
+      attributes: [
+        'filename',
+        ['original_name', 'name'],
+        'mimetype',
+        'milestone',
+      ],
+      where: { label: 'milestone' },
+      order: [['milestone', 'ASC']],
+      separate: true,
+    },
+    {
       model: Program,
       as: 'program',
       attributes: ['id', 'name', 'options'],

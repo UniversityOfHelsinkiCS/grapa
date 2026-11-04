@@ -23,6 +23,8 @@ class Attachment extends Model<
   declare mimetype: string
 
   declare label: string
+
+  declare milestone?: number | null
 }
 
 Attachment.init(
@@ -59,6 +61,10 @@ Attachment.init(
     },
     label: {
       type: DataTypes.STRING,
+      allowNull: true,
+    },
+    milestone: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
   },

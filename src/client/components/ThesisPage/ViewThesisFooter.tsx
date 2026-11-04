@@ -79,6 +79,8 @@ import {
   getThesisLateDays,
   isThesisVeryLate,
   hasMilestones,
+  getMilestoneValue,
+  parseMilestoneDescription,
 } from '../../../shared/utils/thesisUtils'
 
 const StatusRow = ({ thesis }: { thesis: Thesis }) => {
@@ -259,17 +261,39 @@ const ProgramTrack = ({
 const Attachments = ({
   researchPlan = undefined,
   waysOfWorking = undefined,
+  milestoneAttachments = [],
+  programOptions,
+  milestoneVersion,
   isStudentView,
 }: {
   researchPlan?: FileData | File | undefined
   waysOfWorking?: FileData | File | undefined
+  milestoneAttachments?: (FileData & { milestone: number })[]
+  programOptions?: ProgramData['options']
+  milestoneVersion?: number | null
   isStudentView?: boolean
 }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
-  const files = [
+  const files: {
+    file: FileData | File | undefined
+    translation: string
+    description?: string
+  }[] = [
     { file: researchPlan, translation: t('thesisForm:researchPlan') },
     { file: waysOfWorking, translation: t('thesisForm:waysOfWorking') },
+    ...milestoneAttachments.map((attachment) => ({
+      file: attachment,
+      translation: `${t('progressView:milestone')} ${attachment.milestone}`,
+      description: parseMilestoneDescription(
+        getMilestoneValue(
+          programOptions,
+          milestoneVersion,
+          attachment.milestone
+        )?.value,
+        i18n.language
+      ),
+    })),
   ].filter(
     (fileContainer) => fileContainer.file && 'filename' in fileContainer.file
   )
@@ -286,11 +310,17 @@ const Attachments = ({
       >
         {t('thesisForm:appendices')}
       </Typography>
-      <Stack sx={{ mt: 2, gap: 1 }} direction="row">
+      <Stack sx={{ mt: 2, gap: 1, flexWrap: 'wrap' }} direction="row">
         {files.map((fileContainer) => (
           <Link
             href={`${BASE_PATH}/api/${isStudentView ? 'student/' : ''}attachments/${(fileContainer.file as FileData).filename}`}
-            aria-label={`${fileContainer.translation}, ${fileContainer.file.name}`}
+            aria-label={[
+              fileContainer.translation,
+              fileContainer.description,
+              fileContainer.file.name,
+            ]
+              .filter(Boolean)
+              .join(', ')}
             sx={{ textDecoration: 'none' }}
             key={fileContainer.translation}
           >
@@ -307,10 +337,17 @@ const Attachments = ({
                 }}
               >
                 <DescriptionOutlined></DescriptionOutlined>
-                <Stack>
+                <Stack sx={{ maxWidth: '20rem' }}>
                   <Typography sx={{ fontSize: '10pt', fontWeight: 600 }}>
                     {fileContainer.translation}
                   </Typography>
+                  {fileContainer.description && (
+                    <Typography
+                      sx={{ fontSize: '10pt', color: 'text.secondary' }}
+                    >
+                      {fileContainer.description}
+                    </Typography>
+                  )}
                   <Typography>{fileContainer.file.name}</Typography>
                 </Stack>
               </Stack>
@@ -902,6 +939,9 @@ const ViewThesisFooter = (props: ThesisFooterProps) => {
           <Attachments
             researchPlan={thesis?.researchPlan}
             waysOfWorking={thesis?.waysOfWorking}
+            milestoneAttachments={thesis?.milestoneAttachments}
+            programOptions={thesis?.program?.options}
+            milestoneVersion={thesis?.milestoneVersion}
             isStudentView={isStudentView}
           />
 

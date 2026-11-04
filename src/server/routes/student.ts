@@ -2,6 +2,7 @@ import express from 'express'
 import {
   GraderData,
   ServerPostRequest,
+  ServerPutRequest,
   ThesisData,
   User,
   StudyTrackData,
@@ -22,14 +23,21 @@ import {
 
 import ethesisUserHandler from '../middleware/ethesisUser'
 import parseFormDataJson from '../middleware/parseFormDataJson'
-import parseMultipartFormData from '../middleware/attachment'
+import parseMultipartFormData, {
+  parseMilestoneFile,
+} from '../middleware/attachment'
 import { validateThesisDataStudentMiddleware } from '../validators/thesis'
 import {
   StudentThesisSchema,
   PaginatedStudentThesesSchema,
 } from '../validators/thesisResponse'
 
-import { handleAttachmentByLabel } from './thesisAttachmentHelpers'
+import {
+  handleAttachmentByLabel,
+  saveMilestoneAttachment,
+  deleteMilestoneAttachment,
+  removeFile,
+} from './thesisAttachmentHelpers'
 
 import { handleChangeEventLogs } from '../services/thesisHelpers'
 
@@ -453,6 +461,55 @@ studentRouter.put(
 
     const safeData = StudentThesisSchema.parse(updatedThesis)
     res.send(safeData)
+  }
+)
+
+studentRouter.put(
+  '/theses/:id/milestone-attachment',
+  ethesisUserHandler,
+  parseMilestoneFile,
+  async (req: ServerPutRequest, res: any) => {
+    //@ts-expect-error it only need isAdmin in this case
+    const thesis = await fetchThesisById(req.params.id as string, {
+      isAdmin: true,
+    })
+
+    if (!thesis) {
+      removeFile(req.file?.filename)
+      res.status(404).send('Requested thesis not found')
+      return
+    }
+    if (!thesis.authors.some((author) => author.id === req.user.id)) {
+      removeFile(req.file?.filename)
+      res.status(401).send('Student must be an author in thesis')
+      return
+    }
+
+    await saveMilestoneAttachment(thesis, req.file)
+    res.status(204).send()
+  }
+)
+
+studentRouter.delete(
+  '/theses/:id/milestone-attachment',
+  ethesisUserHandler,
+  async (req: RequestWithUser, res: any) => {
+    //@ts-expect-error it only need isAdmin in this case
+    const thesis = await fetchThesisById(req.params.id as string, {
+      isAdmin: true,
+    })
+
+    if (!thesis) {
+      res.status(404).send('Requested thesis not found')
+      return
+    }
+    if (!thesis.authors.some((author) => author.id === req.user.id)) {
+      res.status(401).send('Student must be an author in thesis')
+      return
+    }
+
+    await deleteMilestoneAttachment(thesis)
+    res.status(204).send()
   }
 )
 

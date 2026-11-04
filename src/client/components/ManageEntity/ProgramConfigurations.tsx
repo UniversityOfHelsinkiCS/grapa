@@ -52,6 +52,10 @@ export const PROGRAM_OPTIONS = createOptions({
   allowMultipleAuthors: { type: 'boolean' },
   hideSendToEthesis: { type: 'boolean' },
   useMilestones: { type: 'boolean' },
+  allowMilestoneAttachments: {
+    type: 'boolean',
+    conditions: { useMilestones: true },
+  },
   disableStudyTracks: { type: 'boolean' },
   useIdleState: { type: 'boolean' },
   supervisorApproval: { type: 'boolean' },

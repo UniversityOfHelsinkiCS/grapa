@@ -18,8 +18,10 @@ const errorHandler = (
 ) => {
   logger.error(`${error.message} ${error.name} ${error.stack}`)
 
-  if (error instanceof MulterError && error.code === 'LIMIT_FILE_SIZE') {
-    res.status(413).send({ error: error.message, data: null })
+  if (error instanceof MulterError) {
+    res
+      .status(error.code === 'LIMIT_FILE_SIZE' ? 413 : 400)
+      .send({ error: error.message, data: null })
     return
   }
 
