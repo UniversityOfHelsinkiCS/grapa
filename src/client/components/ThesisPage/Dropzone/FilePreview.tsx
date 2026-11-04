@@ -14,9 +14,15 @@ interface FilePreviewProps {
   file: File | FileData
   onDelete: () => void
   removeButtonId?: string
+  isStudentView?: boolean
 }
 
-const FilePreview = ({ file, onDelete, removeButtonId }: FilePreviewProps) => {
+const FilePreview = ({
+  file,
+  onDelete,
+  removeButtonId,
+  isStudentView = false,
+}: FilePreviewProps) => {
   const { t } = useTranslation()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
@@ -28,7 +34,9 @@ const FilePreview = ({ file, onDelete, removeButtonId }: FilePreviewProps) => {
         sx={{ maxWidth: 200 }}
         label={
           'filename' in file ? (
-            <Link href={`${BASE_PATH}/api/attachments/${file.filename}`}>
+            <Link
+              href={`${BASE_PATH}/api/${isStudentView ? 'student/' : ''}attachments/${file.filename}`}
+            >
               {file.name}
             </Link>
           ) : (

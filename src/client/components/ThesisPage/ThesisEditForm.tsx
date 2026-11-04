@@ -1243,6 +1243,7 @@ const ThesisEditForm = ({
                       <FilePreview
                         file={field.state.value}
                         removeButtonId="researchPlan-remove"
+                        isStudentView={isStudentView}
                         onDelete={() =>
                           focusAfter(
                             () => field.handleChange(undefined),
@@ -1283,6 +1284,7 @@ const ThesisEditForm = ({
                       <FilePreview
                         file={field.state.value}
                         removeButtonId="waysOfWorking-remove"
+                        isStudentView={isStudentView}
                         onDelete={() =>
                           focusAfter(() => {
                             field.handleChange(undefined)
