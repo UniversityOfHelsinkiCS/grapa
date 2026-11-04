@@ -340,7 +340,10 @@ thesisRouter.delete(
 
     const thesis = await fetchThesisById(id as string, req.user)
 
-    if (!thesis) res.status(404).send('Thesis not found')
+    if (!thesis) {
+      res.status(404).send('Thesis not found')
+      return
+    }
 
     await sequelize.transaction(async (t) => {
       await deleteThesisAttachments(id as string, t)

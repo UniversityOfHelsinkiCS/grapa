@@ -294,15 +294,22 @@ studentRouter.delete(
       isAdmin: true,
     })
 
-    if (!thesis) res.status(404).send('Thesis not found')
+    if (!thesis) {
+      res.status(404).send('Thesis not found')
+      return
+    }
 
-    if (thesis.status != 'DRAFT')
+    if (thesis.status != 'DRAFT') {
       res
         .status(401)
         .send("Student's cannot delete theses with other statuses than DRAFT")
+      return
+    }
 
-    if (!(thesis.authors.filter((a) => a.id == req.user.id).length > 0))
+    if (!(thesis.authors.filter((a) => a.id == req.user.id).length > 0)) {
       res.status(401).send("Student's cannot delete theses they did not author")
+      return
+    }
 
     await sequelize.transaction(async (t) => {
       await deleteThesisAttachments(id as string, t)
