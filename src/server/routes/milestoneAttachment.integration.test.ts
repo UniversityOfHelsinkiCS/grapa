@@ -9,6 +9,7 @@ import {
   Program,
   ProgramManagement,
   SeminarSupervision,
+  StudyRight,
   Supervision,
   Thesis,
   User,
@@ -381,5 +382,102 @@ describe('milestone attachments', () => {
 
     expect(response.status).toEqual(200)
     expect((await thesis.reload()).milestone).toEqual(3)
+  })
+
+  describe('student updates outside drafts', () => {
+    const studentPath = () => `/api/student/theses/${thesis.id}`
+
+    const getStudentThesis = async () =>
+      (await request.get(studentPath()).set(headers.student)).body
+
+    const getResearchPlan = () =>
+      Attachment.findOne({
+        where: { thesisId: thesis.id, label: 'researchPlan' },
+      })
+
+    beforeEach(async () => {
+      await Grader.create({
+        userId: 'hy-hlo-supervisor-1',
+        thesisId: thesis.id,
+        isPrimaryGrader: true,
+      })
+      await Attachment.create({
+        thesisId: thesis.id,
+        label: 'researchPlan',
+        filename: 'research-plan-file',
+        originalname: 'research-plan.pdf',
+        mimetype: 'application/pdf',
+      })
+      await thesis.update({ isIdle: true })
+    })
+
+    it.each([
+      ['milestone', { milestone: 2 }],
+      ['idle', { isIdle: false }],
+      ['topic', { topic: 'New topic' }],
+    ])(
+      'does not replace the research plan in a %s update',
+      async (_, change) => {
+        const original = await getStudentThesis()
+
+        const response = await request
+          .put(studentPath())
+          .set(headers.student)
+          .field('json', JSON.stringify({ ...original, ...change }))
+          .attach('researchPlan', ...pdf('new-plan.pdf'))
+
+        expect(response.status).toEqual(200)
+        expect(response.body).toMatchObject(change)
+        expect((await getResearchPlan())?.originalname).toEqual(
+          'research-plan.pdf'
+        )
+      }
+    )
+
+    it('does not remove the ways of working file when its data is missing', async () => {
+      await Attachment.create({
+        thesisId: thesis.id,
+        label: 'waysOfWorking',
+        filename: 'ways-of-working-file',
+        originalname: 'ways-of-working.pdf',
+        mimetype: 'application/pdf',
+      })
+      const original = await getStudentThesis()
+
+      const response = await request
+        .put(studentPath())
+        .set(headers.student)
+        .field(
+          'json',
+          JSON.stringify({ ...original, milestone: 2, waysOfWorking: null })
+        )
+
+      expect(response.status).toEqual(200)
+      expect(response.body.milestone).toEqual(2)
+      expect(
+        await Attachment.findOne({
+          where: { thesisId: thesis.id, label: 'waysOfWorking' },
+        })
+      ).not.toBeNull()
+    })
+
+    it('still lets students replace the research plan of a draft', async () => {
+      await thesis.update({ status: 'DRAFT', isIdle: false })
+      await StudyRight.create({
+        userId: 'hy-hlo-student-1',
+        programId: PROGRAM_ID,
+        programCode: PROGRAM_ID,
+      })
+      const original = await getStudentThesis()
+
+      const response = await request
+        .put(studentPath())
+        .set(headers.student)
+        .field('json', JSON.stringify(original))
+        .attach('researchPlan', ...pdf('new-plan.pdf'))
+
+      expect(response.status).toEqual(200)
+      expect((await getResearchPlan())?.originalname).toEqual('new-plan.pdf')
+    })
   })
 })

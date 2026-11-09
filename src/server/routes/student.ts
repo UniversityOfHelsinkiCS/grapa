@@ -463,8 +463,12 @@ studentRouter.put(
     await sequelize.transaction(async (t) => {
       await updateThesis(id as string, thesisData, t)
 
-      await handleAttachmentByLabel(req, id as string, 'researchPlan', t)
-      await handleAttachmentByLabel(req, id as string, 'waysOfWorking', t)
+      // Milestone, idle and topic updates must not touch the files, which
+      // students may only change while the thesis is a draft
+      if (!bypassChecks) {
+        await handleAttachmentByLabel(req, id as string, 'researchPlan', t)
+        await handleAttachmentByLabel(req, id as string, 'waysOfWorking', t)
+      }
 
       //@ts-expect-error it only need isAdmin in this case
       updatedThesis = await fetchThesisById(id as string, { isAdmin: true }, t)
