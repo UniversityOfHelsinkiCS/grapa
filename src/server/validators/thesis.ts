@@ -1,10 +1,16 @@
 import { NextFunction } from 'express'
-import { ServerPostRequest, ServerPutRequest, ThesisData } from '@backend/types'
+import {
+  ProgramOptions,
+  ServerPostRequest,
+  ServerPutRequest,
+  ThesisData,
+} from '@backend/types'
 import { uniqBy } from 'lodash-es'
 import CustomValidationError from '../errors/ValidationError'
 import { getTotalPercentage } from '../services/thesisHelpers'
 import { Program } from '../db/models'
 import { VALID_THESIS_STATUSES } from '../../config'
+import { getMilestoneCount } from '../../shared/utils/thesisUtils'
 
 const validateUser = (user: any) => {
   if (!user) {
@@ -329,6 +335,33 @@ export const thesisDataValidator = async (
     }
 
     validateUser(seminarSupervision.user)
+  }
+}
+
+/**
+ * A thesis' milestone is the number of completed milestones, so it must be
+ * between 0 and the milestone count of the program's milestone version.
+ * Validate only when the milestone changes, so that theses whose program
+ * later loses milestones can still be edited.
+ */
+export const validateMilestone = (
+  milestone: unknown,
+  programOptions: ProgramOptions | null | undefined,
+  milestoneVersion: number | null | undefined
+) => {
+  if (milestone == null) return
+
+  const milestoneCount =
+    getMilestoneCount(programOptions, milestoneVersion) ?? 0
+
+  if (
+    !Number.isInteger(milestone) ||
+    (milestone as number) < 0 ||
+    (milestone as number) > milestoneCount
+  ) {
+    throw new CustomValidationError('Milestone is out of range', {
+      milestone: [`Milestone must be between 0 and ${milestoneCount}`],
+    })
   }
 }
 

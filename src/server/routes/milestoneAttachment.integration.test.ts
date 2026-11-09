@@ -170,6 +170,10 @@ describe('milestone attachments', () => {
         () => thesis.update({ status: 'PLANNING' }),
       ],
       ['all milestones are done', () => thesis.update({ milestone: 3 })],
+      [
+        'the stored milestone is negative',
+        () => thesis.update({ milestone: -1 }),
+      ],
     ])('rejects uploads when %s', async (_, setup, contentType) => {
       await setup()
 
@@ -291,5 +295,91 @@ describe('milestone attachments', () => {
         expect(response.body.milestoneAttachments).toEqual(expectedAttachments)
       }
     )
+  })
+
+  describe('changing the milestone', () => {
+    const setMilestone = async (
+      role: 'student' | 'supervisor',
+      milestone: unknown
+    ) => {
+      const basePath =
+        role === 'student' ? '/api/student/theses' : '/api/theses'
+      const { body: original } = await request
+        .get(`${basePath}/${thesis.id}`)
+        .set(headers[role])
+
+      return request
+        .put(`${basePath}/${thesis.id}`)
+        .set(headers[role])
+        .field('json', JSON.stringify({ ...original, milestone }))
+    }
+
+    beforeEach(async () => {
+      await Grader.create({
+        userId: 'hy-hlo-supervisor-1',
+        thesisId: thesis.id,
+        isPrimaryGrader: true,
+      })
+      await Attachment.create({
+        thesisId: thesis.id,
+        label: 'researchPlan',
+        filename: 'research-plan-file',
+        originalname: 'research-plan.pdf',
+        mimetype: 'application/pdf',
+      })
+    })
+
+    it.each<['student' | 'supervisor', unknown]>([
+      ['student', -1],
+      ['student', 4],
+      ['student', 1.5],
+      ['supervisor', -1],
+      ['supervisor', 4],
+      ['supervisor', 1.5],
+    ])('rejects the %s setting the milestone to %s', async (role, value) => {
+      const response = await setMilestone(role, value)
+
+      expect(response.status).toEqual(400)
+      expect(response.body.error).toEqual('Milestone is out of range')
+      expect((await thesis.reload()).milestone).toEqual(1)
+    })
+
+    it.each<['student' | 'supervisor', number]>([
+      ['student', 0],
+      ['student', 3],
+      ['supervisor', 0],
+      ['supervisor', 3],
+    ])('lets the %s set the milestone to %i', async (role, value) => {
+      const response = await setMilestone(role, value)
+
+      expect(response.status).toEqual(200)
+      expect((await thesis.reload()).milestone).toEqual(value)
+    })
+  })
+  it('validates the milestone against the stored version when none is sent', async () => {
+    await Grader.create({
+      userId: 'hy-hlo-supervisor-1',
+      thesisId: thesis.id,
+      isPrimaryGrader: true,
+    })
+    await Attachment.create({
+      thesisId: thesis.id,
+      label: 'researchPlan',
+      filename: 'research-plan-file',
+      originalname: 'research-plan.pdf',
+      mimetype: 'application/pdf',
+    })
+    const { body: original } = await request
+      .get(`/api/theses/${thesis.id}`)
+      .set(headers.supervisor)
+    delete original.milestoneVersion
+
+    const response = await request
+      .put(`/api/theses/${thesis.id}`)
+      .set(headers.supervisor)
+      .field('json', JSON.stringify({ ...original, milestone: 3 }))
+
+    expect(response.status).toEqual(200)
+    expect((await thesis.reload()).milestone).toEqual(3)
   })
 })

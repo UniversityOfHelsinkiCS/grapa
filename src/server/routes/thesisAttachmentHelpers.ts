@@ -97,6 +97,7 @@ const getActiveMilestoneWhere = (thesis: Thesis) => {
     !options?.allowMilestoneAttachments ||
     thesis.status !== 'IN_PROGRESS' ||
     !milestoneCount ||
+    activeMilestone < 1 ||
     activeMilestone > milestoneCount
   ) {
     throw new CustomValidationError(

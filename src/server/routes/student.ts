@@ -3,6 +3,7 @@ import {
   GraderData,
   ServerPostRequest,
   ServerPutRequest,
+  ProgramOptions,
   ThesisData,
   User,
   StudyTrackData,
@@ -26,7 +27,10 @@ import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMultipartFormData, {
   parseMilestoneFile,
 } from '../middleware/attachment'
-import { validateThesisDataStudentMiddleware } from '../validators/thesis'
+import {
+  validateMilestone,
+  validateThesisDataStudentMiddleware,
+} from '../validators/thesis'
 import {
   StudentThesisSchema,
   PaginatedStudentThesesSchema,
@@ -394,6 +398,14 @@ studentRouter.put(
       originalThesis.topic !== thesisData.topic &&
       typeof thesisData.topic === 'string' &&
       thesisData.topic.trim().length > 0
+
+    if (isMilestoneUpdate) {
+      validateMilestone(
+        thesisData.milestone,
+        originalThesis.program?.options as ProgramOptions | undefined,
+        originalThesis.milestoneVersion
+      )
+    }
 
     if (isMilestoneUpdate || isIdleUpdate || isTopicUpdate) {
       thesisData = {

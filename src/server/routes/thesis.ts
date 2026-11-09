@@ -6,6 +6,7 @@ import {
   ServerGetRequest,
   ServerPostRequest,
   ServerPutRequest,
+  ProgramOptions,
 } from '../types'
 import parseFormDataJson from '../middleware/parseFormDataJson'
 import parseMultipartFormData, {
@@ -13,7 +14,10 @@ import parseMultipartFormData, {
 } from '../middleware/attachment'
 import { Thesis, EventLog, Program } from '../db/models'
 import { sequelize } from '../db/connection'
-import { validateThesisDataMiddleware } from '../validators/thesis'
+import {
+  validateMilestone,
+  validateThesisDataMiddleware,
+} from '../validators/thesis'
 import { getPrimaryStudyTrackId } from '../util/studyTracks'
 import { z } from 'zod'
 import {
@@ -250,6 +254,25 @@ thesisRouter.put(
     if (!originalThesis) {
       res.status(404).send('Thesis not found')
       return
+    }
+
+    if (
+      thesisData.milestone !== undefined &&
+      thesisData.milestone !== originalThesis.milestone
+    ) {
+      const program =
+        thesisData.programId === originalThesis.programId
+          ? originalThesis.program
+          : await Program.findByPk(thesisData.programId)
+
+      validateMilestone(
+        thesisData.milestone,
+        program?.options as ProgramOptions | undefined,
+        // A missing version keeps the stored one when the thesis is saved
+        thesisData.milestoneVersion === undefined
+          ? originalThesis.milestoneVersion
+          : thesisData.milestoneVersion
+      )
     }
 
     let updatedThesis
