@@ -299,7 +299,7 @@ thesisRouter.put(
       res.status(404).send('Thesis not found')
       return
     }
-    if (!isSupervisorOf(thesis, req.user.id)) {
+    if (!req.user.isAdmin && !isSupervisorOf(thesis, req.user.id)) {
       removeFile(req.file?.filename)
       res.status(403).send('Not a supervisor of the thesis')
       return
@@ -321,7 +321,7 @@ thesisRouter.delete(
       res.status(404).send('Thesis not found')
       return
     }
-    if (!isSupervisorOf(thesis, req.user.id)) {
+    if (!req.user.isAdmin && !isSupervisorOf(thesis, req.user.id)) {
       res.status(403).send('Not a supervisor of the thesis')
       return
     }

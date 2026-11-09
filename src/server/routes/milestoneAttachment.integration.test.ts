@@ -30,6 +30,7 @@ const headers = {
   seminarSupervisor: user('seminar1', 'hy-hlo-seminar-1'),
   programManager: user('manager1', 'hy-hlo-manager-1'),
   otherEmployee: user('employee1', 'hy-hlo-employee-1'),
+  admin: { ...user('admin1', 'hy-hlo-admin-1'), hygroupcn: 'grp-toska' },
 }
 type Role = keyof typeof headers
 
@@ -112,7 +113,7 @@ describe('milestone attachments', () => {
   })
 
   describe('uploading', () => {
-    it.each<Role>(['student', 'supervisor', 'seminarSupervisor'])(
+    it.each<Role>(['student', 'supervisor', 'seminarSupervisor', 'admin'])(
       'lets the %s upload a file to the milestone being worked on',
       async (role) => {
         const response = await upload(role)
@@ -249,7 +250,7 @@ describe('milestone attachments', () => {
       mimetype: 'application/pdf',
     }))
 
-    it.each<Role>(['student', 'seminarSupervisor'])(
+    it.each<Role>(['student', 'seminarSupervisor', 'admin'])(
       'lets the %s remove only the file of the milestone being worked on',
       async (role) => {
         const response = await request.delete(path(role)).set(headers[role])

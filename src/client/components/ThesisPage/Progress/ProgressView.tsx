@@ -179,6 +179,7 @@ export const ProgressView = ({
     thesis.program.options?.allowMilestoneAttachments &&
     thesis.status === 'IN_PROGRESS' &&
     (isStudentView ||
+      user?.isAdmin ||
       isSupervisor(thesis, user) ||
       isSeminarSupervisor(thesis, user))
   )
