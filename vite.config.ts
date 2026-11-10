@@ -60,6 +60,14 @@ export default defineConfig({
     port: 3000,
   },
   define: {
-    'process.env': process.env,
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    'process.env.REACT_APP_STAGING': JSON.stringify(
+      process.env.REACT_APP_STAGING
+    ),
+    'process.env.REACT_APP_E2E': JSON.stringify(process.env.REACT_APP_E2E),
+    'process.env.REACT_APP_GIT_SHA': JSON.stringify(
+      process.env.REACT_APP_GIT_SHA
+    ),
+    'process.env.BASE_PATH': JSON.stringify(process.env.BASE_PATH),
   },
 })
