@@ -13,6 +13,14 @@
 **/coverage/
 **/.eslintcache
 **/.DS_Store
+**/.claude
+**/.gemini
+**/.cursor
+**/.specstory
+
+MEMORY.md
+GEMINI.md
+AGENTS.md
 
 # do not include any data by default (except json)
 *.csv
