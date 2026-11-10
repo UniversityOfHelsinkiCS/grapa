@@ -3,7 +3,8 @@ import cron from 'node-cron'
 import logger from './logger'
 import { run as runUpdater } from '../updater'
 import { sendScheduledEmails } from '../services/thesisNotificationService'
-import { UPDATER_CRON_ENABLED, inDevelopment } from '../../config'
+import { inDevelopment } from '../../config'
+import { UPDATER_CRON_ENABLED } from './config'
 import { checkIdleTheses } from '../services/thesisService'
 
 const setupCron = async () => {

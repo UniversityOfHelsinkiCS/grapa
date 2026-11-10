@@ -12,6 +12,8 @@ export const DATABASE_URL = process.env.DATABASE_URL || ''
 
 export const REDIS_HOST = process.env.REDIS_HOST || 'redis'
 
+export const UPDATER_CRON_ENABLED = process.env.UPDATER_CRON_ENABLED === 'true'
+
 export const JAMI_URL =
   inProduction || inDevelopment
     ? 'https://api-toska.apps.ocp-prod-0.k8s.it.helsinki.fi/jami/'
