@@ -11,8 +11,6 @@ const LOKI_TOKEN = process.env.LOKI_TOKEN ?? ''
 
 const transports = []
 
-transports.push(new winston.transports.File({ filename: 'debug.log' }))
-
 if (!inProduction) {
   const devFormat = printf(
     ({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`
