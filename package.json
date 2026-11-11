@@ -78,7 +78,7 @@
     "uuid": "14.0.1",
     "winston": "3.19.0",
     "winston-loki": "6.1.5",
-    "zod": "4.4.3"
+    "zod": "4.6.6"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "6.9.1",
