@@ -307,6 +307,7 @@ thesisRouter.put(
 thesisRouter.post(
   '/:id/milestone-attachment',
   ethesisUserHandler,
+  getEthesisAdminStatus,
   parseMilestoneFile,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerPutRequest, res: Response) => {
@@ -326,6 +327,7 @@ thesisRouter.post(
 thesisRouter.delete(
   '/:id/milestone-attachment/:filename',
   ethesisUserHandler,
+  getEthesisAdminStatus,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerDeleteRequest, res: Response) => {
     const thesis = await fetchThesisById(req.params.id as string, req.user)

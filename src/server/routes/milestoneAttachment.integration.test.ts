@@ -5,6 +5,7 @@ import { MAX_MILESTONE_ATTACHMENTS, MAX_UPLOAD_SIZE_BYTES } from '../../config'
 import {
   Attachment,
   Author,
+  EthesisAdmin,
   Grader,
   Program,
   ProgramManagement,
@@ -30,6 +31,7 @@ const headers = {
   supervisor: user('supervisor1', 'hy-hlo-supervisor-1'),
   seminarSupervisor: user('seminar1', 'hy-hlo-seminar-1'),
   programManager: user('manager1', 'hy-hlo-manager-1'),
+  ethesisAdmin: user('ethesis1', 'hy-hlo-ethesis-1'),
   otherEmployee: user('employee1', 'hy-hlo-employee-1'),
   admin: { ...user('admin1', 'hy-hlo-admin-1'), hygroupcn: 'grp-toska' },
 }
@@ -114,6 +116,10 @@ describe('milestone attachments', () => {
       programId: PROGRAM_ID,
       userId: 'hy-hlo-manager-1',
     })
+    await EthesisAdmin.create({
+      programId: PROGRAM_ID,
+      userId: 'hy-hlo-ethesis-1',
+    })
   })
 
   describe('uploading', () => {
@@ -122,6 +128,7 @@ describe('milestone attachments', () => {
       'supervisor',
       'seminarSupervisor',
       'programManager',
+      'ethesisAdmin',
       'admin',
     ])(
       'lets the %s upload a file to the milestone being worked on',
@@ -333,6 +340,7 @@ describe('milestone attachments', () => {
       'supervisor',
       'seminarSupervisor',
       'programManager',
+      'ethesisAdmin',
       'admin',
     ])(
       'lets the %s remove a file of the milestone being worked on',
@@ -382,6 +390,7 @@ describe('milestone attachments', () => {
       'supervisor',
       'seminarSupervisor',
       'programManager',
+      'ethesisAdmin',
       'admin',
     ])(
       'does not let the %s remove a file of another thesis through this thesis',
