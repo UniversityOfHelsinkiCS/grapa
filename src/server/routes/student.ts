@@ -487,7 +487,7 @@ studentRouter.put(
   }
 )
 
-studentRouter.put(
+studentRouter.post(
   '/theses/:id/milestone-attachment',
   ethesisUserHandler,
   parseMilestoneFile,
@@ -514,7 +514,7 @@ studentRouter.put(
 )
 
 studentRouter.delete(
-  '/theses/:id/milestone-attachment',
+  '/theses/:id/milestone-attachment/:filename',
   ethesisUserHandler,
   async (req: RequestWithUser, res: any) => {
     //@ts-expect-error it only need isAdmin in this case
@@ -531,7 +531,7 @@ studentRouter.delete(
       return
     }
 
-    await deleteMilestoneAttachment(thesis)
+    await deleteMilestoneAttachment(thesis, req.params.filename as string)
     res.status(204).send()
   }
 )

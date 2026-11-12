@@ -322,7 +322,7 @@ const Attachments = ({
               .filter(Boolean)
               .join(', ')}
             sx={{ textDecoration: 'none' }}
-            key={fileContainer.translation}
+            key={(fileContainer.file as FileData).filename}
           >
             <Paper variant="outlined" sx={{}}>
               <Stack

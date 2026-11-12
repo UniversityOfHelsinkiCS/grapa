@@ -24,7 +24,7 @@ import {
 import { TranslationLanguage } from '@backend/validators/departmentResponse'
 import useLoggedInUser from '../../../hooks/useLoggedInUser'
 import { isSeminarSupervisor, isSupervisor } from '../../../util/permissions'
-import { MilestoneAttachment } from './MilestoneAttachment'
+import { MilestoneAttachments } from './MilestoneAttachments'
 
 interface ProgressViewProps {
   thesis: any
@@ -184,15 +184,16 @@ export const ProgressView = ({
       isSeminarSupervisor(thesis, user))
   )
 
-  const getMilestoneAttachment = (milestoneIndex?: number) =>
-    thesis.milestoneAttachments?.find(
+  const getMilestoneAttachments = (milestoneIndex?: number) =>
+    (thesis.milestoneAttachments ?? []).filter(
       (attachment: { milestone: number }) =>
         attachment.milestone === milestoneIndex
     )
 
   const isLastMilestone = nextMilestoneIndex === milestones.length
   const isMissingFile =
-    canManageMilestoneFiles && !getMilestoneAttachment(nextMilestoneIndex)
+    canManageMilestoneFiles &&
+    !getMilestoneAttachments(nextMilestoneIndex).length
 
   const saveMilestone = (delta: number, onSuccess?: () => void) => {
     editThesisMutation.mutate(
@@ -305,9 +306,11 @@ export const ProgressView = ({
                     {label.description}
                   </Typography>
                   {label.milestone && (
-                    <MilestoneAttachment
+                    <MilestoneAttachments
                       thesisId={thesis.id}
-                      attachment={getMilestoneAttachment(label.milestone_index)}
+                      attachments={getMilestoneAttachments(
+                        label.milestone_index
+                      )}
                       canManage={
                         canManageMilestoneFiles &&
                         label.milestone_index === nextMilestoneIndex

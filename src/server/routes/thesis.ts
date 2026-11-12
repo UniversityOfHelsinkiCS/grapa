@@ -309,7 +309,7 @@ const isSupervisorOf = (thesis: Thesis, userId: string) =>
     (supervision) => supervision.user?.id === userId
   )
 
-thesisRouter.put(
+thesisRouter.post(
   '/:id/milestone-attachment',
   ethesisUserHandler,
   parseMilestoneFile,
@@ -334,7 +334,7 @@ thesisRouter.put(
 )
 
 thesisRouter.delete(
-  '/:id/milestone-attachment',
+  '/:id/milestone-attachment/:filename',
   ethesisUserHandler,
   // @ts-expect-error the user middleware updates the req object with user field
   async (req: ServerDeleteRequest, res: Response) => {
@@ -349,7 +349,7 @@ thesisRouter.delete(
       return
     }
 
-    await deleteMilestoneAttachment(thesis)
+    await deleteMilestoneAttachment(thesis, req.params.filename as string)
     res.status(204).send()
   }
 )

@@ -225,7 +225,7 @@
     },
     "allowMilestoneAttachments": {
       "toggle": "Salli tiedostot etapeille",
-      "tooltip": "Opiskelija, ohjaaja ja seminaariohjaaja voivat liittää PDF-tiedoston käynnissä olevaan etappiin",
+      "tooltip": "Opiskelija, ohjaaja ja seminaariohjaaja voivat liittää enintään 5 PDF-tiedostoa käynnissä olevaan etappiin",
       "confirmTitle": "Vahvista etappitiedostojen asetus",
       "enableConfirm": "Oletko varma, että haluat sallia tiedostojen liittämisen etappeihin?",
       "disableConfirm": "Oletko varma, että haluat estää tiedostojen liittämisen etappeihin? Jo liitetyt tiedostot pysyvät näkyvissä."
@@ -642,10 +642,12 @@
     "cancelButton": "Peru",
     "inProgress": "Käynnissä",
     "milestoneFileError": "Tiedoston tallentaminen epäonnistui. Vain enintään {{size}} Mt:n PDF-tiedostot ovat sallittuja.",
-    "uploadFile": "Lataa tiedosto",
-    "doneButtonUploadHint": "Lataa etapin tiedosto ennen kuin merkitset sen tehdyksi",
-    "missingFileConfirmTitle": "Tiedostoa ei ole ladattu",
-    "missingFileConfirmDescription": "Etappiin {{number}} ei ole ladattu tiedostoa. Haluatko silti merkitä sen tehdyksi?"
+    "uploadFile": "Lataa tiedostoja",
+    "milestoneFileCount": "{{count}} / {{max}} tiedostoa",
+    "milestoneFileLimitError": "Etapilla voi olla enintään {{max}} tiedostoa. Voit lisätä vielä {{count}}.",
+    "doneButtonUploadHint": "Lataa etapin tiedostot ennen kuin merkitset sen tehdyksi",
+    "missingFileConfirmTitle": "Tiedostoja ei ole ladattu",
+    "missingFileConfirmDescription": "Etappiin {{number}} ei ole ladattu tiedostoja. Haluatko silti merkitä sen tehdyksi?"
   },
   "help": {
     "table": "<b>Välilehdet</b><br>Tutkielmanäkymän näyttämiä tutkielmia voidaan rajata käyttämällä sen ylälaidassa olevia välilehtiä.<ul>    <li>Aktiiviset näyttää kaikki tutkielmat jotka ovat muussa tilassa kuin valmis tai keskeytetty</li>    <li>Ei aktiiviset näyttää valmiit ja keskeytetyt tutkielmat</li>    <li>Kaikki näyttää kaikki tutkielmat</li></ul><b>Toimenpidesuodattimet</b><ul>    <li>        Välilehtien alapuolelle tulee näkyviin tarvittaessa painikkeita, joilla voidaan suodattaa tutkielmia niiden        vaatimien toimenpiteiden perusteella.    </li></ul><b>Hakutoiminto</b><ul>    <li>        Tutkielmia voidaan hakea aiheen ja tekijän perusteella.    </li></ul><b>Etappirajaus</b><ul>    <li>        Etappeja käyttävien koulutusohjelmien tutkielmia voidaan myös rajata etapin perusteella    </li></ul><b>Taulukon järjestäminen</b><ul>    <li>        Taulukko voidaan järjestään halutun sarakkeen perusteella painamalla sarakkeen nimen oikealla puolella olevaa        kuvaketta.    </li></ul><b>Uuden tutkielman luonti</b><ul>    <li>        Uuden tutkielman voi luoda painamalla \"Uusi tutkielma\" -painiketta tai opiskelijalähtöistä prosessia        käyttävissä        koulutusohjelmissa painamalla kolmea pistettä ja valitsemalla uusi tutkielma.    </li></ul>",

@@ -186,9 +186,13 @@ export const buildThesisIncludes = (language?: string): Includeable[] => {
         ['original_name', 'name'],
         'mimetype',
         'milestone',
+        'createdAt',
       ],
       where: { label: 'milestone' },
-      order: [['milestone', 'ASC']],
+      order: [
+        ['milestone', 'ASC'],
+        ['createdAt', 'ASC'],
+      ],
       separate: true,
     },
     {

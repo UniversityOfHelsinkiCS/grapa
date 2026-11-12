@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import supertest from 'supertest'
 import app from '../index'
-import { MAX_UPLOAD_SIZE_BYTES } from '../../config'
+import { MAX_MILESTONE_ATTACHMENTS, MAX_UPLOAD_SIZE_BYTES } from '../../config'
 import {
   Attachment,
   Author,
@@ -49,14 +49,17 @@ describe('milestone attachments', () => {
 
   const upload = (role: Role, name?: string) =>
     request
-      .put(path(role))
+      .post(path(role))
       .set(headers[role])
       .attach('milestoneFile', ...pdf(name))
 
   const getMilestoneAttachments = () =>
     Attachment.findAll({
       where: { thesisId: thesis.id, label: 'milestone' },
-      order: [['milestone', 'ASC']],
+      order: [
+        ['milestone', 'ASC'],
+        ['createdAt', 'ASC'],
+      ],
     })
 
   beforeEach(async () => {
@@ -137,13 +140,58 @@ describe('milestone attachments', () => {
       expect((await getMilestoneAttachments())[0].milestone).toEqual(1)
     })
 
-    it('replaces the existing file of the milestone', async () => {
+    it('keeps the existing files of the milestone', async () => {
       await upload('supervisor', 'first.pdf')
       await upload('student', 'second.pdf')
 
       const attachments = await getMilestoneAttachments()
-      expect(attachments).toHaveLength(1)
-      expect(attachments[0].originalname).toEqual('second.pdf')
+      expect(attachments.map((a) => a.originalname)).toEqual([
+        'first.pdf',
+        'second.pdf',
+      ])
+    })
+
+    it(`allows at most ${MAX_MILESTONE_ATTACHMENTS} files per milestone`, async () => {
+      for (let i = 0; i < MAX_MILESTONE_ATTACHMENTS; i++) {
+        expect((await upload('student', `file-${i}.pdf`)).status).toEqual(204)
+      }
+
+      const response = await upload('supervisor', 'one-too-many.pdf')
+
+      expect(response.status).toEqual(400)
+      expect(await getMilestoneAttachments()).toHaveLength(
+        MAX_MILESTONE_ATTACHMENTS
+      )
+    })
+
+    it('does not count files of other milestones towards the limit', async () => {
+      await Attachment.bulkCreate(
+        Array.from({ length: MAX_MILESTONE_ATTACHMENTS }, (_, i) => ({
+          thesisId: thesis.id,
+          label: 'milestone',
+          milestone: 1,
+          filename: `earlier-${i}`,
+          originalname: `earlier-${i}.pdf`,
+          mimetype: 'application/pdf',
+        }))
+      )
+
+      expect((await upload('student')).status).toEqual(204)
+    })
+
+    it('enforces the limit for concurrent uploads', async () => {
+      const responses = await Promise.all(
+        Array.from({ length: MAX_MILESTONE_ATTACHMENTS + 2 }, (_, i) =>
+          upload('student', `file-${i}.pdf`)
+        )
+      )
+
+      expect(responses.filter((r) => r.status === 204)).toHaveLength(
+        MAX_MILESTONE_ATTACHMENTS
+      )
+      expect(await getMilestoneAttachments()).toHaveLength(
+        MAX_MILESTONE_ATTACHMENTS
+      )
     })
 
     it.each<[Role, number]>([
@@ -179,7 +227,7 @@ describe('milestone attachments', () => {
       await setup()
 
       const response = await request
-        .put(path('supervisor'))
+        .post(path('supervisor'))
         .set(headers.supervisor)
         .attach('milestoneFile', Buffer.from('content'), {
           filename: 'file',
@@ -192,7 +240,7 @@ describe('milestone attachments', () => {
 
     it('rejects files larger than the upload limit with 413', async () => {
       const response = await request
-        .put(path('supervisor'))
+        .post(path('supervisor'))
         .set(headers.supervisor)
         .attach('milestoneFile', Buffer.alloc(MAX_UPLOAD_SIZE_BYTES + 1), {
           filename: 'large.pdf',
@@ -205,7 +253,7 @@ describe('milestone attachments', () => {
 
     it('rejects requests without a file', async () => {
       const response = await request
-        .put(path('supervisor'))
+        .post(path('supervisor'))
         .set(headers.supervisor)
 
       expect(response.status).toEqual(400)
@@ -213,7 +261,7 @@ describe('milestone attachments', () => {
 
     it('rejects other file fields', async () => {
       const response = await request
-        .put(path('supervisor'))
+        .post(path('supervisor'))
         .set(headers.supervisor)
         .attach('researchPlan', ...pdf())
 
@@ -253,22 +301,112 @@ describe('milestone attachments', () => {
       filename: `milestone-file-${milestone}`,
       name: `milestone-${milestone}.pdf`,
       mimetype: 'application/pdf',
+      createdAt: expect.any(String),
     }))
 
-    it.each<Role>(['student', 'seminarSupervisor', 'admin'])(
-      'lets the %s remove only the file of the milestone being worked on',
+    it.each([
+      ['student', '/api/student/theses?limit=25&offset=0'],
+      ['supervisor', '/api/theses/paginate?limit=25&offset=0'],
+    ] as const)(
+      'returns the files in the paginated list of the %s',
+      async (role, listPath) => {
+        const response = await request.get(listPath).set(headers[role])
+
+        expect(response.status).toEqual(200)
+        expect(response.body.theses).toHaveLength(1)
+        expect(response.body.theses[0].milestoneAttachments).toEqual(
+          expectedAttachments
+        )
+      }
+    )
+
+    const removePath = (role: Role, filename: string) =>
+      `${path(role)}/${filename}`
+
+    it.each<Role>(['student', 'supervisor', 'seminarSupervisor', 'admin'])(
+      'lets the %s remove a file of the milestone being worked on',
       async (role) => {
-        const response = await request.delete(path(role)).set(headers[role])
+        await Attachment.create({
+          thesisId: thesis.id,
+          label: 'milestone',
+          milestone: 2,
+          filename: 'milestone-file-2b',
+          originalname: 'milestone-2b.pdf',
+          mimetype: 'application/pdf',
+        })
+
+        const response = await request
+          .delete(removePath(role, 'milestone-file-2'))
+          .set(headers[role])
 
         expect(response.status).toEqual(204)
         const attachments = await getMilestoneAttachments()
-        expect(attachments.map((a) => a.milestone)).toEqual([1])
+        expect(attachments.map((a) => a.filename)).toEqual([
+          'milestone-file-1',
+          'milestone-file-2b',
+        ])
+      }
+    )
+
+    it.each([
+      ['a file of a done milestone', 'milestone-file-1'],
+      ['a research plan', 'research-plan-file'],
+      ['a file that does not exist', 'missing-file'],
+    ])('does not remove %s', async (_, filename) => {
+      const response = await request
+        .delete(removePath('student', filename))
+        .set(headers.student)
+
+      expect(response.status).toEqual(404)
+      expect(await getMilestoneAttachments()).toHaveLength(2)
+      expect(
+        await Attachment.count({
+          where: { thesisId: thesis.id, label: 'researchPlan' },
+        })
+      ).toEqual(1)
+    })
+
+    it.each<Role>(['student', 'supervisor', 'seminarSupervisor', 'admin'])(
+      'does not let the %s remove a file of another thesis through this thesis',
+      async (role) => {
+        // Same program and active milestone, so only the thesis differs
+        const otherThesis = await Thesis.create({
+          programId: PROGRAM_ID,
+          topic: 'Other thesis',
+          status: 'IN_PROGRESS',
+          milestone: 1,
+          milestoneVersion: 0,
+          startDate: '2024-01-01',
+          targetDate: '2070-01-01',
+        })
+        await Author.create({
+          userId: 'hy-hlo-student-2',
+          thesisId: otherThesis.id,
+        })
+        await Attachment.create({
+          thesisId: otherThesis.id,
+          label: 'milestone',
+          milestone: 2,
+          filename: 'other-thesis-file',
+          originalname: 'other-thesis.pdf',
+          mimetype: 'application/pdf',
+        })
+
+        const response = await request
+          .delete(removePath(role, 'other-thesis-file'))
+          .set(headers[role])
+
+        expect(response.status).toEqual(404)
+        expect(
+          await Attachment.findOne({ where: { filename: 'other-thesis-file' } })
+        ).not.toBeNull()
+        expect(await getMilestoneAttachments()).toHaveLength(2)
       }
     )
 
     it('rejects removal by students who are not authors', async () => {
       const response = await request
-        .delete(path('otherStudent'))
+        .delete(removePath('otherStudent', 'milestone-file-2'))
         .set(headers.otherStudent)
 
       expect(response.status).toEqual(401)

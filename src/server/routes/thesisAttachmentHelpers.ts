@@ -4,6 +4,9 @@ import fs from 'fs'
 import { Attachment, Thesis } from '../db/models'
 import { ProgramOptions, ServerPostRequest, ServerPutRequest } from '../types'
 import CustomValidationError from '../errors/ValidationError'
+import CustomNotFoundError from '../errors/NotFoundError'
+import { sequelize } from '../db/connection'
+import { MAX_MILESTONE_ATTACHMENTS } from '../../config'
 import { getMilestoneCount } from '../../shared/utils/thesisUtils'
 import logger from '../util/logger'
 
@@ -119,31 +122,49 @@ export const saveMilestoneAttachment = async (
       throw new CustomValidationError('A PDF file is required', {})
     }
 
-    const fileData = {
-      filename: file.filename,
-      originalname: file.originalname,
-      mimetype: file.mimetype,
-    }
-    const existing = await Attachment.findOne({ where })
+    await sequelize.transaction(async (transaction) => {
+      await Thesis.findByPk(thesis.id, {
+        attributes: ['id'],
+        lock: transaction.LOCK.UPDATE,
+        transaction,
+      })
 
-    if (existing) {
-      const previousFilename = existing.filename
-      await existing.update(fileData)
-      removeFile(previousFilename)
-    } else {
-      await Attachment.create({ ...where, ...fileData })
-    }
+      const count = await Attachment.count({ where, transaction })
+      if (count >= MAX_MILESTONE_ATTACHMENTS) {
+        throw new CustomValidationError(
+          `A milestone can have at most ${MAX_MILESTONE_ATTACHMENTS} files`,
+          {}
+        )
+      }
+
+      await Attachment.create(
+        {
+          ...where,
+          filename: file.filename,
+          originalname: file.originalname,
+          mimetype: file.mimetype,
+        },
+        { transaction }
+      )
+    })
   } catch (error) {
     removeFile(file?.filename)
     throw error
   }
 }
 
-export const deleteMilestoneAttachment = async (thesis: Thesis) => {
+export const deleteMilestoneAttachment = async (
+  thesis: Thesis,
+  filename: string
+) => {
   const existing = await Attachment.findOne({
-    where: getActiveMilestoneWhere(thesis),
+    where: { ...getActiveMilestoneWhere(thesis), filename },
   })
 
-  await existing?.destroy()
-  removeFile(existing?.filename)
+  if (!existing) {
+    throw new CustomNotFoundError('Milestone file not found')
+  }
+
+  await existing.destroy()
+  removeFile(existing.filename)
 }

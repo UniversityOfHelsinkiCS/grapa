@@ -142,20 +142,28 @@ export const useMilestoneAttachmentMutation = (isStudentView?: boolean) =>
   useMutation({
     mutationFn: async ({
       thesisId,
-      file,
+      files = [],
+      deleteFilename,
     }: {
       thesisId: string
-      file?: File
+      files?: File[]
+      deleteFilename?: string
     }) => {
       const apiPath = `${isStudentView ? '/student/theses/' : '/theses/'}${thesisId}/milestone-attachment`
 
-      if (!file) return apiClient.delete(apiPath)
+      if (deleteFilename) {
+        return apiClient.delete(
+          `${apiPath}/${encodeURIComponent(deleteFilename)}`
+        )
+      }
 
-      const formData = new FormData()
-      formData.append('milestoneFile', file)
-      return apiClient.put(apiPath, formData)
+      for (const file of files) {
+        const formData = new FormData()
+        formData.append('milestoneFile', file)
+        await apiClient.post(apiPath, formData)
+      }
     },
-    onSuccess: () =>
+    onSettled: () =>
       queryClient.invalidateQueries({
         queryKey: ['theses'],
       }),

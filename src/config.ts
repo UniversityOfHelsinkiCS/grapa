@@ -17,6 +17,8 @@ export const BASE_PATH = process.env.BASE_PATH || ''
 export const MAX_UPLOAD_SIZE_MB = 50
 export const MAX_UPLOAD_SIZE_BYTES = MAX_UPLOAD_SIZE_MB * 1024 * 1024
 
+export const MAX_MILESTONE_ATTACHMENTS = 5
+
 export const FULL_URL = inProduction
   ? 'https://prethesis.helsinki.fi'
   : inStaging
