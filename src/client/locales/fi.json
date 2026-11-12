@@ -225,7 +225,7 @@
     },
     "allowMilestoneAttachments": {
       "toggle": "Salli tiedostot etapeille",
-      "tooltip": "Opiskelija sekä henkilökunta, jolla on oikeus muokata tutkielmaa, voivat liittää enintään 5 PDF-tiedostoa käynnissä olevaan etappiin",
+      "tooltip": "Opiskelija sekä henkilökunta, jolla on oikeus muokata tutkielmaa, voivat liittää enintään {{max}} PDF-tiedostoa käynnissä olevaan etappiin",
       "confirmTitle": "Vahvista etappitiedostojen asetus",
       "enableConfirm": "Oletko varma, että haluat sallia tiedostojen liittämisen etappeihin?",
       "disableConfirm": "Oletko varma, että haluat estää tiedostojen liittämisen etappeihin? Jo liitetyt tiedostot pysyvät näkyvissä."

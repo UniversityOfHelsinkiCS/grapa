@@ -227,7 +227,7 @@
     },
     "allowMilestoneAttachments": {
       "toggle": "Tillåt filer för milstolpar",
-      "tooltip": "Studenten och personal som får redigera avhandlingen kan bifoga högst 5 PDF-filer till den pågående milstolpen",
+      "tooltip": "Studenten och personal som får redigera avhandlingen kan bifoga högst {{max}} PDF-filer till den pågående milstolpen",
       "confirmTitle": "Bekräfta inställningar för milstolpsfiler",
       "enableConfirm": "Är du säker på att du vill tillåta att filer bifogas till milstolpar?",
       "disableConfirm": "Är du säker på att du vill sluta tillåta att filer bifogas till milstolpar? Redan bifogade filer förblir synliga."

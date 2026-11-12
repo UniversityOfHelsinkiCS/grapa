@@ -227,7 +227,7 @@
     },
     "allowMilestoneAttachments": {
       "toggle": "Allow milestone files",
-      "tooltip": "Students and staff who can edit the thesis can attach up to 5 PDF files to the milestone currently in progress",
+      "tooltip": "Students and staff who can edit the thesis can attach up to {{max}} PDF files to the milestone currently in progress",
       "confirmTitle": "Confirm milestone file settings",
       "enableConfirm": "Are you sure you want to allow attaching files to milestones?",
       "disableConfirm": "Are you sure you want to stop allowing files to be attached to milestones? Files that are already attached remain visible."

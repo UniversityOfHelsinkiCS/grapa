@@ -31,6 +31,7 @@ import { TranslationLanguage } from '@backend/validators/departmentResponse'
 import { ProgramData } from '@backend/validators/programResponse'
 import { ThesisData } from '@backend/validators/thesisResponse'
 import ThesisEditForm from '../ThesisPage/ThesisEditForm'
+import { MAX_MILESTONE_ATTACHMENTS } from '../../../config'
 
 interface ProgramConfigurationsProps {
   program: ProgramData
@@ -146,7 +147,9 @@ const FeatureFlagControl = ({
         }
         label={
           <Tooltip
-            title={translation(`programOverviewPage:${feature}:tooltip`)}
+            title={translation(`programOverviewPage:${feature}:tooltip`, {
+              max: MAX_MILESTONE_ATTACHMENTS,
+            })}
           >
             <span>{translation(`programOverviewPage:${feature}:toggle`)}</span>
           </Tooltip>
