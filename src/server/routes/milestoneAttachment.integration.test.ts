@@ -117,7 +117,13 @@ describe('milestone attachments', () => {
   })
 
   describe('uploading', () => {
-    it.each<Role>(['student', 'supervisor', 'seminarSupervisor', 'admin'])(
+    it.each<Role>([
+      'student',
+      'supervisor',
+      'seminarSupervisor',
+      'programManager',
+      'admin',
+    ])(
       'lets the %s upload a file to the milestone being worked on',
       async (role) => {
         const response = await upload(role)
@@ -195,7 +201,6 @@ describe('milestone attachments', () => {
     })
 
     it.each<[Role, number]>([
-      ['programManager', 403],
       ['otherEmployee', 404],
       ['otherStudent', 401],
     ])('rejects the %s with %i', async (role, status) => {
@@ -323,7 +328,13 @@ describe('milestone attachments', () => {
     const removePath = (role: Role, filename: string) =>
       `${path(role)}/${filename}`
 
-    it.each<Role>(['student', 'supervisor', 'seminarSupervisor', 'admin'])(
+    it.each<Role>([
+      'student',
+      'supervisor',
+      'seminarSupervisor',
+      'programManager',
+      'admin',
+    ])(
       'lets the %s remove a file of the milestone being worked on',
       async (role) => {
         await Attachment.create({
@@ -366,7 +377,13 @@ describe('milestone attachments', () => {
       ).toEqual(1)
     })
 
-    it.each<Role>(['student', 'supervisor', 'seminarSupervisor', 'admin'])(
+    it.each<Role>([
+      'student',
+      'supervisor',
+      'seminarSupervisor',
+      'programManager',
+      'admin',
+    ])(
       'does not let the %s remove a file of another thesis through this thesis',
       async (role) => {
         // Same program and active milestone, so only the thesis differs
@@ -410,6 +427,15 @@ describe('milestone attachments', () => {
         .set(headers.otherStudent)
 
       expect(response.status).toEqual(401)
+      expect(await getMilestoneAttachments()).toHaveLength(2)
+    })
+
+    it('rejects removal by employees without access to the thesis', async () => {
+      const response = await request
+        .delete(removePath('otherEmployee', 'milestone-file-2'))
+        .set(headers.otherEmployee)
+
+      expect(response.status).toEqual(404)
       expect(await getMilestoneAttachments()).toHaveLength(2)
     })
 

@@ -304,11 +304,6 @@ thesisRouter.put(
   }
 )
 
-const isSupervisorOf = (thesis: Thesis, userId: string) =>
-  [...thesis.supervisions, ...thesis.seminarSupervisions].some(
-    (supervision) => supervision.user?.id === userId
-  )
-
 thesisRouter.post(
   '/:id/milestone-attachment',
   ethesisUserHandler,
@@ -320,11 +315,6 @@ thesisRouter.post(
     if (!thesis) {
       removeFile(req.file?.filename)
       res.status(404).send('Thesis not found')
-      return
-    }
-    if (!req.user.isAdmin && !isSupervisorOf(thesis, req.user.id)) {
-      removeFile(req.file?.filename)
-      res.status(403).send('Not a supervisor of the thesis')
       return
     }
 
@@ -342,10 +332,6 @@ thesisRouter.delete(
 
     if (!thesis) {
       res.status(404).send('Thesis not found')
-      return
-    }
-    if (!req.user.isAdmin && !isSupervisorOf(thesis, req.user.id)) {
-      res.status(403).send('Not a supervisor of the thesis')
       return
     }
 

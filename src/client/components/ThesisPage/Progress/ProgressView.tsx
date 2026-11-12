@@ -22,8 +22,6 @@ import {
   hasMilestones,
 } from '../../../../shared/utils/thesisUtils'
 import { TranslationLanguage } from '@backend/validators/departmentResponse'
-import useLoggedInUser from '../../../hooks/useLoggedInUser'
-import { isSeminarSupervisor, isSupervisor } from '../../../util/permissions'
 import { MilestoneAttachments } from './MilestoneAttachments'
 
 interface ProgressViewProps {
@@ -36,7 +34,6 @@ export const ProgressView = ({
   isStudentView = false,
 }: ProgressViewProps) => {
   const { t, i18n } = useTranslation()
-  const { user } = useLoggedInUser()
   const { language } = i18n as { language: TranslationLanguage }
   const editThesisMutation = useEditThesisMutation(isStudentView)
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
@@ -177,11 +174,7 @@ export const ProgressView = ({
 
   const canManageMilestoneFiles = Boolean(
     thesis.program.options?.allowMilestoneAttachments &&
-    thesis.status === 'IN_PROGRESS' &&
-    (isStudentView ||
-      user?.isAdmin ||
-      isSupervisor(thesis, user) ||
-      isSeminarSupervisor(thesis, user))
+    thesis.status === 'IN_PROGRESS'
   )
 
   const getMilestoneAttachments = (milestoneIndex?: number) =>
