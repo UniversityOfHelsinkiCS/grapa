@@ -1383,6 +1383,13 @@ const CSV_COLUMNS = [
         .join(', '),
   },
   {
+    header: 'Seminar instructors',
+    getValue: (t: ThesisData) =>
+      t.seminarSupervisions
+        ?.map((s) => `${s.user?.lastName} ${s.user?.firstName}`)
+        .join(', '),
+  },
+  {
     header: 'Graders',
     getValue: (t: ThesisData) =>
       t.graders
