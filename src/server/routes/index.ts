@@ -26,6 +26,7 @@ import adminRouter from './admin'
 import logoutRouter from './logout'
 
 import { inDevelopment, inE2EMode, inTest, localOIDC } from '../../config'
+import { DEMO_DATA_ENABLED } from '../util/config'
 import initializeSentry from '../util/sentry'
 import sentryUserMiddleware from '../middleware/sentry'
 
@@ -36,6 +37,10 @@ initializeSentry()
 router.use(cors())
 router.use(express.json())
 router.use(express.urlencoded({ extended: true }))
+
+// Before the user middleware, as seeding runs without a user. Not even loaded elsewhere.
+if (DEMO_DATA_ENABLED) router.use('/test', (await import('./testing')).default)
+
 // only use user middleware in development (when oidc disabled), e2e tests and integration (API) tests
 if (inE2EMode || inTest || (!localOIDC && inDevelopment))
   router.use(userMiddleware)

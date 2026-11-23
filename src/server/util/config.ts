@@ -1,6 +1,12 @@
 import * as dotenv from 'dotenv'
 
-import { inProduction, inDevelopment } from '../../config'
+import {
+  inProduction,
+  inDevelopment,
+  inE2EMode,
+  inStaging,
+  inTest,
+} from '../../config'
 
 dotenv.config()
 
@@ -11,6 +17,10 @@ export const SESSION_SECRET = process.env.SESSION_SECRET || ''
 export const DATABASE_URL = process.env.DATABASE_URL || ''
 
 export const REDIS_HOST = process.env.REDIS_HOST || 'redis'
+
+// The demo data routes wipe the database: only the e2e build started with NODE_ENV=test, never staging or production
+export const DEMO_DATA_ENABLED =
+  inE2EMode && inTest && !inStaging && !inProduction
 
 export const UPDATER_CRON_ENABLED = process.env.UPDATER_CRON_ENABLED === 'true'
 
