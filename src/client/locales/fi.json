@@ -161,8 +161,8 @@
       "disableConfirm": "Haluatko varmasti tallentaa tämän tekstin?"
     },
     "seminarSupervisorHelperText": {
-      "title": "Seminaariohjaajien ohjeet",
-      "description": "Tämä teksti näytetään seminaariohjaajien valintakentän yläpuolella.",
+      "title": "Seminaariryhmän vetäjien valintakentän ohjeet",
+      "description": "Tämä teksti näytetään seminaariryhmän vetäjien valintakentän yläpuolella.",
       "confirmTitle": "Vahvista teksti",
       "enableConfirm": "Haluatko varmasti tallentaa tämän tekstin?",
       "disableConfirm": "Haluatko varmasti tallentaa tämän tekstin?"
@@ -176,17 +176,17 @@
     },
     "seminar": {
       "toggle": "Seminaari",
-      "tooltip": "tutkielman tulee sisältää seminaarin ohjaaja",
+      "tooltip": "Tutkielmalla tulee olla seminaariryhmän vetäjä",
       "confirmTitle": "Vahvista seminaariasetus",
       "enableConfirm": "Haluatko varmasti ottaa seminaarivaatimuksen käyttöön?",
       "disableConfirm": "Haluatko varmasti poistaa seminaarivaatimuksen käytöstä?"
     },
     "allowMultipleSeminarResponsibles": {
-      "toggle": "Salli useita seminaarivastaavia",
-      "tooltip": "Salli tutkielmalla useita seminaarivastaavia",
-      "confirmTitle": "Vahvista useiden seminaarivastaavien asetus",
-      "enableConfirm": "Haluatko varmasti sallia useita seminaarivastaavia?",
-      "disableConfirm": "Haluatko varmasti sallia vain yhden seminaarivastaavan?"
+      "toggle": "Salli useita seminaariryhmän vetäjiä",
+      "tooltip": "Salli tutkielmalle useita seminaariryhmän vetäjiä",
+      "confirmTitle": "Vahvista useiden seminaariryhmän vetäjien asetus",
+      "enableConfirm": "Haluatko varmasti sallia useita seminaariryhmän vetäjiä?",
+      "disableConfirm": "Haluatko varmasti sallia vain yhden seminaariryhmän vetäjän?"
     },
     "allowMultipleAuthors": {
       "toggle": "Salli useita tekijöitä",
@@ -360,10 +360,10 @@
     "targetDate": "Tavoitepäivän on oltava aloituspäivän jälkeen",
     "approver": "Valitse ohjelmavastaava",
     "gradersContent": "Tutkielmalla tulee olla vähintään yksi arvioija.",
-    "seminarSupervisorGeneralErrorsTitle": "Virheitä seminaariohjaajien lisäämisessä",
-    "seminarSupervisorRequiredContent": "Tutkielmalla tulee olla vähintään yksi seminaariohjaaja.",
-    "singleSeminarSupervisorContent": "Tutkielmalla voi olla vain yksi seminaariohjaaja.",
-    "seminarSupervisorInternalOnlyContent": "Seminaariohjaajan on oltava yliopiston työntekijä."
+    "seminarSupervisorGeneralErrorsTitle": "Virheitä seminaariryhmän vetäjien lisäämisessä",
+    "seminarSupervisorRequiredContent": "Tutkielmalla tulee olla vähintään yksi seminaariryhmän vetäjä.",
+    "singleSeminarSupervisorContent": "Tutkielmalla voi olla vain yksi seminaariryhmän vetäjä.",
+    "seminarSupervisorInternalOnlyContent": "Seminaariryhmän vetäjän on oltava yliopiston työntekijä."
   },
   "thesisForm": {
     "milestoneVersion": "Etappien versio",
@@ -375,7 +375,7 @@
     "approverInstructions": "Valitse ohjelmavastaava, joka on lähimpänä tutkielman aihepiiriä, hallinnoimaan prosessia.",
     "generalHelperTextTitle": "Ohjeita lomakkeen täyttämiseen",
     "supervisorHelperTextTitle": "Ohjeita ohjaajien täyttämiseen",
-    "seminarSupervisorHelperTextTitle": "Ohjeita seminaariohjaajien täyttämiseen",
+    "seminarSupervisorHelperTextTitle": "Ohjeita seminaariryhmän vetäjien valintaan",
     "topicDescriptionInstructionsTitle": "Ohjeita aihekuvauksen täyttämiseen",
     "errorSummary": "Lomake sisältää seuraavia virheitä",
     "errorSummaryAriaLabel": "Lomake sisältää seuraavia virheitä",
@@ -433,9 +433,9 @@
     "removeSupervisorConfirmationTitle": "Poista ohjaaja",
     "removeSupervisorConfirmationContent": "Haluatko varmasti poistaa ohjaajan: {{name}}?",
     "removeSupervisorConfirmationNoName": "Haluatko varmasti poistaa ohjaajan {{index}}?",
-    "removeSeminarSupervisorConfirmationTitle": "Poista seminaariohjaaja",
-    "removeSeminarSupervisorConfirmationContent": "Haluatko varmasti poistaa seminaariohjaajan: {{name}}?",
-    "removeSeminarSupervisorConfirmationNoName": "Haluatko varmasti poistaa seminaariohjaajan {{index}}?",
+    "removeSeminarSupervisorConfirmationTitle": "Poista seminaariryhmän vetäjä",
+    "removeSeminarSupervisorConfirmationContent": "Haluatko varmasti poistaa seminaariryhmän vetäjän: {{name}}?",
+    "removeSeminarSupervisorConfirmationNoName": "Haluatko varmasti poistaa seminaariryhmän vetäjän {{index}}?",
     "removeGraderConfirmationTitle": "Poista arvioija",
     "removeGraderConfirmationContent": "Haluatko varmasti poistaa arvioijan: {{name}}?",
     "removeGraderConfirmationNoName": "Haluatko varmasti poistaa arvioijan {{index}}?",

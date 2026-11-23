@@ -120,7 +120,7 @@ describe('EntityOverview', () => {
     await user.click(ackButton)
 
     const seminarToggle = screen.getByRole('switch', {
-      name: 'tutkielman tulee sisältää seminaarin ohjaaja',
+      name: 'Tutkielmalla tulee olla seminaariryhmän vetäjä',
     })
     expect(seminarToggle).not.toBeChecked()
 
