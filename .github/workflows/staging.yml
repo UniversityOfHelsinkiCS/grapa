@@ -6,6 +6,17 @@ on:
       - master
 
 jobs:
+  manual-videos:
+    if: ${{ github.actor != 'renovate[bot]' }}
+    # One at a time, the newest push waits and the ones in between are skipped
+    concurrency:
+      group: manual-videos-${{ github.ref }}
+      cancel-in-progress: false
+    uses: ./.github/workflows/manual-videos.yml
+    secrets:
+      VERSION_PUSH_SECRET: ${{ secrets.VERSION_PUSH_SECRET }}
+      VERSION_PULL_SECRET: ${{ secrets.VERSION_PULL_SECRET }}
+
   build-and-push:
     runs-on: ubuntu-latest
     # runs-on: runner-scaleset #tämän pitää olla tarkalleen tämä että oikea runner löytyy organisaation alta.
@@ -21,6 +32,11 @@ jobs:
           cache: 'npm'
       
       - run: npm ci --no-audit --no-fund
+
+      # The newest videos recorded on master, not necessarily of this commit
+      - uses: ./.github/actions/manual-videos-pull
+        with:
+          registry-password: ${{ secrets.VERSION_PULL_SECRET }}
 
       - name: Build image
         id: build-image

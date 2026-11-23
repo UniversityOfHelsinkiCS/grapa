@@ -21,7 +21,8 @@ COPY package* ./
 RUN npm ci -f --omit-dev --ignore-scripts
 COPY . .
 
-RUN npm run build
+# The build copies the manual videos into dist
+RUN npm run build && rm -rf public/manual
 
 # The pod runs as a non-root user in the root group, so it can't create this itself
 RUN mkdir -p uploads && chgrp 0 uploads && chmod g+rwX uploads

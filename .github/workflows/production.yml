@@ -12,6 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # The newest videos recorded on master
+      - uses: ./.github/actions/manual-videos-pull
+        with:
+          registry-password: ${{ secrets.VERSION_PULL_SECRET }}
+
       - name: Build image
         id: build-image
         uses: redhat-actions/buildah-build@v3
