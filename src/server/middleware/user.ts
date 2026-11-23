@@ -1,6 +1,6 @@
 import { getUser, isAuthorized } from '../util/oidc'
 import type { UserInfo } from '../types'
-import { inDevelopment, inE2EMode } from '../../config'
+import { E2E_USER_HEADER_KEY, inDevelopment, inE2EMode } from '../../config'
 import { User } from '../db/models'
 
 const parseIamGroups = (iamGroups: string) =>
@@ -17,14 +17,35 @@ const mockHeaders: UserInfo = {
   hyGroupCn: ['grp-toska', 'hy-employees'],
 }
 
+// e2e tests send a seeded user's id, the rest comes from the DB
+const getE2EUserHeaders = async (userId: unknown): Promise<UserInfo | null> => {
+  if (!inE2EMode || typeof userId !== 'string') return null
+  const user = await User.findByPk(userId)
+  if (!user) return null
+  return {
+    uid: user.username,
+    hyPersonSisuId: user.id,
+    email: user.email,
+    hyGroupCn: user.iamGroups,
+    preferredLanguage: user.language,
+    given_name: user.firstName,
+    family_name: user.lastName,
+  }
+}
+
 const userMiddleware = async (req: any, _: any, next: any) => {
   if (req.path.includes('/login')) return next()
+
+  const e2eUserHeaders = await getE2EUserHeaders(
+    req.headers[E2E_USER_HEADER_KEY]
+  )
 
   const headers =
     // for development and e2e mode, use mock headers
     // but for integration (API) tests (inTest === true),
     // use the headers provided by the test
-    inDevelopment || inE2EMode
+    e2eUserHeaders ??
+    (inDevelopment || inE2EMode
       ? mockHeaders
       : {
           uid: req.headers.uid,
@@ -35,7 +56,7 @@ const userMiddleware = async (req: any, _: any, next: any) => {
           preferredLanguage: req.headers.preferredlanguage,
           hyPersonSisuId: req.headers.hypersonsisuid,
           hyGroupCn: parseIamGroups(req.headers.hygroupcn),
-        }
+        })
 
   // if user is not an admin or hy-employees, return 403
   if (!isAuthorized(headers)) {

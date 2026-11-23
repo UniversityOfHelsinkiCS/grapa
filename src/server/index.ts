@@ -49,7 +49,8 @@ if (inProduction || inStaging || inTest) {
   app.get(/.*/, (_, res) => res.sendFile(INDEX_PATH))
 }
 
-if (process.env.NODE_ENV !== 'test') {
+// Integration tests start the app themselves, the e2e server must listen
+if (process.env.NODE_ENV !== 'test' || inE2EMode) {
   app.listen(PORT, async () => {
     await connectToDatabase()
 

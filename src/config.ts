@@ -35,6 +35,10 @@ export const KTDK_FEEDBACK_BANNER_DISMISSED_STORAGE_KEY =
 export const LOGIN_AS_LOCAL_STORAGE_KEY = 'grapa-admin-logged-in-as'
 export const LOGIN_AS_HEADER_KEY = 'x-admin-logged-in-as'
 
+// e2e mode only: the seeded user the browser acts as
+export const E2E_USER_LOCAL_STORAGE_KEY = 'grapa-e2e-user'
+export const E2E_USER_HEADER_KEY = 'x-e2e-user'
+
 export const HIDE_STUDENT_NUMBERS_LOCAL_STORAGE_KEY =
   'grapa-hide-student-numbers'
 export const HIDE_STUDENT_NUMBERS_HEADER_KEY = 'x-hide-student-numbers'

@@ -2,7 +2,7 @@ import { createClient } from 'redis'
 import { RedisStore } from 'connect-redis'
 
 import { REDIS_HOST } from './config'
-import { inTest } from '../../config'
+import { inE2EMode, inTest } from '../../config'
 
 const ttl = 60 * 60 * 24 * 30 // 30 days
 
@@ -10,7 +10,8 @@ export const redis = createClient({
   socket: { host: REDIS_HOST, port: 6379 },
 })
 
-if (!inTest) {
+// The e2e server runs with NODE_ENV=test but needs Redis
+if (!inTest || inE2EMode) {
   await redis.connect()
 }
 
