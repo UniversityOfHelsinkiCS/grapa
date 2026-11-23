@@ -152,8 +152,17 @@ my_username
 backups
 toska_login/*
 
+# manual videos
+test-results/
+playwright-report/
+public/manual/
+e2e/manual/.narration-cache/
+
 # exclusions here
 !.env.template
 !.env.sample
 !.env.example
 !docker-compose.yml
+!docker-compose.manual.yml
+!.github/workflows/manual-videos.yml
+!.github/actions/*/action.yml

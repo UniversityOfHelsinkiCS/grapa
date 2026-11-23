@@ -125,5 +125,9 @@ node_modules
 **/*docker-compose.yml
 **/*Dockerfile
 npm-debug.log
+# manual videos
+e2e/manual/.narration-cache
+test-results
+playwright-report
 
 # exclusions here

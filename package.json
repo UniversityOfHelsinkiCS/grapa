@@ -15,13 +15,16 @@
     "test:integration": "NODE_ENV=test PORT=8001 DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres vitest run --project integration",
     "test:integration:watch": "NODE_ENV=test PORT=8001 DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres vitest --project integration",
     "lint": "oxlint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p e2e",
     "format": "prettier --write '**/*.{ts,tsx,json,css,md}'",
     "build": "DISABLE_ESLINT_PLUGIN=true vite build",
     "manage": "node scripts/manage.js",
     "check:migrations": "node scripts/analyzeMigrationNames.js",
     "check:translations": "node scripts/analyzeTranslations.js",
     "db:shell": "docker exec -it grapa_db psql -U postgres",
+    "manual:setup": "docker compose -f docker-compose.manual.yml --profile manual up --build",
+    "manual:down": "docker compose -f docker-compose.manual.yml --profile manual down -v",
+    "manual:record": "tsx e2e/manual/record.ts",
     "prepare": "husky"
   },
   "dependencies": {
@@ -81,6 +84,7 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "1.65.1",
     "@testing-library/jest-dom": "6.9.1",
     "@types/connect-redis": "0.0.23",
     "@types/cors": "2.8.19",

@@ -899,6 +899,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
               draftNumberOfGraders === defaultNumberOfGraders
             }
             onClick={() => setConfirmingNumberOfGraders(true)}
+            data-testid="number-of-graders-submit"
           >
             {t('submitButton')}
           </Button>
