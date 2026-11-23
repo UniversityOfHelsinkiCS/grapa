@@ -94,7 +94,24 @@ const drawOverlay = ({
     font: 'italic 600 32px/1.35 system-ui, sans-serif',
     textShadow: '0 2px 6px rgba(0, 0, 0, 0.35)',
   })
-  curtain.append(logo, transitionText)
+  const spinner = document.createElement('div')
+  Object.assign(spinner.style, {
+    width: '44px',
+    height: '44px',
+    marginTop: '12px',
+    boxSizing: 'border-box',
+    border: '5px solid rgba(255, 255, 255, 0.3)',
+    borderTopColor: '#ffffff',
+    borderRadius: '50%',
+  })
+  const spinMs = 900
+  const spin = spinner.animate(
+    [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
+    { duration: spinMs, iterations: Infinity }
+  )
+  // From the clock, so a reload behind the curtain doesn't make it jump
+  spin.currentTime = Date.now() % spinMs
+  curtain.append(logo, transitionText, spinner)
   whenRoot(() => document.documentElement.append(curtain))
 
   const attach = () => {
