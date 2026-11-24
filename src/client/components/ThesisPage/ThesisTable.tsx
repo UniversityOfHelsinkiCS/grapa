@@ -2,13 +2,15 @@ import * as React from 'react'
 
 import {
   createColumnHelper,
-  getCoreRowModel,
-  useReactTable,
+  createCoreRowModel,
+  useTable,
   CellContext,
   ColumnFiltersState,
   SortingState,
   PaginationState,
   RowSelectionState,
+  stockFeatures,
+  tableFeatures,
 } from '@tanstack/react-table'
 
 import { LoggedInUser as User } from '@backend/validators/userResponse'
@@ -810,10 +812,11 @@ const ThesisTable = ({
         ]),
   ]
 
-  const table = useReactTable({
+  const table = useTable({
     data: tableData,
+    features: tableFeatures(stockFeatures),
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    createCoreRowModel: createCoreRowModel(),
     columnResizeMode: 'onChange',
     getRowId: (row) => row.id,
   })

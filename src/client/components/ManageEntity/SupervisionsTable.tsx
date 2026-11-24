@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { Tooltip, Typography } from '@mui/material'
 import {
   createColumnHelper,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
+  createCoreRowModel,
+  createSortedRowModel,
+  useTable,
+  stockFeatures,
+  tableFeatures,
 } from '@tanstack/react-table'
 
 import { TranslationLanguage } from '@backend/validators/departmentResponse'
@@ -262,11 +264,12 @@ const SupervisionsTable = ({ statistics, isLoading }: Props) => {
     [language, t, totalThesisCounts]
   )
 
-  const table = useReactTable({
+  const table = useTable({
     data: statistics,
+    features: tableFeatures(stockFeatures),
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    createCoreRowModel: createCoreRowModel(),
+    createSortedRowModel: createSortedRowModel(),
     getRowId: (row) => row.supervisor.id,
   })
 

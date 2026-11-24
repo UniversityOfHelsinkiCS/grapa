@@ -21,9 +21,11 @@ import HowToRegIcon from '@mui/icons-material/HowToReg'
 import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined'
 import {
   createColumnHelper,
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
+  useTable,
+  createCoreRowModel,
+  createSortedRowModel,
+  tableFeatures,
+  stockFeatures,
 } from '@tanstack/react-table'
 
 import PrethesisTable from '../Common/PrethesisTable'
@@ -255,11 +257,12 @@ const PermissionsView = ({
     ]
   }, [entityType, updateMutation, t, field, headerName, language])
 
-  const table = useReactTable({
+  const table = useTable({
     data: permissions ?? [],
+    features: tableFeatures(stockFeatures),
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    createCoreRowModel: createCoreRowModel(),
+    createSortedRowModel: createSortedRowModel(),
   })
 
   if (!user || userLoading || !entities || !permissions) return null
