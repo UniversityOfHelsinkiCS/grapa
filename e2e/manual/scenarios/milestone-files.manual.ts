@@ -101,10 +101,32 @@ manualTest(
       .getByRole('link', { name: FILE[lang] })
     await expect(fileLink).toBeVisible()
     await hover(fileLink)
+
+    // The next one is the last milestone, so its confirmation also asks about the final version
+    await click(done)
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await hover(dialog.getByRole('alert'))
     await caption({
-      fi: 'Jos etappiin ei ole ladattu tiedostoja, sen merkitseminen tehdyksi pitää vielä vahvistaa.',
-      sv: 'Om inga filer har laddats upp för milstolpen måste du ännu bekräfta att den är klar.',
-      en: 'If no files have been uploaded for a milestone, marking it as done must be confirmed.',
+      fi: 'Tähän etappiin ei ole ladattu tiedostoja, joten sen merkitseminen tehdyksi pitää vahvistaa.',
+      sv: 'Inga filer har laddats upp för den här milstolpen, så du måste bekräfta att den är klar.',
+      en: 'No files have been uploaded for this milestone, so marking it as done must be confirmed.',
     })
+    const finalVersion = dialog.getByRole('checkbox')
+    await hover(finalVersion)
+    await caption({
+      fi: 'Koska tämä on viimeinen etappi, samalla vahvistetaan, että viimeinen versio on toimitettu ohjaajalle.',
+      sv: 'Eftersom det här är den sista milstolpen bekräftar du samtidigt att den slutliga versionen har lämnats till handledaren.',
+      en: 'As this is the last milestone, you also confirm that the final version has been delivered to the supervisor.',
+    })
+    await click(finalVersion)
+    await click(
+      dialog.getByRole('button', { name: t('approveButton'), exact: true })
+    )
+    await expect(dialog).toBeHidden()
+    // Shown once every milestone is done
+    await expect(
+      thesis.getByRole('button', { name: t('thesisForm:setSentToEthesis') })
+    ).toBeVisible()
   }
 )
