@@ -80,7 +80,7 @@ export const getUser = (userinfo: UserInfo): UserType => {
 
 export const isAuthorized = (userinfo: UserInfo) => {
   const user = getUser(userinfo)
-  // Allow authentication for admins, employees, ktdk, mltdk and mmtdk students
+  // Allow authentication for admins, employees, ktdk, mltdk, mmtdk and ltdk students
   return (
     user.isAdmin ||
     user.iamGroups.includes('hy-employees') ||
