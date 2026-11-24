@@ -86,7 +86,8 @@ export const isAuthorized = (userinfo: UserInfo) => {
     user.iamGroups.includes('hy-employees') ||
     user.iamGroups.includes('hy-ktdk-students') ||
     user.iamGroups.includes('hy-mmtdk-students') ||
-    user.iamGroups.includes('hy-mltdk-students')
+    user.iamGroups.includes('hy-mltdk-students') ||
+    user.iamGroups.includes('hy-ltdk-students')
   )
 }
 
