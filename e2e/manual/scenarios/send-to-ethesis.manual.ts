@@ -45,9 +45,9 @@ manualTest(
       thesis.locator('li').filter({ hasText: t('thesisStages:ethesisSent') })
     await hover(markReady())
     await caption({
-      fi: 'Kun viimeinen etappi on tehty, ohjaaja merkitsee tutkielman valmiiksi E-thesikseen kirjaamista varten.',
-      sv: 'När den sista milstolpen är klar markerar handledaren avhandlingen som klar för registrering i E-thesis.',
-      en: 'When the last milestone is done, the supervisor marks the thesis as ready for E-thesis registration.',
+      fi: 'Kun tutkielma on valmis, ohjaaja merkitsee sen valmiiksi E-thesikseen kirjaamista varten.',
+      sv: 'När avhandlingen är färdig markerar handledaren den som klar för registrering i E-thesis.',
+      en: 'When the thesis is finished, the supervisor marks it as ready for E-thesis registration.',
     })
     await hover(coordinatorStep())
     await caption({
