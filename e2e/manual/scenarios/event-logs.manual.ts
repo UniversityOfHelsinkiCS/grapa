@@ -28,9 +28,9 @@ manualTest(
     await openSettings(page, t, featureLabel(page, t, 'showEventLogs'))
 
     await toggleFeature(steps, 'showEventLogs', {
-      fi: 'Kun tapahtumalokit näytetään, tutkielman tiedoista näkee, kuka on muuttanut tutkielmaa ja milloin.',
-      sv: 'När händelseloggarna visas ser du i avhandlingens uppgifter vem som har ändrat den och när.',
-      en: 'With event logs shown, the details of a thesis show who has changed it and when.',
+      fi: 'Kun tapahtumalokit näytetään, henkilökunta näkee tutkielman tiedoista, kuka on muuttanut tutkielmaa ja milloin. Opiskelijoille lokia ei näytetä.',
+      sv: 'När händelseloggarna visas ser personalen i avhandlingens uppgifter vem som har ändrat den och när. Studerande ser inte loggen.',
+      en: "With event logs shown, staff see in the details of a thesis who has changed it and when. Students don't see the log.",
     })
 
     await curtain(same(t('navbar:supervisedTheses')), () =>
