@@ -162,8 +162,13 @@ export const seedManual = async (lang: Language) => {
   for (const [index, demoThesis] of THESES.entries()) {
     const startedAt = monthsBeforeNow(demoThesis.startedMonthsAgo)
     const thesis = await Thesis.create({
-      programId: MASTER_PROGRAM.id,
-      studyTrackId: STUDY_TRACKS[demoThesis.studyTrack].id,
+      programId: demoThesis.inBachelorProgram
+        ? BACHELOR_PROGRAM.id
+        : MASTER_PROGRAM.id,
+      studyTrackId:
+        demoThesis.studyTrack === undefined
+          ? null
+          : STUDY_TRACKS[demoThesis.studyTrack].id,
       topic: demoThesis.topic[lang],
       status: demoThesis.status,
       startDate: toDateOnly(startedAt),

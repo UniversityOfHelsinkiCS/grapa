@@ -147,6 +147,7 @@ export const STUDENTS = [
   student('student4', 'Eetu', 'Mäkinen', '019000004'),
   student('student5', 'Iida', 'Lindqvist', '019000005'),
   student('student6', 'Emil', 'Laaksonen', '019000006'),
+  student('student7', 'Veera', 'Heikkinen', '019000008'),
 ]
 // Has a study right but no thesis, starts one in the videos
 export const NEW_STUDENT = student(
@@ -173,11 +174,13 @@ export const STUDY_RIGHTS: { user: DemoUser; studyTrack: number }[] = [
 
 export type ThesisStatus = 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED'
 
-// All in the master's programme, some supervised by the narrator
+// In the master's programme unless said otherwise, some supervised by the narrator
 export const THESES: {
   topic: Localized
   status: ThesisStatus
-  studyTrack: number
+  inBachelorProgram?: boolean
+  // None in the bachelor's programme, it has no study tracks
+  studyTrack?: number
   // Months before NOW
   startedMonthsAgo: number
   supervisor: DemoUser
@@ -275,6 +278,19 @@ export const THESES: {
     milestone: 1,
     // Shown only with idle state tracking on
     isIdle: true,
+  },
+  {
+    topic: {
+      fi: 'Lintujen pesintä kaupunkipuistoissa',
+      sv: 'Fåglarnas häckning i stadsparker',
+      en: 'Bird nesting in urban parks',
+    },
+    status: 'IN_PROGRESS',
+    inBachelorProgram: true,
+    startedMonthsAgo: 3,
+    supervisor: SUPERVISORS[1],
+    student: STUDENTS[6],
+    milestone: 0,
   },
 ]
 
