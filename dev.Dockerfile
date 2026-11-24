@@ -6,7 +6,7 @@ WORKDIR /opt/app-root/src
 
 # Setup
 COPY package* ./
-RUN npm i
+RUN npm ci
 
 EXPOSE 3000
 
