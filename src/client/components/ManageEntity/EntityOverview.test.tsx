@@ -47,6 +47,12 @@ vi.mock('../../hooks/useDepartments', () => ({
   }),
 }))
 
+vi.mock('../../hooks/useManualVideos', () => ({
+  default: vi.fn().mockReturnValue({
+    videoFor: vi.fn(),
+  }),
+}))
+
 vi.mock('../ThesisPage/ThesesPage', () => ({
   default: vi.fn(({ filteringProgramId }) => (
     <div data-testid="theses-page">{filteringProgramId}</div>

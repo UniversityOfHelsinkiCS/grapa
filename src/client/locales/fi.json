@@ -139,6 +139,7 @@
   "programOverviewPage": {
     "configurationsWarning": "Ole varovainen muokatessasi näitä asetuksia. Ne vaikuttavat kaikkiin ohjelman käyttäjiin ja tutkielmalomakkeisiin.",
     "configurationsAcknowledge": "Olen ymmärtänyt varoituksen ja haluan muokata asetuksia",
+    "watchVideo": "Katso esimerkkivideo",
     "featureFlagWarning": "Nämä asetukset vaikuttavat ominaisuuksien saatavuuteen koulutusohjelmassa, muokkaaminen saattaa johtaa ongelmatilanteisiin olemassaolevien tutkielmien kanssa.",
     "configurationsTab": "Asetukset",
     "managePermissionsTab": "Hallinnoi oikeuksia",

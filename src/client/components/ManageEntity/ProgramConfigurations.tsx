@@ -32,6 +32,8 @@ import { ProgramData } from '@backend/validators/programResponse'
 import { ThesisData } from '@backend/validators/thesisResponse'
 import ThesisEditForm from '../ThesisPage/ThesisEditForm'
 import { MAX_MILESTONE_ATTACHMENTS } from '../../../config'
+import useManualVideos, { ManualVideo } from '../../hooks/useManualVideos'
+import ManualVideoButton from './ManualVideoButton'
 
 interface ProgramConfigurationsProps {
   program: ProgramData
@@ -84,6 +86,7 @@ interface FeatureFlagControlProps {
   isMultilingualInput?: boolean
   singleValue?: boolean
   multiline?: boolean
+  video?: ManualVideo
 }
 
 interface OptionValue {
@@ -99,6 +102,7 @@ const FeatureFlagControl = ({
   feature,
   conditions,
   disabled,
+  video,
 }: FeatureFlagControlProps) => {
   const { t: translation } = useTranslation()
   const updateMutation = useUpdateProgramMutation()
@@ -137,24 +141,29 @@ const FeatureFlagControl = ({
 
   return (
     <>
-      <FormControlLabel
-        control={
-          <Switch
-            checked={featureStatus}
-            onChange={handleToggle}
-            disabled={updateMutation.isPending || disabled}
-          />
-        }
-        label={
-          <Tooltip
-            title={translation(`programOverviewPage:${feature}:tooltip`, {
-              max: MAX_MILESTONE_ATTACHMENTS,
-            })}
-          >
-            <span>{translation(`programOverviewPage:${feature}:toggle`)}</span>
-          </Tooltip>
-        }
-      />
+      <Stack direction="row" sx={{ alignItems: 'center' }}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={featureStatus}
+              onChange={handleToggle}
+              disabled={updateMutation.isPending || disabled}
+            />
+          }
+          label={
+            <Tooltip
+              title={translation(`programOverviewPage:${feature}:tooltip`, {
+                max: MAX_MILESTONE_ATTACHMENTS,
+              })}
+            >
+              <span>
+                {translation(`programOverviewPage:${feature}:toggle`)}
+              </span>
+            </Tooltip>
+          }
+        />
+        <ManualVideoButton video={video} />
+      </Stack>
 
       <Popup
         open={pendingValue !== null}
@@ -460,7 +469,13 @@ const FeatureInput = ({
   )
 }
 
-const CombinedStudyTracksInput = ({ program }: { program: ProgramData }) => {
+const CombinedStudyTracksInput = ({
+  program,
+  video,
+}: {
+  program: ProgramData
+  video?: ManualVideo
+}) => {
   const { t: translation } = useTranslation()
   const updateMutation = useUpdateProgramMutation()
   const { i18n } = useTranslation()
@@ -537,9 +552,12 @@ const CombinedStudyTracksInput = ({ program }: { program: ProgramData }) => {
   return (
     <>
       <Stack sx={{ gap: '1rem' }}>
-        <Typography variant="h5">
-          {translation(`programOverviewPage:combinedStudyTracks:title`)}
-        </Typography>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: 1 }}>
+          <Typography variant="h5">
+            {translation(`programOverviewPage:combinedStudyTracks:title`)}
+          </Typography>
+          <ManualVideoButton video={video} />
+        </Stack>
         <Typography variant="body1">
           {translation(`programOverviewPage:combinedStudyTracks:description`)}
         </Typography>
@@ -768,6 +786,7 @@ const HelperTextSection = ({
 const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
   const { t } = useTranslation()
   const updateProgramOptionsMutation = useUpdateProgramMutation()
+  const { videoFor } = useManualVideos()
 
   const forcedFeatures = Object.keys(PROGRAM_OPTIONS).reduce((acc, feature) => {
     const config = PROGRAM_OPTIONS[feature as BooleanOptionName]
@@ -780,8 +799,10 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
     return acc
   }, new Set<string>())
 
-  const featureFlagUI = Object.keys(PROGRAM_OPTIONS).map((feature) => {
+  const featureFlagUI = Object.keys(PROGRAM_OPTIONS).map((feature, index) => {
     const config = PROGRAM_OPTIONS[feature as BooleanOptionName]
+    const video = videoFor(feature)
+    const previousVideo = videoFor(Object.keys(PROGRAM_OPTIONS)[index - 1])
     if (config.type === 'boolean') {
       const isForced = forcedFeatures.has(feature)
 
@@ -792,6 +813,7 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
           key={feature}
           conditions={config.conditions}
           disabled={isForced}
+          video={video?.slug === previousVideo?.slug ? undefined : video}
         ></FeatureFlagControl>
       )
     }
@@ -826,9 +848,12 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
       <Stack spacing={2}>
         {program.options?.useMilestones && (
           <Stack spacing={1}>
-            <Typography variant="h5">
-              {t(`programOverviewPage:milestones:title`)}
-            </Typography>
+            <Stack direction="row" sx={{ alignItems: 'center', gap: 1 }}>
+              <Typography variant="h5">
+                {t(`programOverviewPage:milestones:title`)}
+              </Typography>
+              <ManualVideoButton video={videoFor('milestones')} />
+            </Stack>
             <Typography variant="body1">
               {t(`programOverviewPage:milestones:description`)}
             </Typography>
@@ -842,9 +867,12 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
         )}
 
         <Stack spacing={1}>
-          <Typography variant="h5">
-            {t(`programOverviewPage:targetDates:title`)}
-          </Typography>
+          <Stack direction="row" sx={{ alignItems: 'center', gap: 1 }}>
+            <Typography variant="h5">
+              {t(`programOverviewPage:targetDates:title`)}
+            </Typography>
+            <ManualVideoButton video={videoFor('targetDates')} />
+          </Stack>
           <Typography variant="body1">
             {t(`programOverviewPage:targetDates:description`)}
           </Typography>
@@ -856,12 +884,18 @@ const ProgramConfigurations = ({ program }: ProgramConfigurationsProps) => {
         </Stack>
 
         {Boolean(program.studyTracks?.length) && (
-          <CombinedStudyTracksInput program={program} />
+          <CombinedStudyTracksInput
+            program={program}
+            video={videoFor('combinedStudyTracks')}
+          />
         )}
 
-        <Typography variant="h5">
-          {t(`programOverviewPage:helperTexts`)}
-        </Typography>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: 1 }}>
+          <Typography variant="h5">
+            {t(`programOverviewPage:helperTexts`)}
+          </Typography>
+          <ManualVideoButton video={videoFor(HELPER_TEXT_FEATURES[0])} />
+        </Stack>
         <Typography variant="body1">
           {t(`programOverviewPage:helperTextsPreviewDescription`)}
         </Typography>

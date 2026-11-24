@@ -141,6 +141,7 @@
   "programOverviewPage": {
     "configurationsWarning": "Var försiktig när du ändrar dessa inställningar. De påverkar alla användare och avhandlingsblanketter i programmet.",
     "configurationsAcknowledge": "Jag förstår riskerna och vill ändra inställningarna",
+    "watchVideo": "Se exempelvideo",
     "featureFlagWarning": "Dessa inställningar påverkar tillgängligheten för funktioner i utbildningsprogrammet. Att ändra dem kan leda till problem med befintliga examensarbeten.",
     "configurationsTab": "Inställningar",
     "managePermissionsTab": "Hantera behörigheter",

@@ -51,7 +51,7 @@ manualTest(
 )
 ```
 
-- `setting` annotations tell which settings the video belongs next to.
+- `setting` annotations tell which settings the video is about. The Settings tab shows its button next to them (`ProgramConfigurations.tsx`).
 - Every caption has all three languages, in the app's current terms.
 - Shared steps are in `steps.ts`, the demo data and its users in `src/server/test/manual/demoData.ts`.
 - End with an `expect`, so a broken scenario fails instead of recording a wrong video.
