@@ -2,15 +2,15 @@ import * as React from 'react'
 
 import {
   createColumnHelper,
-  createCoreRowModel,
   useTable,
   CellContext,
+  CellData,
   ColumnFiltersState,
   SortingState,
   PaginationState,
+  RowData,
   RowSelectionState,
-  stockFeatures,
-  tableFeatures,
+  TableFeatures,
 } from '@tanstack/react-table'
 
 import { LoggedInUser as User } from '@backend/validators/userResponse'
@@ -74,17 +74,25 @@ import {
 } from '../../../shared/utils/thesisUtils'
 
 import PrethesisTable from '../Common/PrethesisTable'
+import {
+  prethesisTableFeatures,
+  PrethesisTableFeatures,
+} from '../Common/prethesisTableFeatures'
 import { VisuallyHidden } from '../Common/HiddenLabel'
 
 declare module '@tanstack/react-table' {
-  interface ColumnMeta<TData, TValue> {
+  interface ColumnMeta<
+    in out TFeatures extends TableFeatures,
+    in out TData extends RowData,
+    TValue extends CellData = CellData,
+  > {
     getCellContext?: (
-      context: CellContext<TData, TValue>
+      context: CellContext<TFeatures, TData, TValue>
     ) => Pick<TableCellProps, 'sx'>
   }
 }
 
-const columnHelper = createColumnHelper<Thesis>()
+const columnHelper = createColumnHelper<PrethesisTableFeatures, Thesis>()
 
 export const DEFAULT_PAGE_SIZE = 25
 
@@ -371,7 +379,7 @@ const ThesisTable = ({
       isPrimarySupervisor(thesis) || needsAction(thesis) || thesis.isIdle
   )
 
-  const columns = [
+  const columns = columnHelper.columns([
     ...(isStudentView || (!hasEligibleRowsToDisplay && bulkSelection.size === 0)
       ? []
       : [
@@ -810,13 +818,13 @@ const ThesisTable = ({
             enableResizing: true,
           }),
         ]),
-  ]
+  ])
 
   const table = useTable({
     data: tableData,
-    features: tableFeatures(stockFeatures),
+    features: prethesisTableFeatures,
     columns,
-    createCoreRowModel: createCoreRowModel(),
+    manualSorting: true,
     columnResizeMode: 'onChange',
     getRowId: (row) => row.id,
   })

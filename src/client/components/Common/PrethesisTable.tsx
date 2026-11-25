@@ -1,5 +1,10 @@
 import * as React from 'react'
-import { Table as ReactTable, flexRender, Row } from '@tanstack/react-table'
+import {
+  Table as ReactTable,
+  flexRender,
+  Row,
+  RowData,
+} from '@tanstack/react-table'
 
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -19,13 +24,15 @@ import {
 import { ArrowDownward, ArrowUpward, Sort } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 
-interface Props<TData> {
-  table: ReactTable<TData>
+import { PrethesisTableFeatures } from './prethesisTableFeatures'
+
+interface Props<TData extends RowData> {
+  table: ReactTable<PrethesisTableFeatures, TData>
   isLoading?: boolean
   skeletonCount?: number
-  onRowClick?: (row: Row<TData>) => void
+  onRowClick?: (row: Row<PrethesisTableFeatures, TData>) => void
   isSelected?: (rowId: string) => boolean
-  isRowDimmed?: (row: Row<TData>) => boolean
+  isRowDimmed?: (row: Row<PrethesisTableFeatures, TData>) => boolean
   pagination?: {
     totalCount: number
     page: number
@@ -43,7 +50,7 @@ interface Props<TData> {
   label?: string
 }
 
-export function PrethesisTable<TData>({
+export function PrethesisTable<TData extends RowData>({
   table,
   isLoading,
   skeletonCount = 10,

@@ -19,16 +19,13 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete'
 import HowToRegIcon from '@mui/icons-material/HowToReg'
 import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined'
-import {
-  createColumnHelper,
-  useTable,
-  createCoreRowModel,
-  createSortedRowModel,
-  tableFeatures,
-  stockFeatures,
-} from '@tanstack/react-table'
+import { createColumnHelper, useTable } from '@tanstack/react-table'
 
 import PrethesisTable from '../Common/PrethesisTable'
+import {
+  prethesisTableFeatures,
+  PrethesisTableFeatures,
+} from '../Common/prethesisTableFeatures'
 
 import useUsers from '../../hooks/useUsers'
 import usePrograms from '../../hooks/usePrograms'
@@ -160,10 +157,10 @@ const PermissionsView = ({
     }
   }
 
-  const columnHelper = createColumnHelper<any>()
+  const columnHelper = createColumnHelper<PrethesisTableFeatures, any>()
 
   const columns = React.useMemo(() => {
-    return [
+    return columnHelper.columns([
       ...(entityType === 'program' && updateMutation
         ? [
             columnHelper.display({
@@ -254,15 +251,13 @@ const PermissionsView = ({
           </IconButton>
         ),
       }),
-    ]
+    ])
   }, [entityType, updateMutation, t, field, headerName, language])
 
   const table = useTable({
     data: permissions ?? [],
-    features: tableFeatures(stockFeatures),
+    features: prethesisTableFeatures,
     columns,
-    createCoreRowModel: createCoreRowModel(),
-    createSortedRowModel: createSortedRowModel(),
   })
 
   if (!user || userLoading || !entities || !permissions) return null
