@@ -865,9 +865,9 @@ const ThesisEditForm = ({
                                     selectedProgram?.options
                                       ?.allowStudentStartedProcess
                                     ? 'thesisStages:ethesis_studentstarted'
-                                    : StatusLocale[
+                                    : (StatusLocale[
                                         opt as keyof typeof StatusLocale
-                                      ]
+                                      ] as string)
                                 )}
                                 {!isOptionNative[
                                   opt as keyof typeof isOptionNative

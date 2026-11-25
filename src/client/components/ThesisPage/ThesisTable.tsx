@@ -338,7 +338,7 @@ const ThesisTable = ({
       status === 'ETHESIS' &&
       thesis.program?.options?.allowStudentStartedProcess
 
-    const translationKey = isEthesisStudentStarted
+    const translationKey: string = isEthesisStudentStarted
       ? 'thesisStages:ethesis_studentstarted'
       : StatusLocale[status]
 
