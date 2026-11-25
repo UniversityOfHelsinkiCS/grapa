@@ -2,23 +2,59 @@ name: Manual videos
 
 # Records the user manual videos, see e2e/manual/README.md
 on:
+  schedule:
+    - cron: '0 2 * * 0'
   workflow_dispatch:
-  workflow_call:
-    secrets:
-      VERSION_PUSH_SECRET:
-        required: true
-      VERSION_PULL_SECRET:
-        required: true
 
 permissions:
   contents: read
+
+concurrency:
+  group: manual-videos-${{ github.ref }}
+  cancel-in-progress: false
 
 env:
   NARRATION_CACHE: registry.version.helsinki.fi/toska/openshift/kontit/grapa-manual-narration:latest
   MANUAL_VIDEOS: registry.version.helsinki.fi/toska/openshift/kontit/grapa-manual-videos
 
 jobs:
+  # A scheduled run records only when master has moved since the published videos, a manual run always records
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      record: ${{ steps.check.outputs.record || 'true' }}
+
+    steps:
+      - uses: oras-project/setup-oras@005458ad77f1c8facd38a094e4af2e69e5607ff4 # v2.0.2
+        if: ${{ github.event_name == 'schedule' }}
+
+      - name: Log in to the registry
+        if: ${{ github.event_name == 'schedule' }}
+        uses: docker/login-action@v4
+        with:
+          registry: registry.version.helsinki.fi
+          username: kontit
+          password: ${{ secrets.VERSION_PULL_SECRET }}
+
+      - name: Compare to the published videos
+        id: check
+        if: ${{ github.event_name == 'schedule' }}
+        run: |
+          manifest=$(oras manifest fetch "$MANUAL_VIDEOS:latest") \
+            || echo "::warning::Couldn't read the published videos, recording anyway"
+          published=$(jq -r '.annotations["org.opencontainers.image.revision"] // empty' <<< "$manifest")
+          if [ "$published" = "$GITHUB_SHA" ]; then
+            echo "Videos already recorded from $GITHUB_SHA, skipping" >> "$GITHUB_STEP_SUMMARY"
+            echo "record=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Recording $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+            echo "record=true" >> "$GITHUB_OUTPUT"
+          fi
+
   record:
+    needs: changes
+    if: ${{ needs.changes.outputs.record == 'true' }}
     strategy:
       fail-fast: false
       matrix:
@@ -108,7 +144,7 @@ jobs:
 
   save-narration:
     needs: record
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && needs.record.result != 'skipped' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
 

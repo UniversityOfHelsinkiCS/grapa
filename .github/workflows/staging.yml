@@ -6,17 +6,6 @@ on:
       - master
 
 jobs:
-  manual-videos:
-    if: ${{ github.actor != 'renovate[bot]' }}
-    # One at a time, the newest push waits and the ones in between are skipped
-    concurrency:
-      group: manual-videos-${{ github.ref }}
-      cancel-in-progress: false
-    uses: ./.github/workflows/manual-videos.yml
-    secrets:
-      VERSION_PUSH_SECRET: ${{ secrets.VERSION_PUSH_SECRET }}
-      VERSION_PULL_SECRET: ${{ secrets.VERSION_PULL_SECRET }}
-
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 20

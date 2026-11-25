@@ -62,4 +62,4 @@ The voice is the shared [guide-video-voice](https://github.com/UniversityOfHelsi
 
 ## CI
 
-`.github/workflows/manual-videos.yml` records the videos on every push to master and pushes them to the registry. Staging and production builds include the newest ones. A failed video doesn't hold up the deploy.
+`.github/workflows/manual-videos.yml` records the videos every Sunday night when master has new commits since the published videos, and pushes them to the registry. Running it by hand from the Actions tab always records. Staging and production builds include the newest published ones. A failed video doesn't hold up the deploy.
