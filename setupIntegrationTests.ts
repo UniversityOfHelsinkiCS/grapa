@@ -15,6 +15,15 @@ import {
   User,
 } from './src/server/db/models'
 
+declare module 'vitest' {
+  interface Matchers<
+    R extends void | Promise<void> = void | Promise<void>,
+    T = unknown,
+  > {
+    toIncludeSameMembers: CustomMatchers<R>['toIncludeSameMembers']
+  }
+}
+
 expect.extend({ toIncludeSameMembers })
 
 afterEach(async () => {
