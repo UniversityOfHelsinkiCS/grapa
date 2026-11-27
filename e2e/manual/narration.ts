@@ -126,10 +126,14 @@ const SPELLED_OUT: Record<string, [RegExp, string][]> = {
 }
 
 const toSpeech = (text: string, lang: string) =>
-  (SPELLED_OUT[lang] ?? []).reduce(
-    (speech, [abbreviation, letters]) => speech.replace(abbreviation, letters),
-    text
-  )
+  (SPELLED_OUT[lang] ?? [])
+    .reduce(
+      (speech, [abbreviation, letters]) =>
+        speech.replace(abbreviation, letters),
+      text
+    )
+    // The voice pauses only between sentences
+    .replace(/:\s+/g, '. ')
 
 const exists = async (file: string) => {
   try {
