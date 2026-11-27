@@ -215,7 +215,7 @@ manualTest(
     await expect(firstMilestone).toContainText(MILESTONES[0][lang])
     await hover(firstMilestone)
     await caption({
-      fi: 'Tutkielma on nyt käynnissä. Jos ohjelmassa on käytössä etapit, se etenee etappi kerrallaan. Lopuksi ohjaaja antaa opiskelijalle luvan palauttaa tutkielma E-thesikseen.',
+      fi: 'Tutkielma on nyt käynnissä. Jos ohjelmassa on käytössä etapit, se etenee etappi kerrallaan. Lopuksi ohjaaja antaa opiskelijalle luvan palauttaa tutkielman E-thesikseen.',
       sv: 'Avhandlingen pågår nu. Om programmet använder milstolpar framskrider den en milstolpe i taget. Till sist ger handledaren studenten lov att lämna in avhandlingen till E-thesis.',
       en: 'The thesis is now in progress. If the programme uses milestones, it moves on one milestone at a time. Finally, the supervisor gives the student permission to submit it to E-thesis.',
     })

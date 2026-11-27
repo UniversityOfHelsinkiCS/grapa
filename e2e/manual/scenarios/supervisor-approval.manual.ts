@@ -32,7 +32,7 @@ manualTest(
     await openSettings(page, t, featureLabel(page, t, 'supervisorApproval'))
 
     await caption({
-      fi: 'Uusi tutkielma on suunnitteluvaiheessa, kunnes se hyväksytään. Oletuksena sen hyväksyy ohjelman vastaava, jolla on hyväksymisoikeus.',
+      fi: 'Uusi tutkielma on suunnitteluvaiheessa, kunnes se hyväksytään. Oletuksena hyväksyjä on ohjelman vastaava, jolla on hyväksymisoikeus.',
       sv: 'En ny avhandling är i planeringsfasen tills den godkänns. Som standard godkänns den av en programansvarig med rätt att godkänna.',
       en: 'A new thesis is being planned until it is approved. By default, a programme manager with approval rights approves it.',
     })

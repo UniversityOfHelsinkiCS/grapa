@@ -66,9 +66,9 @@ export const STUDY_TRACKS = [
     id: 'manual-track-nature-old',
     code: 'URB-NAT-17',
     name: {
-      fi: 'Kaupunkiluonto (2017–2020)',
-      sv: 'Stadsnatur (2017–2020)',
-      en: 'Urban Nature (2017–2020)',
+      fi: 'Kaupunkiekologia',
+      sv: 'Stadsekologi',
+      en: 'Urban Ecology',
     },
   },
 ]

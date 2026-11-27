@@ -22,7 +22,7 @@ manualTest(
     await openSettings(page, t, targetDates)
 
     await caption({
-      fi: 'Tavoitepäivät ovat valmiita vaihtoehtoja tutkielman tavoitepäiväksi, esimerkiksi lukukausien viimeiset päivät.',
+      fi: 'Tavoitepäivät ovat valmiita vaihtoehtoja tutkielman tavoitepäiväksi. Ne voivat olla esimerkiksi lukukausien viimeiset päivät.',
       sv: 'Måldatum är färdiga alternativ för avhandlingens måldatum, till exempel terminernas sista dagar.',
       en: "Target dates are ready options for a thesis's target date, like the last days of the terms.",
     })
