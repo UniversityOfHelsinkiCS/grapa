@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "paths": {}
+  },
+  "include": ["./**/*", "../shared/**/*", "../config.ts"],
+  "exclude": ["**/*.test.ts"]
+}

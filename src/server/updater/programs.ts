@@ -1,6 +1,6 @@
-import { Program, StudyTrack } from '../db/models'
-import { fetchData } from './importerClient'
-import { safeBulkCreate } from './util'
+import { Program, StudyTrack } from '../db/models/index.ts'
+import { fetchData } from './importerClient.ts'
+import { safeBulkCreate } from './util.ts'
 
 const studyTracksInsert = async (studyTracks: any[]) => {
   const existingTracks = await StudyTrack.findAll()

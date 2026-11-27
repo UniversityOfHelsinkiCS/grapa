@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { TranslatedNameSchema } from './departmentResponse'
+import { TranslatedNameSchema } from './departmentResponse.ts'
 
 export const StudyTrackDataSchema = z.object({
   id: z.string(),

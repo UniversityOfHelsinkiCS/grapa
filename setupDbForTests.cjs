@@ -33,7 +33,7 @@ module.exports = async () => {
     )
     await waitForDatabase()
     await exec(
-      'npx --node-options="--import=tsx" sequelize-cli db:migrate --url "postgres://postgres:postgres@localhost:5433/postgres"'
+      'npx sequelize-cli db:migrate --url "postgres://postgres:postgres@localhost:5433/postgres"'
     )
     console.log('Test database setup complete')
   } catch (error) {

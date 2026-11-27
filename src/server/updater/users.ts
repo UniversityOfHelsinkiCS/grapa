@@ -1,8 +1,8 @@
-import { sequelize } from '../db/connection'
+import { sequelize } from '../db/connection.ts'
 import { QueryTypes } from 'sequelize'
-import { User, StudyRight } from '../db/models'
-import { mangleData } from './mangleData'
-import { safeBulkCreate } from './util'
+import { User, StudyRight } from '../db/models/index.ts'
+import { mangleData } from './mangleData.ts'
+import { safeBulkCreate } from './util.ts'
 
 const parsePreferredLanguageUrnToLanguage = (urn: string) => {
   const fallBackLanguage = 'en'

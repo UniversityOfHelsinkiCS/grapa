@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { EmployeeUserSchema } from './userResponse'
-import { DepartmentDataSchema } from './departmentResponse'
-import { ProgramDataSchema, StudyTrackDataSchema } from './programResponse'
+import { EmployeeUserSchema } from './userResponse.ts'
+import { DepartmentDataSchema } from './departmentResponse.ts'
+import { ProgramDataSchema, StudyTrackDataSchema } from './programResponse.ts'
 
 export const DepartmentAdminResponseSchema = z.object({
   id: z.string().optional(),

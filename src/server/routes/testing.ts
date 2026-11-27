@@ -1,8 +1,8 @@
 import express from 'express'
 
-import { setClock } from '../test/manual/clock'
-import { NOW, type Language } from '../test/manual/demoData'
-import { seedManual, truncateAll } from '../test/manual/seed'
+import { setClock } from '../test/manual/clock.ts'
+import { NOW, type Language } from '../test/manual/demoData.ts'
+import { seedManual, truncateAll } from '../test/manual/seed.ts'
 
 // Only mounted in e2e mode
 const testingRouter = express.Router()

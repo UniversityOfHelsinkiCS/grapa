@@ -1,7 +1,7 @@
-import { getUser, isAuthorized } from '../util/oidc'
-import type { UserInfo } from '../types'
-import { E2E_USER_HEADER_KEY, inDevelopment, inE2EMode } from '../../config'
-import { User } from '../db/models'
+import { getUser, isAuthorized } from '../util/oidc.ts'
+import type { UserInfo } from '../types.ts'
+import { E2E_USER_HEADER_KEY, inDevelopment, inE2EMode } from '../../config.ts'
+import { User } from '../db/models/index.ts'
 
 const parseIamGroups = (iamGroups: string) =>
   iamGroups?.split(';').filter(Boolean) ?? []

@@ -1,7 +1,7 @@
 import morgan from 'morgan'
-import { inProduction } from '../../config'
-import logger from '../util/logger'
-import { RequestWithUser } from '../types'
+import { inProduction } from '../../config.ts'
+import logger from '../util/logger.ts'
+import type { RequestWithUser } from '../types.ts'
 
 // Morgan excepts a log format string to be returned, but here a separate logger is used instead.
 // Override the first function argument to return void instead of a string.

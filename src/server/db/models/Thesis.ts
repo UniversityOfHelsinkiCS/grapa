@@ -1,19 +1,19 @@
 import {
   Model,
-  InferAttributes,
-  InferCreationAttributes,
+  type InferAttributes,
+  type InferCreationAttributes,
   DataTypes,
   UUIDV4,
-  NonAttribute,
+  type NonAttribute,
 } from 'sequelize'
-import type { ThesisStatus } from '../../types'
+import type { ThesisStatus } from '../../types.ts'
 
-import { sequelize } from '../connection'
-import Grader from './Grader'
-import SeminarSupervision from './SeminarSupervision'
-import Supervision from './Supervision'
-import User from './User'
-import Program from './Program'
+import { sequelize } from '../connection.ts'
+import type Grader from './Grader.ts'
+import type SeminarSupervision from './SeminarSupervision.ts'
+import type Supervision from './Supervision.ts'
+import type User from './User.ts'
+import type Program from './Program.ts'
 
 class Thesis extends Model<
   InferAttributes<Thesis>,

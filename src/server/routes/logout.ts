@@ -1,5 +1,5 @@
 import express from 'express'
-import { LOGOUT_REDIRECT_URL } from '../util/config'
+import { LOGOUT_REDIRECT_URL } from '../util/config.ts'
 
 const logoutRouter = express.Router()
 

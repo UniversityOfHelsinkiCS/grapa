@@ -2,33 +2,33 @@ import express from 'express'
 import cors from 'cors'
 import * as Sentry from '@sentry/node'
 
-import errorHandler from '../middleware/error'
-import userMiddleware from '../middleware/user'
-import accessLogger from '../middleware/access'
-import loginAsMiddleware from '../middleware/loginAs'
-import hideStudentNumbersMiddleware from '../middleware/hideStudentNumbers'
-import employeesAndAdminOnly from '../middleware/employeesAndAdmin'
+import errorHandler from '../middleware/error.ts'
+import userMiddleware from '../middleware/user.ts'
+import accessLogger from '../middleware/access.ts'
+import loginAsMiddleware from '../middleware/loginAs.ts'
+import hideStudentNumbersMiddleware from '../middleware/hideStudentNumbers.ts'
+import employeesAndAdminOnly from '../middleware/employeesAndAdmin.ts'
 
-import userRouter from './user'
-import usersRouter from './users'
-import loginRouter from './login'
-import studentRouter from './student'
-import thesisRouter from './thesis'
-import attachmentRouter from './attachment'
-import programRouter from './program'
-import programManagementRouter from './programManagement'
-import studyTrackManagementRouter from './studyTrackManagement'
-import departmentRouter from './department'
-import departmentAdminRouter from './departmentAdmin'
-import ethesisAdminRouter from './ethesisAdmins'
-import adminRouter from './admin'
+import userRouter from './user.ts'
+import usersRouter from './users.ts'
+import loginRouter from './login.ts'
+import studentRouter from './student.ts'
+import thesisRouter from './thesis.ts'
+import attachmentRouter from './attachment.ts'
+import programRouter from './program.ts'
+import programManagementRouter from './programManagement.ts'
+import studyTrackManagementRouter from './studyTrackManagement.ts'
+import departmentRouter from './department.ts'
+import departmentAdminRouter from './departmentAdmin.ts'
+import ethesisAdminRouter from './ethesisAdmins.ts'
+import adminRouter from './admin.ts'
 
-import logoutRouter from './logout'
+import logoutRouter from './logout.ts'
 
-import { inDevelopment, inE2EMode, inTest, localOIDC } from '../../config'
-import { DEMO_DATA_ENABLED } from '../util/config'
-import initializeSentry from '../util/sentry'
-import sentryUserMiddleware from '../middleware/sentry'
+import { inDevelopment, inE2EMode, inTest, localOIDC } from '../../config.ts'
+import { DEMO_DATA_ENABLED } from '../util/config.ts'
+import initializeSentry from '../util/sentry.ts'
+import sentryUserMiddleware from '../middleware/sentry.ts'
 
 const router = express()
 
@@ -39,7 +39,8 @@ router.use(express.json())
 router.use(express.urlencoded({ extended: true }))
 
 // Before the user middleware, as seeding runs without a user. Not even loaded elsewhere.
-if (DEMO_DATA_ENABLED) router.use('/test', (await import('./testing')).default)
+if (DEMO_DATA_ENABLED)
+  router.use('/test', (await import('./testing.ts')).default)
 
 // only use user middleware in development (when oidc disabled), e2e tests and integration (API) tests
 if (inE2EMode || inTest || (!localOIDC && inDevelopment))

@@ -1,13 +1,17 @@
-import { NextFunction } from 'express'
-import { ServerPostRequest, ServerPutRequest, ProgramOptions } from '../types'
+import type { NextFunction } from 'express'
+import type {
+  ServerPostRequest,
+  ServerPutRequest,
+  ProgramOptions,
+} from '../types.ts'
 import {
   ProgramManagement,
   Program,
   Thesis,
   Supervision,
   StudyTrackManagement,
-} from '../db/models'
-import CustomAuthorizationError from '../errors/AuthorizationError'
+} from '../db/models/index.ts'
+import CustomAuthorizationError from '../errors/AuthorizationError.ts'
 
 export const authorizeStatusChange = async (
   req: ServerPostRequest | ServerPutRequest,

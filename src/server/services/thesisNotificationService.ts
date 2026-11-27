@@ -1,12 +1,13 @@
 import { Op } from 'sequelize'
 import { uniq } from 'lodash-es'
 import dayjs from 'dayjs'
-import logger from '../util/logger'
-import sendEmail from '../mailer/pate'
-import { User, Thesis, Program, StudyTrack, EthesisAdmin } from '../db/models'
-import { ThesisData, User as UserType } from '../types'
-import { getEmployeeTitles, titlesGraderGroup } from './thesisHelpers'
-import { getMilestoneCount } from '../../shared/utils/thesisUtils'
+import logger from '../util/logger.ts'
+import sendEmail from '../mailer/pate.ts'
+import type { Thesis } from '../db/models/index.ts'
+import { User, Program, StudyTrack, EthesisAdmin } from '../db/models/index.ts'
+import type { ThesisData, User as UserType } from '../types.ts'
+import { getEmployeeTitles, titlesGraderGroup } from './thesisHelpers.ts'
+import { getMilestoneCount } from '../../shared/utils/thesisUtils.ts'
 import {
   inProgressEmailTemplate,
   ethesisSentEmailTemplate,
@@ -18,11 +19,11 @@ import {
   suggestionRejectedEmailTemplate,
   suggestionSentEmailTemplate,
   lastMilestoneReachedReminderEmailTemplate,
-} from '../templates/thesisEmail'
+} from '../templates/thesisEmail.ts'
 import {
   findThesesByExpirationDates,
   findThesesForMilestoneReminders,
-} from './thesisService'
+} from './thesisService.ts'
 
 const getSupervisorEmails = (thesis: Thesis): string[] =>
   (thesis.supervisions ?? [])

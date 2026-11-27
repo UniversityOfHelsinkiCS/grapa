@@ -1,13 +1,13 @@
 import {
   Model,
-  InferAttributes,
-  InferCreationAttributes,
+  type InferAttributes,
+  type InferCreationAttributes,
   DataTypes,
   UUIDV4,
 } from 'sequelize'
 
-import { sequelize } from '../connection'
-import { TranslatedName } from '../../types'
+import { sequelize } from '../connection.ts'
+import type { TranslatedName } from '../../types.ts'
 
 class Program extends Model<
   InferAttributes<Program>,

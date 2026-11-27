@@ -6,12 +6,12 @@ import {
   EventLog,
   User,
   Thesis,
-} from '../db/models'
-import { Includeable, literal, Op } from 'sequelize'
-import { sequelize } from '../db/connection'
-import { getVisibleStudyTracks } from '../util/studyTracks'
-import { formatSearchQuery } from '../util/search'
-import CustomAuthorizationError from '../errors/AuthorizationError'
+} from '../db/models/index.ts'
+import { type Includeable, literal, Op } from 'sequelize'
+import { sequelize } from '../db/connection.ts'
+import { getVisibleStudyTracks } from '../util/studyTracks.ts'
+import { formatSearchQuery } from '../util/search.ts'
+import CustomAuthorizationError from '../errors/AuthorizationError.ts'
 
 export const getProgram = async (id: string, language: string) => {
   const includes: Includeable[] = [

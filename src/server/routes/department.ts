@@ -1,10 +1,10 @@
-import express, { Response } from 'express'
-import { Includeable, literal } from 'sequelize'
-import { RequestWithUser } from '../types'
-import { Department, DepartmentAdmin } from '../db/models'
-import ethesisUserHandler from '../middleware/ethesisUser'
+import express, { type Response } from 'express'
+import { type Includeable, literal } from 'sequelize'
+import type { RequestWithUser } from '../types.ts'
+import { Department, DepartmentAdmin } from '../db/models/index.ts'
+import ethesisUserHandler from '../middleware/ethesisUser.ts'
 import { z } from 'zod'
-import { DepartmentDataSchema } from '../validators/departmentResponse'
+import { DepartmentDataSchema } from '../validators/departmentResponse.ts'
 
 const departmentRouter = express.Router()
 

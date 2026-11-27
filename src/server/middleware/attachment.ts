@@ -1,5 +1,5 @@
 import multer from 'multer'
-import { inTest, MAX_UPLOAD_SIZE_BYTES } from '../../config'
+import { inTest, MAX_UPLOAD_SIZE_BYTES } from '../../config.ts'
 
 const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
 

@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-import logger from '../util/logger'
+import logger from '../util/logger.ts'
 
-import { PATE_URL } from '../util/config'
-import { inProduction, inStaging } from '../../config'
+import { PATE_URL } from '../util/config.ts'
+import { inProduction, inStaging } from '../../config.ts'
 import * as Sentry from '@sentry/node'
 
 const settings = {

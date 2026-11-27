@@ -6,7 +6,7 @@ import {
   inE2EMode,
   inStaging,
   inTest,
-} from '../../config'
+} from '../../config.ts'
 
 dotenv.config()
 

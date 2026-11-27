@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import type { ProgramOptions } from '@backend/types'
+import type { ProgramOptions } from '../../server/types.ts'
 
 export const LATE_THESIS_THRESHOLD_DAYS = 30
 export const VERY_LATE_THESIS_THRESHOLD_DAYS = 180

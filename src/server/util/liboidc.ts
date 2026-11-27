@@ -10,7 +10,7 @@ import type {
   UserInfoResponse,
 } from 'oauth4webapi'
 import passport from 'passport'
-import { Request } from 'express'
+import type { Request } from 'express'
 
 export interface OIDCConfiguration {
   issuer: URL

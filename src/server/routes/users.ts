@@ -1,20 +1,20 @@
 import { Op } from 'sequelize'
 import express from 'express'
-import { User } from '../db/models'
+import { User } from '../db/models/index.ts'
 
 import {
   getWhereClauseForManyWordSearch,
   getWhereClauseForOneWordSearch,
   getWhereClauseForTwoWordSearch,
-} from './usersSearchHelpers'
-import ethesisUserHandler from '../middleware/ethesisUser'
-import { getUsersBySearchStudents } from '../services/userService'
-import { has_access } from '../middleware/employeesAndAdmin'
+} from './usersSearchHelpers.ts'
+import ethesisUserHandler from '../middleware/ethesisUser.ts'
+import { getUsersBySearchStudents } from '../services/userService.ts'
+import { has_access } from '../middleware/employeesAndAdmin.ts'
 import { z } from 'zod'
 import {
   EmployeeUserSchema,
   StudentUserSchema,
-} from '../validators/userResponse'
+} from '../validators/userResponse.ts'
 
 const USER_FETCH_LIMIT = 100
 

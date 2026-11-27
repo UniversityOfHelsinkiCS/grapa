@@ -1,7 +1,7 @@
-import { NextFunction, Response } from 'express'
+import type { NextFunction, Response } from 'express'
 
-import { RequestWithUser } from '../types'
-import { HIDE_STUDENT_NUMBERS_HEADER_KEY } from '../../config'
+import type { RequestWithUser } from '../types.ts'
+import { HIDE_STUDENT_NUMBERS_HEADER_KEY } from '../../config.ts'
 
 const hideStudentNumbersMiddleware = (
   req: RequestWithUser,

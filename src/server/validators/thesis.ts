@@ -1,16 +1,16 @@
-import { NextFunction } from 'express'
-import {
+import type { NextFunction } from 'express'
+import type {
   ProgramOptions,
   ServerPostRequest,
   ServerPutRequest,
   ThesisData,
-} from '@backend/types'
+} from '../types.ts'
 import { uniqBy } from 'lodash-es'
-import CustomValidationError from '../errors/ValidationError'
-import { getTotalPercentage } from '../services/thesisHelpers'
-import { Program } from '../db/models'
-import { VALID_THESIS_STATUSES } from '../../config'
-import { getMilestoneCount } from '../../shared/utils/thesisUtils'
+import CustomValidationError from '../errors/ValidationError.ts'
+import { getTotalPercentage } from '../services/thesisHelpers.ts'
+import { Program } from '../db/models/index.ts'
+import { VALID_THESIS_STATUSES } from '../../config.ts'
+import { getMilestoneCount } from '../../shared/utils/thesisUtils.ts'
 
 const validateUser = (user: any) => {
   if (!user) {

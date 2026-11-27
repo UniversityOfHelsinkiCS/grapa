@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 
-import { sequelize } from '../../db/connection'
-import { DEMO_DATA_ENABLED } from '../../util/config'
+import { sequelize } from '../../db/connection.ts'
+import { DEMO_DATA_ENABLED } from '../../util/config.ts'
 import {
   Approver,
   Attachment,
@@ -17,7 +17,7 @@ import {
   Supervision,
   Thesis,
   User,
-} from '../../db/models'
+} from '../../db/models/index.ts'
 import {
   BACHELOR_PROGRAM,
   CO_MANAGER,
@@ -33,7 +33,7 @@ import {
   THESES,
   TRACK_MANAGER,
   USERS,
-} from './demoData'
+} from './demoData.ts'
 
 // Every table but the migrations, with or without a model
 export const truncateAll = async () => {

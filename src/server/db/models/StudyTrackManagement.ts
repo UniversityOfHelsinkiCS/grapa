@@ -1,12 +1,12 @@
 import {
   Model,
-  InferAttributes,
-  InferCreationAttributes,
+  type InferAttributes,
+  type InferCreationAttributes,
   DataTypes,
   UUIDV4,
 } from 'sequelize'
 
-import { sequelize } from '../connection'
+import { sequelize } from '../connection.ts'
 
 class StudyTrackManagement extends Model<
   InferAttributes<StudyTrackManagement>,

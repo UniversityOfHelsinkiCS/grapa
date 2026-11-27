@@ -1,22 +1,22 @@
+import type { TokenSet } from 'openid-client'
 import {
   Issuer,
   Strategy,
-  TokenSet,
-  UnknownObject,
-  UserinfoResponse,
+  type UnknownObject,
+  type UserinfoResponse,
 } from 'openid-client'
 
 import passport from 'passport'
 
-import { inE2EMode, inDevelopment, localOIDC, inStaging } from '../../config'
+import { inE2EMode, inDevelopment, localOIDC, inStaging } from '../../config.ts'
 import {
   OIDC_ISSUER,
   OIDC_CLIENT_ID,
   OIDC_CLIENT_SECRET,
   OIDC_REDIRECT_URI,
-} from './config'
-import type { UserInfo, User as UserType } from '../types'
-import { User } from '../db/models/index'
+} from './config.ts'
+import type { UserInfo, User as UserType } from '../types.ts'
+import { User } from '../db/models/index.ts'
 
 const claims: any = inDevelopment
   ? {

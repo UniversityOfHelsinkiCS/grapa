@@ -1,9 +1,9 @@
 import * as Sentry from '@sentry/node'
-import logger from '../util/logger'
-import { fetchUsers } from './users'
-import { clearOffsets } from './util'
-import { fetchPrograms } from './programs'
-import { fetchThesesAttainments } from './attainments'
+import logger from '../util/logger.ts'
+import { fetchUsers } from './users.ts'
+import { clearOffsets } from './util.ts'
+import { fetchPrograms } from './programs.ts'
+import { fetchThesesAttainments } from './attainments.ts'
 
 const runUpdater = async () => {
   await fetchPrograms()

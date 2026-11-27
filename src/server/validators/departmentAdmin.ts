@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { NextFunction } from 'express'
-import { ServerPostRequest } from '@backend/types'
-import CustomValidationError from '../errors/ValidationError'
+import type { NextFunction } from 'express'
+import type { ServerPostRequest } from '../types.ts'
+import CustomValidationError from '../errors/ValidationError.ts'
 
 const DepartmentAdminSchema = z.object({
   departmentId: z.string().uuid(),

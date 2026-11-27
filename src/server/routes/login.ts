@@ -1,7 +1,7 @@
 import express from 'express'
 import passport from 'passport'
 
-import { BASE_PATH } from '../../config'
+import { BASE_PATH } from '../../config.ts'
 
 const loginRouter = express.Router()
 

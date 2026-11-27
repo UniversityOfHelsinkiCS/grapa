@@ -1,11 +1,11 @@
-import express, { Response } from 'express'
-import { ServerDeleteRequest, ServerGetRequest } from '../types'
-import { EthesisAdmin, User } from '../db/models'
-import adminHandler from '../middleware/admin'
-import ethesisUserHandler from '../middleware/ethesisUser'
-import { EthesisAdminResponseSchema } from '../validators/managementResponse'
+import express, { type Response } from 'express'
+import type { ServerDeleteRequest, ServerGetRequest } from '../types.ts'
+import { EthesisAdmin, User } from '../db/models/index.ts'
+import adminHandler from '../middleware/admin.ts'
+import ethesisUserHandler from '../middleware/ethesisUser.ts'
+import { EthesisAdminResponseSchema } from '../validators/managementResponse.ts'
 import { z } from 'zod'
-import { EmployeeUserSchema } from '../validators/userResponse'
+import { EmployeeUserSchema } from '../validators/userResponse.ts'
 
 const ethesisAdminRouter = express.Router()
 

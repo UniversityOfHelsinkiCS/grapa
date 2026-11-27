@@ -1,4 +1,5 @@
-import { Includeable, literal, Op, Order, Transaction } from 'sequelize'
+import type { Transaction } from 'sequelize'
+import { type Includeable, literal, Op, type Order } from 'sequelize'
 import dayjs from 'dayjs'
 import {
   isThesisLate,
@@ -7,9 +8,9 @@ import {
   isThesisVeryLate,
   VERY_LATE_THESIS_THRESHOLD_DAYS,
   getMilestoneValue,
-} from '../../shared/utils/thesisUtils'
+} from '../../shared/utils/thesisUtils.ts'
 import { uniqBy } from 'lodash-es'
-import { EmployeeUserSchema } from '../validators/userResponse'
+import { EmployeeUserSchema } from '../validators/userResponse.ts'
 import {
   Grader,
   SeminarSupervision,
@@ -26,20 +27,20 @@ import {
   StudyTrackManagement,
   Department,
   DepartmentAdmin,
-} from '../db/models'
+} from '../db/models/index.ts'
 import {
   getSecondaryStudyTrackIds,
   getPrimaryStudyTrackId,
-} from '../util/studyTracks'
-import { sequelize } from '../db/connection'
-import { ThesisData, User as UserType, SupervisionData } from '../types'
-import { VALID_THESIS_STATUSES } from '../../config'
-import logger from '../util/logger'
+} from '../util/studyTracks.ts'
+import { sequelize } from '../db/connection.ts'
+import type { ThesisData, User as UserType, SupervisionData } from '../types.ts'
+import { VALID_THESIS_STATUSES } from '../../config.ts'
+import logger from '../util/logger.ts'
 
-import { Literal } from 'sequelize/types/utils'
-import { TitleData } from '../types'
-import { EMPLOYEE_TOKEN, GW_API_URL } from '../util/config'
-import { inStaging, inTest, inE2EMode } from '../../config'
+import type { Literal } from 'sequelize/types/utils'
+import type { TitleData } from '../types.ts'
+import { EMPLOYEE_TOKEN, GW_API_URL } from '../util/config.ts'
+import { inStaging, inTest, inE2EMode } from '../../config.ts'
 
 const getOrderLiteralBasedOnThesesApprovals = (currentUser: UserType) =>
   literal(`(

@@ -1,6 +1,6 @@
 export type GridFilterModel = { items: any[] }
-import { Request } from 'express'
-import { VALID_EVENT_LOG_TYPES, VALID_THESIS_STATUSES } from '../config'
+import type { Request } from 'express'
+import type { VALID_EVENT_LOG_TYPES, VALID_THESIS_STATUSES } from '../config.ts'
 
 export interface TranslatedName {
   fi: string

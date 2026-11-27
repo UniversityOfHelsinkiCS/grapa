@@ -10,7 +10,7 @@ import {
   User,
   Program,
   EventLog,
-} from '../db/models'
+} from '../db/models/index.ts'
 import {
   buildThesisIncludes,
   buildThesisWhereClause,
@@ -20,18 +20,18 @@ import {
   getAndCreateExtUsers,
   getAvailableMilestones,
   getAvailableActionNeeded,
-} from './thesisHelpers'
-import { transformThesisData, transformSingleThesis } from './thesisHelpers'
-import { formatSearchQuery } from '../util/search'
-import { User as UserType, ThesisData } from '../types'
-import CustomValidationError from '../errors/ValidationError'
-import CustomAuthorizationError from '../errors/AuthorizationError'
-import CustomNotFoundError from '../errors/NotFoundError'
-import { getMilestoneCount } from '../../shared/utils/thesisUtils'
+} from './thesisHelpers.ts'
+import { transformThesisData, transformSingleThesis } from './thesisHelpers.ts'
+import { formatSearchQuery } from '../util/search.ts'
+import type { User as UserType, ThesisData } from '../types.ts'
+import CustomValidationError from '../errors/ValidationError.ts'
+import CustomAuthorizationError from '../errors/AuthorizationError.ts'
+import CustomNotFoundError from '../errors/NotFoundError.ts'
+import { getMilestoneCount } from '../../shared/utils/thesisUtils.ts'
 import dayjs from 'dayjs'
 
-import { cleanUserProperties } from './studentService'
-import logger from '../util/logger'
+import { cleanUserProperties } from './studentService.ts'
+import logger from '../util/logger.ts'
 
 export const cleanThesisUserData = (thesis: any) => {
   if (thesis.authors) {

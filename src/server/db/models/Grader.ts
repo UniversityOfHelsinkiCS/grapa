@@ -1,14 +1,14 @@
 import {
   Model,
-  InferAttributes,
-  InferCreationAttributes,
+  type InferAttributes,
+  type InferCreationAttributes,
   DataTypes,
   UUIDV4,
-  NonAttribute,
+  type NonAttribute,
 } from 'sequelize'
 
-import { sequelize } from '../connection'
-import User from './User'
+import { sequelize } from '../connection.ts'
+import type User from './User.ts'
 
 class Grader extends Model<
   InferAttributes<Grader>,

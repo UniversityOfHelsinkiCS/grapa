@@ -1,7 +1,7 @@
-import express, { Response } from 'express'
-import { RequestWithUser } from '../types'
-import ethesisUserHandler from '../middleware/ethesisUser'
-import { run as runUpdater } from '../updater'
+import express, { type Response } from 'express'
+import type { RequestWithUser } from '../types.ts'
+import ethesisUserHandler from '../middleware/ethesisUser.ts'
+import { run as runUpdater } from '../updater/index.ts'
 
 const adminRouter = express.Router()
 

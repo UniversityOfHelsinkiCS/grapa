@@ -1,12 +1,12 @@
 import { Op } from 'sequelize'
-import { User } from '../db/models'
-import { StudentUserSchema } from '../validators/userResponse'
+import { User } from '../db/models/index.ts'
+import { StudentUserSchema } from '../validators/userResponse.ts'
 
 import {
   getWhereClauseForManyWordSearch,
   getWhereClauseForOneWordSearch,
   getWhereClauseForTwoWordSearch,
-} from '../routes/usersSearchHelpers'
+} from '../routes/usersSearchHelpers.ts'
 
 const USER_FETCH_LIMIT = 100
 

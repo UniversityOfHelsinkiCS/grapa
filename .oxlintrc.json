@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript", "unicorn"],
+  "plugins": ["typescript", "unicorn", "import"],
   "jsPlugins": ["eslint-plugin-prettier"],
   "categories": {
     "correctness": "off"
@@ -163,6 +163,14 @@
             ]
           }
         ]
+      }
+    },
+    {
+      "files": ["src/server/**/*.ts", "src/shared/**/*.ts", "src/config.ts"],
+      "excludeFiles": ["**/*.test.ts"],
+      "rules": {
+        "typescript/consistent-type-imports": "error",
+        "import/extensions": ["error", "always", { "ignorePackages": true }]
       }
     }
   ]

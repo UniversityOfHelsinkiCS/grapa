@@ -1,5 +1,5 @@
-import { NextFunction, Response } from 'express'
-import logger from '../util/logger'
+import type { NextFunction, Response } from 'express'
+import logger from '../util/logger.ts'
 
 export const has_access = (user: {
   isAdmin: any

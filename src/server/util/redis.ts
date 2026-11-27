@@ -1,8 +1,8 @@
 import { createClient } from 'redis'
 import { RedisStore } from 'connect-redis'
 
-import { REDIS_HOST } from './config'
-import { inE2EMode, inTest } from '../../config'
+import { REDIS_HOST } from './config.ts'
+import { inE2EMode, inTest } from '../../config.ts'
 
 const ttl = 60 * 60 * 24 * 30 // 30 days
 

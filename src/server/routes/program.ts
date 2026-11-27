@@ -1,11 +1,11 @@
-import express, { Response } from 'express'
-import { Program, ProgramManagement } from '../db/models'
-import { RequestWithUser } from '../types'
-import ethesisUserHandler from '../middleware/ethesisUser'
-import { getPrograms, getProgramEventLogs } from '../services/programService'
+import express, { type Response } from 'express'
+import { Program, ProgramManagement } from '../db/models/index.ts'
+import type { RequestWithUser } from '../types.ts'
+import ethesisUserHandler from '../middleware/ethesisUser.ts'
+import { getPrograms, getProgramEventLogs } from '../services/programService.ts'
 import { z } from 'zod'
-import { ProgramDataSchema } from '../validators/programResponse'
-import { EventLogSchema } from '../validators/thesisResponse'
+import { ProgramDataSchema } from '../validators/programResponse.ts'
+import { EventLogSchema } from '../validators/thesisResponse.ts'
 
 const programRouter = express.Router()
 

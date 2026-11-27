@@ -1,14 +1,14 @@
-import express, { Response } from 'express'
+import express, { type Response } from 'express'
 import { literal, Op } from 'sequelize'
 
-import { Department, DepartmentAdmin, User } from '../db/models'
+import { Department, DepartmentAdmin, User } from '../db/models/index.ts'
 
-import { validateDepartmentAdminData } from '../validators/departmentAdmin'
-import { DepartmentAdminResponseSchema } from '../validators/managementResponse'
+import { validateDepartmentAdminData } from '../validators/departmentAdmin.ts'
+import { DepartmentAdminResponseSchema } from '../validators/managementResponse.ts'
 import { z } from 'zod'
 
-import { RequestWithUser } from '../types'
-import ethesisUserHandler from '../middleware/ethesisUser'
+import type { RequestWithUser } from '../types.ts'
+import ethesisUserHandler from '../middleware/ethesisUser.ts'
 
 const departmentAdminRouter = express.Router()
 

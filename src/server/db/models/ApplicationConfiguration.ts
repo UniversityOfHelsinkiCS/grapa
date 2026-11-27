@@ -1,11 +1,11 @@
 import {
   Model,
-  InferAttributes,
-  InferCreationAttributes,
+  type InferAttributes,
+  type InferCreationAttributes,
   DataTypes,
 } from 'sequelize'
 
-import { sequelize } from '../connection'
+import { sequelize } from '../connection.ts'
 
 class ApplicationConfiguration extends Model<
   InferAttributes<ApplicationConfiguration>,

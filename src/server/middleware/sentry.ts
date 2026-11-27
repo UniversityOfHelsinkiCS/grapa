@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express'
+import type { Request, Response, NextFunction } from 'express'
 import * as Sentry from '@sentry/node'
-import { inProduction } from '../../config'
-import { User } from '../types'
+import { inProduction } from '../../config.ts'
+import type { User } from '../types.ts'
 
 /**
  * Middleware to set Sentry user context for each request

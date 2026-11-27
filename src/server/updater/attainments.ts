@@ -1,10 +1,10 @@
-import { ThesisData } from '@backend/types'
+import type { ThesisData } from '../types.ts'
 import { Op } from 'sequelize'
-import { Thesis, User } from '../db/models'
-import { mangleData } from './mangleData'
-import logger from '../util/logger'
-import { sequelize } from '../db/connection'
-import { handleStatusChangeEventLog } from '../services/thesisHelpers'
+import { Thesis, User } from '../db/models/index.ts'
+import { mangleData } from './mangleData.ts'
+import logger from '../util/logger.ts'
+import { sequelize } from '../db/connection.ts'
+import { handleStatusChangeEventLog } from '../services/thesisHelpers.ts'
 
 interface AttainmentData {
   id: string

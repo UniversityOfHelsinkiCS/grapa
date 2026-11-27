@@ -1,5 +1,5 @@
-import CustomUnauthorizedError from '../errors/UnauthorizedError'
-import { NextFunction, Response } from 'express'
+import CustomUnauthorizedError from '../errors/UnauthorizedError.ts'
+import type { NextFunction, Response } from 'express'
 
 const ethesisUserHandler = (req: any, _: Response, next: NextFunction) => {
   const currentUser = req.user

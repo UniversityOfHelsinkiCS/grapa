@@ -1,14 +1,18 @@
-import { Transaction } from 'sequelize'
+import type { Transaction } from 'sequelize'
 import fs from 'fs'
 
-import { Attachment, Thesis } from '../db/models'
-import { ProgramOptions, ServerPostRequest, ServerPutRequest } from '../types'
-import CustomValidationError from '../errors/ValidationError'
-import CustomNotFoundError from '../errors/NotFoundError'
-import { sequelize } from '../db/connection'
-import { MAX_MILESTONE_ATTACHMENTS } from '../../config'
-import { getMilestoneCount } from '../../shared/utils/thesisUtils'
-import logger from '../util/logger'
+import { Attachment, Thesis } from '../db/models/index.ts'
+import type {
+  ProgramOptions,
+  ServerPostRequest,
+  ServerPutRequest,
+} from '../types.ts'
+import CustomValidationError from '../errors/ValidationError.ts'
+import CustomNotFoundError from '../errors/NotFoundError.ts'
+import { sequelize } from '../db/connection.ts'
+import { MAX_MILESTONE_ATTACHMENTS } from '../../config.ts'
+import { getMilestoneCount } from '../../shared/utils/thesisUtils.ts'
+import logger from '../util/logger.ts'
 
 const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
 

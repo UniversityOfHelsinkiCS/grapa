@@ -3,11 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "start": "docker compose up",
-    "start:prod": "NODE_ENV=production node --no-warnings --experimental-specifier-resolution=node --import=tsx src/server/index.ts",
-    "start:test": "NODE_ENV=test node --import=tsx src/server/index.ts",
-    "start:dev": "NODE_ENV=development concurrently \"nodemon --exec node --no-warnings --experimental-specifier-resolution=node --import=tsx src/server/index.ts\" \"vite\"",
+    "start:prod": "NODE_ENV=production node --no-warnings src/server/index.ts",
+    "start:test": "NODE_ENV=test node src/server/index.ts",
+    "start:dev": "NODE_ENV=development concurrently \"nodemon --exec node --no-warnings src/server/index.ts\" \"vite\"",
     "test": "DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres vitest run --project server",
     "test:watch": "vitest --project server",
     "test:front": "vitest run --project client",
@@ -15,7 +18,7 @@
     "test:integration": "NODE_ENV=test PORT=8001 DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres vitest run --project integration",
     "test:integration:watch": "NODE_ENV=test PORT=8001 DATABASE_URL=postgres://postgres:postgres@localhost:5433/postgres vitest --project integration",
     "lint": "oxlint",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p e2e",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p src/server && tsc --noEmit -p e2e",
     "format": "prettier --write '**/*.{ts,tsx,json,css,md}'",
     "build": "DISABLE_ESLINT_PLUGIN=true vite build",
     "manage": "node scripts/manage.js",
@@ -24,7 +27,7 @@
     "db:shell": "docker exec -it grapa_db psql -U postgres",
     "manual:setup": "docker compose -f docker-compose.manual.yml --profile manual up --build",
     "manual:down": "docker compose -f docker-compose.manual.yml --profile manual down -v",
-    "manual:record": "tsx e2e/manual/record.ts",
+    "manual:record": "node e2e/manual/record.ts",
     "prepare": "husky"
   },
   "dependencies": {
@@ -111,7 +114,6 @@
     "prettier": "3.10.1",
     "sequelize-cli": "6.6.5",
     "supertest": "7.3.2",
-    "tsx": "^4.23.15",
     "typescript": "7.0.2",
     "vite": "8.3.8",
     "vitest": "5.1.0"

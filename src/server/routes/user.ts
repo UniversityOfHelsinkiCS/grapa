@@ -1,17 +1,17 @@
 import express from 'express'
 
-import { RequestWithUser } from '../types'
+import type { RequestWithUser } from '../types.ts'
 import {
   DepartmentAdmin,
   ProgramManagement,
   StudyTrackManagement,
   SeminarSupervision,
   User,
-} from '../db/models'
-import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus'
-import ethesisUserHandler from '../middleware/ethesisUser'
-import employeesAndAdminOnly from '../middleware/employeesAndAdmin'
-import { LoggedInUserSchema } from '../validators/userResponse'
+} from '../db/models/index.ts'
+import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus.ts'
+import ethesisUserHandler from '../middleware/ethesisUser.ts'
+import employeesAndAdminOnly from '../middleware/employeesAndAdmin.ts'
+import { LoggedInUserSchema } from '../validators/userResponse.ts'
 
 const userRouter = express.Router()
 
@@ -48,7 +48,7 @@ userRouter.get(
     })
     const managedStudyTrackIds = managedStudyTracks.map((st) => st.studyTrackId)
 
-    const thesesTableFilters = { items: <any>[] }
+    const thesesTableFilters = { items: [] as any[] }
 
     const safeData = LoggedInUserSchema.parse({
       ...user,

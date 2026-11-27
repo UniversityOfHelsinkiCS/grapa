@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process'
 
-import { getNarrator, pruneCache } from './narration'
+import { getNarrator, pruneCache } from './narration.ts'
 
 const filters = process.argv.slice(2)
 

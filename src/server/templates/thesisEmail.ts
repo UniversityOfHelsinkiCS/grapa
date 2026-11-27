@@ -1,5 +1,5 @@
-import { Thesis, Program, StudyTrack } from '../db/models'
-import { ThesisData, User as UserType } from '../types'
+import type { Thesis, Program, StudyTrack } from '../db/models/index.ts'
+import type { ThesisData, User as UserType } from '../types.ts'
 
 interface TemplateOutput {
   subject: string

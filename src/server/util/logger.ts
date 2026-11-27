@@ -1,7 +1,7 @@
 import winston from 'winston'
 import LokiTransport from 'winston-loki'
 
-import { inProduction } from '../../config'
+import { inProduction } from '../../config.ts'
 
 const { combine, timestamp, printf, splat } = winston.format
 

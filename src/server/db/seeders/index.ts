@@ -1,5 +1,5 @@
-import logger from '../../util/logger'
-import seedUsers from './user'
+import logger from '../../util/logger.ts'
+import seedUsers from './user.ts'
 
 const seed = async () => {
   await new Promise<void>((resolve) => setTimeout(() => resolve(), 1_000))

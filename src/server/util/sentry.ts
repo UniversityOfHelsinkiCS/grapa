@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/node'
 
-import { inProduction, inStaging, inE2EMode, GIT_SHA } from '../../config'
+import { inProduction, inStaging, inE2EMode, GIT_SHA } from '../../config.ts'
 
 const initializeSentry = () => {
   if (!inProduction || inStaging || inE2EMode) return

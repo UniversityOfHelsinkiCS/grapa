@@ -1,11 +1,11 @@
 import {
   Model,
-  InferAttributes,
-  InferCreationAttributes,
+  type InferAttributes,
+  type InferCreationAttributes,
   DataTypes,
   UUIDV4,
 } from 'sequelize'
-import { sequelize } from '../connection'
+import { sequelize } from '../connection.ts'
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: string

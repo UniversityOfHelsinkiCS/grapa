@@ -1,4 +1,4 @@
-import { User } from '../models'
+import { User } from '../models/index.ts'
 
 const user = {
   id: 'hy-hlo-123',

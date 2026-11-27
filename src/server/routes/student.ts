@@ -1,5 +1,5 @@
 import express from 'express'
-import {
+import type {
   GraderData,
   ServerPostRequest,
   ServerPutRequest,
@@ -7,55 +7,55 @@ import {
   ThesisData,
   User,
   StudyTrackData,
-} from '../types'
-import { sequelize } from '../db/connection'
+} from '../types.ts'
+import { sequelize } from '../db/connection.ts'
 
-import { EventLog, Thesis, Program } from '../db/models'
+import { EventLog, Thesis, Program } from '../db/models/index.ts'
 
-import { RequestWithUser } from '../types'
-import withStudyRight from '../middleware/withStudyRight'
-import { getPrimaryStudyTrackId } from '../util/studyTracks'
+import type { RequestWithUser } from '../types.ts'
+import withStudyRight from '../middleware/withStudyRight.ts'
+import { getPrimaryStudyTrackId } from '../util/studyTracks.ts'
 
 import {
   getPaginatedTheses,
   createThesis,
   getSingleThesis,
-} from '../services/thesisService'
+} from '../services/thesisService.ts'
 
-import ethesisUserHandler from '../middleware/ethesisUser'
-import parseFormDataJson from '../middleware/parseFormDataJson'
+import ethesisUserHandler from '../middleware/ethesisUser.ts'
+import parseFormDataJson from '../middleware/parseFormDataJson.ts'
 import parseMultipartFormData, {
   parseMilestoneFile,
-} from '../middleware/attachment'
+} from '../middleware/attachment.ts'
 import {
   validateMilestone,
   validateThesisDataStudentMiddleware,
-} from '../validators/thesis'
+} from '../validators/thesis.ts'
 import {
   StudentThesisSchema,
   PaginatedStudentThesesSchema,
-} from '../validators/thesisResponse'
+} from '../validators/thesisResponse.ts'
 
 import {
   handleAttachmentByLabel,
   saveMilestoneAttachment,
   deleteMilestoneAttachment,
   removeFile,
-} from './thesisAttachmentHelpers'
+} from './thesisAttachmentHelpers.ts'
 
-import { handleChangeEventLogs } from '../services/thesisHelpers'
+import { handleChangeEventLogs } from '../services/thesisHelpers.ts'
 
-import { handleStatusChangeEmail } from '../services/thesisNotificationService'
+import { handleStatusChangeEmail } from '../services/thesisNotificationService.ts'
 
-import { cleanThesisUserData } from '../services/thesisService'
-import { getProgram, getPrograms } from '../services/programService'
-import { fetchThesisById, updateThesis } from '../services/thesisService'
+import { cleanThesisUserData } from '../services/thesisService.ts'
+import { getProgram, getPrograms } from '../services/programService.ts'
+import { fetchThesisById, updateThesis } from '../services/thesisService.ts'
 import {
   getOwnActiveTheses,
   getStudentStudyRights,
-} from '../services/studentService'
+} from '../services/studentService.ts'
 
-import { deleteThesisAttachments } from './thesisAttachmentHelpers'
+import { deleteThesisAttachments } from './thesisAttachmentHelpers.ts'
 import { QueryTypes, type Transaction } from 'sequelize'
 
 import fs from 'fs'

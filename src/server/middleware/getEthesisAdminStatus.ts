@@ -1,5 +1,5 @@
-import { NextFunction, Response } from 'express'
-import { EthesisAdmin } from '../db/models'
+import type { NextFunction, Response } from 'express'
+import { EthesisAdmin } from '../db/models/index.ts'
 
 const getEthesisAdminStatus = async (
   req: any,

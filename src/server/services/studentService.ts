@@ -1,7 +1,7 @@
-import { User } from '../types'
+import type { User } from '../types.ts'
 
-import { StudyRight } from '../db/models'
-import { sequelize } from '../db/connection'
+import { StudyRight } from '../db/models/index.ts'
+import { sequelize } from '../db/connection.ts'
 import { QueryTypes } from 'sequelize'
 
 export const cleanUserProperties = (user: any) => {

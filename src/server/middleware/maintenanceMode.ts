@@ -1,5 +1,5 @@
-import { sequelize } from '../db/connection'
-import { NextFunction, Response } from 'express'
+import { sequelize } from '../db/connection.ts'
+import type { NextFunction, Response } from 'express'
 import path from 'path'
 
 export const maintenanceMode = async (

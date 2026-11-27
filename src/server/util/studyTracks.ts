@@ -1,4 +1,4 @@
-import { ProgramOptions, StudyTrackData } from '@backend/types'
+import type { ProgramOptions, StudyTrackData } from '../types.ts'
 
 export const getPrimaryStudyTrackId = (
   programOptions: ProgramOptions,

@@ -1,20 +1,20 @@
-import express, { Response } from 'express'
+import express, { type Response } from 'express'
 
 import {
   StudyTrack,
   StudyTrackManagement,
   ProgramManagement,
   User,
-} from '../db/models'
-import { RequestWithUser, User as UserType } from '../types'
-import ethesisUserHandler from '../middleware/ethesisUser'
+} from '../db/models/index.ts'
+import type { RequestWithUser, User as UserType } from '../types.ts'
+import ethesisUserHandler from '../middleware/ethesisUser.ts'
 import {
   employeesAndAdminOnly,
   has_access,
-} from '../middleware/employeesAndAdmin'
-import { cleanUserProperties } from '../services/studentService'
-import { StudyTrackManagementResponseSchema } from '../validators/managementResponse'
-import { StudentUserSchema } from '../validators/userResponse'
+} from '../middleware/employeesAndAdmin.ts'
+import { cleanUserProperties } from '../services/studentService.ts'
+import { StudyTrackManagementResponseSchema } from '../validators/managementResponse.ts'
+import { StudentUserSchema } from '../validators/userResponse.ts'
 import { z } from 'zod'
 
 const StudentStudyTrackManagementResponseSchema =

@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import { VALID_EVENT_LOG_TYPES, VALID_THESIS_STATUSES } from '../../config'
-import { EmployeeUserSchema, StudentUserSchema } from './userResponse'
+import { VALID_EVENT_LOG_TYPES, VALID_THESIS_STATUSES } from '../../config.ts'
+import { EmployeeUserSchema, StudentUserSchema } from './userResponse.ts'
 import {
   DepartmentDataSchema,
   TranslatedNameSchema,
-} from './departmentResponse'
-import { ProgramDataSchema } from './programResponse'
+} from './departmentResponse.ts'
+import { ProgramDataSchema } from './programResponse.ts'
 
 export const EmployeeSupervisionSchema = z.object({
   user: EmployeeUserSchema.partial(),

@@ -1,61 +1,61 @@
-import express, { Response } from 'express'
-import { type Transaction } from 'sequelize'
+import express, { type Response } from 'express'
+import type { Transaction } from 'sequelize'
 
-import {
+import type {
   ServerDeleteRequest,
   ServerGetRequest,
   ServerPostRequest,
   ServerPutRequest,
   ProgramOptions,
-} from '../types'
-import parseFormDataJson from '../middleware/parseFormDataJson'
+} from '../types.ts'
+import parseFormDataJson from '../middleware/parseFormDataJson.ts'
 import parseMultipartFormData, {
   parseMilestoneFile,
-} from '../middleware/attachment'
-import { Thesis, EventLog, Program } from '../db/models'
-import { sequelize } from '../db/connection'
+} from '../middleware/attachment.ts'
+import { Thesis, EventLog, Program } from '../db/models/index.ts'
+import { sequelize } from '../db/connection.ts'
 import {
   validateMilestone,
   validateThesisDataMiddleware,
-} from '../validators/thesis'
-import { getPrimaryStudyTrackId } from '../util/studyTracks'
+} from '../validators/thesis.ts'
+import { getPrimaryStudyTrackId } from '../util/studyTracks.ts'
 import { z } from 'zod'
 import {
   PaginatedEmployeeThesesSchema,
   EmployeeThesisSchema,
   ThesisStatisticsResponseSchema,
   EventLogSchema,
-} from '../validators/thesisResponse'
+} from '../validators/thesisResponse.ts'
 
 import {
   getPaginatedTheses,
   createThesis,
   getThesesForStatistics,
   getThesisEventLogs,
-} from '../services/thesisService'
-import { authorizeStatusChange } from '../middleware/authorizeStatusChange'
+} from '../services/thesisService.ts'
+import { authorizeStatusChange } from '../middleware/authorizeStatusChange.ts'
 import {
   calculateThesisStatistics,
   handleChangeEventLogs,
   thesesToCsv,
   buildThesisIncludes,
-} from '../services/thesisHelpers'
+} from '../services/thesisHelpers.ts'
 
 import {
   handleStatusChangeEmail,
   handleThesisToApproveEmail,
-} from '../services/thesisNotificationService'
+} from '../services/thesisNotificationService.ts'
 import {
   deleteThesisAttachments,
   handleAttachmentByLabel,
   saveMilestoneAttachment,
   deleteMilestoneAttachment,
   removeFile,
-} from './thesisAttachmentHelpers'
-import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus'
-import ethesisUserHandler from '../middleware/ethesisUser'
-import { fetchThesisById, getSingleThesis } from '../services/thesisService'
-import { updateThesis } from '../services/thesisService'
+} from './thesisAttachmentHelpers.ts'
+import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus.ts'
+import ethesisUserHandler from '../middleware/ethesisUser.ts'
+import { fetchThesisById, getSingleThesis } from '../services/thesisService.ts'
+import { updateThesis } from '../services/thesisService.ts'
 
 const thesisRouter = express.Router()
 

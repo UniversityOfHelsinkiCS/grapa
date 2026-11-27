@@ -1,8 +1,8 @@
-import { NextFunction } from 'express'
+import type { NextFunction } from 'express'
 
-import { RequestWithUser } from '../types'
-import { User } from '../db/models'
-import { LOGIN_AS_HEADER_KEY } from '../../config'
+import type { RequestWithUser } from '../types.ts'
+import { User } from '../db/models/index.ts'
+import { LOGIN_AS_HEADER_KEY } from '../../config.ts'
 
 const loginAsMiddleware = async (
   req: RequestWithUser,

@@ -1,10 +1,10 @@
 import express from 'express'
 import fs from 'fs'
-import { Attachment } from '../db/models'
-import ethesisUserHandler from '../middleware/ethesisUser'
-import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus'
-import { fetchThesisById } from '../services/thesisService'
-import { User as UserType } from '../types'
+import { Attachment } from '../db/models/index.ts'
+import ethesisUserHandler from '../middleware/ethesisUser.ts'
+import getEthesisAdminStatus from '../middleware/getEthesisAdminStatus.ts'
+import { fetchThesisById } from '../services/thesisService.ts'
+import type { User as UserType } from '../types.ts'
 
 const PATH_TO_FOLDER = '/opt/app-root/src/uploads/'
 

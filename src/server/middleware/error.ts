@@ -1,14 +1,14 @@
-import { Request, Response, NextFunction } from 'express'
-import { ValidationError, UniqueConstraintError } from 'sequelize'
+import type { Request, Response, NextFunction } from 'express'
+import type { ValidationError, UniqueConstraintError } from 'sequelize'
 import { MulterError } from 'multer'
 
 import * as Sentry from '@sentry/node'
 
-import logger from '../util/logger'
-import { inProduction } from '../../config'
+import logger from '../util/logger.ts'
+import { inProduction } from '../../config.ts'
 
-import CustomValidationError from '../errors/ValidationError'
-import CustomAuthorizationError from '../errors/AuthorizationError'
+import type CustomValidationError from '../errors/ValidationError.ts'
+import type CustomAuthorizationError from '../errors/AuthorizationError.ts'
 
 const errorHandler = (
   error: Error,

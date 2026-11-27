@@ -1,13 +1,13 @@
 import {
   Model,
-  InferAttributes,
-  InferCreationAttributes,
+  type InferAttributes,
+  type InferCreationAttributes,
   DataTypes,
   UUIDV4,
 } from 'sequelize'
 
-import { sequelize } from '../connection'
-import type { EventLogType } from '../../types'
+import { sequelize } from '../connection.ts'
+import type { EventLogType } from '../../types.ts'
 
 class EventLog extends Model<
   InferAttributes<EventLog>,
