@@ -5,8 +5,8 @@ ENV TZ="Europe/Helsinki"
 WORKDIR /opt/app-root/src
 
 # Setup
-COPY package* ./
-RUN npm ci
+COPY package*.json .npmrc ./
+RUN npm ci --ignore-scripts
 
 EXPOSE 3000
 
