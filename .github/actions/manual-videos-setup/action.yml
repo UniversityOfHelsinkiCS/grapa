@@ -43,7 +43,7 @@ runs:
 
     - name: npm ci
       shell: bash
-      run: npm ci --no-audit --no-fund
+      run: npm ci --ignore-scripts --no-audit --no-fund
 
     - name: Find the Playwright version
       id: playwright
