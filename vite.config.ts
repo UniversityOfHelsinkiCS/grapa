@@ -8,7 +8,7 @@ import path from 'path'
 export default defineConfig({
   resolve: {
     alias: {
-      src: path.resolve(__dirname, './src'),
+      src: path.resolve(import.meta.dirname, './src'),
     },
   },
   plugins: [react()],
